@@ -106,7 +106,7 @@ Reset the transform matrix to its original value. All panning and zooming is res
 
 ### `zoom( scale, noSetRange )`
 
-@param {Number|Boolean} [scale] The exact scale to which to zoom or a boolean indicating to transition a zoom out
+@param {Number|Boolean} [scale] The exact scale to which to zoom or a boolean indicating to transition a zoom out<br/>
 @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change. No need to set that value. Most of the time though, just ignore this parameter.)
 
 
