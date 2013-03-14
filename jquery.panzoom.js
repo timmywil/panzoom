@@ -5,7 +5,7 @@
  * <=IE8 NOT supported
  * This plugin depends on Modernizr.touch for detecting touch event support
  * Pinch gestures for zooming is supported where touch is supported
- * Copyright (c) 2012 timmy willison
+ * Copyright (c) 2013 timmy willison
  * Released under the MIT license
  * https://github.com/timmywil/jquery.panzoom/blob/master/MIT-LICENSE.txt
  */
