@@ -20,62 +20,62 @@ Panzoom can obviously be included with your scripts at the end of the body, but 
 
 With script tags:
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script src="/js/plugins/jquery.panzoom.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/js/plugins/jquery.panzoom.js"></script>
 
 With AMD loader in an anonymous module:
 
-  define([ "jquery", "plugins/jquery.panzoom" ], function( $ ) {
-    $(document).ready(function() {
-      $(".panzoom-elements").panzoom();
+    define([ "jquery", "plugins/jquery.panzoom" ], function( $ ) {
+        $(document).ready(function() {
+            $(".panzoom-elements").panzoom();
+        });
     });
-  });
 
 ## Initialization
 
-  $(".panzoom-elements").panzoom();
+    $(".panzoom-elements").panzoom();
 
-  // Pass options
-  $("a.panzoom-elements").panzoom({
-    minScale: 0,
-    $zoomRange: $("input[type='range']")
-  });
+    // Pass options
+    $("a.panzoom-elements").panzoom({
+        minScale: 0,
+        $zoomRange: $("input[type='range']")
+    });
 
 ## Options
 
 All options can be overridden by passing an object literal like any other plugin,<br>
 or with the `"option"` method.<br>
 
-  Panzoom.defaults = {
-    // Should always be non-empty
-    // Used to bind jQuery events without collisions
-    // A guid is not added here as different instantiations/versions of panzoom
-    // on the same element is not supported, so don't do it.
-    eventNamespace: ".panzoom",
+    Panzoom.defaults = {
+        // Should always be non-empty
+        // Used to bind jQuery events without collisions
+        // A guid is not added here as different instantiations/versions of panzoom
+        // on the same element is not supported, so don't do it.
+        eventNamespace: ".panzoom",
 
-    // Whether or not to transition the scale
-    transition: true,
+        // Whether or not to transition the scale
+        transition: true,
 
-    // The increment at which to zoom
-    // adds/subtracts to the scale each time zoomIn/Out is called
-    increment: 0.3,
+        // The increment at which to zoom
+        // adds/subtracts to the scale each time zoomIn/Out is called
+        increment: 0.3,
 
-    minScale: 0.4,
-    maxScale: 5,
+        minScale: 0.4,
+        maxScale: 5,
 
-    // Animation duration (ms)
-    duration: 200,
-    // CSS easing used for scale transition
-    easing: "ease-in-out",
+        // Animation duration (ms)
+        duration: 200,
+        // CSS easing used for scale transition
+        easing: "ease-in-out",
 
-    // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzooom("zoomIn"); });` )
-    $zoomIn: $(),
-    $zoomOut: $(),
-    // Range input on which to bind zooming functionality
-    $zoomRange: $(),
-    // Reset buttons/links collection on which to bind the reset method
-    $reset: $()
-  };
+        // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzooom("zoomIn"); });` )
+        $zoomIn: $(),
+        $zoomOut: $(),
+        // Range input on which to bind zooming functionality
+        $zoomRange: $(),
+        // Reset buttons/links collection on which to bind the reset method
+        $reset: $()
+    };
 
 ## Methods
 
@@ -83,24 +83,24 @@ Methods can be called in the same way as a widget from the jQuery UI widget fact
 
 ### `option`
 
-  // One at a time
-  // Sets the scale increment option
-  $elem.panzoom( "option", "increment", 0.4 );
+    // One at a time
+    // Sets the scale increment option
+    $elem.panzoom( "option", "increment", 0.4 );
 
-  // Several options at once
-  $elem.panzoom("option", {
-    increment: 0.4,
-    minScale: 0.1,
-    maxScale: 2,
-    duration: 500,
-    $reset: $("a.reset-panzoom, button.reset-panzoom")
-  });
+    // Several options at once
+    $elem.panzoom("option", {
+        increment: 0.4,
+        minScale: 0.1,
+        maxScale: 2,
+        duration: 500,
+        $reset: $("a.reset-panzoom, button.reset-panzoom")
+    });
 
 Any option can be changed. See the defaults above for a list.
 
 ### `reset`
 
-  $elem.panzoom("reset");
+    $elem.panzoom("reset");
 
 Reset the transform matrix to its original value. All panning and zooming is reset.
 
@@ -110,27 +110,27 @@ Reset the transform matrix to its original value. All panning and zooming is res
 @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change. No need to set that value. Most of the time though, just ignore this parameter.)
 
 
-  // Transition a zoom in based on the scale increment, min and max values
-  $elem.panzoom("zoom");
+    // Transition a zoom in based on the scale increment, min and max values
+    $elem.panzoom("zoom");
 
-  // Transition a zoom out
-  $elem.panzoom( "zoom", true );
+    // Transition a zoom out
+    $elem.panzoom( "zoom", true );
 
-  // Set the scale immediately without a transition
-  $elem.panzoom( "zoom", 1.2 );
+    // Set the scale immediately without a transition
+    $elem.panzoom( "zoom", 1.2 );
 
 Transition a zoom in based on the scale increment, min and max values, and animation duration and easing. This method handles both zooming in and zooming out.<br>
 If the method is passed a number, `zoom()` will immediately set that scale without transitioning. This is mostly useful for the range input and pinch gestures.
 
 ### `instance`
 
-  var panzoom = $elem.panzoom("instance");
+    var panzoom = $elem.panzoom("instance");
 
 Retrieves the Panzoom instance(s) from the set. If there are multiple, you will get an array of instances. If there is only one, you will just get that instance of Panzoom.
 
 ### `destroy`
 
-  $elem.panzoom("destroy");
+    $elem.panzoom("destroy");
 
 Unbinds all events and removes all data, including the Panzoom instance on the element.
 
