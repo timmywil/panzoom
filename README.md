@@ -1,13 +1,14 @@
 # jQuery Panzoom
 
 Panzoom is a progressive plugin to create panning and zooming functionality for an element. Panzoom supports the same browsers as jQuery 2.0 and can be used with jQuery 1.9.0+ or jQuery 2.0+.
-It uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser. Although IE<=8 is not supported, this plugin is future-proof.
+Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
+And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (5.4kb), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 ## Mobile support
 
-Panzoom includes support for touch gestures and even supports pinch gestures for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your iPad or iPhone.
+Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your iPad or iPhone.
 
 ## Dependencies
 
