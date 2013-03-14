@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.0.1
+ * @license jquery.panzoom.js v0.1.0
  * Add pan and zoom functionality to an element
  * Uses CSS translation for panning and css transition + scale for zooming
  * <=IE8 NOT supported
@@ -476,11 +476,11 @@
 	 * @returns {jQuery|Mixed} jQuery instance for regular chaining or the return value(s) of a panzoom method call
 	 */
 	$.fn.panzoom = function( options ) {
-		var instance, args, m,
-			ret = [];
+		var instance, args, m, ret;
 
 		// Call methods widget-style
 		if ( typeof options === "string" ) {
+			ret = [];
 			args = slice.call( arguments, 1 );
 			this.each(function() {
 				instance = $.data( this, datakey );
