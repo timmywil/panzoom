@@ -126,7 +126,7 @@ If the method is passed a number, `zoom()` will immediately set that scale witho
 
     var panzoom = $elem.panzoom("instance");
 
-Retrieves the Panzoom instance(s) from the set. If there are multiple, you will get an array of instances. If there is only one, you will just get that instance of Panzoom.
+Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will just get that instance of Panzoom.
 
 ### `destroy`
 
