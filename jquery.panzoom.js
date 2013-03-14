@@ -6,8 +6,8 @@
  * This plugin depends on Modernizr.touch for detecting touch event support
  * Pinch gestures for zooming is supported where touch is supported
  * Copyright (c) 2012 timmy willison
- * Dual licensed under the MIT and GPL licenses.
- * http://timmywil.github.com/licence/
+ * Released under the MIT license
+ * https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt
  */
 
 (function( global, factory ) {
@@ -86,7 +86,7 @@
 
 		this.elem = elem;
 		var $elem = this.$elem = $(elem);
-		var $parent = this.$parent = $elem.parent();
+		this.$parent = $elem.parent();
 
 		// Add zoom and reset buttons to `this`
 		var $empty = $();
