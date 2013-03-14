@@ -9,7 +9,7 @@ jquery.panzoom.min.js (7.0kb), included in this repo, is compressed with [uglify
 
 Panzoom includes support for touch gestures and even supports pinch gestures for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your iPad or iPhone.
 
-# Dependencies
+## Dependencies
 
 Panzoom obviously depends on jQuery, but it also depends on [Modernizr](http://modernizr.com/) for its touch gesture support detection.<br>
 If Modernizr is not included, touch gestures will simply not be used and it will fail silently.<br>
@@ -136,6 +136,6 @@ Unbinds all events and removes all data, including the Panzoom instance on the e
 
 ## Testing
 
-Tests can be run by opening `test/index.html` in a browser or by using [`grunt`](http://gruntjs.com/) and [phantomjs](http://phantomjs.org/). See the CONTRIBUTING.md for more info.
+Tests can be run by opening [test/index.html](http://timmywil.github.com/jquery.panzoom/test/) in a browser or by using [`grunt`](http://gruntjs.com/) and [phantomjs](http://phantomjs.org/). See the CONTRIBUTING.md for more info.
 
 Tests are written with [mocha](http://visionmedia.github.com/mocha/) and [chai for bdd-style assertions](http://chaijs.com/api/bdd/).
