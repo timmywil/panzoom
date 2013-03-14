@@ -3,7 +3,7 @@
 Panzoom is a progressive plugin to create panning and zooming functionality for an element. Panzoom supports the same browsers as jQuery 2.0 and can be used with jQuery 1.9.0+ or jQuery 2.0+.
 It uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser. Although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (7.0kb), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (5.4kb), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 ## Mobile support
 
