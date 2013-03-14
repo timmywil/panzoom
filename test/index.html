@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>Panzoom for jQuery</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="mocha/mocha.css" />
+    <script src="modernizr.js"></script>
+    <script src="mocha/mocha.js"></script>
+    <script>mocha.setup("bdd")</script>
+    <script src="chai.js"></script>
+    <script>expect = chai.expect</script>
+    <script src="jquery.js"></script>
+    <script src="../jquery.panzoom.js"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+
+    <h4>Zoom and pan this tiger and stuff</h4>
+    <div id="pan-parent">
+      <div id="panzoom">
+        <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg" witdh="900" height="900">
+      </div>
+    </div>
+    <button class="zoom-in">Zoom In</button>
+    <button class="zoom-out">Zoom Out</button>
+    <input type="range" class="zoom-range">
+    <button class="reset">Reset</button>
+
+    <script src="bdd/test.js"></script>
+    <script>onload = function() { mocha.run(); }</script>
+  </body>
+</html>
