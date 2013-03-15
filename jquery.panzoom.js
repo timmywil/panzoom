@@ -135,6 +135,9 @@
 			}
 		},
 
+		/**
+		 * Initialize base styles for the element and its parent
+		 */
 		_initStyle: function() {
 			var options = this.options;
 			// Set elem styles
@@ -258,7 +261,6 @@
 
 		/**
 		 * Internally sets options
-		 * @private
 		 * @param {Object} options - An object literal of options to set
 		 */
 		_setOptions: function( options ) {
@@ -483,7 +485,7 @@
 				if ( !instance ) {
 					ret.push( undefined );
 
-				// Ignore private methods beginning with `_`
+				// Ignore methods beginning with `_`
 				} else if ( options.charAt(0) !== "_" &&
 					typeof (m = instance[ options ]) === "function" &&
 					// If nothing is returned, do not add to return values
