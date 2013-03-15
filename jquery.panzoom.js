@@ -3,7 +3,7 @@
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
- * https://github.com/timmywil/jquery.panzoom/blob/master/MIT-LICENSE.txt
+ * https://github.com/timmywil/jquery.panzoom/blob/master/MIT-License.txt
  */
 
 (function( global, factory ) {
