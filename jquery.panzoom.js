@@ -180,6 +180,15 @@
 		},
 
 		/**
+		 * Destroy the current minimal lightbox instances
+		 */
+		destroy: function() {
+			this._resetStyle();
+			this._unbind();
+			$.removeData( this.elem, datakey );
+		},
+
+		/**
 		 * Get/set option on an existing instance
 		 * @returns {Array|undefined} If getting, returns an array of all values
 		 *   on each instance for a given key. If setting, continue chaining by returning undefined.
@@ -205,12 +214,45 @@
 		},
 
 		/**
-		 * Destroy the current minimal lightbox instances
+		 * Internally sets options
+		 * @param {Object} options - An object literal of options to set
 		 */
-		destroy: function() {
-			this._resetStyle();
-			this._unbind();
-			$.removeData( this.elem, datakey );
+		_setOptions: function( options ) {
+			var self = this;
+			$.each( options, function( key, value ) {
+				switch( key ) {
+					case "$zoomIn":
+					case "$zoomOut":
+					case "$zoomRange":
+					case "$reset":
+					case "eventNamespace":
+						self._unbind();
+				}
+				self.options[ key ] = value;
+				switch( key ) {
+					case "$zoomIn":
+					case "$zoomOut":
+					case "$zoomRange":
+					case "$reset":
+					case "eventNamespace":
+						self._bind();
+						break;
+					case "minScale":
+						self.$zoomRange.attr( "min", value );
+						break;
+					case "maxScale":
+						self.$zoomRange.attr( "max", value );
+						break;
+					case "duration":
+					case "easing":
+						self._buildTransition();
+						break;
+					case "transition":
+						if ( !value ) {
+							$.style( this.elem, "transition", "none" );
+						}
+				}
+			});
 		},
 
 		/**
@@ -336,48 +378,6 @@
 				.add( this.$zoomOut )
 				.add( this.$reset )
 				.off( this.options.eventNamespace );
-		},
-
-		/**
-		 * Internally sets options
-		 * @param {Object} options - An object literal of options to set
-		 */
-		_setOptions: function( options ) {
-			var self = this;
-			$.each( options, function( key, value ) {
-				switch( key ) {
-					case "$zoomIn":
-					case "$zoomOut":
-					case "$zoomRange":
-					case "$reset":
-					case "eventNamespace":
-						self._unbind();
-				}
-				self.options[ key ] = value;
-				switch( key ) {
-					case "$zoomIn":
-					case "$zoomOut":
-					case "$zoomRange":
-					case "$reset":
-					case "eventNamespace":
-						self._bind();
-						break;
-					case "minScale":
-						self.$zoomRange.attr( "min", value );
-						break;
-					case "maxScale":
-						self.$zoomRange.attr( "max", value );
-						break;
-					case "duration":
-					case "easing":
-						self._buildTransition();
-						break;
-					case "transition":
-						if ( !value ) {
-							$.style( this.elem, "transition", "none" );
-						}
-				}
-			});
 		},
 
 		/**
