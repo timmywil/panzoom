@@ -142,7 +142,6 @@
 		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
 		 */
 		zoom: function( scale, noSetRange ) {
-			var $elem = this.$elem;
 			var options = this.options;
 			var matrix = this._getMatrix();
 
@@ -269,7 +268,6 @@
 		 * Initialize base styles for the element and its parent
 		 */
 		_initStyle: function() {
-			var options = this.options;
 			// Set elem styles
 			this.$elem.css( "cursor", "move" );
 
@@ -423,7 +421,6 @@
 		_startMove: function( startPageX, startPageY ) {
 			var touches, startDistance, startScale, move;
 			var self = this;
-			var $elem = this.$elem;
 			var ns = this.options.eventNamespace;
 			var $doc = $(document).off( ns );
 			var matrix = this._getMatrix();

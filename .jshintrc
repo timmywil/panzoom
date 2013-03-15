@@ -17,6 +17,7 @@
   "strict": false,
   "trailing": true,
   "undef": true,
+  "unused": true,
   "wsh": true,
 
   "globals": {
