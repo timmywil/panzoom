@@ -1,3 +1,4 @@
+
 /**
  * Gruntfile.js
  */
@@ -5,10 +6,17 @@
 module.exports = function( grunt ) {
 
 	grunt.initConfig({
+		pkg: grunt.file.readJSON("package.json"),
+		build: {
+			all: {
+				dest: "dist/jquery.panzoom.js",
+				src: "jquery.panzoom.js"
+			}
+		},
 		compare_size: {
 			files: [
-				"jquery.panzoom.js",
-				"jquery.panzoom.min.js"
+				"dist/jquery.panzoom.js",
+				"dist/jquery.panzoom.min.js"
 			]
 		},
 		jshint: {
@@ -22,8 +30,8 @@ module.exports = function( grunt ) {
 			}
 		},
 		uglify: {
-			"jquery.panzoom.min.js": [
-				"jquery.panzoom.js"
+			"dist/jquery.panzoom.min.js": [
+				"dist/jquery.panzoom.js"
 			],
 			options: {
 				preserveComments: "some"
@@ -57,7 +65,34 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks("grunt-mocha");
 	grunt.loadNpmTasks("grunt-contrib-watch");
 
-	grunt.registerTask( "test", [ "jshint", "uglify", "mocha", "compare_size" ]);
+	grunt.registerMultiTask(
+		"build",
+		"Build jquery.panzoom to the dist directory",
+		function() {
+			var data = this.data;
+			var dest = data.dest;
+			var src = data.src;
+			var version = grunt.config("pkg.version");
+			var compiled = grunt.file.read( src );
+
+			// Append commit id to version
+			if ( process.env.COMMIT ) {
+				version += " " + process.env.COMMIT;
+			}
+
+			// Replace version and date
+			compiled = compiled
+				.replace( /@VERSION/g, version )
+				.replace( "@DATE", new Date() );
+
+			// Write source to file
+			grunt.file.write( dest, compiled );
+
+			grunt.log.ok( "File written to " + dest );
+		}
+	);
+
+	grunt.registerTask( "test", [ "jshint", "build", "uglify", "mocha", "compare_size" ]);
 
 	// Default grunt
 	grunt.registerTask( "default", [ "test" ]);
