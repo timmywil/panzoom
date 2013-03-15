@@ -26,15 +26,20 @@
 		});
 	}
 
-	var slice = Array.prototype.slice;
 	var datakey = "__pz__";
+	var slice = Array.prototype.slice;
 	var rupper = /([A-Z])/g;
+
+	var floating = "([\\d\\.\\-e]+)";
+	var commaSpace = "\\,\\s*";
 	var rmatrix = new RegExp(
-		"^matrix\\(f,f,f,f,f,f\\)$"
-			// Floating point values
-			.replace(/f/g, "([\\d\\.\\-e]+)")
-			// comma space
-			.replace(/\,/g, "\\,\\s*")
+		"^matrix\\(" +
+			floating + commaSpace +
+			floating + commaSpace +
+			floating + commaSpace +
+			floating + commaSpace +
+			floating + commaSpace +
+			floating + "\\)$"
 	);
 
 	/**
@@ -48,7 +53,6 @@
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
 	 */
 	var Panzoom = function( elem, options ) {
-		var self = this;
 
 		// Sanity checks
 		if ( elem.nodeType !== 1 ) {
@@ -71,8 +75,7 @@
 
 		// Extend default with given object literal
 		// Each instance gets its own options
-		options = $.extend( {}, Panzoom.defaults, options );
-		this.options = options;
+		this.options = options = $.extend( {}, Panzoom.defaults, options );
 
 		// Retrieve transform once to allow getting the property name from jQuery
 		$.style( elem, "transform" );
@@ -86,6 +89,7 @@
 
 		// Add zoom and reset buttons to `this`
 		var $empty = $();
+		var self = this;
 		$.each([ "$zoomIn", "$zoomOut", "$zoomRange", "$reset" ], function( i, name ) {
 			self[ name ] = options[ name ] || $empty;
 		});
@@ -124,6 +128,90 @@
 
 	Panzoom.prototype = {
 		constructor: Panzoom,
+
+		/**
+		 * @returns {Panzoom} Returns the instance
+		 */
+		instance: function() {
+			return this;
+		},
+
+		/**
+		 * Zoom in/out the element using the scale properties of a transform matrix
+		 * @param {Boolean|Number} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
+		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
+		 */
+		zoom: function( scale, noSetRange ) {
+			var $elem = this.$elem;
+			var options = this.options;
+			var matrix = this._getMatrix();
+
+			if ( typeof scale !== "number" ) {
+				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
+				if ( options.transition ) {
+					$.style( this.elem, "transition", this.transition );
+				}
+			}
+
+			// Constrain scale
+			if ( scale > options.maxScale ) {
+				scale = options.maxScale;
+			} else if ( scale < options.minScale ) {
+				scale = options.minScale;
+			}
+
+			if ( !noSetRange ) {
+				this.$zoomRange.val( scale );
+			}
+
+			matrix[0] = matrix[3] = scale;
+			this._setMatrix( matrix );
+		},
+
+		/**
+		 * Return the element to it's identity transform matrix
+		 */
+		reset: function() {
+			if ( this.options.transition ) {
+				$.style( this.elem, "transition", this.transition );
+			}
+			$.style( this.elem, "transform", "none" );
+			this.$zoomRange.val( 1 );
+		},
+
+		/**
+		 * Get/set option on an existing instance
+		 * @returns {Array|undefined} If getting, returns an array of all values
+		 *   on each instance for a given key. If setting, continue chaining by returning undefined.
+		 */
+		option: function( key, value ) {
+			var options;
+			if ( !key ) {
+				// Avoids returning direct reference
+				return $.extend( {}, this.options );
+			}
+
+			if ( typeof key === "string" ) {
+				if ( arguments.length === 1 ) {
+					return this.options[ key ];
+				}
+				options = {};
+				options[ key ] = value;
+			} else {
+				options = key;
+			}
+
+			this._setOptions( options );
+		},
+
+		/**
+		 * Destroy the current minimal lightbox instances
+		 */
+		destroy: function() {
+			this._resetStyle();
+			this._unbind();
+			$.removeData( this.elem, datakey );
+		},
 
 		/**
 		 * Set transition property for later use when zooming
@@ -251,15 +339,6 @@
 		},
 
 		/**
-		 * Destroy the current minimal lightbox instances
-		 */
-		destroy: function() {
-			this._resetStyle();
-			this._unbind();
-			$.removeData( this.elem, datakey );
-		},
-
-		/**
 		 * Internally sets options
 		 * @param {Object} options - An object literal of options to set
 		 */
@@ -302,38 +381,6 @@
 		},
 
 		/**
-		 * Get/set option on an existing instance
-		 * @returns {Array|undefined} If getting, returns an array of all values
-		 *   on each instance for a given key. If setting, continue chaining by returning undefined.
-		 */
-		option: function( key, value ) {
-			var options;
-			if ( !key ) {
-				// Avoids returning direct reference
-				return $.extend( {}, this.options );
-			}
-
-			if ( typeof key === "string" ) {
-				if ( arguments.length === 1 ) {
-					return this.options[ key ];
-				}
-				options = {};
-				options[ key ] = value;
-			} else {
-				options = key;
-			}
-
-			this._setOptions( options );
-		},
-
-		/**
-		 * @returns {Panzoom} Returns the instance
-		 */
-		instance: function() {
-			return this;
-		},
-
-		/**
 		 * Retrieve the current transform matrix for $elem
 		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
 		 */
@@ -354,49 +401,6 @@
 		 */
 		_setMatrix: function( matrix ) {
 			$.style( this.elem, "transform", "matrix(" + matrix.join(",") + ")" );
-		},
-
-		/**
-		 * Zoom in/out the element using the scale properties of a transform matrix
-		 * @param {Boolean|Number} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
-		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
-		 */
-		zoom: function( scale, noSetRange ) {
-			var $elem = this.$elem;
-			var options = this.options;
-			var matrix = this._getMatrix();
-
-			if ( typeof scale !== "number" ) {
-				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
-				if ( options.transition ) {
-					$.style( this.elem, "transition", this.transition );
-				}
-			}
-
-			// Constrain scale
-			if ( scale > options.maxScale ) {
-				scale = options.maxScale;
-			} else if ( scale < options.minScale ) {
-				scale = options.minScale;
-			}
-
-			if ( !noSetRange ) {
-				this.$zoomRange.val( scale );
-			}
-
-			matrix[0] = matrix[3] = scale;
-			this._setMatrix( matrix );
-		},
-
-		/**
-		 * Return the element to it's identity transform matrix
-		 */
-		reset: function() {
-			if ( this.options.transition ) {
-				$.style( this.elem, "transition", this.transition );
-			}
-			$.style( this.elem, "transform", "none" );
-			this.$zoomRange.val( 1 );
 		},
 
 		/**
