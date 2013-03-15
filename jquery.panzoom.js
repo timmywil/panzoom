@@ -1,10 +1,6 @@
 /**
- * @license jquery.panzoom.js v0.1.0
- * Add pan and zoom functionality to an element
- * Uses CSS translation for panning and css transition + scale for zooming
- * <=IE8 NOT supported
- * This plugin depends on Modernizr.touch for detecting touch event support
- * Pinch gestures for zooming is supported where touch is supported
+ * @license jquery.panzoom.js v0.1.1
+ * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
  * https://github.com/timmywil/jquery.panzoom/blob/master/MIT-LICENSE.txt
@@ -364,7 +360,6 @@
 		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
 		 */
 		zoom: function( scale, noSetRange ) {
-			var self = this;
 			var $elem = this.$elem;
 			var options = this.options;
 			var matrix = this._getMatrix();
@@ -388,7 +383,7 @@
 			}
 
 			matrix[0] = matrix[3] = scale;
-			self._setMatrix( matrix );
+			this._setMatrix( matrix );
 		},
 
 		/**
@@ -425,7 +420,7 @@
 			var $elem = this.$elem;
 			var ns = this.options.eventNamespace;
 			var $doc = $(document).off( ns );
-			var matrix = self._getMatrix();
+			var matrix = this._getMatrix();
 			var original = matrix.slice( 0 );
 
 			// Remove any transitions happening
