@@ -83,7 +83,7 @@ module.exports = function( grunt ) {
 			// Replace version and date
 			compiled = compiled
 				.replace( /@VERSION/g, version )
-				.replace( "@DATE", new Date() );
+				.replace( "@DATE", (new Date).toDateString() );
 
 			// Write source to file
 			grunt.file.write( dest, compiled );

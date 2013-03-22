@@ -15,6 +15,7 @@
   "quotmark": "double",
   "smarttabs": true,
   "strict": false,
+  "supernew": true,
   "trailing": true,
   "undef": true,
   "unused": true,
