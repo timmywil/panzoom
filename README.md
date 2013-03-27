@@ -39,13 +39,13 @@ define([ "jquery", "plugins/jquery.panzoom" ], function( $ ) {
 ## Initialization
 
 ```js
-  $(".panzoom-elements").panzoom();
+$(".panzoom-elements").panzoom();
 
-  // Pass options
-  $("a.panzoom-elements").panzoom({
-    minScale: 0,
-    $zoomRange: $("input[type='range']")
-  });
+// Pass options
+$("a.panzoom-elements").panzoom({
+  minScale: 0,
+  $zoomRange: $("input[type='range']")
+});
 ```
 
 ## Options
@@ -93,18 +93,18 @@ Methods can be called in the same way as a widget from the jQuery UI widget fact
 ### `option`
 
 ```js
-  // One at a time
-  // Sets the scale increment option
-  $elem.panzoom( "option", "increment", 0.4 );
+// One at a time
+// Sets the scale increment option
+$elem.panzoom( "option", "increment", 0.4 );
 
-  // Several options at once
-  $elem.panzoom("option", {
-    increment: 0.4,
-    minScale: 0.1,
-    maxScale: 2,
-    duration: 500,
-    $reset: $("a.reset-panzoom, button.reset-panzoom")
-  });
+// Several options at once
+$elem.panzoom("option", {
+  increment: 0.4,
+  minScale: 0.1,
+  maxScale: 2,
+  duration: 500,
+  $reset: $("a.reset-panzoom, button.reset-panzoom")
+});
 ```
 
 Any option can be changed. See the defaults above for a list.
