@@ -4,6 +4,9 @@
  */
 
 module.exports = function( grunt ) {
+	"use strict";
+
+	var gzip = require("gzip-js");
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
@@ -17,7 +20,15 @@ module.exports = function( grunt ) {
 			files: [
 				"dist/jquery.panzoom.js",
 				"dist/jquery.panzoom.min.js"
-			]
+			],
+			options: {
+				compress: {
+					gz: function( contents ) {
+						return gzip.zip( contents, {} ).length;
+					}
+				},
+				cache: "dist/.sizecache.json"
+			}
 		},
 		jshint: {
 			all: [
@@ -92,7 +103,7 @@ module.exports = function( grunt ) {
 		}
 	);
 
-	grunt.registerTask( "test", [ "jshint", "build", "uglify", "mocha", "compare_size" ]);
+	grunt.registerTask( "test", [ "jshint", "build", "uglify", "compare_size", "mocha" ]);
 
 	// Default grunt
 	grunt.registerTask( "default", [ "test" ]);

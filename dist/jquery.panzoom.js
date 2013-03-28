@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.2.0
+ * @license jquery.panzoom.js v0.2.1
  * Updated: Thu Mar 28 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -154,8 +154,8 @@
 		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
 		 */
 		zoom: function( scale, noSetRange ) {
-			if ( this.options.disableZoom ) { return; }
 			var options = this.options;
+			if ( options.disableZoom ) { return; }
 			var matrix = this._getMatrix();
 
 			if ( typeof scale !== "number" ) {
@@ -334,29 +334,33 @@
 			var options = this.options;
 			var events = {};
 
-			// Panning disabled
-			if ( !options.disablePan ) {
-				// Bind $elem drag and click events
-				events[ str_start ] = touchSupported ?
-				function( e ) {
-					var touches = e.touches;
-					if ( touches ) {
-						if ( touches.length === 1 ) {
-							e.preventDefault();
-							self._startMove( e.pageX, e.pageY );
-						} else if ( touches.length === 2 ) {
-							e.preventDefault();
-							self._startMove( touches );
+			// Bind $elem drag and click events
+			if ( touchSupported ) {
+				// Bind touchstart if either panning or zooming is enabled
+				if ( !options.disablePan || !options.disableZoom ) {
+					events[ str_start ] = function( e ) {
+						var touches = e.touches;
+						if ( touches ) {
+							if ( touches.length === 1 && !options.disablePan ) {
+								e.preventDefault();
+								self._startMove( e.pageX, e.pageY );
+							} else if ( touches.length === 2 && !options.disableZoom ) {
+								e.preventDefault();
+								self._startMove( touches );
+							}
 						}
-					}
-				} :
-				function( e ) {
+					};
+				}
+			} else if ( !options.disablePan ) {
+				events[ str_start ] = function( e ) {
 					// Bypass right click
 					if ( e.which === 1 && e.pageX != null && e.pageY != null ) {
 						e.preventDefault();
-						self._startMove( e.pageX, e.pageY, e.touches );
+						self._startMove( e.pageX, e.pageY );
 					}
 				};
+			}
+			if ( events ) {
 				this.$elem.on( events );
 			}
 
@@ -470,7 +474,7 @@
 			// Remove any transitions happening
 			$.style( this.elem, "transition", "none" );
 
-			if ( arguments.length === 1 && !options.disableZoom ) {
+			if ( arguments.length === 1 ) {
 				touches = startPageX;
 				startDistance = this._getDistance( touches );
 				startScale = +matrix[0];

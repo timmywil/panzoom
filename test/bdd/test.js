@@ -80,17 +80,21 @@ describe("Panzoom", function() {
 		$elem.panzoom( "option", "transition", true );
 	});
 
-	it("should unbind pan if disablePan is set to true", function() {
+	it("should not pan if disablePan is set to true", function() {
 		$elem.panzoom( "option", "disablePan", true );
-		var events = $._data( $elem[0], "events" );
-		var moveEvent = events && (events.mousedown || events.touchstart);
-		expect( moveEvent ).to.not.exist;
+		var panzoom = $elem.panzoom("instance");
+		var setMatrix = panzoom._setMatrix;
+		var called = false;
+		panzoom._setMatrix = function() {
+			called = true;
+		};
+		// Attempt to trigger normal move start
+		$elem.trigger("touchstart mousedown", { pageX: 0, pageY: 0});
+		expect( called ).to.be.false;
 
 		// Clean-up
+		panzoom._setMatrix = setMatrix;
 		$elem.panzoom( "option", "disablePan", false );
-		events = $._data( $elem[0], "events" );
-		moveEvent = events && (events.mousedown || events.touchstart);
-		expect( moveEvent ).to.not.be.empty;
 	});
 
 	it("should unbind zoom if disableZoom is set to true", function() {

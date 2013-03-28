@@ -4,7 +4,7 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (5.2kb/2.1kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (5.8kb/2.3kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 ## Mobile support
 
