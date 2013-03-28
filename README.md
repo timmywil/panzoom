@@ -10,6 +10,10 @@ jquery.panzoom.min.js (5.2kb/2.1kb gzip), included in this repo, is compressed w
 
 Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your iPad or iPhone.
 
+## SVG support
+
+As of v0.2.0, Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
+
 ## Dependencies
 
 Panzoom obviously depends on jQuery, but it also depends on [Modernizr](http://modernizr.com/) for its touch gesture support detection.<br>
@@ -63,6 +67,13 @@ Panzoom.defaults = {
 
   // Whether or not to transition the scale
   transition: true,
+
+  // Default cursor style for the element
+  cursor: "move",
+
+  // There may be some use cases for zooming without panning or vice versa
+  disablePan: false,
+  disableZoom: false,
 
   // The increment at which to zoom
   // adds/subtracts to the scale each time zoomIn/Out is called

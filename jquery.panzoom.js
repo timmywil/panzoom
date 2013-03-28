@@ -30,17 +30,18 @@
 	var datakey = "__pz__";
 	var slice = Array.prototype.slice;
 	var rupper = /([A-Z])/g;
+	var rsvg = /^http:[\w\.\/]+svg$/;
 
-	var floating = "([\\d\\.\\-e]+)";
-	var commaSpace = "\\,\\s*";
+	var floating = "(\\-?[\\d\\.e]+)";
+	var commaSpace = "\\,?\\s*";
 	var rmatrix = new RegExp(
 		"^matrix\\(" +
-			floating + commaSpace +
-			floating + commaSpace +
-			floating + commaSpace +
-			floating + commaSpace +
-			floating + commaSpace +
-			floating + "\\)$"
+		floating + commaSpace +
+		floating + commaSpace +
+		floating + commaSpace +
+		floating + commaSpace +
+		floating + commaSpace +
+		floating + "\\)$"
 	);
 
 	/**
@@ -78,13 +79,16 @@
 		// Each instance gets its own options
 		this.options = options = $.extend( {}, Panzoom.defaults, options );
 
-		// Retrieve transform once to allow getting the property name from jQuery
-		$.style( elem, "transform" );
+		// Save the original transform
+		// Retrieving this also adds the correct prefixed style name
+		// to jQuery's internal $.cssProps
+		this.origTransform = $.style( elem, "transform" );
 		// De-camelcase
-		this.transform =  $.cssProps.transform.replace( rupper, "-$1" ).toLowerCase();
+		this.transform = $.cssProps.transform.replace( rupper, "-$1" ).toLowerCase();
 		this._buildTransition();
 
 		this.elem = elem;
+		this.isSVG = rsvg.test( elem.namespaceURI );
 		var $elem = this.$elem = $(elem);
 		this.$parent = $elem.parent();
 
@@ -113,6 +117,13 @@
 
 		// Whether or not to transition the scale
 		transition: true,
+
+		// Default cursor style for the element
+		cursor: "move",
+
+		// There may be some use cases for zooming without panning or vice versa
+		disablePan: false,
+		disableZoom: false,
 
 		// The increment at which to zoom
 		// adds/subtracts to the scale each time zoomIn/Out is called
@@ -143,6 +154,7 @@
 		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
 		 */
 		zoom: function( scale, noSetRange ) {
+			if ( this.options.disableZoom ) { return; }
 			var options = this.options;
 			var matrix = this._getMatrix();
 
@@ -221,6 +233,10 @@
 			var self = this;
 			$.each( options, function( key, value ) {
 				switch( key ) {
+					case "disablePan":
+						self._resetStyle();
+						/* falls through */
+					case "disableZoom":
 					case "$zoomIn":
 					case "$zoomOut":
 					case "$zoomRange":
@@ -230,12 +246,19 @@
 				}
 				self.options[ key ] = value;
 				switch( key ) {
+					case "disablePan":
+						self._initStyle();
+						/* falls through */
+					case "disableZoom":
 					case "$zoomIn":
 					case "$zoomOut":
 					case "$zoomRange":
 					case "$reset":
 					case "eventNamespace":
 						self._bind();
+						break;
+					case "cursor":
+						$.style( self.elem, "cursor", value );
 						break;
 					case "minScale":
 						self.$zoomRange.attr( "min", value );
@@ -270,7 +293,9 @@
 		 */
 		_initStyle: function() {
 			// Set elem styles
-			this.$elem.css( "cursor", "move" );
+			if ( !this.options.disablePan ) {
+				this.$elem.css( "cursor", this.options.cursor );
+			}
 
 			// Set parent to relative if set to static
 			var $parent = this.$parent;
@@ -287,10 +312,10 @@
 		 * Undo any styles attached in this plugin
 		 */
 		_resetStyle: function() {
-			this.$elem.css({
+			this.$elem[ this.isSVG ? "attr" : "css" ]( "transform", this.origTransform )
+			.css({
 				"cursor": "",
-				"transition": "",
-				"transform": ""
+				"transition": ""
 			});
 			this.$parent.css({
 				"overflow": "",
@@ -303,38 +328,47 @@
 		 */
 		_bind: function() {
 			var self = this;
-			var $zoomIn = this.$zoomIn;
-			var $zoomOut = this.$zoomOut;
-			var $zoomRange = this.$zoomRange;
-			var $reset = this.$reset;
 			var ns = this.options.eventNamespace;
 			var str_click = "click" + ns;
 			var str_start = (touchSupported ? "touchstart" : "mousedown") + ns;
 			var options = this.options;
 			var events = {};
 
-			// Bind $elem drag and click events
-			events[ str_start ] = touchSupported ?
-			function( e ) {
-				var touches = e.touches;
-				if ( touches ) {
-					if ( touches.length === 1 ) {
-						e.preventDefault();
-						self._startMove( e.pageX, e.pageY );
-					} else if ( touches.length === 2 ) {
-						e.preventDefault();
-						self._startMove( touches );
+			// Panning disabled
+			if ( !options.disablePan ) {
+				// Bind $elem drag and click events
+				events[ str_start ] = touchSupported ?
+				function( e ) {
+					var touches = e.touches;
+					if ( touches ) {
+						if ( touches.length === 1 ) {
+							e.preventDefault();
+							self._startMove( e.pageX, e.pageY );
+						} else if ( touches.length === 2 ) {
+							e.preventDefault();
+							self._startMove( touches );
+						}
 					}
-				}
-			} :
-			function( e ) {
-				// Bypass right click
-				if ( e.which === 1 && e.pageX != null && e.pageY != null ) {
-					e.preventDefault();
-					self._startMove( e.pageX, e.pageY, e.touches );
-				}
-			};
-			this.$elem.on( events );
+				} :
+				function( e ) {
+					// Bypass right click
+					if ( e.which === 1 && e.pageX != null && e.pageY != null ) {
+						e.preventDefault();
+						self._startMove( e.pageX, e.pageY, e.touches );
+					}
+				};
+				this.$elem.on( events );
+			}
+
+			// No bindings if zooming is disabled
+			if ( options.disableZoom ) {
+				return;
+			}
+
+			var $zoomIn = this.$zoomIn;
+			var $zoomOut = this.$zoomOut;
+			var $zoomRange = this.$zoomRange;
+			var $reset = this.$reset;
 
 			// Bind zoom in/out
 			// Don't bind one without the other
@@ -385,7 +419,8 @@
 		_getMatrix: function() {
 			// Use style rather than computed
 			// If currently transitioning, computed transform might be unchanged
-			var transform = $.style( this.elem, "transform" );
+			// SVG uses the transform attribute
+			var transform = this.isSVG ? this.elem.getAttribute("transform") : $.style( this.elem, "transform" );
 			var matrix = rmatrix.exec( transform );
 			if ( matrix ) {
 				matrix.shift();
@@ -398,7 +433,12 @@
 		 * @param {Array} matrix
 		 */
 		_setMatrix: function( matrix ) {
-			$.style( this.elem, "transform", "matrix(" + matrix.join(",") + ")" );
+			matrix = "matrix(" + matrix.join(",") + ")";
+			if ( this.isSVG ) {
+				this.elem.setAttribute( "transform", matrix );
+			} else {
+				$.style( this.elem, "transform", matrix );
+			}
 		},
 
 		/**
@@ -421,7 +461,8 @@
 		_startMove: function( startPageX, startPageY ) {
 			var touches, startDistance, startScale, move;
 			var self = this;
-			var ns = this.options.eventNamespace;
+			var options = this.options;
+			var ns = options.eventNamespace;
 			var $doc = $(document).off( ns );
 			var matrix = this._getMatrix();
 			var original = matrix.slice( 0 );
@@ -429,7 +470,7 @@
 			// Remove any transitions happening
 			$.style( this.elem, "transition", "none" );
 
-			if ( arguments.length === 1 ) {
+			if ( arguments.length === 1 && !options.disableZoom ) {
 				touches = startPageX;
 				startDistance = this._getDistance( touches );
 				startScale = +matrix[0];

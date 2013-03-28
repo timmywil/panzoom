@@ -63,6 +63,49 @@ describe("Panzoom", function() {
 		expect( panzoom.transition ).to.equal( transition );
 	});
 
+	it("should set the cursor option", function(){
+		$elem.panzoom( "option", "cursor", "default" );
+		expect( $elem.panzoom("option", "cursor") ).to.equal("default");
+		expect( $elem.css("cursor") ).to.equal("default");
+		// Clean-up
+		$elem.panzoom( "option", "cursor", "move" );
+		expect( $elem.css("cursor") ).to.equal("move");
+	});
+
+	it("should not transition if transition is set to false", function() {
+		$elem.panzoom( "option", "transition", false );
+		$elem.panzoom("reset");
+		expect( $elem.css("transform") ).to.equal("none");
+		// Clean-up
+		$elem.panzoom( "option", "transition", true );
+	});
+
+	it("should unbind pan if disablePan is set to true", function() {
+		$elem.panzoom( "option", "disablePan", true );
+		var events = $._data( $elem[0], "events" );
+		var moveEvent = events && (events.mousedown || events.touchstart);
+		expect( moveEvent ).to.not.exist;
+
+		// Clean-up
+		$elem.panzoom( "option", "disablePan", false );
+		events = $._data( $elem[0], "events" );
+		moveEvent = events && (events.mousedown || events.touchstart);
+		expect( moveEvent ).to.not.be.empty;
+	});
+
+	it("should unbind zoom if disableZoom is set to true", function() {
+		$elem.panzoom( "option", "disableZoom", true );
+		var events = $._data( $zoomIn[0], "events" );
+		var clickEvent = events && events.click;
+		expect( clickEvent ).to.not.exist;
+
+		// Clean-up
+		$elem.panzoom( "option", "disableZoom", false );
+		events = $._data( $zoomIn[0], "events" );
+		clickEvent = events && events.click;
+		expect( clickEvent ).to.not.be.empty;
+	});
+
 	it("should zoom, then reset transform matrix", function() {
 		var panzoom = $elem.panzoom("instance");
 		// Zoom twice
