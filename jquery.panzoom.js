@@ -454,6 +454,7 @@
 		 * Calculates the distance between two touch points
 		 * Remember pythagorean?
 		 * @param {Array} touches
+		 * @returns {Number} Returns the distance
 		 */
 		_getDistance: function( touches ) {
 			var touch1 = touches[0];
