@@ -88,7 +88,9 @@
 		this._buildTransition();
 
 		this.elem = elem;
-		this.isSVG = rsvg.test( elem.namespaceURI );
+		// This is SVG if the namespace is SVG
+		// However, while <svg> elements are SVG, we want to treat those like other elements
+		this.isSVG = rsvg.test( elem.namespaceURI ) && elem.nodeName.toLowerCase() !== "svg";
 		var $elem = this.$elem = $(elem);
 		this.$parent = $elem.parent();
 
@@ -107,6 +109,9 @@
 
 		return this;
 	};
+
+	// Attach regex for possible use (immutable)
+	Panzoom.rmatrix = rmatrix;
 
 	Panzoom.defaults = {
 		// Should always be non-empty
@@ -156,7 +161,7 @@
 		zoom: function( scale, noSetRange ) {
 			var options = this.options;
 			if ( options.disableZoom ) { return; }
-			var matrix = this._getMatrix();
+			var matrix = this.getMatrix();
 
 			if ( typeof scale !== "number" ) {
 				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
@@ -177,7 +182,7 @@
 			}
 
 			matrix[0] = matrix[3] = scale;
-			this._setMatrix( matrix );
+			this.setMatrix( matrix );
 		},
 
 		/**
@@ -329,7 +334,7 @@
 		_bind: function() {
 			var self = this;
 			var ns = this.options.eventNamespace;
-			var str_click = "click" + ns;
+			var str_click = (touchSupported ? "touchend" : "click") + ns;
 			var str_start = (touchSupported ? "touchstart" : "mousedown") + ns;
 			var options = this.options;
 			var events = {};
@@ -420,7 +425,7 @@
 		 * Retrieve the current transform matrix for $elem
 		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
 		 */
-		_getMatrix: function() {
+		getMatrix: function() {
 			// Use style rather than computed
 			// If currently transitioning, computed transform might be unchanged
 			// SVG uses the transform attribute
@@ -436,7 +441,7 @@
 		 * Given a matrix object, quickly set the current matrix of the element
 		 * @param {Array} matrix
 		 */
-		_setMatrix: function( matrix ) {
+		setMatrix: function( matrix ) {
 			matrix = "matrix(" + matrix.join(",") + ")";
 			if ( this.isSVG ) {
 				this.elem.setAttribute( "transform", matrix );
@@ -468,7 +473,7 @@
 			var options = this.options;
 			var ns = options.eventNamespace;
 			var $doc = $(document).off( ns );
-			var matrix = this._getMatrix();
+			var matrix = this.getMatrix();
 			var original = matrix.slice( 0 );
 
 			// Remove any transitions happening
@@ -498,7 +503,7 @@
 					var adjustmentY = e.pageY - startPageY;
 					matrix[4] = +original[4] + adjustmentX;
 					matrix[5] = +original[5] + adjustmentY;
-					self._setMatrix( matrix );
+					self.setMatrix( matrix );
 				};
 			}
 

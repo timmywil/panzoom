@@ -83,9 +83,9 @@ describe("Panzoom", function() {
 	it("should not pan if disablePan is set to true", function() {
 		$elem.panzoom( "option", "disablePan", true );
 		var panzoom = $elem.panzoom("instance");
-		var setMatrix = panzoom._setMatrix;
+		var setMatrix = panzoom.setMatrix;
 		var called = false;
-		panzoom._setMatrix = function() {
+		panzoom.setMatrix = function() {
 			called = true;
 		};
 		// Attempt to trigger normal move start
@@ -93,7 +93,7 @@ describe("Panzoom", function() {
 		expect( called ).to.be.false;
 
 		// Clean-up
-		panzoom._setMatrix = setMatrix;
+		panzoom.setMatrix = setMatrix;
 		$elem.panzoom( "option", "disablePan", false );
 	});
 
@@ -115,9 +115,9 @@ describe("Panzoom", function() {
 		// Zoom twice
 		$elem.panzoom("zoom");
 		$elem.panzoom("zoom");
-		expect( +panzoom._getMatrix()[0] ).to.be.above( 1 );
+		expect( +panzoom.getMatrix()[0] ).to.be.above( 1 );
 
 		$elem.panzoom("reset");
-		expect( +panzoom._getMatrix()[0] ).to.equal( 1 );
+		expect( +panzoom.getMatrix()[0] ).to.equal( 1 );
 	});
 });

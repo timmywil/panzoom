@@ -163,6 +163,26 @@ $elem.panzoom("destroy");
 
 Unbinds all events and removes all data, including the Panzoom instance on the element.
 
+## Internal
+
+These methods are _basically_ private, but could be useful under certain circumstances.
+
+### `getMatrix`
+Retrieve the current transform matrix of the panzoom element as an array of values. This is mostly for internal use.
+
+```js
+$elem.panzoom("getMatrix");
+// => [1, 0, 0, 1, 0, 0]
+```
+
+### `setMatrix( matrix )`
+Sets the transform matrix of the panzoom element. It accepts the matrix as an array. The return value is `undefined`.
+
+```js
+// Flip the element upside down
+$elem.panzoom("setMatrix", [1, 0, 0, -1, 0, 0]);
+```
+
 ## Testing
 
 Tests can be run by opening [test/index.html](http://timmywil.github.com/jquery.panzoom/test/) in a browser or by using [`grunt`](http://gruntjs.com/) and [phantomjs](http://phantomjs.org/). See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CONTRIBUTING.md) for more info.
