@@ -4,7 +4,7 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (5.8kb/2.3kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (6.0kb/2.4kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 ## Mobile support
 
@@ -93,7 +93,13 @@ Panzoom.defaults = {
   // Range input on which to bind zooming functionality
   $zoomRange: $(),
   // Reset buttons/links collection on which to bind the reset method
-  $reset: $()
+  $reset: $(),
+  // Bind a handler to the `panzoomend` event
+  // This is fired on mouseup or touchend when the user
+  // finishes a move or pinched zoom
+  // This can also be bound normally on the panzoom element
+  // e.g. `$elem.on("panzoomend", function( e, panzoom ) { console.log( panzoom.getMatrix() ); });`
+  onEnd: undefined
 };
 ```
 
@@ -182,6 +188,12 @@ Sets the transform matrix of the panzoom element. It accepts the matrix as an ar
 // Flip the element upside down
 $elem.panzoom("setMatrix", [1, 0, 0, -1, 0, 0]);
 ```
+
+## Events
+
+### "panzoomend"
+
+Currently, there is only one custom event. It is fired when the user finishes a move or finishes a pinch zoom gesture on mobile.
 
 ## Testing
 

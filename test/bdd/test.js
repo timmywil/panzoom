@@ -89,7 +89,7 @@ describe("Panzoom", function() {
 			called = true;
 		};
 		// Attempt to trigger normal move start
-		$elem.trigger("touchstart mousedown", { pageX: 0, pageY: 0});
+		$elem.triggerHandler("touchstart mousedown", { pageX: 0, pageY: 0, touches: ["one"] });
 		expect( called ).to.be.false;
 
 		// Clean-up
@@ -119,5 +119,20 @@ describe("Panzoom", function() {
 
 		$elem.panzoom("reset");
 		expect( +panzoom.getMatrix()[0] ).to.equal( 1 );
+	});
+
+	it("should bind the onEnd event", function( done ) {
+		var called = false;
+		var instance = $elem.panzoom("instance");
+		function testEnd( e, panzoom ) {
+			called = true;
+			expect( panzoom ).to.eql( instance );
+		}
+		$elem.panzoom( "option", "onEnd", testEnd );
+		instance._startMove( 0, 0 );
+		$(document).trigger("mouseup").trigger("touchend");
+		$elem.off( "panzoomend", testEnd );
+		expect( called ).to.be.true;
+		done();
 	});
 });

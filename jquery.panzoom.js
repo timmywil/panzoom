@@ -53,6 +53,7 @@
 	 * @param {jQuery} [options.$zoomOut] - zoom out buttons/links collection on which to bind zoomOut
 	 * @param {jQuery} [options.$zoomRange] - zoom in/out with this range control
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
+	 * @param {Function} [options.onEnd] - An optional callback for mouseup/touchend
 	 */
 	var Panzoom = function( elem, options ) {
 
@@ -246,6 +247,7 @@
 					case "$zoomOut":
 					case "$zoomRange":
 					case "$reset":
+					case "onEnd":
 					case "eventNamespace":
 						self._unbind();
 				}
@@ -259,6 +261,7 @@
 					case "$zoomOut":
 					case "$zoomRange":
 					case "$reset":
+					case "onEnd":
 					case "eventNamespace":
 						self._bind();
 						break;
@@ -338,6 +341,11 @@
 			var str_start = (touchSupported ? "touchstart" : "mousedown") + ns;
 			var options = this.options;
 			var events = {};
+
+			// Bind to end if onEnd was passed
+			if ( $.isFunction(options.onEnd) ) {
+				events[ "panzoomend" + ns ] = options.onEnd;
+			}
 
 			// Bind $elem drag and click events
 			if ( touchSupported ) {
@@ -463,6 +471,16 @@
 		},
 
 		/**
+		 * Trigger a panzoom event on our element
+		 * The event is passed the Panzoom instance
+		 * @param {String} name
+		 */
+		_trigger: function ( name ) {
+			// Only need to trigger handlers
+			this.$elem.triggerHandler( "panzoom" + name, [this] );
+		},
+
+		/**
 		 * Starts the pan
 		 * This is bound to mouse/touchmove on the element
 		 * @param {Number|TouchList} startPageX The pageX on the mousedown event or the touches list
@@ -513,6 +531,8 @@
 				.on( (touchSupported ? "touchend" : "mouseup") + ns, function( e ) {
 					e.preventDefault();
 					$(this).off( ns );
+					// Trigger our end event
+					self._trigger("end");
 				})
 				.on( (touchSupported ? "touchmove" : "mousemove") + ns, move );
 		}
