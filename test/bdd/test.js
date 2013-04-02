@@ -100,13 +100,13 @@ describe("Panzoom", function() {
 	it("should unbind zoom if disableZoom is set to true", function() {
 		$elem.panzoom( "option", "disableZoom", true );
 		var events = $._data( $zoomIn[0], "events" );
-		var clickEvent = events && events.click;
+		var clickEvent = events && ( events.click || events.touchend );
 		expect( clickEvent ).to.not.exist;
 
 		// Clean-up
 		$elem.panzoom( "option", "disableZoom", false );
 		events = $._data( $zoomIn[0], "events" );
-		clickEvent = events && events.click;
+		clickEvent = events && ( events.click || events.touchend );
 		expect( clickEvent ).to.not.be.empty;
 	});
 
