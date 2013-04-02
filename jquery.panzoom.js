@@ -307,13 +307,16 @@
 
 			// Set parent to relative if set to static
 			var $parent = this.$parent;
-			var parentStyles = {
-				overflow: "hidden"
-			};
-			if ( $parent.css("position") === "static" ) {
-				parentStyles.position = "relative";
+			// No need to add styles to the body
+			if ( $parent.length && !$.nodeName($parent[0], "body") ) {
+				var parentStyles = {
+					overflow: "hidden"
+				};
+				if ( $parent.css("position") === "static" ) {
+					parentStyles.position = "relative";
+				}
+				$parent.css( parentStyles );
 			}
-			$parent.css( parentStyles );
 		},
 
 		/**
