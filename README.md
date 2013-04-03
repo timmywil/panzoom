@@ -112,7 +112,7 @@ Methods can be called in the same way as a widget from the jQuery UI widget fact
 ```js
 // One at a time
 // Sets the scale increment option
-$elem.panzoom( "option", "increment", 0.4 );
+$elem.panzoom("option", "increment", 0.4);
 
 // Several options at once
 $elem.panzoom("option", {
@@ -144,10 +144,10 @@ Reset the transform matrix to its original value. All panning and zooming is res
 $elem.panzoom("zoom");
 
 // Transition a zoom out
-$elem.panzoom( "zoom", true );
+$elem.panzoom("zoom", true);
 
 // Set the scale immediately without a transition
-$elem.panzoom( "zoom", 1.2 );
+$elem.panzoom("zoom", 1.2);
 ```
 
 Transition a zoom in based on the scale increment, min and max values, and animation duration and easing. This method handles both zooming in and zooming out.<br>
@@ -174,6 +174,7 @@ Unbinds all events and removes all data, including the Panzoom instance on the e
 These methods are _basically_ private, but could be useful under certain circumstances.
 
 ### `getMatrix`
+
 Retrieve the current transform matrix of the panzoom element as an array of values. This is mostly for internal use.
 
 ```js
@@ -182,12 +183,28 @@ $elem.panzoom("getMatrix");
 ```
 
 ### `setMatrix( matrix )`
+
 Sets the transform matrix of the panzoom element. It accepts the matrix as an array. The return value is `undefined`.
 
 ```js
 // Flip the element upside down
-$elem.panzoom("setMatrix", [1, 0, 0, -1, 0, 0]);
+$elem.panzoom("setMatrix", [ 1, 0, 0, -1, 0, 0 ]);
 ```
+
+### `transition( off )`
+
+Applies the transition to the element. If `off` is true, it removes the transition.
+
+```js
+$elem.panzoom("transition");
+// Turn off transition
+$elem.panzoom("transition", true);
+// Note: this is different than...
+$elem.panzoom("option", "transition", true);
+// ... which just sets the `transition` option, indicating whether transitioning is allowed at all.
+// If the transition option is false, `$elem.panzoom("transition")` will only ever set transition to "none".
+```
+
 
 ## Events
 

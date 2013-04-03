@@ -51,16 +51,16 @@ describe("Panzoom", function() {
 	it("should set options correctly", function() {
 		var panzoom = $elem.panzoom("instance");
 		var options = $elem.panzoom("option");
-		var transition = panzoom.transition;
+		var transition = panzoom._transition;
 		$elem.panzoom("option", {
 			duration: 500,
 			easing: "linear"
 		});
 		// Updates the transition property
-		expect( panzoom.transition ).to.not.equal( transition );
+		expect( panzoom._transition ).to.not.equal( transition );
 		$elem.panzoom( "option", "duration", options.duration );
 		$elem.panzoom( "option", "easing", options.easing );
-		expect( panzoom.transition ).to.equal( transition );
+		expect( panzoom._transition ).to.equal( transition );
 	});
 
 	it("should set the cursor option", function(){

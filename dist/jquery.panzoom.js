@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v0.2.5
- * Updated: Tue Apr 02 2013
+ * @license jquery.panzoom.js v0.3.0
+ * Updated: Wed Apr 03 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -166,9 +166,7 @@
 
 			if ( typeof scale !== "number" ) {
 				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
-				if ( options.transition ) {
-					$.style( this.elem, "transition", this.transition );
-				}
+				this.transition();
 			}
 
 			// Constrain scale
@@ -190,9 +188,7 @@
 		 * Return the element to it's identity transform matrix
 		 */
 		reset: function() {
-			if ( this.options.transition ) {
-				$.style( this.elem, "transition", this.transition );
-			}
+			this.transition();
 			$.style( this.elem, "transform", "none" );
 			this.$zoomRange.val( 1 );
 		},
@@ -279,9 +275,7 @@
 						self._buildTransition();
 						break;
 					case "transition":
-						if ( !value ) {
-							$.style( this.elem, "transition", "none" );
-						}
+						self.transition( value );
 				}
 			});
 		},
@@ -292,8 +286,17 @@
 		_buildTransition: function() {
 			var options = this.options;
 			if ( this.transform ) {
-				this.transition = this.transform + " " + options.duration + "ms " + options.easing;
+				this._transition = this.transform + " " + options.duration + "ms " + options.easing;
 			}
+		},
+
+		/**
+		 * Apply the current transition to the element, if allowed
+		 * @param {Boolean} [off] Indicates that the transition should be turned off
+		 */
+		transition: function( off ) {
+			var transition = off || !this.options.transition ? "none" : this._transition;
+			$.style( this.elem, "transition", transition );
 		},
 
 		/**
@@ -407,7 +410,7 @@
 				});
 				events = {};
 				events[ str_start ] = function() {
-					$.style( self.elem, "transition", "none" );
+					self.transition( true );
 				};
 				events[ "change" + ns ] = function() {
 					self.zoom( +this.value, true );
@@ -499,7 +502,7 @@
 			var original = matrix.slice( 0 );
 
 			// Remove any transitions happening
-			$.style( this.elem, "transition", "none" );
+			this.transition( true );
 
 			if ( arguments.length === 1 ) {
 				touches = startPageX;
