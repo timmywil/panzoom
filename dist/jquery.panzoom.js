@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v0.3.0
- * Updated: Wed Apr 03 2013
+ * @license jquery.panzoom.js v0.3.1
+ * Updated: Thu Apr 04 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -79,21 +79,19 @@
 		// Extend default with given object literal
 		// Each instance gets its own options
 		this.options = options = $.extend( {}, Panzoom.defaults, options );
-
-		// Save the original transform
-		// Retrieving this also adds the correct prefixed style name
-		// to jQuery's internal $.cssProps
-		this.origTransform = $.style( elem, "transform" );
-		// De-camelcase
-		this.transform = $.cssProps.transform.replace( rupper, "-$1" ).toLowerCase();
-		this._buildTransition();
-
 		this.elem = elem;
+		var $elem = this.$elem = $(elem);
+		this.$parent = $elem.parent();
+
 		// This is SVG if the namespace is SVG
 		// However, while <svg> elements are SVG, we want to treat those like other elements
 		this.isSVG = rsvg.test( elem.namespaceURI ) && elem.nodeName.toLowerCase() !== "svg";
-		var $elem = this.$elem = $(elem);
-		this.$parent = $elem.parent();
+
+		// Save the original transform value
+		// Save the prefixed transform style key
+		this._buildTransform();
+		// Build the transition value
+		this._buildTransition();
 
 		// Add zoom and reset buttons to `this`
 		var $empty = $();
@@ -185,11 +183,12 @@
 		},
 
 		/**
-		 * Return the element to it's identity transform matrix
+		 * Return the element to it's original transform matrix
 		 */
 		reset: function() {
 			this.transition();
-			$.style( this.elem, "transform", "none" );
+			// Reset the transform to its original value
+			this._setTransform( this._origTransform );
 			this.$zoomRange.val( 1 );
 		},
 
@@ -273,21 +272,11 @@
 					case "duration":
 					case "easing":
 						self._buildTransition();
-						break;
+						/* falls through */
 					case "transition":
-						self.transition( value );
+						self.transition();
 				}
 			});
-		},
-
-		/**
-		 * Set transition property for later use when zooming
-		 */
-		_buildTransition: function() {
-			var options = this.options;
-			if ( this.transform ) {
-				this._transition = this.transform + " " + options.duration + "ms " + options.easing;
-			}
 		},
 
 		/**
@@ -297,6 +286,49 @@
 		transition: function( off ) {
 			var transition = off || !this.options.transition ? "none" : this._transition;
 			$.style( this.elem, "transition", transition );
+		},
+
+		/**
+		 * Retrieving the transform is different for SVG
+		 * @returns {String} Returns the current transform value of the element
+		 */
+		_getTransform: function() {
+			return $[ this.isSVG ? "attr" : "style" ]( this.elem, "transform" );
+		},
+
+		/**
+		 * Sets the value of the transform based on whether this is SVG
+		 * @param {String} value The transform value to set
+		 */
+		_setTransform: function( value ) {
+			if ( !value ) { value = "none"; }
+			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", value );
+		},
+
+		/**
+		 * Builds the prefixed transform property name
+		 * and tracks the original transform value
+		 */
+		_buildTransform: function() {
+			// Save the original transform
+			// Retrieving this also adds the correct prefixed style name
+			// to jQuery's internal $.cssProps
+			this._origTransform = this._getTransform();
+			// SVG uses the transform attribute
+			// Transition is set to unprefixed "transform"
+			// This SVG transition doesn't work in all browsers
+			// De-camelcase for other kinds of elements
+			this._transform = this.isSVG ? "transform" : $.cssProps.transform.replace( rupper, "-$1" ).toLowerCase();
+		},
+
+		/**
+		 * Set transition property for later use when zooming
+		 */
+		_buildTransition: function() {
+			var options = this.options;
+			if ( this._transform ) {
+				this._transition = this._transform + " " + options.duration + "ms " + options.easing;
+			}
 		},
 
 		/**
@@ -326,8 +358,7 @@
 		 * Undo any styles attached in this plugin
 		 */
 		_resetStyle: function() {
-			this.$elem[ this.isSVG ? "attr" : "css" ]( "transform", this.origTransform )
-			.css({
+			this.$elem.css({
 				"cursor": "",
 				"transition": ""
 			});
@@ -443,8 +474,7 @@
 			// Use style rather than computed
 			// If currently transitioning, computed transform might be unchanged
 			// SVG uses the transform attribute
-			var transform = this.isSVG ? this.elem.getAttribute("transform") : $.style( this.elem, "transform" );
-			var matrix = rmatrix.exec( transform );
+			var matrix = rmatrix.exec( this._getTransform() );
 			if ( matrix ) {
 				matrix.shift();
 			}
@@ -457,11 +487,7 @@
 		 */
 		setMatrix: function( matrix ) {
 			matrix = "matrix(" + matrix.join(",") + ")";
-			if ( this.isSVG ) {
-				this.elem.setAttribute( "transform", matrix );
-			} else {
-				$.style( this.elem, "transform", matrix );
-			}
+			this._setTransform( matrix );
 		},
 
 		/**
