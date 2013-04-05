@@ -182,18 +182,19 @@ $elem.panzoom("getMatrix");
 // => [1, 0, 0, 1, 0, 0]
 ```
 
-### `setMatrix( matrix )`
+### `setMatrix( matrix, animate )`
 
-Sets the transform matrix of the panzoom element. It accepts the matrix as an array. The return value is `undefined`.
+@param {Array} matrix<br/>
+@param {Boolean} animate Whether to animate the transform change
 
 ```js
 // Flip the element upside down
 $elem.panzoom("setMatrix", [ 1, 0, 0, -1, 0, 0 ]);
 ```
 
-### `transition( off )`
+Sets the transform matrix of the panzoom element. It accepts the matrix as an array. The return value is `undefined`.
 
-Applies the transition to the element. If `off` is true, it removes the transition.
+### `transition( off )`
 
 ```js
 $elem.panzoom("transition");
@@ -204,6 +205,8 @@ $elem.panzoom("option", "transition", true);
 // ... which just sets the `transition` option, indicating whether transitioning is allowed at all.
 // If the transition option is false, `$elem.panzoom("transition")` will only ever set transition to "none".
 ```
+
+Applies the transition to the element. If `off` is true, it removes the transition.
 
 
 ## Events
