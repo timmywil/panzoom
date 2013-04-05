@@ -5,6 +5,8 @@
 
 describe("Panzoom", function() {
 	var $elem = $("#panzoom");
+	var $svgElem = $("#panzoom-svg");
+	var $rect = $svgElem.find("rect");
 	var $zoomIn = $(".zoom-in");
 	var $zoomOut = $(".zoom-out");
 	var $zoomRange = $(".zoom-range");
@@ -134,5 +136,25 @@ describe("Panzoom", function() {
 		$elem.off( "panzoomend", testEnd );
 		expect( called ).to.be.true;
 		done();
+	});
+
+	/* SVG
+	---------------------------------------------------------------------- */
+	it("should create an SVG panzoom with buttons", function() {
+		var panzoom = $svgElem.panzoom().panzoom("instance");
+		// isSVG should be false on nodeName svg
+		expect( panzoom.isSVG ).to.be.false;
+		panzoom.destroy();
+	});
+
+	it("should create an SVG panzoom on a rect", function() {
+		$rect.panzoom({
+			$zoomIn: $zoomIn,
+			$zoomOut: $zoomOut,
+			$zoomRange: $zoomRange,
+			$reset: $reset
+		});
+		var panzoom = $rect.panzoom("instance");
+		expect( panzoom.isSVG ).to.be.true;
 	});
 });

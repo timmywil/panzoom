@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v0.3.1
- * Updated: Thu Apr 04 2013
+ * @license jquery.panzoom.js v0.3.2
+ * Updated: Fri Apr 05 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -153,6 +153,57 @@
 		},
 
 		/**
+		 * Destroy the current minimal lightbox instances
+		 */
+		destroy: function() {
+			this._resetStyle();
+			this._unbind();
+			$.removeData( this.elem, datakey );
+		},
+
+		/**
+		 * Return the element to it's original transform matrix
+		 */
+		reset: function() {
+			// Reset the transform to its original value
+			this._setTransform( this._origTransform, true );
+			this.$zoomRange.val( 1 );
+		},
+
+		/**
+		 * Retrieve the current transform matrix for $elem
+		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
+		 */
+		getMatrix: function() {
+			// Use style rather than computed
+			// If currently transitioning, computed transform might be unchanged
+			// SVG uses the transform attribute
+			var matrix = rmatrix.exec( this._getTransform() );
+			if ( matrix ) {
+				matrix.shift();
+			}
+			return matrix || [ 1, 0, 0, 1, 0, 0 ];
+		},
+
+		/**
+		 * Given a matrix object, quickly set the current matrix of the element
+		 * @param {Array} matrix
+		 * @param {Boolean} animate Whether to animate the transform change
+		 */
+		setMatrix: function( matrix, animate ) {
+			this._setTransform( "matrix(" + matrix.join(",") + ")", animate );
+		},
+
+		/**
+		 * Apply the current transition to the element, if allowed
+		 * @param {Boolean} [off] Indicates that the transition should be turned off
+		 */
+		transition: function( off ) {
+			var transition = off || !this.options.transition ? "none" : this._transition;
+			$.style( this.elem, "transition", transition );
+		},
+
+		/**
 		 * Zoom in/out the element using the scale properties of a transform matrix
 		 * @param {Boolean|Number} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
 		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
@@ -161,10 +212,11 @@
 			var options = this.options;
 			if ( options.disableZoom ) { return; }
 			var matrix = this.getMatrix();
+			var animate;
 
 			if ( typeof scale !== "number" ) {
 				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
-				this.transition();
+				animate = true;
 			}
 
 			// Constrain scale
@@ -179,26 +231,7 @@
 			}
 
 			matrix[0] = matrix[3] = scale;
-			this.setMatrix( matrix );
-		},
-
-		/**
-		 * Return the element to it's original transform matrix
-		 */
-		reset: function() {
-			this.transition();
-			// Reset the transform to its original value
-			this._setTransform( this._origTransform );
-			this.$zoomRange.val( 1 );
-		},
-
-		/**
-		 * Destroy the current minimal lightbox instances
-		 */
-		destroy: function() {
-			this._resetStyle();
-			this._unbind();
-			$.removeData( this.elem, datakey );
+			this.setMatrix( matrix, animate );
 		},
 
 		/**
@@ -280,58 +313,6 @@
 		},
 
 		/**
-		 * Apply the current transition to the element, if allowed
-		 * @param {Boolean} [off] Indicates that the transition should be turned off
-		 */
-		transition: function( off ) {
-			var transition = off || !this.options.transition ? "none" : this._transition;
-			$.style( this.elem, "transition", transition );
-		},
-
-		/**
-		 * Retrieving the transform is different for SVG
-		 * @returns {String} Returns the current transform value of the element
-		 */
-		_getTransform: function() {
-			return $[ this.isSVG ? "attr" : "style" ]( this.elem, "transform" );
-		},
-
-		/**
-		 * Sets the value of the transform based on whether this is SVG
-		 * @param {String} value The transform value to set
-		 */
-		_setTransform: function( value ) {
-			if ( !value ) { value = "none"; }
-			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", value );
-		},
-
-		/**
-		 * Builds the prefixed transform property name
-		 * and tracks the original transform value
-		 */
-		_buildTransform: function() {
-			// Save the original transform
-			// Retrieving this also adds the correct prefixed style name
-			// to jQuery's internal $.cssProps
-			this._origTransform = this._getTransform();
-			// SVG uses the transform attribute
-			// Transition is set to unprefixed "transform"
-			// This SVG transition doesn't work in all browsers
-			// De-camelcase for other kinds of elements
-			this._transform = this.isSVG ? "transform" : $.cssProps.transform.replace( rupper, "-$1" ).toLowerCase();
-		},
-
-		/**
-		 * Set transition property for later use when zooming
-		 */
-		_buildTransition: function() {
-			var options = this.options;
-			if ( this._transform ) {
-				this._transition = this._transform + " " + options.duration + "ms " + options.easing;
-			}
-		},
-
-		/**
 		 * Initialize base styles for the element and its parent
 		 */
 		_initStyle: function() {
@@ -366,6 +347,129 @@
 				"overflow": "",
 				"position": ""
 			});
+		},
+
+		/**
+		 * Retrieving the transform is different for SVG
+		 * @returns {String} Returns the current transform value of the element
+		 */
+		_getTransform: function() {
+			return $[ this.isSVG ? "attr" : "style" ]( this.elem, "transform" );
+		},
+
+		/**
+		 * Sets the value of the transform based on whether this is SVG
+		 * @param {String} value The transform value to set
+		 * @param {Boolean} animate Whether to animate the transform change
+		 */
+		_setTransform: function( value, animate ) {
+			if ( animate ) {
+				this.transition();
+			}
+			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", value || "none" );
+		},
+
+		/**
+		 * Builds the prefixed transform property name
+		 * and tracks the original transform value
+		 */
+		_buildTransform: function() {
+			// Save the original transform
+			// Retrieving this also adds the correct prefixed style name
+			// to jQuery's internal $.cssProps
+			this._origTransform = this._getTransform();
+			// De-camelcase
+			this._transform = $.cssProps.transform.replace( rupper, "-$1" ).toLowerCase();
+		},
+
+		/**
+		 * Set transition property for later use when zooming
+		 * If SVG, create necessary animations elements for translations and scaling
+		 */
+		_buildTransition: function() {
+			var options = this.options;
+			if ( this._transform ) {
+				this._transition = this._transform + " " + options.duration + "ms " + options.easing;
+			}
+		},
+
+		/**
+		 * Calculates the distance between two touch points
+		 * Remember pythagorean?
+		 * @param {Array} touches
+		 * @returns {Number} Returns the distance
+		 */
+		_getDistance: function( touches ) {
+			var touch1 = touches[0];
+			var touch2 = touches[1];
+			return Math.sqrt( Math.pow(Math.abs( touch2.pageX - touch1.pageX ), 2) + Math.pow(Math.abs( touch2.pageY - touch1.pageY ), 2) );
+		},
+
+		/**
+		 * Trigger a panzoom event on our element
+		 * The event is passed the Panzoom instance
+		 * @param {String} name
+		 */
+		_trigger: function ( name ) {
+			// Only need to trigger handlers
+			this.$elem.triggerHandler( "panzoom" + name, [this] );
+		},
+
+		/**
+		 * Starts the pan
+		 * This is bound to mouse/touchmove on the element
+		 * @param {Number|TouchList} startPageX The pageX on the mousedown event or the touches list
+		 * @param {Number} startPageY The pageY on the mousedown event
+		 */
+		_startMove: function( startPageX, startPageY ) {
+			var touches, startDistance, startScale, move;
+			var self = this;
+			var options = this.options;
+			var ns = options.eventNamespace;
+			var $doc = $(document).off( ns );
+			var matrix = this.getMatrix();
+			var original = matrix.slice( 0 );
+
+			// Remove any transitions happening
+			this.transition( true );
+
+			if ( arguments.length === 1 ) {
+				touches = startPageX;
+				startDistance = this._getDistance( touches );
+				startScale = +matrix[0];
+				/**
+				 * Touchmove function for pinch-zooming
+				 * @param {Object} e Event object
+				 */
+				move = function( e ) {
+					e.preventDefault();
+					var diff = self._getDistance( e.touches ) - startDistance;
+					self.zoom( diff / 300 + startScale );
+				};
+			} else {
+				/**
+				 * Mousemove/touchmove function to pan the element
+				 * @param {Object} e Event object
+				 */
+				move = function( e ) {
+					e.preventDefault();
+					var adjustmentX = e.pageX - startPageX;
+					var adjustmentY = e.pageY - startPageY;
+					matrix[4] = +original[4] + adjustmentX;
+					matrix[5] = +original[5] + adjustmentY;
+					self.setMatrix( matrix );
+				};
+			}
+
+			// Bind the handlers
+			$doc
+				.on( (touchSupported ? "touchend" : "mouseup") + ns, function( e ) {
+					e.preventDefault();
+					$(this).off( ns );
+					// Trigger our end event
+					self._trigger("end");
+				})
+				.on( (touchSupported ? "touchmove" : "mousemove") + ns, move );
 		},
 
 		/**
@@ -464,109 +568,6 @@
 				.add( this.$zoomOut )
 				.add( this.$reset )
 				.off( this.options.eventNamespace );
-		},
-
-		/**
-		 * Retrieve the current transform matrix for $elem
-		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
-		 */
-		getMatrix: function() {
-			// Use style rather than computed
-			// If currently transitioning, computed transform might be unchanged
-			// SVG uses the transform attribute
-			var matrix = rmatrix.exec( this._getTransform() );
-			if ( matrix ) {
-				matrix.shift();
-			}
-			return matrix || [ 1, 0, 0, 1, 0, 0 ];
-		},
-
-		/**
-		 * Given a matrix object, quickly set the current matrix of the element
-		 * @param {Array} matrix
-		 */
-		setMatrix: function( matrix ) {
-			matrix = "matrix(" + matrix.join(",") + ")";
-			this._setTransform( matrix );
-		},
-
-		/**
-		 * Calculates the distance between two touch points
-		 * Remember pythagorean?
-		 * @param {Array} touches
-		 * @returns {Number} Returns the distance
-		 */
-		_getDistance: function( touches ) {
-			var touch1 = touches[0];
-			var touch2 = touches[1];
-			return Math.sqrt( Math.pow(Math.abs( touch2.pageX - touch1.pageX ), 2) + Math.pow(Math.abs( touch2.pageY - touch1.pageY ), 2) );
-		},
-
-		/**
-		 * Trigger a panzoom event on our element
-		 * The event is passed the Panzoom instance
-		 * @param {String} name
-		 */
-		_trigger: function ( name ) {
-			// Only need to trigger handlers
-			this.$elem.triggerHandler( "panzoom" + name, [this] );
-		},
-
-		/**
-		 * Starts the pan
-		 * This is bound to mouse/touchmove on the element
-		 * @param {Number|TouchList} startPageX The pageX on the mousedown event or the touches list
-		 * @param {Number} startPageY The pageY on the mousedown event
-		 */
-		_startMove: function( startPageX, startPageY ) {
-			var touches, startDistance, startScale, move;
-			var self = this;
-			var options = this.options;
-			var ns = options.eventNamespace;
-			var $doc = $(document).off( ns );
-			var matrix = this.getMatrix();
-			var original = matrix.slice( 0 );
-
-			// Remove any transitions happening
-			this.transition( true );
-
-			if ( arguments.length === 1 ) {
-				touches = startPageX;
-				startDistance = this._getDistance( touches );
-				startScale = +matrix[0];
-				/**
-				 * Touchmove function for pinch-zooming
-				 * @param {Object} e Event object
-				 */
-				move = function( e ) {
-					e.preventDefault();
-					var diff = self._getDistance( e.touches ) - startDistance;
-					self.zoom( diff / 300 + startScale );
-				};
-			} else {
-				/**
-				 * Mousemove/touchmove function to pan the element
-				 * @param {Object} e Event object
-				 */
-				move = function( e ) {
-					e.preventDefault();
-					var adjustmentX = e.pageX - startPageX;
-					var adjustmentY = e.pageY - startPageY;
-					matrix[4] = +original[4] + adjustmentX;
-					matrix[5] = +original[5] + adjustmentY;
-					self.setMatrix( matrix );
-				};
-			}
-
-			// Bind the handlers
-			$doc
-				.on( (touchSupported ? "touchend" : "mouseup") + ns, function( e ) {
-					e.preventDefault();
-					$(this).off( ns );
-					// Trigger our end event
-					self._trigger("end");
-				})
-				.on( (touchSupported ? "touchmove" : "mousemove") + ns, move );
 		}
 	};
 
