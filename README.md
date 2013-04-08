@@ -134,10 +134,10 @@ $elem.panzoom("reset");
 
 Reset the transform matrix to its original value. All panning and zooming is reset.
 
-### `zoom( scale, noSetRange )`
+### `zoom( [scale[, noSetRange]] )`
 
 @param {Number|Boolean} [scale] The exact scale to which to zoom or a boolean indicating to transition a zoom out<br/>
-@param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change. No need to set that value. Most of the time though, just ignore this parameter.)
+@param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change. No need to set that value. This parameter can be ignored.)
 
 ```js
 // Transition a zoom in based on the scale increment, min and max values
@@ -182,10 +182,10 @@ $elem.panzoom("getMatrix");
 // => [1, 0, 0, 1, 0, 0]
 ```
 
-### `setMatrix( matrix, animate )`
+### `setMatrix( matrix[, animate] )`
 
 @param {Array} matrix<br/>
-@param {Boolean} animate Whether to animate the transform change
+@param {Boolean} [animate] Whether to animate the transform change
 
 ```js
 // Flip the element upside down
@@ -194,7 +194,7 @@ $elem.panzoom("setMatrix", [ 1, 0, 0, -1, 0, 0 ]);
 
 Sets the transform matrix of the panzoom element. It accepts the matrix as an array. The return value is `undefined`.
 
-### `transition( off )`
+### `transition( [off] )`
 
 ```js
 $elem.panzoom("transition");
