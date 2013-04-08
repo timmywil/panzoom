@@ -211,7 +211,13 @@ Applies the transition to the element. If `off` is true, it removes the transiti
 
 ## Events
 
-### "panzoomend"
+### `"panzoomend"`
+
+__Arguments__
+
+  1. `e` _(jQuery.Event)_: jQuery event object
+  2. `panzoom` _(Panzoom)_: The panzoom instance
+  3. `changed` _(Boolean)_: Whether the matrix changed during the panzoom event.
 
 Currently, there is only one custom event. It is fired when the user finishes a move or finishes a pinch zoom gesture on mobile.
 
