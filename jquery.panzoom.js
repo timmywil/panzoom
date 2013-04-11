@@ -53,6 +53,7 @@
 	 * @param {jQuery} [options.$zoomOut] - zoom out buttons/links collection on which to bind zoomOut
 	 * @param {jQuery} [options.$zoomRange] - zoom in/out with this range control
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
+	 * @param {Function} [options.onChange] - An optional callback for the transform change event (panzoomchange)
 	 * @param {Function} [options.onEnd] - An optional callback for mouseup/touchend
 	 */
 	var Panzoom = function( elem, options ) {
@@ -188,7 +189,7 @@
 		/**
 		 * Given a matrix object, quickly set the current matrix of the element
 		 * @param {Array} matrix
-		 * @param {Boolean} animate Whether to animate the transform change
+		 * @param {Boolean} [animate] Whether to animate the transform change
 		 */
 		setMatrix: function( matrix, animate ) {
 			this._setTransform( "matrix(" + matrix.join(",") + ")", animate );
@@ -276,6 +277,7 @@
 					case "$zoomRange":
 					case "$reset":
 					case "onEnd":
+					case "onChange":
 					case "eventNamespace":
 						self._unbind();
 				}
@@ -290,6 +292,7 @@
 					case "$zoomRange":
 					case "$reset":
 					case "onEnd":
+					case "onChange":
 					case "eventNamespace":
 						self._bind();
 						break;
@@ -360,13 +363,14 @@
 		/**
 		 * Sets the value of the transform based on whether this is SVG
 		 * @param {String} value The transform value to set
-		 * @param {Boolean} animate Whether to animate the transform change
+		 * @param {Boolean} [animate] Whether to animate the transform change
 		 */
 		_setTransform: function( value, animate ) {
 			if ( animate ) {
 				this.transition();
 			}
 			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", value || "none" );
+			this._trigger( "change", value );
 		},
 
 		/**
@@ -484,10 +488,13 @@
 			var options = this.options;
 			var events = {};
 
-			// Bind to end if onEnd was passed
-			if ( $.isFunction(options.onEnd) ) {
-				events[ "panzoomend" + ns ] = options.onEnd;
-			}
+			// Bind panzoom events from options
+			$.each([ "End", "Change" ], function( i, method ) {
+				var m = options[ "on" + method ];
+				if ( $.isFunction(m) ) {
+					events[ "panzoom" + method.toLowerCase() + ns ] = m;
+				}
+			});
 
 			// Bind $elem drag and click events
 			if ( touchSupported ) {

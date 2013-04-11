@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Panzoom for jQuery</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+      section { text-align: center; margin: 50px 0; }
+    </style>
+    <script src="test/modernizr.js"></script>
+  </head>
+  <body>
+    <section>
+      <h1>Panning and zooming with CSS3</h1>
+      <div id="panzoom" style="text-align: center">
+        <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg" width="900" height="900">
+      </div>
+    </section>
+    <section class="buttons">
+      <button class="zoom-in">Zoom In</button>
+      <button class="zoom-out">Zoom Out</button>
+      <input type="range" class="zoom-range">
+      <button class="reset">Reset</button>
+    </section>
+    <script src="test/jquery.js"></script>
+    <script src="dist/jquery.panzoom.js"></script>
+    <script>
+      $("#panzoom").panzoom({
+        $zoomIn: $(".zoom-in"),
+        $zoomOut: $(".zoom-out"),
+        $zoomRange: $(".zoom-range"),
+        $reset: $(".reset")
+      });
+    </script>
+  </body>
+</html>

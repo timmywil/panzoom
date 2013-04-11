@@ -123,7 +123,7 @@ describe("Panzoom", function() {
 		expect( +panzoom.getMatrix()[0] ).to.equal( 1 );
 	});
 
-	it("should bind the onEnd event", function( done ) {
+	it("should bind the onEnd event", function() {
 		var called = false;
 		var instance = $elem.panzoom("instance");
 		function testEnd( e, panzoom ) {
@@ -135,7 +135,20 @@ describe("Panzoom", function() {
 		$(document).trigger("mouseup").trigger("touchend");
 		$elem.off( "panzoomend", testEnd );
 		expect( called ).to.be.true;
-		done();
+	});
+
+	it("should bind the onChange event", function() {
+		var called = false;
+		var instance = $elem.panzoom("instance");
+		function testChange( e, panzoom, transform ) {
+			called = true;
+			expect( panzoom ).to.eql( instance );
+			expect( transform ).to.be.a("string");
+		}
+		$elem.panzoom( "option", "onChange", testChange );
+		$elem.panzoom( "setMatrix", [ 1, 0, 0, 1, 0, 0 ] );
+		$elem.off( "panzoomchange", testChange );
+		expect( called ).to.be.true;
 	});
 
 	/* SVG
