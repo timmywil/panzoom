@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v0.3.3
- * Updated: Thu Apr 11 2013
+ * Updated: Mon Apr 15 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -18,7 +18,7 @@
 }( this, function( $ ) {
 	"use strict";
 
-	var touchSupported = Modernizr && Modernizr.touch;
+	var touchSupported = typeof Modernizr !== "undefined" && Modernizr.touch;
 	if ( touchSupported ) {
 		// Lift touch properties using fixHooks
 		var touchHook = { props: [ "touches", "pageX", "pageY" ] };

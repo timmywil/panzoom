@@ -18,7 +18,7 @@
 }( this, function( $ ) {
 	"use strict";
 
-	var touchSupported = Modernizr && Modernizr.touch;
+	var touchSupported = typeof Modernizr !== "undefined" && Modernizr.touch;
 	if ( touchSupported ) {
 		// Lift touch properties using fixHooks
 		var touchHook = { props: [ "touches", "pageX", "pageY" ] };
