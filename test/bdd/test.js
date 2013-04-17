@@ -151,6 +151,15 @@ describe("Panzoom", function() {
 		expect( called ).to.be.true;
 	});
 
+	it("should allow string or arrays when setting the matrix", function() {
+		var panzoom = $elem.panzoom("instance");
+		var _matrix = panzoom.getMatrix();
+		panzoom.setMatrix("none");
+		expect( panzoom._getTransform() ).to.equal("none");
+		panzoom.setMatrix( _matrix );
+		expect( panzoom.getMatrix() ).to.eql( _matrix );
+	});
+
 	/* SVG
 	---------------------------------------------------------------------- */
 	it("should create an SVG panzoom with buttons", function() {

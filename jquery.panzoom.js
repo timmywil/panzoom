@@ -167,7 +167,7 @@
 		 */
 		reset: function() {
 			// Reset the transform to its original value
-			this._setTransform( this._origTransform, true );
+			this.setMatrix( this._origTransform, true );
 			this.$zoomRange.val( 1 );
 		},
 
@@ -188,11 +188,18 @@
 
 		/**
 		 * Given a matrix object, quickly set the current matrix of the element
-		 * @param {Array} matrix
+		 * @param {Array|String} matrix
 		 * @param {Boolean} [animate] Whether to animate the transform change
 		 */
 		setMatrix: function( matrix, animate ) {
-			this._setTransform( "matrix(" + matrix.join(",") + ")", animate );
+			if ( typeof matrix !== "string" ) {
+				matrix = "matrix(" + matrix.join(",") + ")";
+			}
+			if ( animate ) {
+				this.transition();
+			}
+			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", matrix || "none" );
+			this._trigger( "change", matrix );
 		},
 
 		/**
@@ -358,19 +365,6 @@
 		 */
 		_getTransform: function() {
 			return $[ this.isSVG ? "attr" : "style" ]( this.elem, "transform" );
-		},
-
-		/**
-		 * Sets the value of the transform based on whether this is SVG
-		 * @param {String} value The transform value to set
-		 * @param {Boolean} [animate] Whether to animate the transform change
-		 */
-		_setTransform: function( value, animate ) {
-			if ( animate ) {
-				this.transition();
-			}
-			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", value || "none" );
-			this._trigger( "change", value );
 		},
 
 		/**
