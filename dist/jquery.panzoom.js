@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v0.3.5
- * Updated: Wed Apr 17 2013
+ * @license jquery.panzoom.js v0.4.0
+ * Updated: Mon Apr 22 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -213,15 +213,16 @@
 
 		/**
 		 * Zoom in/out the element using the scale properties of a transform matrix
-		 * @param {Boolean|Number} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
+		 * @param {Number|Boolean} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
 		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
 		 */
 		zoom: function( scale, noSetRange ) {
+			var animate;
 			var options = this.options;
 			if ( options.disableZoom ) { return; }
 			var matrix = this.getMatrix();
-			var animate;
 
+			// Calculate zoom based on increment
 			if ( typeof scale !== "number" ) {
 				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
 				animate = true;
@@ -404,6 +405,19 @@
 		},
 
 		/**
+		 * Constructs an approximated point in the middle of two touch points
+		 * @returns {Object} Returns an object containing pageX and pageY
+		 */
+		_getMiddle: function( touches ) {
+			var touch1 = touches[0];
+			var touch2 = touches[1];
+			return {
+				pageX: Math.abs( touch2.pageX - touch1.pageX ) / 2 + touch1.pageX,
+				pageY: Math.abs( touch2.pageY - touch1.pageY ) / 2 + touch1.pageY
+			};
+		},
+
+		/**
 		 * Trigger a panzoom event on our element
 		 * The event is passed the Panzoom instance
 		 * @param {String} name
@@ -420,7 +434,7 @@
 		 * @param {Number} startPageY The pageY on the mousedown event
 		 */
 		_startMove: function( startPageX, startPageY ) {
-			var touches, startDistance, startScale, move;
+			var move, touches, startDistance, startScale, startMiddle;
 			var self = this;
 			var options = this.options;
 			var ns = options.eventNamespace;
@@ -435,26 +449,31 @@
 				touches = startPageX;
 				startDistance = this._getDistance( touches );
 				startScale = +matrix[0];
-				/**
-				 * Touchmove function for pinch-zooming
-				 * @param {Object} e Event object
-				 */
+				startMiddle = this._getMiddle( touches );
 				move = function( e ) {
 					e.preventDefault();
-					var diff = self._getDistance( e.touches ) - startDistance;
+
+					// Calculate move on middle point
+					touches = e.touches;
+					var middle = self._getMiddle( touches );
+					matrix[4] = +original[4] + middle.pageX - startMiddle.pageX;
+					matrix[5] = +original[5] + middle.pageY - startMiddle.pageY;
+					self.setMatrix( matrix );
+
+					// Set zoom
+					var diff = self._getDistance( touches ) - startDistance;
 					self.zoom( diff / 300 + startScale );
 				};
 			} else {
+
 				/**
 				 * Mousemove/touchmove function to pan the element
 				 * @param {Object} e Event object
 				 */
 				move = function( e ) {
 					e.preventDefault();
-					var adjustmentX = e.pageX - startPageX;
-					var adjustmentY = e.pageY - startPageY;
-					matrix[4] = +original[4] + adjustmentX;
-					matrix[5] = +original[5] + adjustmentY;
+					matrix[4] = +original[4] + e.pageX - startPageX;
+					matrix[5] = +original[5] + e.pageY - startPageY;
 					self.setMatrix( matrix );
 				};
 			}

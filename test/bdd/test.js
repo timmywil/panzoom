@@ -160,6 +160,36 @@ describe("Panzoom", function() {
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
 	});
 
+	it("should pan on the middle point when zooming", function() {
+		var panzoom = $elem.panzoom("instance");
+		var matrix = panzoom.getMatrix();
+		// Start as if two touches were triggered
+		panzoom._startMove([
+			{ pageX: 0, pageY: 0 },
+			{ pageX: 10, pageY: 10 }
+		]);
+
+		// Faux events with touches property
+		var e = new jQuery.Event("mousemove", {
+			touches: [
+				{ pageX: 10, pageY: 10 },
+				{ pageX: 20, pageY: 20 }
+			]
+		});
+		var $doc = $(document).trigger( e );
+		e.type = "touchmove";
+		$doc.trigger( e )
+			// Kill events
+			.trigger("touchend").trigger("mouseup");
+
+		var newMatrix = panzoom.getMatrix();
+		expect( +newMatrix[4] ).to.equal( +matrix[4] + 10 );
+		expect( +newMatrix[5] ).to.equal( +matrix[5] + 10 );
+
+		// Clean-up
+		panzoom.setMatrix( matrix );
+	});
+
 	/* SVG
 	---------------------------------------------------------------------- */
 	it("should create an SVG panzoom with buttons", function() {
