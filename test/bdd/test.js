@@ -161,22 +161,16 @@ describe("Panzoom", function() {
 	});
 
 	/**
-	 * Simulates a pinch gesture (even in desktop browsers)
+	 * Simulates a pinch gesture (even in desktop browsers) starting at the move
+	 * (the move event must already be bound)
 	 * @param {Function} complete
 	 */
 	function testPinch( complete ) {
-		var origMatrix = $elem.panzoom("getMatrix");
-		var e = new jQuery.Event("mousedown", {
-			touches: [
-				{ pageX: 0, pageY: 0 },
-				{ pageX: 10, pageY: 10 }
-			]
-		});
-		$elem.trigger( e );
-		e.type = "touchstart";
-		$elem.trigger( e );
+		var panzoom = $elem.panzoom("instance");
+		var origMatrix = panzoom.getMatrix();
+
 		// Faux events with touches property
-		e = new jQuery.Event("mousemove", {
+		var e = new jQuery.Event("mousemove", {
 			touches: [
 				{ pageX: 10, pageY: 10 },
 				{ pageX: 20, pageY: 20 }
@@ -192,12 +186,16 @@ describe("Panzoom", function() {
 		complete();
 
 		// Reset matrix
-		$elem.panzoom( "setMatrix", origMatrix );
+		panzoom.setMatrix( origMatrix );
 	}
 
 	it("should pan on the middle point when zooming", function() {
 		var panzoom = $elem.panzoom("instance");
 		var matrix = panzoom.getMatrix();
+		panzoom._startMove([
+			{ pageX: 0, pageY: 0 },
+			{ pageX: 10, pageY: 10 }
+		]);
 		testPinch(function() {
 			var newMatrix = panzoom.getMatrix();
 			expect( +newMatrix[4] ).to.equal( +matrix[4] + 10 );
@@ -205,18 +203,30 @@ describe("Panzoom", function() {
 		});
 	});
 
-	it("should pan with 2 fingers even if disableZoom is true", function() {
-		$elem.panzoom( "option", "disableZoom", true );
-		var panzoom = $elem.panzoom("instance");
-		var matrix = panzoom.getMatrix();
-		testPinch(function() {
-			var newMatrix = panzoom.getMatrix();
-			expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
-			expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
+	if ( Modernizr.touch ) {
+		it("should pan with 2 fingers even if disableZoom is true", function() {
+			$elem.panzoom( "option", "disableZoom", true );
+			var panzoom = $elem.panzoom("instance");
+			var matrix = panzoom.getMatrix();
+
+			// Start move by using touchstart
+			var e = new jQuery.Event("touchstart", {
+				touches: [
+					{ pageX: 0, pageY: 0 },
+					{ pageX: 10, pageY: 10 }
+				]
+			});
+			$elem.trigger( e );
+			testPinch(function() {
+				var newMatrix = panzoom.getMatrix();
+				// Make sure a pan was done
+				expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
+				expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
+			});
+			// Clean-up
+			$elem.panzoom( "option", "disableZoom", false );
 		});
-		// Clean-up
-		$elem.panzoom( "option", "disableZoom", false );
-	});
+	}
 
 	/* SVG
 	---------------------------------------------------------------------- */
