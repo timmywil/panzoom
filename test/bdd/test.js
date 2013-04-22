@@ -26,12 +26,22 @@ describe("Panzoom", function() {
 
 	it("should chain and not create a new instance when called again", function() {
 		var orig = $elem.panzoom("instance");
-		expect( $elem.panzoom().panzoom("instance") ).to.equal( orig );
+		expect( $elem.panzoom().panzoom("instance") ).to.eql( orig );
 	});
 
 	it("should destroy itself", function() {
 		$elem.panzoom("destroy");
 		expect( $elem.panzoom("instance") ).to.be.undefined;
+	});
+
+	it("should allow different starting values for zoom than 1", function() {
+		$elem.css( "transform", "scale(2)" );
+		var panzoom = $elem.panzoom({ $zoomRange: $zoomRange }).panzoom("instance");
+		expect( panzoom._getTransform() ).to.contain("matrix");
+		expect( $zoomRange.val() ).to.equal("2");
+		// Clean-up
+		$elem.css( "transform", "" );
+		$elem.panzoom("destroy");
 	});
 
 	it("should create a new panzoom with buttons", function() {
@@ -121,6 +131,14 @@ describe("Panzoom", function() {
 
 		$elem.panzoom("reset");
 		expect( +panzoom.getMatrix()[0] ).to.equal( 1 );
+	});
+
+	it("should set the zoom range input's value on zoom", function() {
+		var cur = $zoomRange.val();
+		$elem.panzoom("zoom");
+		var val = $zoomRange.val();
+		expect( val ).to.not.equal( cur );
+		expect( val ).to.equal( $elem.panzoom("getMatrix")[0] );
 	});
 
 	it("should bind the onEnd event", function() {

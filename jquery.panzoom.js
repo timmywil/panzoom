@@ -168,7 +168,8 @@
 		reset: function() {
 			// Reset the transform to its original value
 			this.setMatrix( this._origTransform, true );
-			this.$zoomRange.val( 1 );
+			// Set the zoom range's value to the original zoom level
+			this.$zoomRange.val( this.getMatrix()[0] );
 		},
 
 		/**
@@ -192,7 +193,7 @@
 		 * @param {Boolean} [animate] Whether to animate the transform change
 		 */
 		setMatrix: function( matrix, animate ) {
-			if ( typeof matrix !== "string" ) {
+			if ( $.type(matrix) === "array" ) {
 				matrix = "matrix(" + matrix.join(",") + ")";
 			}
 			if ( animate ) {
@@ -365,7 +366,18 @@
 		 * @returns {String} Returns the current transform value of the element
 		 */
 		_getTransform: function() {
-			return $[ this.isSVG ? "attr" : "style" ]( this.elem, "transform" );
+			var elem = this.elem;
+			if ( this.isSVG ) {
+				return $.attr( elem, "transform" );
+			}
+
+			var transform = $.style( elem, "transform" );
+			// Convert any transforms set by the user to matrix format
+			// by setting to computed
+			if ( transform !== "none" && !rmatrix.test(transform) ) {
+				transform = $.style( elem, "transform", $.css(elem, "transform") );
+			}
+			return transform;
 		},
 
 		/**
@@ -561,8 +573,9 @@
 				$zoomRange.attr({
 					min: options.minScale,
 					max: options.maxScale,
-					step: 0.05,
-					value: 1
+					step: 0.05
+				}).prop({
+					value: this.getMatrix()[0]
 				});
 				events = {};
 				events[ str_start ] = function() {
