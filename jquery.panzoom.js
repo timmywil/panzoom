@@ -519,7 +519,7 @@
 							if ( touches.length === 1 && !options.disablePan ) {
 								e.preventDefault();
 								self._startMove( e.pageX, e.pageY );
-							} else if ( touches.length === 2 && !options.disableZoom ) {
+							} else if ( touches.length === 2 ) {
 								e.preventDefault();
 								self._startMove( touches );
 							}

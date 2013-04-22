@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.4.0
+ * @license jquery.panzoom.js v0.4.1
  * Updated: Mon Apr 22 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -519,7 +519,7 @@
 							if ( touches.length === 1 && !options.disablePan ) {
 								e.preventDefault();
 								self._startMove( e.pageX, e.pageY );
-							} else if ( touches.length === 2 && !options.disableZoom ) {
+							} else if ( touches.length === 2 ) {
 								e.preventDefault();
 								self._startMove( touches );
 							}

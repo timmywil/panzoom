@@ -160,17 +160,23 @@ describe("Panzoom", function() {
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
 	});
 
-	it("should pan on the middle point when zooming", function() {
-		var panzoom = $elem.panzoom("instance");
-		var matrix = panzoom.getMatrix();
-		// Start as if two touches were triggered
-		panzoom._startMove([
-			{ pageX: 0, pageY: 0 },
-			{ pageX: 10, pageY: 10 }
-		]);
-
+	/**
+	 * Simulates a pinch gesture (even in desktop browsers)
+	 * @param {Function} complete
+	 */
+	function testPinch( complete ) {
+		var origMatrix = $elem.panzoom("getMatrix");
+		var e = new jQuery.Event("mousedown", {
+			touches: [
+				{ pageX: 0, pageY: 0 },
+				{ pageX: 10, pageY: 10 }
+			]
+		});
+		$elem.trigger( e );
+		e.type = "touchstart";
+		$elem.trigger( e );
 		// Faux events with touches property
-		var e = new jQuery.Event("mousemove", {
+		e = new jQuery.Event("mousemove", {
 			touches: [
 				{ pageX: 10, pageY: 10 },
 				{ pageX: 20, pageY: 20 }
@@ -182,12 +188,34 @@ describe("Panzoom", function() {
 			// Kill events
 			.trigger("touchend").trigger("mouseup");
 
-		var newMatrix = panzoom.getMatrix();
-		expect( +newMatrix[4] ).to.equal( +matrix[4] + 10 );
-		expect( +newMatrix[5] ).to.equal( +matrix[5] + 10 );
+		// Run tests
+		complete();
 
+		// Reset matrix
+		$elem.panzoom( "setMatrix", origMatrix );
+	}
+
+	it("should pan on the middle point when zooming", function() {
+		var panzoom = $elem.panzoom("instance");
+		var matrix = panzoom.getMatrix();
+		testPinch(function() {
+			var newMatrix = panzoom.getMatrix();
+			expect( +newMatrix[4] ).to.equal( +matrix[4] + 10 );
+			expect( +newMatrix[5] ).to.equal( +matrix[5] + 10 );
+		});
+	});
+
+	it("should pan with 2 fingers even if disableZoom is true", function() {
+		$elem.panzoom( "option", "disableZoom", true );
+		var panzoom = $elem.panzoom("instance");
+		var matrix = panzoom.getMatrix();
+		testPinch(function() {
+			var newMatrix = panzoom.getMatrix();
+			expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
+			expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
+		});
 		// Clean-up
-		panzoom.setMatrix( matrix );
+		$elem.panzoom( "option", "disableZoom", false );
 	});
 
 	/* SVG
