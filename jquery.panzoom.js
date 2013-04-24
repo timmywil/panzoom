@@ -257,7 +257,7 @@
 			}
 
 			matrix[0] = matrix[3] = scale;
-			this.setMatrix( matrix, animate );
+			this.setMatrix( matrix, { animate: animate } );
 		},
 
 		/**

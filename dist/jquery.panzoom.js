@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.5.0
+ * @license jquery.panzoom.js v0.5.1
  * Updated: Wed Apr 24 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -257,7 +257,7 @@
 			}
 
 			matrix[0] = matrix[3] = scale;
-			this.setMatrix( matrix, animate );
+			this.setMatrix( matrix, { animate: animate } );
 		},
 
 		/**
