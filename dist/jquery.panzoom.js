@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v0.4.2
- * Updated: Mon Apr 22 2013
+ * @license jquery.panzoom.js v0.4.3
+ * Updated: Wed Apr 24 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -167,7 +167,7 @@
 		 */
 		reset: function() {
 			// Reset the transform to its original value
-			this.setMatrix( this._origTransform, true );
+			this.setMatrix( this._origTransform, { animate: true });
 			// Set the zoom range's value to the original zoom level
 			this.$zoomRange.val( this.getMatrix()[0] );
 		},
@@ -191,16 +191,22 @@
 		 * Given a matrix object, quickly set the current matrix of the element
 		 * @param {Array|String} matrix
 		 * @param {Boolean} [animate] Whether to animate the transform change
+		 * @param {Object} [options]
+		 * @param {Boolean} [options.animate] Whether to animate the transform change
+		 * @param {Boolean} [options.silent] If true, the change event will not be triggered
 		 */
-		setMatrix: function( matrix, animate ) {
+		setMatrix: function( matrix, options ) {
+			if ( !options ) { options = {}; }
 			if ( $.type(matrix) === "array" ) {
 				matrix = "matrix(" + matrix.join(",") + ")";
 			}
-			if ( animate ) {
+			if ( options.animate ) {
 				this.transition();
 			}
 			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", matrix || "none" );
-			this._trigger( "change", matrix );
+			if ( !options.silent ) {
+				this._trigger( "change", matrix );
+			}
 		},
 
 		/**

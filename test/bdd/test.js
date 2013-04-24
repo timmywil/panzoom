@@ -169,6 +169,17 @@ describe("Panzoom", function() {
 		expect( called ).to.be.true;
 	});
 
+	it("should not trigger the change event if the silent option is true", function() {
+		var called = false;
+		function testChange() {
+			called = true;
+		}
+		$elem.on( "panzoomchange", testChange );
+		$elem.panzoom( "setMatrix", [ 1, 0, 0, 1, 0, 0 ], { silent: true });
+		$elem.off( "panzoomchange", testChange );
+		expect( called ).to.be.false;
+	});
+
 	it("should allow string or arrays when setting the matrix", function() {
 		var panzoom = $elem.panzoom("instance");
 		var _matrix = panzoom.getMatrix();

@@ -4,7 +4,7 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (6.4kb/2.5kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (6.6kb/2.6kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 ## Mobile support
 
@@ -136,8 +136,10 @@ Reset the transform matrix to its original value. All panning and zooming is res
 
 ### `zoom( [scale[, noSetRange]] )`
 
-@param {Number|Boolean} [scale] The exact scale to which to zoom or a boolean indicating to transition a zoom out<br/>
-@param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change. No need to set that value. This parameter can be ignored.)
+__Arguments__
+
+  1. `scale` _{Number|Boolean}_: The exact scale to which to zoom or a boolean indicating to transition a zoom out
+  2. `noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change. No need to set that value. This parameter can be ignored.)
 
 ```js
 // Transition a zoom in based on the scale increment, min and max values
@@ -182,10 +184,14 @@ $elem.panzoom("getMatrix");
 // => [1, 0, 0, 1, 0, 0]
 ```
 
-### `setMatrix( matrix[, animate] )`
+### `setMatrix( matrix[, options] )`
 
-@param {Array} matrix<br/>
-@param {Boolean} [animate] Whether to animate the transform change
+__Arguments__
+
+  1. `matrix` _{Array}_: Matrix to set
+  2. `options` _{Object}_
+  3. `options.animate` _{Boolean}_: If true, a transitionw will be set to animate the transform change
+  4. `options.silent` _{Boolean}_: If true, the change event will not be triggered
 
 ```js
 // Flip the element upside down
