@@ -539,10 +539,10 @@
 			var events = {};
 
 			// Bind panzoom events from options
-			$.each([ "Start", "End", "Change" ], function( i, method ) {
-				var m = options[ "on" + method ];
+			$.each([ "Start", "End", "Change" ], function() {
+				var m = options[ "on" + this ];
 				if ( $.isFunction(m) ) {
-					events[ "panzoom" + method.toLowerCase() + ns ] = m;
+					events[ "panzoom" + this.toLowerCase() + ns ] = m;
 				}
 			});
 
@@ -572,7 +572,7 @@
 					}
 				};
 			}
-			if ( events ) {
+			if ( !$.isEmptyObject(events) ) {
 				this.$elem.on( events );
 			}
 
