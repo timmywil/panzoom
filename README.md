@@ -4,7 +4,7 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (6.6kb/2.6kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (6.7kb/2.6kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 ## Mobile support
 
@@ -94,11 +94,11 @@ Panzoom.defaults = {
   $zoomRange: $(),
   // Reset buttons/links collection on which to bind the reset method
   $reset: $(),
-  // Bind a handler to the `panzoomend` event
-  // This is fired on mouseup or touchend when the user
-  // finishes a move or pinched zoom
-  // This can also be bound normally on the panzoom element
+  // For convenience, these options will be bound to panzoom events
+  // These can all be bound normally on the panzoom element
   // e.g. `$elem.on("panzoomend", function( e, panzoom ) { console.log( panzoom.getMatrix() ); });`
+  onStart: undefined,
+  onChange: undefined,
   onEnd: undefined
 };
 ```
@@ -107,7 +107,7 @@ Panzoom.defaults = {
 
 Methods can be called in the same way as a widget from the jQuery UI widget factory. Pass a method name when calling panzoom. Strings are interpreted as method names.
 
-### `option`
+### `option()`
 
 ```js
 // One at a time
@@ -126,7 +126,7 @@ $elem.panzoom("option", {
 
 Any option can be changed. See the defaults above for a list.
 
-### `reset`
+### `reset()`
 
 ```js
 $elem.panzoom("reset");
@@ -155,7 +155,7 @@ $elem.panzoom("zoom", 1.2);
 Transition a zoom in based on the scale increment, min and max values, and animation duration and easing. This method handles both zooming in and zooming out.<br>
 If the method is passed a number, `zoom()` will immediately set that scale without transitioning. This is mostly useful for the range input and pinch gestures.
 
-### `instance`
+### `instance()`
 
 ```js
 var panzoom = $elem.panzoom("instance");
@@ -163,7 +163,7 @@ var panzoom = $elem.panzoom("instance");
 
 Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will just get that instance of Panzoom.
 
-### `destroy`
+### `destroy()`
 
 ```js
 $elem.panzoom("destroy");
@@ -175,7 +175,11 @@ Unbinds all events and removes all data, including the Panzoom instance on the e
 
 These methods are _basically_ private, but could be useful under certain circumstances.
 
-### `getMatrix`
+### `isPanning()`
+
+Returns a boolean indicating whether the element is currently panning.
+
+### `getMatrix()`
 
 Retrieve the current transform matrix of the panzoom element as an array of values. This is mostly for internal use.
 
@@ -217,15 +221,42 @@ Applies the transition to the element. If `off` is true, it removes the transiti
 
 ## Events
 
+### `"panzoomstart"`
+
+__Arguments Received__
+
+  1. `e` _(jQuery.Event)_: jQuery event object
+  2. `panzoom` _(Panzoom)_: The panzoom instance
+  3. `startPageX` _(Number|TouchList)_: The pageX on the mousedown event or the touches list
+  4. `startPageY` _(Number)_: The pageY on the mousedown event
+
+Fired when the user starts a move or pinch zoom gesture on mobile, this event receives the same arguments as the private `_startMove()` method.
+
+If startPageY is undefined, you know the panzoom was triggered by a touch event and not a mousedown event.
+
+### `"panzoomchange"`
+
+__Arguments Received__
+
+  1. `e` _(jQuery.Event)_: jQuery event object
+  2. `panzoom` _(Panzoom)_: The panzoom instance
+  3. `transform` _(String)_: The exact transform set during the change
+
+Fired whenever the matrix is changed by setMatrix (whether internally or externally).
+
+_Try not to put to much in this event as it could slow down dragging._
+
+__Note__: This event can be silenced when setMatrix is called directly.
+
 ### `"panzoomend"`
 
-__Arguments__
+__Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
   2. `panzoom` _(Panzoom)_: The panzoom instance
   3. `changed` _(Boolean)_: Whether the matrix changed during the panzoom event.
 
-Currently, there is only one custom event. It is fired when the user finishes a move or finishes a pinch zoom gesture on mobile.
+This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile.
 
 ## Testing
 

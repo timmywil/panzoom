@@ -16,6 +16,23 @@ describe("Panzoom", function() {
 		$elem.panzoom();
 	});
 
+	/**
+	 * Simulates a start by triggering faux mousedown and touchstart events
+	 */
+	function fauxStart() {
+		var e = new jQuery.Event( "mousedown", {
+			which: 1,
+			pageX: 0,
+			pageY: 0,
+			touches: [
+				{ pageX: 0, pageY: 0 }
+			]
+		});
+		$elem.trigger( e );
+		e.type = "touchstart";
+		$elem.trigger( e );
+	}
+
 	it("should have elements available", function() {
 		expect( $elem ).to.have.length( 1 );
 		expect( $zoomIn ).to.have.length( 1 );
@@ -100,8 +117,7 @@ describe("Panzoom", function() {
 		panzoom.setMatrix = function() {
 			called = true;
 		};
-		// Attempt to trigger normal move start
-		$elem.triggerHandler("touchstart mousedown", { pageX: 0, pageY: 0, touches: ["one"] });
+		fauxStart();
 		expect( called ).to.be.false;
 
 		// Clean-up
@@ -141,17 +157,44 @@ describe("Panzoom", function() {
 		expect( val ).to.equal( $elem.panzoom("getMatrix")[0] );
 	});
 
+	it("should bind the onStart event", function() {
+		var called = false;
+		var instance = $elem.panzoom("instance");
+		function testStart( e, panzoom, startPageX ) {
+			called = true;
+			expect( startPageX ).to.equal( 0 );
+			expect( panzoom ).to.eql( instance );
+			expect( panzoom.panning ).to.be.true;
+		}
+		$elem.panzoom( "option", "onStart", testStart );
+		instance._startMove( 0, 0 );
+		$(document).trigger("mouseup").trigger("touchend");
+		$elem.off( "panzoomstart", testStart );
+		$elem.panzoom( "option", "onStart", null );
+		expect( called ).to.be.true;
+	});
+
+	it("should keep panning up-to-date for isPanning()", function() {
+		fauxStart();
+		var panzoom = $elem.panzoom("instance");
+		expect( panzoom.isPanning() ).to.be.true;
+		$(document).trigger("mouseup").trigger("touchend");
+		expect( panzoom.isPanning() ).to.be.false;
+	});
+
 	it("should bind the onEnd event", function() {
 		var called = false;
 		var instance = $elem.panzoom("instance");
 		function testEnd( e, panzoom ) {
 			called = true;
 			expect( panzoom ).to.eql( instance );
+			expect( panzoom.panning ).to.be.false;
 		}
 		$elem.panzoom( "option", "onEnd", testEnd );
 		instance._startMove( 0, 0 );
 		$(document).trigger("mouseup").trigger("touchend");
 		$elem.off( "panzoomend", testEnd );
+		$elem.panzoom( "option", "onEnd", null );
 		expect( called ).to.be.true;
 	});
 
@@ -162,10 +205,12 @@ describe("Panzoom", function() {
 			called = true;
 			expect( panzoom ).to.eql( instance );
 			expect( transform ).to.be.a("string");
+			expect( panzoom.panning ).to.be.false;
 		}
 		$elem.panzoom( "option", "onChange", testChange );
 		$elem.panzoom( "setMatrix", [ 1, 0, 0, 1, 0, 0 ] );
 		$elem.off( "panzoomchange", testChange );
+		$elem.panzoom( "option", "onChange", null );
 		expect( called ).to.be.true;
 	});
 

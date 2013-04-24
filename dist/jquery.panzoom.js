@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.4.3
+ * @license jquery.panzoom.js v0.5.0
  * Updated: Wed Apr 24 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -54,7 +54,8 @@
 	 * @param {jQuery} [options.$zoomRange] - zoom in/out with this range control
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
 	 * @param {Function} [options.onChange] - An optional callback for the transform change event (panzoomchange)
-	 * @param {Function} [options.onEnd] - An optional callback for mouseup/touchend
+	 * @param {Function} [options.onStart] - An optional callback for panning/pinch-zoom start (panzoomstart)
+	 * @param {Function} [options.onEnd] - An optional callback for panning/pinch-zoom end (panzoomend)
 	 */
 	var Panzoom = function( elem, options ) {
 
@@ -87,6 +88,8 @@
 		// This is SVG if the namespace is SVG
 		// However, while <svg> elements are SVG, we want to treat those like other elements
 		this.isSVG = rsvg.test( elem.namespaceURI ) && elem.nodeName.toLowerCase() !== "svg";
+
+		this.panning = false;
 
 		// Save the original transform value
 		// Save the prefixed transform style key
@@ -210,6 +213,13 @@
 		},
 
 		/**
+		 * @returns {Boolean} Returns whether the panzoom element is currently being dragged
+		 */
+		isPanning: function() {
+			return this.panning;
+		},
+
+		/**
 		 * Apply the current transition to the element, if allowed
 		 * @param {Boolean} [off] Indicates that the transition should be turned off
 		 */
@@ -291,6 +301,7 @@
 					case "$zoomOut":
 					case "$zoomRange":
 					case "$reset":
+					case "onStart":
 					case "onEnd":
 					case "onChange":
 					case "eventNamespace":
@@ -306,6 +317,7 @@
 					case "$zoomOut":
 					case "$zoomRange":
 					case "$reset":
+					case "onStart":
 					case "onEnd":
 					case "onChange":
 					case "eventNamespace":
@@ -463,6 +475,12 @@
 			// Remove any transitions happening
 			this.transition( true );
 
+			// Indicate that we are currently panning
+			this.panning = true;
+
+			// Trigger start event
+			this._trigger( "start", startPageX, startPageY );
+
 			if ( arguments.length === 1 ) {
 				touches = startPageX;
 				startDistance = this._getDistance( touches );
@@ -501,6 +519,7 @@
 				.on( (touchSupported ? "touchend" : "mouseup") + ns, function( e ) {
 					e.preventDefault();
 					$(this).off( ns );
+					self.panning = false;
 					// Trigger our end event
 					// jQuery's not is used here to compare Array equality
 					self._trigger( "end", !!$(original).not(matrix).length );
@@ -520,7 +539,7 @@
 			var events = {};
 
 			// Bind panzoom events from options
-			$.each([ "End", "Change" ], function( i, method ) {
+			$.each([ "Start", "End", "Change" ], function( i, method ) {
 				var m = options[ "on" + method ];
 				if ( $.isFunction(m) ) {
 					events[ "panzoom" + method.toLowerCase() + ns ] = m;
