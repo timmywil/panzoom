@@ -263,7 +263,7 @@ describe("Panzoom", function() {
 		panzoom.setMatrix( origMatrix );
 	}
 
-	it("should pan on the middle point when zooming", function() {
+	it("should pan on the middle point when zooming (and gravitate towards that point)", function() {
 		var panzoom = $elem.panzoom("instance");
 		var matrix = panzoom.getMatrix();
 		panzoom._startMove([
@@ -272,8 +272,8 @@ describe("Panzoom", function() {
 		]);
 		testPinch(function() {
 			var newMatrix = panzoom.getMatrix();
-			expect( +newMatrix[4] ).to.equal( +matrix[4] + 10 );
-			expect( +newMatrix[5] ).to.equal( +matrix[5] + 10 );
+			expect( +newMatrix[4] ).to.equal( +matrix[4] + 11 );
+			expect( +newMatrix[5] ).to.equal( +matrix[5] + 11 );
 		});
 	});
 

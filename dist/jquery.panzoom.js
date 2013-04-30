@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v0.5.2
- * Updated: Wed Apr 24 2013
+ * @license jquery.panzoom.js v0.5.3
+ * Updated: Tue Apr 30 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -231,13 +231,22 @@
 		/**
 		 * Zoom in/out the element using the scale properties of a transform matrix
 		 * @param {Number|Boolean} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
-		 * @param {Boolean} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
+		 * @param {Boolean|Object} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
+		 *  or specify a middle point towards which to gravitate when zooming
 		 */
 		zoom: function( scale, noSetRange ) {
 			var animate;
 			var options = this.options;
 			if ( options.disableZoom ) { return; }
 			var matrix = this.getMatrix();
+
+			// Get the middle point from arguments
+			// noSetRange is actually the middle point
+			if ( noSetRange && typeof noSetRange !== "boolean" ) {
+				matrix[4] = +matrix[4] + (noSetRange.pageX > matrix[4] ? 1 : -1);
+				matrix[5] = +matrix[5] + (noSetRange.pageY > matrix[5] ? 1 : -1);
+				noSetRange = 0;
+			}
 
 			// Calculate zoom based on increment
 			if ( typeof scale !== "number" ) {
@@ -471,6 +480,8 @@
 			var $doc = $(document).off( ns );
 			var matrix = this.getMatrix();
 			var original = matrix.slice( 0 );
+			var origPageX = +original[4];
+			var origPageY = +original[5];
 
 			// Remove any transitions happening
 			this.transition( true );
@@ -492,13 +503,13 @@
 					// Calculate move on middle point
 					touches = e.touches;
 					var middle = self._getMiddle( touches );
-					matrix[4] = +original[4] + middle.pageX - startMiddle.pageX;
-					matrix[5] = +original[5] + middle.pageY - startMiddle.pageY;
+					matrix[4] = origPageX + middle.pageX - startMiddle.pageX;
+					matrix[5] = origPageY + middle.pageY - startMiddle.pageY;
 					self.setMatrix( matrix );
 
 					// Set zoom
 					var diff = self._getDistance( touches ) - startDistance;
-					self.zoom( diff / 300 + startScale );
+					self.zoom( diff / 300 + startScale, middle );
 				};
 			} else {
 
@@ -508,8 +519,8 @@
 				 */
 				move = function( e ) {
 					e.preventDefault();
-					matrix[4] = +original[4] + e.pageX - startPageX;
-					matrix[5] = +original[5] + e.pageY - startPageY;
+					matrix[4] = origPageX + e.pageX - startPageX;
+					matrix[5] = origPageY + e.pageY - startPageY;
 					self.setMatrix( matrix );
 				};
 			}
