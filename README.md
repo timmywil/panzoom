@@ -8,7 +8,9 @@ jquery.panzoom.min.js (7.0kb/2.7kb gzip), included in this repo, is compressed w
 
 ## Mobile support
 
-Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your iPad or iPhone.
+Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your mobile device.
+
+iOS has always been supported. Android is supported as of v0.6.0.
 
 ## SVG support
 
