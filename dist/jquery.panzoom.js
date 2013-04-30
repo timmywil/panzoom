@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.5.3
+ * @license jquery.panzoom.js v0.6.0
  * Updated: Tue Apr 30 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -21,7 +21,22 @@
 	var touchSupported = typeof Modernizr !== "undefined" && Modernizr.touch;
 	if ( touchSupported ) {
 		// Lift touch properties using fixHooks
-		var touchHook = { props: [ "touches", "pageX", "pageY" ] };
+		var touchHook = {
+			props: [ "touches", "pageX", "pageY" ],
+			/**
+			 * Support: Android
+			 * Android sets pageX/Y to 0 for any touch event
+			 * Attach first touch's pageX/pageY if not set correctly
+			 */
+			filter: function( event, originalEvent ) {
+				var touch;
+				if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
+					event.pageX = touch.pageX;
+					event.pageY = touch.pageY;
+				}
+				return event;
+			}
+		};
 		$.each([ "touchstart", "touchmove", "touchend" ], function( i, name ) {
 			$.event.fixHooks[ name ] = touchHook;
 		});
