@@ -580,11 +580,12 @@
 						var touches = e.touches;
 						if ( touches ) {
 							if ( touches.length === 1 && !options.disablePan ) {
-								e.preventDefault();
 								self._startMove( e.pageX, e.pageY );
-							} else if ( touches.length === 2 ) {
-								e.preventDefault();
+								return false;
+							}
+							if ( touches.length === 2 ) {
 								self._startMove( touches );
+								return false;
 							}
 						}
 					};
@@ -593,8 +594,8 @@
 				events[ str_start ] = function( e ) {
 					// Bypass right click
 					if ( e.which === 1 && e.pageX != null && e.pageY != null ) {
-						e.preventDefault();
 						self._startMove( e.pageX, e.pageY );
+						return false;
 					}
 				};
 			}
