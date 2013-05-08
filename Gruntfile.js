@@ -63,6 +63,7 @@ module.exports = function( grunt ) {
 		watch: {
 			files: [
 				"<%= jshint.all %>",
+				"package.json",
 				"test/index.html"
 			],
 			tasks: "test"
