@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.7.0
+ * @license jquery.panzoom.js v0.7.1
  * Updated: Thu May 16 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -127,6 +127,9 @@
 
 		return this;
 	};
+
+	// Attach regex for possible use (immutable)
+	Panzoom.rmatrix = rmatrix;
 
 	Panzoom.defaults = {
 		// Should always be non-empty

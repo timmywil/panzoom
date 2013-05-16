@@ -128,6 +128,9 @@
 		return this;
 	};
 
+	// Attach regex for possible use (immutable)
+	Panzoom.rmatrix = rmatrix;
+
 	Panzoom.defaults = {
 		// Should always be non-empty
 		// Used to bind jQuery events without collisions
