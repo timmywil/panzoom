@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.7.4
+ * @license jquery.panzoom.js v0.7.5
  * Updated: Thu May 16 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -266,10 +266,11 @@
 		 * @param {Object} [opts]
 		 * @param {Boolean} [opts.noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
 		 * @param {Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
+		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
 		 * @param {Boolean} [opts.silent] Silence the zoom event
 		 */
 		zoom: function( scale, opts ) {
-			var animate;
+			var animate = false;
 			var options = this.options;
 			if ( options.disableZoom ) { return; }
 			// Shuffle arguments
@@ -301,7 +302,7 @@
 
 			// Set the scale
 			matrix[0] = matrix[3] = scale;
-			this.setMatrix( matrix, { animate: animate } );
+			this.setMatrix( matrix, { animate: typeof opts.animate === "boolean" ? opts.animate : animate } );
 
 			// Set the zoomRange value
 			if ( !opts.noSetRange ) {
@@ -310,7 +311,7 @@
 
 			// Trigger zoom event
 			if ( !opts.silent ) {
-				this._trigger( "zoom", scale );
+				this._trigger( "zoom", scale, opts );
 			}
 		},
 

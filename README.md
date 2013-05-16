@@ -174,7 +174,8 @@ __Arguments__
   2. `opts` _{Object}_:
     a. `opts.noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
     b. `opts.middle` _{Object}_: Specify a middle point towards which to gravitate when zooming
-    c. `opts.silent` _{Boolean}_: Silence the zoom event
+    c. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
+    d. `opts.silent` _{Boolean}_: Silence the zoom event
 
 ```js
 // Transition a zoom in based on the scale increment, min and max values
@@ -291,6 +292,7 @@ __Arguments Received__
   1. `e` _(jQuery.Event)_: jQuery event object
   2. `panzoom` _(Panzoom)_: The panzoom instance
   3. `scale` _(Number)_: The zoom scale set by the plugin
+  4. `opts` _(Object)_: Same options passed to zoom
 
 Fired whenever the zoom is changed by this plugin.
 
