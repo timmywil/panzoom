@@ -128,13 +128,43 @@ $elem.panzoom("option", {
 
 Any option can be changed. See the defaults above for a list.
 
-### `reset()`
+### `reset( [animate] )`
+
+__Arguments__
+
+  1. `animate` _{Boolean}_: Whether to animate the reset (default: true)
 
 ```js
 $elem.panzoom("reset");
 ```
 
 Reset the transform matrix to its original value. All panning and zooming is reset.
+
+### `resetZoom( [animate] )`
+
+__Arguments__
+
+  1. `animate` _{Boolean}_: Whether to animate the reset (default: true)
+
+```js
+$elem.panzoom("resetZoom");
+$elem.panzoom("resetZoom", false);
+```
+
+Reset the scale to its original value.
+
+### `resetPan( [animate] )`
+
+__Arguments__
+
+  1. `animate` _{Boolean}_: Whether to animate the reset (default: true)
+
+```js
+$elem.panzoom("resetPan");
+$elem.panzoom("resetPan", false);
+```
+
+Reset the pan to its original value.
 
 ### `zoom( [scale[, noSetRange]] )`
 
@@ -181,9 +211,9 @@ These methods are _basically_ private, but could be useful under certain circums
 
 Returns a boolean indicating whether the element is currently panning.
 
-### `getMatrix()`
+### `getMatrix( [transform] )`
 
-Retrieve the current transform matrix of the panzoom element as an array of values. This is mostly for internal use.
+Retrieve an array of values for the specified transform or for the current transform on the panzoom element.
 
 ```js
 $elem.panzoom("getMatrix");

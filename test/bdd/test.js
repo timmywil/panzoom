@@ -234,6 +234,30 @@ describe("Panzoom", function() {
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
 	});
 
+	it("should reset zoom only on resetZoom", function() {
+		var panzoom = $elem.panzoom("instance");
+		panzoom.setMatrix([ 2, 0, 0, 2, 1, 1 ], false);
+		$elem.panzoom("resetZoom", false);
+		var matrix = panzoom.getMatrix();
+		expect( matrix[0] ).to.equal( "1" );
+		expect( matrix[3] ).to.equal( "1" );
+		expect( matrix[4] ).to.equal( "1" );
+		expect( matrix[5] ).to.equal( "1" );
+		$elem.panzoom("reset");
+	});
+
+	it("should reset pan only on resetPan", function() {
+		var panzoom = $elem.panzoom("instance");
+		panzoom.setMatrix([ 2, 0, 0, 2, 1, 1 ], false);
+		$elem.panzoom("resetPan");
+		var matrix = panzoom.getMatrix();
+		expect( matrix[0] ).to.equal( "2" );
+		expect( matrix[3] ).to.equal( "2" );
+		expect( matrix[4] ).to.equal( "0" );
+		expect( matrix[5] ).to.equal( "0" );
+		$elem.panzoom("reset");
+	});
+
 	/**
 	 * Simulates a pinch gesture (even in desktop browsers) starting at the move
 	 * (the move event must already be bound)

@@ -128,9 +128,6 @@
 		return this;
 	};
 
-	// Attach regex for possible use (immutable)
-	Panzoom.rmatrix = rmatrix;
-
 	Panzoom.defaults = {
 		// Should always be non-empty
 		// Used to bind jQuery events without collisions
@@ -182,23 +179,40 @@
 
 		/**
 		 * Return the element to it's original transform matrix
+		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
 		 */
-		reset: function() {
+		reset: function( animate ) {
 			// Reset the transform to its original value
-			this.setMatrix( this._origTransform, { animate: true });
+			this.setMatrix( this._origTransform, { animate: typeof animate !== "boolean" || animate });
 			// Set the zoom range's value to the original zoom level
 			this.$zoomRange.val( this.getMatrix()[0] );
 		},
 
 		/**
-		 * Retrieve the current transform matrix for $elem
+		 * Only resets zoom level
+		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
+		 */
+		resetZoom: function( animate ) {
+			this._resetParts( [ 0, 3 ], animate );
+			// Set the zoom range's value to the original zoom level
+			this.$zoomRange.val( this.getMatrix()[0] );
+		},
+
+		/**
+		 * Only reset panning
+		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
+		 */
+		resetPan: function( animate ) {
+			this._resetParts( [ 4, 5 ], animate );
+		},
+
+		/**
+		 * Retrieve the current transform matrix for $elem (or turn a transform into it's array values)
+		 * @param {String} [transform]
 		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
 		 */
-		getMatrix: function() {
-			// Use style rather than computed
-			// If currently transitioning, computed transform might be unchanged
-			// SVG uses the transform attribute
-			var matrix = rmatrix.exec( this._getTransform() );
+		getMatrix: function( transform ) {
+			var matrix = rmatrix.exec( transform || this._getTransform() );
 			if ( matrix ) {
 				matrix.shift();
 			}
@@ -408,18 +422,24 @@
 		 * @returns {String} Returns the current transform value of the element
 		 */
 		_getTransform: function() {
+			var transform;
 			var elem = this.elem;
+
 			if ( this.isSVG ) {
-				return $.attr( elem, "transform" );
+				// SVG uses the transform attribute
+				transform = $.attr( elem, "transform" );
+			} else {
+				// Use style rather than computed
+				// If currently transitioning, computed transform might be unchanged
+				transform = $.style( elem, "transform" );
+				// Convert any transforms set by the user to matrix format
+				// by setting to computed
+				if ( transform !== "none" && !rmatrix.test(transform) ) {
+					transform = $.style( elem, "transform", $.css(elem, "transform") );
+				}
 			}
 
-			var transform = $.style( elem, "transform" );
-			// Convert any transforms set by the user to matrix format
-			// by setting to computed
-			if ( transform !== "none" && !rmatrix.test(transform) ) {
-				transform = $.style( elem, "transform", $.css(elem, "transform") );
-			}
-			return transform;
+			return transform || "none";
 		},
 
 		/**
@@ -444,6 +464,19 @@
 			if ( this._transform ) {
 				this._transition = this._transform + " " + options.duration + "ms " + options.easing;
 			}
+		},
+
+		/**
+		 * Reset certain parts of the transform
+		 */
+		_resetParts: function( indices, animate ) {
+			var origMatrix = this.getMatrix( this._origTransform );
+			var cur = this.getMatrix();
+			var i = indices.length;
+			while( i-- ) {
+				cur[ indices[i] ] = origMatrix[ indices[i] ];
+			}
+			this.setMatrix(cur, { animate: typeof animate !== "boolean" || animate });
 		},
 
 		/**
