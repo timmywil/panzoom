@@ -235,9 +235,7 @@
 			if ( $.type(matrix) === "array" ) {
 				matrix = "matrix(" + matrix.join(",") + ")";
 			}
-			if ( options.animate ) {
-				this.transition();
-			}
+			this.transition( !options.animate );
 			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", matrix || "none" );
 			if ( !options.silent ) {
 				this._trigger( "change", matrix );

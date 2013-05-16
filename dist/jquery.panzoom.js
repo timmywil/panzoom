@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.7.1
+ * @license jquery.panzoom.js v0.7.2
  * Updated: Thu May 16 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -235,9 +235,7 @@
 			if ( $.type(matrix) === "array" ) {
 				matrix = "matrix(" + matrix.join(",") + ")";
 			}
-			if ( options.animate ) {
-				this.transition();
-			}
+			this.transition( !options.animate );
 			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", matrix || "none" );
 			if ( !options.silent ) {
 				this._trigger( "change", matrix );
