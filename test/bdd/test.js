@@ -277,6 +277,16 @@ describe("Panzoom", function() {
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
 	});
 
+	it("should trigger the reset event on reset", function() {
+		var called = false;
+		function testReset( e, panzoom, matrix ) {
+			called = true;
+			expect( matrix ).to.be.an("array");
+		}
+		$elem.on("panzoomreset", testReset).panzoom("reset");
+		expect( called ).to.be.true;
+	});
+
 	it("should reset zoom only on resetZoom", function() {
 		var panzoom = $elem.panzoom("instance");
 		panzoom.setMatrix([ 2, 0, 0, 2, 1, 1 ], false);

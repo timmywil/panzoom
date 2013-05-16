@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.7.3
+ * @license jquery.panzoom.js v0.7.4
  * Updated: Thu May 16 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -187,8 +187,10 @@
 		reset: function( animate ) {
 			// Reset the transform to its original value
 			this.setMatrix( this._origTransform, { animate: typeof animate !== "boolean" || animate });
+			var matrix = this.getMatrix();
 			// Set the zoom range's value to the original zoom level
-			this.$zoomRange.val( this.getMatrix()[0] );
+			this.$zoomRange.val( matrix[0] );
+			this._trigger( "reset", matrix );
 		},
 
 		/**

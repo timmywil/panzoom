@@ -319,6 +319,16 @@ __Arguments Received__
 
 This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile.
 
+### `"panzoomreset"`
+
+__Arguments Received__
+
+  1. `e` _(jQuery.Event)_: jQuery event object
+  2. `panzoom` _(Panzoom)_: The panzoom instance
+  3. `matrix` _(Array)_: The original matrix
+
+Fired whenever reset is called.
+
 ## Testing
 
 Tests can be run by opening [test/index.html](http://timmywil.github.com/jquery.panzoom/test/) in a browser or by using [`grunt`](http://gruntjs.com/) and [phantomjs](http://phantomjs.org/). See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CONTRIBUTING.md) for more info.
