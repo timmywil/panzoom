@@ -261,21 +261,27 @@
 		/**
 		 * Zoom in/out the element using the scale properties of a transform matrix
 		 * @param {Number|Boolean} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
-		 * @param {Boolean|Object} [noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
-		 *  or specify a middle point towards which to gravitate when zooming
+		 * @param {Object} [opts]
+		 * @param {Boolean} [opts.noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
+		 * @param {Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
+		 * @param {Boolean} [opts.silent] Silence the zoom event
 		 */
-		zoom: function( scale, noSetRange ) {
+		zoom: function( scale, opts ) {
 			var animate;
 			var options = this.options;
 			if ( options.disableZoom ) { return; }
+			// Shuffle arguments
+			if ( typeof scale === "object" ) {
+				opts = scale;
+			} else if ( !opts ) {
+				opts = {};
+			}
 			var matrix = this.getMatrix();
 
-			// Get the middle point from arguments
-			// noSetRange is actually the middle point
-			if ( noSetRange && typeof noSetRange !== "boolean" ) {
-				matrix[4] = +matrix[4] + (noSetRange.pageX > matrix[4] ? 1 : -1);
-				matrix[5] = +matrix[5] + (noSetRange.pageY > matrix[5] ? 1 : -1);
-				noSetRange = 0;
+			// Set the middle point
+			if ( opts.middle ) {
+				matrix[4] = +matrix[4] + (opts.middle.pageX > matrix[4] ? 1 : -1);
+				matrix[5] = +matrix[5] + (opts.middle.pageY > matrix[5] ? 1 : -1);
 			}
 
 			// Calculate zoom based on increment
@@ -291,12 +297,19 @@
 				scale = options.minScale;
 			}
 
-			if ( !noSetRange ) {
+			// Set the scale
+			matrix[0] = matrix[3] = scale;
+			this.setMatrix( matrix, { animate: animate } );
+
+			// Set the zoomRange value
+			if ( !opts.noSetRange ) {
 				this.$zoomRange.val( scale );
 			}
 
-			matrix[0] = matrix[3] = scale;
-			this.setMatrix( matrix, { animate: animate } );
+			// Trigger zoom event
+			if ( !opts.silent ) {
+				this._trigger( "zoom", scale );
+			}
 		},
 
 		/**
@@ -555,10 +568,11 @@
 					matrix[4] = origPageX + middle.pageX - startMiddle.pageX;
 					matrix[5] = origPageY + middle.pageY - startMiddle.pageY;
 					self.setMatrix( matrix );
+					self._trigger( "pan", matrix[4], matrix[5] );
 
 					// Set zoom
 					var diff = self._getDistance( touches ) - startDistance;
-					self.zoom( diff / 300 + startScale, middle );
+					self.zoom( diff / 300 + startScale, { middle: middle } );
 				};
 			} else {
 
@@ -571,6 +585,7 @@
 					matrix[4] = origPageX + e.pageX - startPageX;
 					matrix[5] = origPageY + e.pageY - startPageY;
 					self.setMatrix( matrix );
+					self._trigger( "pan", matrix[4], matrix[5] );
 				};
 			}
 
@@ -668,7 +683,7 @@
 					self.transition( true );
 				};
 				events[ "change" + ns ] = function() {
-					self.zoom( +this.value, true );
+					self.zoom( +this.value, { noSetRange: true } );
 				};
 				$zoomRange.on( events );
 			}
