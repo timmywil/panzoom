@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v0.9.0
+ * @license jquery.panzoom.js v0.9.8
  * Updated: Tue Jun 04 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -115,6 +115,9 @@
 		// Build the transition value
 		this._buildTransition();
 
+		// Build containment if necessary
+		this._buildContain();
+
 		// Add zoom and reset buttons to `this`
 		var $empty = $();
 		var self = this;
@@ -161,7 +164,11 @@
 		// Animation duration (ms)
 		duration: 200,
 		// CSS easing used for scale transition
-		easing: "ease-in-out"
+		easing: "ease-in-out",
+
+		// Indicate that the element should be contained within it's parent when panning
+		// Note: this does not affect zooming outside of the parent
+		contain: false
 	};
 
 	Panzoom.prototype = {
@@ -364,6 +371,12 @@
 		setMatrix: function( matrix, options ) {
 			if ( !options ) { options = {}; }
 			if ( $.type(matrix) === "array" ) {
+				if ( this.options.contain ) {
+					var container = this.container;
+					var dims = this.dimensions;
+					matrix[4] = Math.min( Math.max( matrix[4], -dims.left ), container.width - dims.width - dims.left );
+					matrix[5] = Math.min( Math.max( matrix[5], -dims.top ), container.height - dims.height - dims.top );
+				}
 				matrix = "matrix(" + matrix.join(",") + ")";
 			}
 			this.transition( !options.animate );
@@ -486,8 +499,11 @@
 					case "$zoomRange":
 					case "$reset":
 					case "onStart":
-					case "onEnd":
 					case "onChange":
+					case "onZoom":
+					case "onPan":
+					case "onEnd":
+					case "onReset":
 					case "eventNamespace":
 						self.disable();
 				}
@@ -502,8 +518,11 @@
 					case "$zoomRange":
 					case "$reset":
 					case "onStart":
-					case "onEnd":
 					case "onChange":
+					case "onZoom":
+					case "onPan":
+					case "onEnd":
+					case "onReset":
 					case "eventNamespace":
 						self.enable();
 						break;
@@ -515,6 +534,9 @@
 						break;
 					case "maxScale":
 						self.$zoomRange.attr( "max", value );
+						break;
+					case "contain":
+						self._buildContain();
 						break;
 					case "startTransform":
 						self._buildTransform();
@@ -584,6 +606,33 @@
 			var options = this.options;
 			if ( this._transform ) {
 				this._transition = this._transform + " " + options.duration + "ms " + options.easing;
+			}
+		},
+
+		/**
+		 * Builds the restricing dimensions from the containment element
+		 */
+		_buildContain: function() {
+			// Reset container properties
+			if ( this.options.contain ) {
+				var $parent = this.$parent;
+				this.container = {
+					width: $parent.width(),
+					height: $parent.height()
+				};
+				var elem = this.elem;
+				var $elem = this.$elem;
+				this.dimensions = this.isSVG ? {
+					left: elem.getAttribute("x") || 0,
+					top: elem.getAttribute("y") || 0,
+					width: elem.getAttribute("width") || $elem.width(),
+					height: elem.getAttribute("height") || $elem.height()
+				} : {
+					left: $.css( elem, "left", true ) || 0,
+					top: $.css( elem, "top", true ) || 0,
+					width: $elem.width(),
+					height: $elem.height()
+				};
 			}
 		},
 

@@ -33,6 +33,25 @@ describe("Panzoom", function() {
 		$elem.trigger( e );
 	}
 
+	/**
+	 * Simulate a move to the specified x and y
+	 * @param {Number} x
+	 * @param {Number} y
+	 */
+	function fauxMove( x, y ) {
+		fauxStart();
+		var e = jQuery.Event("mousemove", {
+			pageX: x,
+			pageY: y,
+			touches: [
+				{ pageX: x, pageY: y }
+			]
+		});
+		var $doc = $(document).trigger( e );
+		e.type = "touchmove";
+		$doc.trigger( e ).trigger("mouseup").trigger("touchend");
+	}
+
 	it("should have elements available", function() {
 		expect( $elem ).to.have.length( 1 );
 		expect( $zoomIn ).to.have.length( 1 );
@@ -117,7 +136,7 @@ describe("Panzoom", function() {
 		panzoom.setMatrix = function() {
 			called = true;
 		};
-		fauxStart();
+		fauxMove( 1, 1 );
 		expect( called ).to.be.false;
 
 		// Clean-up
@@ -254,17 +273,7 @@ describe("Panzoom", function() {
 			expect( y ).to.be.a("number");
 		}
 		$elem.on( "panzoompan", testPan );
-		fauxStart();
-		var e = jQuery.Event("mousemove", {
-			pageX: 1,
-			pageY: 1,
-			touches: [
-				{ pageX: 1, pageY: 1 }
-			]
-		});
-		var $doc = $(document).trigger( e );
-		e.type = "touchmove";
-		$doc.trigger( e ).trigger("mouseup").trigger("touchend");
+		fauxMove( 1, 1 );
 		expect( called ).to.be.true;
 	});
 
@@ -335,6 +344,15 @@ describe("Panzoom", function() {
 		$elem.panzoom("enable");
 		events = $._data( panzoom.elem, "events" );
 		expect( events.mousedown || events.touchstart ).to.not.be.undefined;
+	});
+
+	it("should contain the panzoom element within its parent when the contain option is true", function() {
+		$elem.panzoom( "option", "contain", true );
+		fauxMove( -2, -2 );
+		var matrix = $elem.panzoom("getMatrix");
+		expect( +matrix[4] ).to.not.equal( -2 );
+		expect( +matrix[5] ).to.not.equal( -2 );
+		$elem.panzoom("option", "contain", false).panzoom("reset");
 	});
 
 	/**
