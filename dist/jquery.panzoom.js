@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v0.7.5
- * Updated: Thu May 16 2013
+ * @license jquery.panzoom.js v0.8.0
+ * Updated: Tue Jun 04 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -109,6 +109,9 @@
 		// Save the original transform value
 		// Save the prefixed transform style key
 		this._buildTransform();
+		// Build the appropriately-prefixed transform style property name
+		// De-camelcase
+		this._transform = $.cssProps.transform.replace( rupper, "-$1" ).toLowerCase();
 		// Build the transition value
 		this._buildTransition();
 
@@ -212,12 +215,34 @@
 		},
 
 		/**
+		 * Retrieving the transform is different for SVG (unless a style transform is already present)
+		 * @returns {String} Returns the current transform value of the element
+		 */
+		getTransform: function() {
+			var elem = this.elem;
+			// Use style rather than computed
+			// If currently transitioning, computed transform might be unchanged
+			var transform = $.style( elem, "transform" );
+
+			// SVG falls back to the transform attribute
+			if ( this.isSVG && !transform ) {
+				transform = $.attr( elem, "transform" );
+			// Convert any transforms set by the user to matrix format
+			// by setting to computed
+			} else if ( transform !== "none" && !rmatrix.test(transform) ) {
+				transform = $.style( elem, "transform", $.css(elem, "transform") );
+			}
+
+			return transform || "none";
+		},
+
+		/**
 		 * Retrieve the current transform matrix for $elem (or turn a transform into it's array values)
 		 * @param {String} [transform]
 		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
 		 */
 		getMatrix: function( transform ) {
-			var matrix = rmatrix.exec( transform || this._getTransform() );
+			var matrix = rmatrix.exec( transform || this.getTransform() );
 			if ( matrix ) {
 				matrix.shift();
 			}
@@ -387,6 +412,9 @@
 					case "maxScale":
 						self.$zoomRange.attr( "max", value );
 						break;
+					case "startTransform":
+						self._buildTransform();
+						break;
 					case "duration":
 					case "easing":
 						self._buildTransition();
@@ -435,41 +463,13 @@
 		},
 
 		/**
-		 * Retrieving the transform is different for SVG
-		 * @returns {String} Returns the current transform value of the element
-		 */
-		_getTransform: function() {
-			var transform;
-			var elem = this.elem;
-
-			if ( this.isSVG ) {
-				// SVG uses the transform attribute
-				transform = $.attr( elem, "transform" );
-			} else {
-				// Use style rather than computed
-				// If currently transitioning, computed transform might be unchanged
-				transform = $.style( elem, "transform" );
-				// Convert any transforms set by the user to matrix format
-				// by setting to computed
-				if ( transform !== "none" && !rmatrix.test(transform) ) {
-					transform = $.style( elem, "transform", $.css(elem, "transform") );
-				}
-			}
-
-			return transform || "none";
-		},
-
-		/**
-		 * Builds the prefixed transform property name
-		 * and tracks the original transform value
+		 * Builds the original transform value
 		 */
 		_buildTransform: function() {
 			// Save the original transform
 			// Retrieving this also adds the correct prefixed style name
 			// to jQuery's internal $.cssProps
-			this._origTransform = this._getTransform();
-			// De-camelcase
-			this._transform = $.cssProps.transform.replace( rupper, "-$1" ).toLowerCase();
+			this._origTransform = this.options.startTransform || this.getTransform();
 		},
 
 		/**

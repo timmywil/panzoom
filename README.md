@@ -89,6 +89,10 @@ Panzoom.defaults = {
   // CSS easing used for scale transition
   easing: "ease-in-out",
 
+  // Transform value to which to always reset (string)
+  // Defaults to the original transform on the element when panzoom is initialized
+  startTransform: undefined,
+
   // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzooom("zoomIn"); });` )
   $zoomIn: $(),
   $zoomOut: $(),
@@ -215,6 +219,12 @@ These methods are _basically_ private, but could be useful under certain circums
 ### `isPanning()`
 
 Returns a boolean indicating whether the element is currently panning.
+
+### `getTransform()`
+
+Returns the string transform value used by panzoom for the element.
+
+__Note__: The transform attribute is used for SVG. Otherwise, the appropriately prefixed transform style property is used.
 
 ### `getMatrix( [transform] )`
 

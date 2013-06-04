@@ -54,7 +54,7 @@ describe("Panzoom", function() {
 	it("should allow different starting values for zoom than 1", function() {
 		$elem.css( "transform", "scale(2)" );
 		var panzoom = $elem.panzoom({ $zoomRange: $zoomRange }).panzoom("instance");
-		expect( panzoom._getTransform() ).to.contain("matrix");
+		expect( panzoom.getTransform() ).to.contain("matrix");
 		expect( $zoomRange.val() ).to.equal("2");
 		// Clean-up
 		$elem.css( "transform", "" );
@@ -272,7 +272,7 @@ describe("Panzoom", function() {
 		var panzoom = $elem.panzoom("instance");
 		var _matrix = panzoom.getMatrix();
 		panzoom.setMatrix("none");
-		expect( panzoom._getTransform() ).to.equal("none");
+		expect( panzoom.getTransform() ).to.equal("none");
 		panzoom.setMatrix( _matrix );
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
 	});
@@ -309,6 +309,18 @@ describe("Panzoom", function() {
 		expect( matrix[4] ).to.equal( "0" );
 		expect( matrix[5] ).to.equal( "0" );
 		$elem.panzoom("reset");
+	});
+
+	it("should reset to the specified transform on reset", function() {
+		var transform = "matrix(1, 0, 0, -1, 0, 0)";
+		// Reset to upside-down
+		$elem.panzoom( "option", "startTransform", transform );
+		var panzoom = $elem.panzoom("instance");
+		panzoom.reset();
+		expect( panzoom.getTransform() ).to.equal( transform );
+		$elem.css("transform", "none");
+		$elem.panzoom( "option", "startTransform", undefined );
+		panzoom.reset();
 	});
 
 	/**
