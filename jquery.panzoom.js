@@ -123,7 +123,7 @@
 		});
 
 		this._initStyle();
-		this._bind();
+		this.enable();
 
 		// Save the instance
 		$.data( elem, datakey, this );
@@ -175,11 +175,115 @@
 		},
 
 		/**
-		 * Destroy the current minimal lightbox instances
+		 * Bind all necessary events
+		 */
+		enable: function() {
+			// Unbind first
+			this.disable();
+
+			var self = this;
+			var ns = this.options.eventNamespace;
+			var str_click = (touchSupported ? "touchend" : "click") + ns;
+			var str_start = (touchSupported ? "touchstart" : "mousedown") + ns;
+			var options = this.options;
+			var events = {};
+
+			// Bind panzoom events from options
+			$.each([ "Start", "Change", "Zoom", "Pan", "End", "Reset" ], function() {
+				var m = options[ "on" + this ];
+				if ( $.isFunction(m) ) {
+					events[ "panzoom" + this.toLowerCase() + ns ] = m;
+				}
+			});
+
+			// Bind $elem drag and click events
+			if ( touchSupported ) {
+				// Bind touchstart if either panning or zooming is enabled
+				if ( !options.disablePan || !options.disableZoom ) {
+					events[ str_start ] = function( e ) {
+						var touches = e.touches;
+						if ( touches ) {
+							if ( touches.length === 1 && !options.disablePan ) {
+								self._startMove( e.pageX, e.pageY );
+								return false;
+							}
+							if ( touches.length === 2 ) {
+								self._startMove( touches );
+								return false;
+							}
+						}
+					};
+				}
+			} else if ( !options.disablePan ) {
+				events[ str_start ] = function( e ) {
+					// Bypass right click
+					if ( e.which === 1 && e.pageX != null && e.pageY != null ) {
+						self._startMove( e.pageX, e.pageY );
+						return false;
+					}
+				};
+			}
+			this.$elem.on( events );
+
+			// No bindings if zooming is disabled
+			if ( options.disableZoom ) {
+				return;
+			}
+
+			var $zoomIn = this.$zoomIn;
+			var $zoomOut = this.$zoomOut;
+			var $zoomRange = this.$zoomRange;
+			var $reset = this.$reset;
+
+			// Bind zoom in/out
+			// Don't bind one without the other
+			if ( $zoomIn.length && $zoomOut.length ) {
+				$zoomIn.on( str_click, function( e ) { e.preventDefault(); self.zoom(); });
+				$zoomOut.on( str_click, function( e ) { e.preventDefault(); self.zoom( true ); });
+			}
+
+			if ( $zoomRange.length ) {
+				// Set default attributes
+				$zoomRange.attr({
+					min: options.minScale,
+					max: options.maxScale,
+					step: 0.05
+				}).prop({
+					value: this.getMatrix()[0]
+				});
+				events = {};
+				events[ str_start ] = function() {
+					self.transition( true );
+				};
+				events[ "change" + ns ] = function() {
+					self.zoom( +this.value, { noSetRange: true } );
+				};
+				$zoomRange.on( events );
+			}
+
+			// Bind reset
+			if ( $reset.length ) {
+				$reset.on( str_click, function( e ) { e.preventDefault(); self.reset(); });
+			}
+		},
+
+		/**
+		 * Unbind all panzoom events
+		 */
+		disable: function() {
+			this.$elem
+				.add( this.$zoomIn )
+				.add( this.$zoomOut )
+				.add( this.$reset )
+				.off( this.options.eventNamespace );
+		},
+
+		/**
+		 * Destroy the panzoom instance
 		 */
 		destroy: function() {
 			this._resetStyle();
-			this._unbind();
+			this.disable();
 			$.removeData( this.elem, datakey );
 		},
 
@@ -385,7 +489,7 @@
 					case "onEnd":
 					case "onChange":
 					case "eventNamespace":
-						self._unbind();
+						self.disable();
 				}
 				self.options[ key ] = value;
 				switch( key ) {
@@ -401,7 +505,7 @@
 					case "onEnd":
 					case "onChange":
 					case "eventNamespace":
-						self._bind();
+						self.enable();
 						break;
 					case "cursor":
 						$.style( self.elem, "cursor", value );
@@ -603,109 +707,6 @@
 					self._trigger( "end", !!$(original).not(matrix).length );
 				})
 				.on( (touchSupported ? "touchmove" : "mousemove") + ns, move );
-		},
-
-		/**
-		 * Bind all necessary events
-		 */
-		_bind: function() {
-			var self = this;
-			var ns = this.options.eventNamespace;
-			var str_click = (touchSupported ? "touchend" : "click") + ns;
-			var str_start = (touchSupported ? "touchstart" : "mousedown") + ns;
-			var options = this.options;
-			var events = {};
-
-			// Bind panzoom events from options
-			$.each([ "Start", "End", "Change" ], function() {
-				var m = options[ "on" + this ];
-				if ( $.isFunction(m) ) {
-					events[ "panzoom" + this.toLowerCase() + ns ] = m;
-				}
-			});
-
-			// Bind $elem drag and click events
-			if ( touchSupported ) {
-				// Bind touchstart if either panning or zooming is enabled
-				if ( !options.disablePan || !options.disableZoom ) {
-					events[ str_start ] = function( e ) {
-						var touches = e.touches;
-						if ( touches ) {
-							if ( touches.length === 1 && !options.disablePan ) {
-								self._startMove( e.pageX, e.pageY );
-								return false;
-							}
-							if ( touches.length === 2 ) {
-								self._startMove( touches );
-								return false;
-							}
-						}
-					};
-				}
-			} else if ( !options.disablePan ) {
-				events[ str_start ] = function( e ) {
-					// Bypass right click
-					if ( e.which === 1 && e.pageX != null && e.pageY != null ) {
-						self._startMove( e.pageX, e.pageY );
-						return false;
-					}
-				};
-			}
-			if ( !$.isEmptyObject(events) ) {
-				this.$elem.on( events );
-			}
-
-			// No bindings if zooming is disabled
-			if ( options.disableZoom ) {
-				return;
-			}
-
-			var $zoomIn = this.$zoomIn;
-			var $zoomOut = this.$zoomOut;
-			var $zoomRange = this.$zoomRange;
-			var $reset = this.$reset;
-
-			// Bind zoom in/out
-			// Don't bind one without the other
-			if ( $zoomIn.length && $zoomOut.length ) {
-				$zoomIn.on( str_click, function( e ) { e.preventDefault(); self.zoom(); });
-				$zoomOut.on( str_click, function( e ) { e.preventDefault(); self.zoom( true ); });
-			}
-
-			if ( $zoomRange.length ) {
-				// Set default attributes
-				$zoomRange.attr({
-					min: options.minScale,
-					max: options.maxScale,
-					step: 0.05
-				}).prop({
-					value: this.getMatrix()[0]
-				});
-				events = {};
-				events[ str_start ] = function() {
-					self.transition( true );
-				};
-				events[ "change" + ns ] = function() {
-					self.zoom( +this.value, { noSetRange: true } );
-				};
-				$zoomRange.on( events );
-			}
-
-			// Bind reset
-			if ( $reset.length ) {
-				$reset.on( str_click, function( e ) { e.preventDefault(); self.reset(); });
-			}
-		},
-
-		/**
-		 * Unbind all minimal lightbox clicks
-		 */
-		_unbind: function() {
-			this.$elem
-				.add( this.$zoomIn )
-				.add( this.$zoomOut )
-				.add( this.$reset )
-				.off( this.options.eventNamespace );
 		}
 	};
 

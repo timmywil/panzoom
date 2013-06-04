@@ -105,7 +105,10 @@ Panzoom.defaults = {
   // e.g. `$elem.on("panzoomend", function( e, panzoom ) { console.log( panzoom.getMatrix() ); });`
   onStart: undefined,
   onChange: undefined,
-  onEnd: undefined
+  onZoom: undefined,
+  onPan: undefined,
+  onEnd: undefined,
+  onReset: undefined
 };
 ```
 
@@ -196,6 +199,28 @@ $elem.panzoom("zoom", 1.2, { silent: true });
 Transition a zoom in based on the scale increment, min and max values, and animation duration and easing. This method handles both zooming in and zooming out.<br>
 If the method is passed a number, `zoom()` will immediately set that scale without transitioning. This is mostly useful for the range input and pinch gestures.
 
+### `disable()`
+
+```js
+$elem.panzoom("disable");
+```
+
+Quickly disable panzoom on the element.
+
+### `enable()`
+
+```js
+$elem.panzoom("enable");
+```
+
+Re-enable panzoom on the element (re-binds all events).
+
+### `destroy()`
+
+```js
+$elem.panzoom("destroy");
+```
+
 ### `instance()`
 
 ```js
@@ -203,12 +228,6 @@ var panzoom = $elem.panzoom("instance");
 ```
 
 Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will just get that instance of Panzoom.
-
-### `destroy()`
-
-```js
-$elem.panzoom("destroy");
-```
 
 Unbinds all events and removes all data, including the Panzoom instance on the element.
 

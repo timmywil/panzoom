@@ -323,6 +323,20 @@ describe("Panzoom", function() {
 		panzoom.reset();
 	});
 
+	it("should disable/enable panzoom when disable/enable is called", function() {
+		// Disable
+		$elem.panzoom("disable");
+		var panzoom = $elem.panzoom("instance");
+		expect( panzoom ).to.be.an("object");
+		var events = $._data( panzoom.elem, "events" ) || {};
+		expect( events.mousedown || events.touchstart ).to.be.undefined;
+
+		// Enable
+		$elem.panzoom("enable");
+		events = $._data( panzoom.elem, "events" );
+		expect( events.mousedown || events.touchstart ).to.not.be.undefined;
+	});
+
 	/**
 	 * Simulates a pinch gesture (even in desktop browsers) starting at the move
 	 * (the move event must already be bound)
@@ -405,7 +419,8 @@ describe("Panzoom", function() {
 			$zoomIn: $zoomIn,
 			$zoomOut: $zoomOut,
 			$zoomRange: $zoomRange,
-			$reset: $reset
+			$reset: $reset,
+			eventNamespace: ".svg"
 		});
 		var panzoom = $rect.panzoom("instance");
 		expect( panzoom.isSVG ).to.be.true;
