@@ -6,15 +6,18 @@ And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (8.5kb/3.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
+[Download version 1.0](https://raw.github.com/timmywil/jquery.panzoom/v1.0.0/dist/jquery.panzoom.min.js)
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.0.0/dist/jquery.panzoom.js)
+
 ## Mobile support
 
 Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your mobile device.
 
-iOS has always been supported. Android is supported as of v0.6.0.
+iOS and Android are supported.
 
 ## SVG support
 
-As of v0.2.0, Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
+Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
 
 ## Dependencies
 
@@ -64,7 +67,7 @@ Panzoom.defaults = {
   // Should always be non-empty
   // Used to bind jQuery events without collisions
   // A guid is not added here as different instantiations/versions of panzoom
-  // on the same element is not supported, so don't do it.
+  // on the same element is not supported.
   eventNamespace: ".panzoom",
 
   // Whether or not to transition the scale
