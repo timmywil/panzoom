@@ -356,9 +356,10 @@
 			var matrix = this.getMatrix();
 
 			// Set the middle point
-			if ( opts.middle ) {
-				matrix[4] = +matrix[4] + (opts.middle.pageX > matrix[4] ? 1 : -1);
-				matrix[5] = +matrix[5] + (opts.middle.pageY > matrix[5] ? 1 : -1);
+			var middle = opts.middle;
+			if ( middle ) {
+				matrix[4] = +matrix[4] + (middle.pageX === matrix[4] ? 0 : middle.pageX > matrix[4] ? 1 : -1);
+				matrix[5] = +matrix[5] + (middle.pageY === matrix[5] ? 0 : middle.pageY > matrix[5] ? 1 : -1);
 			}
 
 			// Calculate zoom based on increment
@@ -705,8 +706,8 @@
 			var touch1 = touches[0];
 			var touch2 = touches[1];
 			return {
-				pageX: Math.abs( touch2.pageX - touch1.pageX ) / 2 + touch1.pageX,
-				pageY: Math.abs( touch2.pageY - touch1.pageY ) / 2 + touch1.pageY
+				pageX: ((touch2.pageX - touch1.pageX) / 2) + touch1.pageX,
+				pageY: ((touch2.pageY - touch1.pageY) / 2) + touch1.pageY
 			};
 		},
 
