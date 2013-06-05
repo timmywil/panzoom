@@ -52,6 +52,8 @@ describe("Panzoom", function() {
 		$doc.trigger( e ).trigger("mouseup").trigger("touchend");
 	}
 
+	var rnoneMatrix = /^matrix\(1\,?\s*0\,?\s*0\,?\s*1\,?\s*0\,?\s*0\)/;
+
 	it("should have elements available", function() {
 		expect( $elem ).to.have.length( 1 );
 		expect( $zoomIn ).to.have.length( 1 );
@@ -123,7 +125,7 @@ describe("Panzoom", function() {
 	it("should not transition if transition is set to false", function() {
 		$elem.panzoom( "option", "transition", false );
 		$elem.panzoom("reset");
-		expect( $elem.css("transform") ).to.equal("none");
+		expect( $elem.css("transform") ).to.match( rnoneMatrix );
 		// Clean-up
 		$elem.panzoom( "option", "transition", true );
 	});
@@ -223,7 +225,7 @@ describe("Panzoom", function() {
 		function testChange( e, panzoom, transform ) {
 			called = true;
 			expect( panzoom ).to.eql( instance );
-			expect( transform ).to.be.a("string");
+			expect( transform ).to.be.an("array");
 			expect( panzoom.panning ).to.be.false;
 		}
 		$elem.panzoom( "option", "onChange", testChange );
@@ -281,7 +283,7 @@ describe("Panzoom", function() {
 		var panzoom = $elem.panzoom("instance");
 		var _matrix = panzoom.getMatrix();
 		panzoom.setMatrix("none");
-		expect( panzoom.getTransform() ).to.equal("none");
+		expect( panzoom.getTransform() ).to.match( rnoneMatrix );
 		panzoom.setMatrix( _matrix );
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
 	});
@@ -344,6 +346,13 @@ describe("Panzoom", function() {
 		$elem.panzoom("enable");
 		events = $._data( panzoom.elem, "events" );
 		expect( events.mousedown || events.touchstart ).to.not.be.undefined;
+	});
+
+	it("should reset styles when disabling", function() {
+		$elem.panzoom("zoom").panzoom("disable");
+		expect( $elem.css("cursor") ).to.equal("auto");
+		expect( $elem.css("transition") ).to.not.contain("transform");
+		$elem.panzoom("enable").panzoom( "reset", false );
 	});
 
 	it("should contain the panzoom element within its parent when the contain option is true", function() {

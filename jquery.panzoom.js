@@ -125,7 +125,6 @@
 			self[ name ] = options[ name ] || $empty;
 		});
 
-		this._initStyle();
 		this.enable();
 
 		// Save the instance
@@ -182,12 +181,348 @@
 		},
 
 		/**
-		 * Bind all necessary events
+		 * Enable or re-enable the panzoom instance
 		 */
 		enable: function() {
 			// Unbind first
-			this.disable();
+			this._unbind();
+			this._initStyle();
+			this._bind();
+			this.disabled = false;
+		},
 
+		/**
+		 * Disable panzoom
+		 */
+		disable: function() {
+			this.disabled = true;
+			this._resetStyle();
+			this._unbind();
+		},
+
+		/**
+		 * @returns {Boolean} Returns whether the current panzoom instance is disabled
+		 */
+		isDisabled: function() {
+			return this.disabled;
+		},
+
+		/**
+		 * Destroy the panzoom instance
+		 */
+		destroy: function() {
+			this.disable();
+			$.removeData( this.elem, datakey );
+		},
+
+		/**
+		 * Return the element to it's original transform matrix
+		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
+		 */
+		reset: function( animate ) {
+			// Reset the transform to its original value
+			var matrix = this.setMatrix( this._origTransform, {
+				animate: typeof animate !== "boolean" || animate,
+				// Set zoomRange value
+				range: true
+			});
+			this._trigger( "reset", matrix );
+		},
+
+		/**
+		 * Only resets zoom level
+		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
+		 */
+		resetZoom: function( animate ) {
+			this._resetParts( [ 0, 3 ], animate );
+		},
+
+		/**
+		 * Only reset panning
+		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
+		 */
+		resetPan: function( animate ) {
+			this._resetParts( [ 4, 5 ], animate );
+		},
+
+		/**
+		 * Retrieving the transform is different for SVG (unless a style transform is already present)
+		 * @returns {String} Returns the current transform value of the element
+		 */
+		getTransform: function() {
+			var elem = this.elem;
+			// Use style rather than computed
+			// If currently transitioning, computed transform might be unchanged
+			var transform = $.style( elem, "transform" );
+
+			// SVG falls back to the transform attribute
+			if ( this.isSVG && !transform ) {
+				transform = $.attr( elem, "transform" );
+			// Convert any transforms set by the user to matrix format
+			// by setting to computed
+			} else if ( transform !== "none" && !rmatrix.test(transform) ) {
+				transform = $.style( elem, "transform", $.css(elem, "transform") );
+			}
+
+			return transform || "none";
+		},
+
+		/**
+		 * Retrieve the current transform matrix for $elem (or turn a transform into it's array values)
+		 * @param {String} [transform]
+		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
+		 */
+		getMatrix: function( transform ) {
+			var matrix = rmatrix.exec( transform || this.getTransform() );
+			if ( matrix ) {
+				matrix.shift();
+			}
+			return matrix || [ 1, 0, 0, 1, 0, 0 ];
+		},
+
+		/**
+		 * Given a matrix object, quickly set the current matrix of the element
+		 * @param {Array|String} matrix
+		 * @param {Boolean} [animate] Whether to animate the transform change
+		 * @param {Object} [options]
+		 * @param {Boolean} [options.animate] Whether to animate the transform change
+		 * @param {Boolean} [options.contain] Override the global contain option
+		 * @param {Boolean} [options.range] If true, $zoomRange's value will be updated.
+		 * @param {Boolean} [options.silent] If true, the change event will not be triggered
+		 * @returns {Array} Returns the matrix that was set
+		 */
+		setMatrix: function( matrix, options ) {
+			if ( this.disabled ) { return; }
+			if ( !options ) { options = {}; }
+			// Convert to array
+			if ( typeof matrix === "string" ) {
+				matrix = this.getMatrix( matrix );
+			}
+			// Apply containment
+			if ( typeof options.contain === "boolean" ? options.contain : this.options.contain ) {
+				var container = this.container;
+				var dims = this.dimensions;
+				matrix[4] = Math.min( Math.max( matrix[4], -dims.left ), container.width - dims.width - dims.left );
+				matrix[5] = Math.min( Math.max( matrix[5], -dims.top ), container.height - dims.height - dims.top );
+			}
+			// Set transition
+			this.transition( !options.animate );
+			// Update range
+			if ( options.range ) {
+				this.$zoomRange.val( matrix[0] );
+			}
+			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", "matrix(" + matrix.join(",") + ")" );
+			if ( !options.silent ) {
+				this._trigger( "change", matrix );
+			}
+			return matrix;
+		},
+
+		/**
+		 * @returns {Boolean} Returns whether the panzoom element is currently being dragged
+		 */
+		isPanning: function() {
+			return this.panning;
+		},
+
+		/**
+		 * Apply the current transition to the element, if allowed
+		 * @param {Boolean} [off] Indicates that the transition should be turned off
+		 */
+		transition: function( off ) {
+			var transition = off || !this.options.transition ? "none" : this._transition;
+			$.style( this.elem, "transition", transition );
+		},
+
+		/**
+		 * Zoom in/out the element using the scale properties of a transform matrix
+		 * @param {Number|Boolean} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
+		 * @param {Object} [opts]
+		 * @param {Boolean} [opts.noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
+		 * @param {Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
+		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
+		 * @param {Boolean} [opts.silent] Silence the zoom event
+		 */
+		zoom: function( scale, opts ) {
+			var animate = false;
+			var options = this.options;
+			if ( options.disableZoom ) { return; }
+			// Shuffle arguments
+			if ( typeof scale === "object" ) {
+				opts = scale;
+			} else if ( !opts ) {
+				opts = {};
+			}
+			var matrix = this.getMatrix();
+
+			// Set the middle point
+			if ( opts.middle ) {
+				matrix[4] = +matrix[4] + (opts.middle.pageX > matrix[4] ? 1 : -1);
+				matrix[5] = +matrix[5] + (opts.middle.pageY > matrix[5] ? 1 : -1);
+			}
+
+			// Calculate zoom based on increment
+			if ( typeof scale !== "number" ) {
+				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
+				animate = true;
+			}
+
+			// Constrain scale
+			if ( scale > options.maxScale ) {
+				scale = options.maxScale;
+			} else if ( scale < options.minScale ) {
+				scale = options.minScale;
+			}
+
+			// Set the scale
+			matrix[0] = matrix[3] = scale;
+			this.setMatrix( matrix, {
+				animate: typeof opts.animate === "boolean" ? opts.animate : animate,
+				// Set the zoomRange value
+				range: !opts.noSetRange
+			});
+
+			// Trigger zoom event
+			if ( !opts.silent ) {
+				this._trigger( "zoom", scale, opts );
+			}
+		},
+
+		/**
+		 * Get/set option on an existing instance
+		 * @returns {Array|undefined} If getting, returns an array of all values
+		 *   on each instance for a given key. If setting, continue chaining by returning undefined.
+		 */
+		option: function( key, value ) {
+			var options;
+			if ( !key ) {
+				// Avoids returning direct reference
+				return $.extend( {}, this.options );
+			}
+
+			if ( typeof key === "string" ) {
+				if ( arguments.length === 1 ) {
+					return this.options[ key ];
+				}
+				options = {};
+				options[ key ] = value;
+			} else {
+				options = key;
+			}
+
+			this._setOptions( options );
+		},
+
+		/**
+		 * Internally sets options
+		 * @param {Object} options - An object literal of options to set
+		 */
+		_setOptions: function( options ) {
+			var self = this;
+			$.each( options, function( key, value ) {
+				switch( key ) {
+					case "disablePan":
+						self._resetStyle();
+						/* falls through */
+					case "disableZoom":
+					case "$zoomIn":
+					case "$zoomOut":
+					case "$zoomRange":
+					case "$reset":
+					case "onStart":
+					case "onChange":
+					case "onZoom":
+					case "onPan":
+					case "onEnd":
+					case "onReset":
+					case "eventNamespace":
+						self._unbind();
+				}
+				self.options[ key ] = value;
+				switch( key ) {
+					case "disablePan":
+						self._initStyle();
+						/* falls through */
+					case "disableZoom":
+					case "$zoomIn":
+					case "$zoomOut":
+					case "$zoomRange":
+					case "$reset":
+					case "onStart":
+					case "onChange":
+					case "onZoom":
+					case "onPan":
+					case "onEnd":
+					case "onReset":
+					case "eventNamespace":
+						self._bind();
+						break;
+					case "cursor":
+						$.style( self.elem, "cursor", value );
+						break;
+					case "minScale":
+						self.$zoomRange.attr( "min", value );
+						break;
+					case "maxScale":
+						self.$zoomRange.attr( "max", value );
+						break;
+					case "contain":
+						self._buildContain();
+						break;
+					case "startTransform":
+						self._buildTransform();
+						break;
+					case "duration":
+					case "easing":
+						self._buildTransition();
+						/* falls through */
+					case "transition":
+						self.transition();
+				}
+			});
+		},
+
+		/**
+		 * Initialize base styles for the element and its parent
+		 */
+		_initStyle: function() {
+			// Set elem styles
+			if ( !this.options.disablePan ) {
+				this.$elem.css( "cursor", this.options.cursor );
+			}
+
+			// Set parent to relative if set to static
+			var $parent = this.$parent;
+			// No need to add styles to the body
+			if ( $parent.length && !$.nodeName($parent[0], "body") ) {
+				var parentStyles = {
+					overflow: "hidden"
+				};
+				if ( $parent.css("position") === "static" ) {
+					parentStyles.position = "relative";
+				}
+				$parent.css( parentStyles );
+			}
+		},
+
+		/**
+		 * Undo any styles attached in this plugin
+		 */
+		_resetStyle: function() {
+			this.$elem.css({
+				"cursor": "",
+				"transition": ""
+			});
+			this.$parent.css({
+				"overflow": "",
+				"position": ""
+			});
+		},
+
+		/**
+		 * Binds all necessary events
+		 */
+		_bind: function() {
 			var self = this;
 			var ns = this.options.eventNamespace;
 			var str_click = (touchSupported ? "touchend" : "click") + ns;
@@ -275,317 +610,14 @@
 		},
 
 		/**
-		 * Unbind all panzoom events
+		 * Unbind all events
 		 */
-		disable: function() {
+		_unbind: function() {
 			this.$elem
 				.add( this.$zoomIn )
 				.add( this.$zoomOut )
 				.add( this.$reset )
 				.off( this.options.eventNamespace );
-		},
-
-		/**
-		 * Destroy the panzoom instance
-		 */
-		destroy: function() {
-			this._resetStyle();
-			this.disable();
-			$.removeData( this.elem, datakey );
-		},
-
-		/**
-		 * Return the element to it's original transform matrix
-		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
-		 */
-		reset: function( animate ) {
-			// Reset the transform to its original value
-			this.setMatrix( this._origTransform, { animate: typeof animate !== "boolean" || animate });
-			var matrix = this.getMatrix();
-			// Set the zoom range's value to the original zoom level
-			this.$zoomRange.val( matrix[0] );
-			this._trigger( "reset", matrix );
-		},
-
-		/**
-		 * Only resets zoom level
-		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
-		 */
-		resetZoom: function( animate ) {
-			this._resetParts( [ 0, 3 ], animate );
-			// Set the zoom range's value to the original zoom level
-			this.$zoomRange.val( this.getMatrix()[0] );
-		},
-
-		/**
-		 * Only reset panning
-		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
-		 */
-		resetPan: function( animate ) {
-			this._resetParts( [ 4, 5 ], animate );
-		},
-
-		/**
-		 * Retrieving the transform is different for SVG (unless a style transform is already present)
-		 * @returns {String} Returns the current transform value of the element
-		 */
-		getTransform: function() {
-			var elem = this.elem;
-			// Use style rather than computed
-			// If currently transitioning, computed transform might be unchanged
-			var transform = $.style( elem, "transform" );
-
-			// SVG falls back to the transform attribute
-			if ( this.isSVG && !transform ) {
-				transform = $.attr( elem, "transform" );
-			// Convert any transforms set by the user to matrix format
-			// by setting to computed
-			} else if ( transform !== "none" && !rmatrix.test(transform) ) {
-				transform = $.style( elem, "transform", $.css(elem, "transform") );
-			}
-
-			return transform || "none";
-		},
-
-		/**
-		 * Retrieve the current transform matrix for $elem (or turn a transform into it's array values)
-		 * @param {String} [transform]
-		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
-		 */
-		getMatrix: function( transform ) {
-			var matrix = rmatrix.exec( transform || this.getTransform() );
-			if ( matrix ) {
-				matrix.shift();
-			}
-			return matrix || [ 1, 0, 0, 1, 0, 0 ];
-		},
-
-		/**
-		 * Given a matrix object, quickly set the current matrix of the element
-		 * @param {Array|String} matrix
-		 * @param {Boolean} [animate] Whether to animate the transform change
-		 * @param {Object} [options]
-		 * @param {Boolean} [options.animate] Whether to animate the transform change
-		 * @param {Boolean} [options.silent] If true, the change event will not be triggered
-		 */
-		setMatrix: function( matrix, options ) {
-			if ( !options ) { options = {}; }
-			if ( $.type(matrix) === "array" ) {
-				if ( this.options.contain ) {
-					var container = this.container;
-					var dims = this.dimensions;
-					matrix[4] = Math.min( Math.max( matrix[4], -dims.left ), container.width - dims.width - dims.left );
-					matrix[5] = Math.min( Math.max( matrix[5], -dims.top ), container.height - dims.height - dims.top );
-				}
-				matrix = "matrix(" + matrix.join(",") + ")";
-			}
-			this.transition( !options.animate );
-			$[ this.isSVG ? "attr" : "style" ]( this.elem, "transform", matrix || "none" );
-			if ( !options.silent ) {
-				this._trigger( "change", matrix );
-			}
-		},
-
-		/**
-		 * @returns {Boolean} Returns whether the panzoom element is currently being dragged
-		 */
-		isPanning: function() {
-			return this.panning;
-		},
-
-		/**
-		 * Apply the current transition to the element, if allowed
-		 * @param {Boolean} [off] Indicates that the transition should be turned off
-		 */
-		transition: function( off ) {
-			var transition = off || !this.options.transition ? "none" : this._transition;
-			$.style( this.elem, "transition", transition );
-		},
-
-		/**
-		 * Zoom in/out the element using the scale properties of a transform matrix
-		 * @param {Number|Boolean} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
-		 * @param {Object} [opts]
-		 * @param {Boolean} [opts.noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
-		 * @param {Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
-		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
-		 * @param {Boolean} [opts.silent] Silence the zoom event
-		 */
-		zoom: function( scale, opts ) {
-			var animate = false;
-			var options = this.options;
-			if ( options.disableZoom ) { return; }
-			// Shuffle arguments
-			if ( typeof scale === "object" ) {
-				opts = scale;
-			} else if ( !opts ) {
-				opts = {};
-			}
-			var matrix = this.getMatrix();
-
-			// Set the middle point
-			if ( opts.middle ) {
-				matrix[4] = +matrix[4] + (opts.middle.pageX > matrix[4] ? 1 : -1);
-				matrix[5] = +matrix[5] + (opts.middle.pageY > matrix[5] ? 1 : -1);
-			}
-
-			// Calculate zoom based on increment
-			if ( typeof scale !== "number" ) {
-				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
-				animate = true;
-			}
-
-			// Constrain scale
-			if ( scale > options.maxScale ) {
-				scale = options.maxScale;
-			} else if ( scale < options.minScale ) {
-				scale = options.minScale;
-			}
-
-			// Set the scale
-			matrix[0] = matrix[3] = scale;
-			this.setMatrix( matrix, { animate: typeof opts.animate === "boolean" ? opts.animate : animate } );
-
-			// Set the zoomRange value
-			if ( !opts.noSetRange ) {
-				this.$zoomRange.val( scale );
-			}
-
-			// Trigger zoom event
-			if ( !opts.silent ) {
-				this._trigger( "zoom", scale, opts );
-			}
-		},
-
-		/**
-		 * Get/set option on an existing instance
-		 * @returns {Array|undefined} If getting, returns an array of all values
-		 *   on each instance for a given key. If setting, continue chaining by returning undefined.
-		 */
-		option: function( key, value ) {
-			var options;
-			if ( !key ) {
-				// Avoids returning direct reference
-				return $.extend( {}, this.options );
-			}
-
-			if ( typeof key === "string" ) {
-				if ( arguments.length === 1 ) {
-					return this.options[ key ];
-				}
-				options = {};
-				options[ key ] = value;
-			} else {
-				options = key;
-			}
-
-			this._setOptions( options );
-		},
-
-		/**
-		 * Internally sets options
-		 * @param {Object} options - An object literal of options to set
-		 */
-		_setOptions: function( options ) {
-			var self = this;
-			$.each( options, function( key, value ) {
-				switch( key ) {
-					case "disablePan":
-						self._resetStyle();
-						/* falls through */
-					case "disableZoom":
-					case "$zoomIn":
-					case "$zoomOut":
-					case "$zoomRange":
-					case "$reset":
-					case "onStart":
-					case "onChange":
-					case "onZoom":
-					case "onPan":
-					case "onEnd":
-					case "onReset":
-					case "eventNamespace":
-						self.disable();
-				}
-				self.options[ key ] = value;
-				switch( key ) {
-					case "disablePan":
-						self._initStyle();
-						/* falls through */
-					case "disableZoom":
-					case "$zoomIn":
-					case "$zoomOut":
-					case "$zoomRange":
-					case "$reset":
-					case "onStart":
-					case "onChange":
-					case "onZoom":
-					case "onPan":
-					case "onEnd":
-					case "onReset":
-					case "eventNamespace":
-						self.enable();
-						break;
-					case "cursor":
-						$.style( self.elem, "cursor", value );
-						break;
-					case "minScale":
-						self.$zoomRange.attr( "min", value );
-						break;
-					case "maxScale":
-						self.$zoomRange.attr( "max", value );
-						break;
-					case "contain":
-						self._buildContain();
-						break;
-					case "startTransform":
-						self._buildTransform();
-						break;
-					case "duration":
-					case "easing":
-						self._buildTransition();
-						/* falls through */
-					case "transition":
-						self.transition();
-				}
-			});
-		},
-
-		/**
-		 * Initialize base styles for the element and its parent
-		 */
-		_initStyle: function() {
-			// Set elem styles
-			if ( !this.options.disablePan ) {
-				this.$elem.css( "cursor", this.options.cursor );
-			}
-
-			// Set parent to relative if set to static
-			var $parent = this.$parent;
-			// No need to add styles to the body
-			if ( $parent.length && !$.nodeName($parent[0], "body") ) {
-				var parentStyles = {
-					overflow: "hidden"
-				};
-				if ( $parent.css("position") === "static" ) {
-					parentStyles.position = "relative";
-				}
-				$parent.css( parentStyles );
-			}
-		},
-
-		/**
-		 * Undo any styles attached in this plugin
-		 */
-		_resetStyle: function() {
-			this.$elem.css({
-				"cursor": "",
-				"transition": ""
-			});
-			this.$parent.css({
-				"overflow": "",
-				"position": ""
-			});
 		},
 
 		/**
@@ -646,7 +678,11 @@
 			while( i-- ) {
 				cur[ indices[i] ] = origMatrix[ indices[i] ];
 			}
-			this.setMatrix(cur, { animate: typeof animate !== "boolean" || animate });
+			this.setMatrix(cur, {
+				animate: typeof animate !== "boolean" || animate,
+				// Set zoomRange value
+				range: true
+			});
 		},
 
 		/**

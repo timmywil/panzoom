@@ -4,7 +4,7 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (8.3kb/3.1kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (8.5kb/3.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 ## Mobile support
 
@@ -219,6 +219,19 @@ $elem.panzoom("enable");
 
 Re-enable panzoom on the element (re-binds all events).
 
+### `isDisabled()`
+
+```js
+$elem.panzoom("isDisabled");
+// => true
+```
+
+Returns a boolean indicating whether the current Panzoom instance is disabled.
+
+### `isPanning()`
+
+Returns a boolean indicating whether the element is currently panning.
+
 ### `destroy()`
 
 ```js
@@ -238,10 +251,6 @@ Unbinds all events and removes all data, including the Panzoom instance on the e
 ## Internal
 
 These methods are _basically_ private, but could be useful under certain circumstances.
-
-### `isPanning()`
-
-Returns a boolean indicating whether the element is currently panning.
 
 ### `getTransform()`
 
@@ -265,7 +274,10 @@ __Arguments__
   1. `matrix` _{Array}_: Matrix to set
   2. `options` _{Object}_
   3. `options.animate` _{Boolean}_: If true, a transitionw will be set to animate the transform change
-  4. `options.silent` _{Boolean}_: If true, the change event will not be triggered
+  4. `options.contain` _{Boolean}_: Override the global contain option
+  5. `options.range` _{Boolean}_: If true, $zoomRange's value will be updated.
+  6. `options.silent` _{Boolean}_: If true, the change event will not be triggered
+
 
 ```js
 // Flip the element upside down
@@ -310,7 +322,7 @@ __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
   2. `panzoom` _(Panzoom)_: The panzoom instance
-  3. `transform` _(String)_: The exact transform set during the change
+  3. `transform` _(Array)_: The transform matrix set during the change as an array of values
 
 Fired whenever the matrix is changed by `setMatrix()` (whether internally or externally).
 
