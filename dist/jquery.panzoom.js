@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v1.0.1
+ * @license jquery.panzoom.js v1.0.2
  * Updated: Wed Jun 05 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -364,7 +364,7 @@
 
 			// Calculate zoom based on increment
 			if ( typeof scale !== "number" ) {
-				scale = +matrix[0] + (this.options.increment * (scale ? -1 : 1));
+				scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
 				animate = true;
 			}
 
@@ -525,10 +525,10 @@
 		 */
 		_bind: function() {
 			var self = this;
-			var ns = this.options.eventNamespace;
+			var options = this.options;
+			var ns = options.eventNamespace;
 			var str_click = (touchSupported ? "touchend" : "click") + ns;
 			var str_start = (touchSupported ? "touchstart" : "mousedown") + ns;
-			var options = this.options;
 			var events = {};
 
 			// Bind panzoom events from options
