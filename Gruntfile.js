@@ -11,9 +11,13 @@ module.exports = function( grunt ) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
 		build: {
-			all: {
+			dist: {
 				dest: "dist/jquery.panzoom.js",
 				src: "jquery.panzoom.js"
+			},
+			manifest: {
+				dest: "panzoom.jquery.json",
+				src: "panzoom.json"
 			}
 		},
 		compare_size: {
@@ -79,18 +83,13 @@ module.exports = function( grunt ) {
 
 	grunt.registerMultiTask(
 		"build",
-		"Build jquery.panzoom to the dist directory",
+		"Build jquery.panzoom and package manifest",
 		function() {
 			var data = this.data;
 			var dest = data.dest;
 			var src = data.src;
 			var version = grunt.config("pkg.version");
 			var compiled = grunt.file.read( src );
-
-			// Append commit id to version
-			if ( process.env.COMMIT ) {
-				version += " " + process.env.COMMIT;
-			}
 
 			// Replace version and date
 			compiled = compiled
