@@ -9,7 +9,7 @@
     "zoom",
     "panzoom"
   ],
-  "version": "1.0.4",
+  "version": "@VERSION",
   "author": {
     "name": "Timmy Willison",
     "email": "timmywillisn@gmail.com",
