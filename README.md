@@ -365,7 +365,8 @@ __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
   2. `panzoom` _(Panzoom)_: The panzoom instance
-  3. `changed` _(Boolean)_: Whether the matrix changed during the panzoom event.
+  3. `matrix` _(Array)_: The final transform matrix
+  4. `changed` _(Boolean)_: Whether the matrix changed during the panzoom event
 
 This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile.
 

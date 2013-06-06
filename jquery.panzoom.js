@@ -790,7 +790,7 @@
 					self.panning = false;
 					// Trigger our end event
 					// jQuery's not is used here to compare Array equality
-					self._trigger( "end", !!$(original).not(matrix).length );
+					self._trigger( "end", matrix, !!$(original).not(matrix).length );
 				})
 				.on( (touchSupported ? "touchmove" : "mousemove") + ns, move );
 		}

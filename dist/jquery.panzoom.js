@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.0.2
- * Updated: Wed Jun 05 2013
+ * @license jquery.panzoom.js v1.0.3
+ * Updated: Thu Jun 06 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -790,7 +790,7 @@
 					self.panning = false;
 					// Trigger our end event
 					// jQuery's not is used here to compare Array equality
-					self._trigger( "end", !!$(original).not(matrix).length );
+					self._trigger( "end", matrix, !!$(original).not(matrix).length );
 				})
 				.on( (touchSupported ? "touchmove" : "mousemove") + ns, move );
 		}
