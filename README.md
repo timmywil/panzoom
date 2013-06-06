@@ -186,10 +186,11 @@ __Arguments__
 
   1. `scale` _{Number|Boolean}_: The exact scale to which to zoom or a boolean indicating to transition a zoom out
   2. `opts` _{Object}_:
-    a. `opts.noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
-    b. `opts.middle` _{Object}_: Specify a middle point towards which to gravitate when zooming
-    c. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
-    d. `opts.silent` _{Boolean}_: Silence the zoom event
+
+    1. `opts.noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
+    2. `opts.middle` _{Object}_: Specify a middle point towards which to gravitate when zooming
+    3. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
+    4. `opts.silent` _{Boolean}_: Silence the zoom event
 
 ```js
 // Transition a zoom in based on the scale increment, min and max values
@@ -204,7 +205,8 @@ $elem.panzoom("zoom", 1.2, { silent: true });
 ```
 
 Transition a zoom in based on the scale increment, min and max values, and animation duration and easing. This method handles both zooming in and zooming out.<br>
-If the method is passed a number, `zoom()` will immediately set that scale without transitioning. This is mostly useful for the range input and pinch gestures.
+If the method is passed a number, `zoom()` will immediately set that scale without transitioning. This is mostly useful for the range input and pinch gestures.<br>
+If the method is passed a boolean, true will indicate to perform a zoom-out based on the increment specified in options. If false (or omitted), a zoom-in will be performed.
 
 ### `disable()`
 
@@ -276,10 +278,11 @@ __Arguments__
 
   1. `matrix` _{Array}_: Matrix to set
   2. `options` _{Object}_
-  3. `options.animate` _{Boolean}_: If true, a transitionw will be set to animate the transform change
-  4. `options.contain` _{Boolean}_: Override the global contain option
-  5. `options.range` _{Boolean}_: If true, $zoomRange's value will be updated.
-  6. `options.silent` _{Boolean}_: If true, the change event will not be triggered
+
+    1. `options.animate` _{Boolean}_: If true, a transitionw will be set to animate the transform change
+    2. `options.contain` _{Boolean}_: Override the global contain option
+    3. `options.range` _{Boolean}_: If true, $zoomRange's value will be updated.
+    4. `options.silent` _{Boolean}_: If true, the change event will not be triggered
 
 
 ```js
