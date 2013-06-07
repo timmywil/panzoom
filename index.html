@@ -1,35 +1,89 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <title>Panzoom for jQuery</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <style type="text/css">
-      section { text-align: center; margin: 50px 0; }
-    </style>
-    <script src="test/modernizr.js"></script>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="jQuery.panzoom : A jQuery plugin for panning and zooming elements using CSS3." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>jQuery.panzoom</title>
   </head>
+
   <body>
-    <section>
-      <h1>Panning and zooming with CSS3</h1>
-      <div id="panzoom" style="text-align: center">
-        <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg" width="900" height="900">
-      </div>
-    </section>
-    <section class="buttons">
-      <button class="zoom-in">Zoom In</button>
-      <button class="zoom-out">Zoom Out</button>
-      <input type="range" class="zoom-range">
-      <button class="reset">Reset</button>
-    </section>
-    <script src="test/jquery.js"></script>
-    <script src="dist/jquery.panzoom.js"></script>
-    <script>
-      $("#panzoom").panzoom({
-        $zoomIn: $(".zoom-in"),
-        $zoomOut: $(".zoom-out"),
-        $zoomRange: $(".zoom-range"),
-        $reset: $(".reset")
-      });
-    </script>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/timmywil/jquery.panzoom">View on GitHub</a>
+
+          <h1 id="project_title">jQuery.panzoom</h1>
+          <h2 id="project_tagline">A jQuery plugin for panning and zooming elements using CSS3.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/timmywil/jquery.panzoom/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/timmywil/jquery.panzoom/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a name="drag-and-zoom-any-element" class="anchor" href="#drag-and-zoom-any-element"><span class="octicon octicon-link"></span></a>Drag and zoom any element</h3>
+
+<p>View the <a href="demo/">demo</a> or the <a href="test/">tests</a>.</p>
+
+<p>Panzoom is a progressive plugin to create panning and zooming functionality for an element. Panzoom supports the same browsers as jQuery 2.0 and can be used with jQuery 1.9.0+ or jQuery 2.0+.
+Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be <em>anything</em>: an image, a video, an iframe, a canvas, text, WHATEVER.</p>
+
+<p>IE&lt;=8 is not supported, but this plugin is future-proof.</p>
+
+<h3>
+<a name="mobile-support" class="anchor" href="#mobile-support"><span class="octicon octicon-link"></span></a>Mobile support</h3>
+
+<p>Panzoom includes support for touch gestures on iOS and Android and even supports <strong>pinch gestures</strong> for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your mobile device.</p>
+
+<h3>
+<a name="svg-support" class="anchor" href="#svg-support"><span class="octicon octicon-link"></span></a>SVG support</h3>
+
+<p>Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.</p>
+
+<h3>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h3>
+
+<p>Panzoom depends on jQuery and <a href="http://modernizr.com/">Modernizr</a> for its touch gesture support detection.
+If Modernizr is not included, touch gestures will simply not be used and it will fail silently.<br>
+However, mobile behavior is not supported without Modernizr and its touch support feature detect.</p>
+
+<h3>
+<a name="more-info" class="anchor" href="#more-info"><span class="octicon octicon-link"></span></a>More info</h3>
+
+<p>Panzoom is incredibly customizable (including optional containment for dragging). For more information, documentation is available in the <a href="blob/master/README.md">README</a>.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">jQuery.panzoom maintained by <a href="https://github.com/timmywil">timmywil</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-41553246-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
   </body>
 </html>
