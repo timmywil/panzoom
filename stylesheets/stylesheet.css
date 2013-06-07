@@ -772,20 +772,20 @@ Full-Width Styles
   box-shadow: 0 0 10px rgba(0,0,0,.5);
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
-    -webkit-transition: -webkit-box-shadow 0.2s ease-in-out;
-       -moz-transition:    -moz-box-shadow 0.2s ease-in-out;
-        -ms-transition:         box-shadow 0.2s ease-in-out;
-            transition:         box-shadow 0.2s ease-in-out;
+    -webkit-transition: -webkit-box-shadow 0.1s ease-in-out;
+       -moz-transition:    -moz-box-shadow 0.1s ease-in-out;
+        -ms-transition:         box-shadow 0.1s ease-in-out;
+            transition:         box-shadow 0.1s ease-in-out;
 }
 #forkme_banner:hover {
-       -moz-box-shadow: inset rgba(0,0,0,0.3) 0px 0px 2px;
-    -webkit-box-shadow: inset rgba(0,0,0,0.3) 0px 0px 2px;
-            box-shadow: inset rgba(0,0,0,0.3) 0px 0px 2px;
+       -moz-box-shadow: inset black 0px 0px 5px;
+    -webkit-box-shadow: inset black 0px 0px 5px;
+            box-shadow: inset black 0px 0px 5px;
 }
 #forkme_banner:active {
-       -moz-box-shadow: inset rgba(0,0,0,0.5) 0px 0px 4px;
-    -webkit-box-shadow: inset rgba(0,0,0,0.5) 0px 0px 4px;
-            box-shadow: inset rgba(0,0,0,0.5) 0px 0px 4px;
+       -moz-box-shadow: inset black 0px 0px 10px;
+    -webkit-box-shadow: inset black 0px 0px 10px;
+            box-shadow: inset black 0px 0px 10px;
 }
 
 
