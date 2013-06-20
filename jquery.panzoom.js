@@ -18,29 +18,26 @@
 }( this, function( $ ) {
 	"use strict";
 
-	var touchSupported = typeof Modernizr !== "undefined" && Modernizr.touch;
-	if ( touchSupported ) {
-		// Lift touch properties using fixHooks
-		var touchHook = {
-			props: [ "touches", "pageX", "pageY" ],
-			/**
-			 * Support: Android
-			 * Android sets pageX/Y to 0 for any touch event
-			 * Attach first touch's pageX/pageY if not set correctly
-			 */
-			filter: function( event, originalEvent ) {
-				var touch;
-				if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
-					event.pageX = touch.pageX;
-					event.pageY = touch.pageY;
-				}
-				return event;
+	// Lift touch properties using fixHooks
+	var touchHook = {
+		props: [ "touches", "pageX", "pageY" ],
+		/**
+		 * Support: Android
+		 * Android sets pageX/Y to 0 for any touch event
+		 * Attach first touch's pageX/pageY if not set correctly
+		 */
+		filter: function( event, originalEvent ) {
+			var touch;
+			if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
+				event.pageX = touch.pageX;
+				event.pageY = touch.pageY;
 			}
-		};
-		$.each([ "touchstart", "touchmove", "touchend" ], function( i, name ) {
-			$.event.fixHooks[ name ] = touchHook;
-		});
-	}
+			return event;
+		}
+	};
+	$.each([ "touchstart", "touchmove", "touchend" ], function( i, name ) {
+		$.event.fixHooks[ name ] = touchHook;
+	});
 
 	var datakey = "__pz__";
 	var slice = Array.prototype.slice;
@@ -63,14 +60,14 @@
 	 * Create a Panzoom object for a given element
 	 * @constructor
 	 * @param {Element} elem - Element to use pan and zoom
-	 * @param {Object} [options] - An object literal containing options to override default options (See Panzoom.defaults for ones not listed below)
-	 * @param {jQuery} [options.$zoomIn] - zoom in buttons/links collection (you can also bind these yourself - e.g. $button.on("click", function( e ) { e.preventDefault(); $elem.panzooom("zoomIn"); }); )
+	 * @param {Object} [options] - An object literal containing options to override default options
+	 *  (See Panzoom.defaults for ones not listed below)
+	 * @param {jQuery} [options.$zoomIn] - zoom in buttons/links collection (you can also bind these yourself
+	 *  e.g. $button.on("click", function( e ) { e.preventDefault(); $elem.panzooom("zoomIn"); }); )
 	 * @param {jQuery} [options.$zoomOut] - zoom out buttons/links collection on which to bind zoomOut
 	 * @param {jQuery} [options.$zoomRange] - zoom in/out with this range control
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
-	 * @param {Function} [options.onChange] - An optional callback for the transform change event (panzoomchange)
-	 * @param {Function} [options.onStart] - An optional callback for panning/pinch-zoom start (panzoomstart)
-	 * @param {Function} [options.onEnd] - An optional callback for panning/pinch-zoom end (panzoomend)
+	 * @param {Function} [options.on[Start|Change|Zoom|Pan|End|Reset] - Optional callbacks for panzoom events
 	 */
 	var Panzoom = function( elem, options ) {
 
@@ -527,8 +524,8 @@
 			var self = this;
 			var options = this.options;
 			var ns = options.eventNamespace;
-			var str_click = (touchSupported ? "touchend" : "click") + ns;
-			var str_start = (touchSupported ? "touchstart" : "mousedown") + ns;
+			var str_start = "touchstart" + ns + " mousedown" + ns;
+			var str_click = "touchend" + ns + " click" + ns;
 			var events = {};
 
 			// Bind panzoom events from options
@@ -539,13 +536,14 @@
 				}
 			});
 
-			// Bind $elem drag and click events
-			if ( touchSupported ) {
-				// Bind touchstart if either panning or zooming is enabled
-				if ( !options.disablePan || !options.disableZoom ) {
-					events[ str_start ] = function( e ) {
-						var touches = e.touches;
-						if ( touches ) {
+			// Bind $elem drag and click/touchdown events
+			// Bind touchstart if either panning or zooming is enabled
+			if ( !options.disablePan || !options.disableZoom ) {
+				events[ str_start ] = function( e ) {
+					var touches;
+					// Handle a touch
+					if ( e.type === "touchstart" ) {
+						if ( (touches = e.touches) ) {
 							if ( touches.length === 1 && !options.disablePan ) {
 								self._startMove( e.pageX, e.pageY );
 								return false;
@@ -555,12 +553,9 @@
 								return false;
 							}
 						}
-					};
-				}
-			} else if ( !options.disablePan ) {
-				events[ str_start ] = function( e ) {
+					// Handle a click
 					// Bypass right click
-					if ( e.which === 1 && e.pageX != null && e.pageY != null ) {
+					} else if ( !options.disablePan && e.which === 1 && e.pageX != null && e.pageY != null ) {
 						self._startMove( e.pageX, e.pageY );
 						return false;
 					}
@@ -581,6 +576,7 @@
 			// Bind zoom in/out
 			// Don't bind one without the other
 			if ( $zoomIn.length && $zoomOut.length ) {
+				// preventDefault cancels future mouse events on touch events
 				$zoomIn.on( str_click, function( e ) { e.preventDefault(); self.zoom(); });
 				$zoomOut.on( str_click, function( e ) { e.preventDefault(); self.zoom( true ); });
 			}
@@ -595,7 +591,8 @@
 					value: this.getMatrix()[0]
 				});
 				events = {};
-				events[ str_start ] = function() {
+				// Cannot prevent default action here, just use mousedown event
+				events.mousedown = function() {
 					self.transition( true );
 				};
 				events[ "change" + ns ] = function() {
@@ -784,7 +781,7 @@
 
 			// Bind the handlers
 			$doc
-				.on( (touchSupported ? "touchend" : "mouseup") + ns, function( e ) {
+				.on( "touchend" + ns + " click" + ns, function( e ) {
 					e.preventDefault();
 					$(this).off( ns );
 					self.panning = false;
@@ -792,7 +789,7 @@
 					// jQuery's not is used here to compare Array equality
 					self._trigger( "end", matrix, !!$(original).not(matrix).length );
 				})
-				.on( (touchSupported ? "touchmove" : "mousemove") + ns, move );
+				.on( "touchmove" + ns + " mousemove" + ns, move );
 		}
 	};
 

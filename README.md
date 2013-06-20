@@ -4,16 +4,20 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (8.5kb/3.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (8.4kb/3.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download version 1.0.4](https://raw.github.com/timmywil/jquery.panzoom/v1.0.4/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.0.4/dist/jquery.panzoom.js)
+[Download version 1.1.0](https://raw.github.com/timmywil/jquery.panzoom/v1.1.0/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.1.0/dist/jquery.panzoom.js)
 
 ## Mobile support
 
-Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming. It is perfectly suited for both mobile and desktop browsers. You'll be amazed at how well this performs on your mobile device.
+Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming.
+It is perfectly suited for both mobile and desktop browsers.
+You'll be amazed at how well this performs on your mobile device.
 
 iOS and Android are supported.
+
+_Also note that devices that support both touch and mouse events at the same time (such as a laptop with a touch screen) are also supported._
 
 ## SVG support
 
@@ -21,12 +25,12 @@ Panzoom supports panning and zooming SVG elements directly, in browsers that sup
 
 ## Dependencies
 
-Panzoom obviously depends on jQuery, but it also depends on [Modernizr](http://modernizr.com/) for its touch gesture support detection.<br>
-If Modernizr is not included, touch gestures will simply not be used and it will fail silently.<br>
-However, mobile behavior is not supported without Modernizr and its touch support feature detect.
+As of v1.1.0, Panzoom no longer depends on [Modernizr](http://modernizr.com/) for anything. Just jQuery.
+Before v1.1.0, this plugin depended on Modernizr for its touch support feature detect.
 
 ## Loading Panzoom
-Panzoom can obviously be included with your scripts at the end of the body, but Panzoom supports AMD for javascript module love.
+Panzoom can obviously be included with your scripts at the end of the body,
+but Panzoom supports AMD for javascript module love.
 
 With script tags:
 

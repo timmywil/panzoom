@@ -407,30 +407,29 @@ describe("Panzoom", function() {
 		});
 	});
 
-	if ( Modernizr.touch ) {
-		it("should pan with 2 fingers even if disableZoom is true", function() {
-			$elem.panzoom( "option", "disableZoom", true );
-			var panzoom = $elem.panzoom("instance");
-			var matrix = panzoom.getMatrix();
+	it("should pan with 2 fingers even if disableZoom is true", function() {
+		$elem.panzoom( "option", "disableZoom", true );
+		var panzoom = $elem.panzoom("instance");
+		var matrix = panzoom.getMatrix();
 
-			// Start move by using touchstart
-			var e = new jQuery.Event("touchstart", {
-				touches: [
-					{ pageX: 0, pageY: 0 },
-					{ pageX: 10, pageY: 10 }
-				]
-			});
-			$elem.trigger( e );
-			testPinch(function() {
-				var newMatrix = panzoom.getMatrix();
-				// Make sure a pan was done
-				expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
-				expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
-			});
-			// Clean-up
-			$elem.panzoom( "option", "disableZoom", false );
+		// Start move by using touchstart
+		var e = new jQuery.Event("touchstart", {
+			touches: [
+				{ pageX: 0, pageY: 0 },
+				{ pageX: 10, pageY: 10 }
+			]
 		});
-	}
+		$elem.trigger( e );
+		testPinch(function() {
+			var newMatrix = panzoom.getMatrix();
+			// Make sure a pan was done
+			expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
+			expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
+		});
+		// Clean-up
+		$elem.panzoom( "option", "disableZoom", false );
+	});
+
 
 	/* SVG
 	---------------------------------------------------------------------- */
