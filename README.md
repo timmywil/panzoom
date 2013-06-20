@@ -6,8 +6,8 @@ And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (8.4kb/3.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download version 1.1.0](https://raw.github.com/timmywil/jquery.panzoom/v1.1.0/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.1.0/dist/jquery.panzoom.js)
+[Download version 1.1.1](https://raw.github.com/timmywil/jquery.panzoom/v1.1.1/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.1.1/dist/jquery.panzoom.js)
 
 ## Mobile support
 
