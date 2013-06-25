@@ -282,7 +282,7 @@
 		 * @param {Array|String} matrix
 		 * @param {Boolean} [animate] Whether to animate the transform change
 		 * @param {Object} [options]
-		 * @param {Boolean} [options.animate] Whether to animate the transform change
+		 * @param {Boolean|String} [options.animate] Whether to animate the transform change, or "skip" indicating that it is unnecessary to set
 		 * @param {Boolean} [options.contain] Override the global contain option
 		 * @param {Boolean} [options.range] If true, $zoomRange's value will be updated.
 		 * @param {Boolean} [options.silent] If true, the change event will not be triggered
@@ -302,8 +302,10 @@
 				matrix[4] = Math.min( Math.max( matrix[4], -dims.left ), container.width - dims.width - dims.left );
 				matrix[5] = Math.min( Math.max( matrix[5], -dims.top ), container.height - dims.height - dims.top );
 			}
-			// Set transition
-			this.transition( !options.animate );
+			if ( options.animate !== "skip" ) {
+				// Set transition
+				this.transition( !options.animate );
+			}
 			// Update range
 			if ( options.range ) {
 				this.$zoomRange.val( matrix[0] );
@@ -355,7 +357,7 @@
 				matrix[4] = x;
 				matrix[5] = y;
 			}
-			this.setMatrix( matrix );
+			this.setMatrix( matrix, options );
 			if ( !options.silent ) {
 				this._trigger( "pan", x, y );
 			}
@@ -761,7 +763,7 @@
 			var ns = options.eventNamespace;
 			var $doc = $(document).off( ns );
 			var matrix = this.getMatrix();
-			var panOptions = { matrix: matrix };
+			var panOptions = { matrix: matrix, animate: "skip" };
 			var original = matrix.slice( 0 );
 			var origPageX = +original[4];
 			var origPageY = +original[5];
