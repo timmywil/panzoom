@@ -195,8 +195,8 @@ __Arguments__
     1. `options.matrix` _{Array}_: The matrix being manipulated (If this is not passed, the matrix will be calculated on every call to pan, which could be a performance bottleneck if this is bound to a move event)
     2. `options.silent` _{Boolean}_: Silence the pan event. Note that this will also silence the setMatrix change event.
     3. `options.relative` _{Boolean}_: Make the x and y values relative to the existing matrix.<br/>
-      e.g. $elem.panzoom("pan", 10, -10, { relative: true });<br/>
-      // => Moves the element 10 pixels right and 10 pixels up from its current position
+      e.g. `$elem.panzoom("pan", 10, -10, { relative: true });`<br/>
+      `// => Moves the element 10 pixels right and 10 pixels up from its current position`
 
 ### `zoom( [scale[, opts]] )`
 
