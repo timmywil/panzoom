@@ -61,17 +61,14 @@ describe("Panzoom", function() {
 		expect( $zoomRange ).to.have.length( 1 );
 		expect( $reset ).to.have.length( 1 );
 	});
-
 	it("should chain and not create a new instance when called again", function() {
 		var orig = $elem.panzoom("instance");
 		expect( $elem.panzoom().panzoom("instance") ).to.eql( orig );
 	});
-
 	it("should destroy itself", function() {
 		$elem.panzoom("destroy");
 		expect( $elem.panzoom("instance") ).to.be.undefined;
 	});
-
 	it("should allow different starting values for zoom than 1", function() {
 		$elem.css( "transform", "scale(2)" );
 		var panzoom = $elem.panzoom({ $zoomRange: $zoomRange }).panzoom("instance");
@@ -81,7 +78,6 @@ describe("Panzoom", function() {
 		$elem.css( "transform", "" );
 		$elem.panzoom("destroy");
 	});
-
 	it("should create a new panzoom with buttons", function() {
 		$elem.panzoom({
 			$zoomIn: $zoomIn,
@@ -91,13 +87,11 @@ describe("Panzoom", function() {
 		});
 		expect( $elem.panzoom("option", "$zoomIn") ).to.have.length( 1 );
 	});
-
 	it("should allow retrieval of all options without affecting them", function() {
 		var options = $elem.panzoom("option");
 		options.$zoomIn = null;
 		expect( $elem.panzoom("option", "$zoomIn") ).to.not.be.null;
 	});
-
 	it("should set options correctly", function() {
 		var panzoom = $elem.panzoom("instance");
 		var options = $elem.panzoom("option");
@@ -112,7 +106,6 @@ describe("Panzoom", function() {
 		$elem.panzoom( "option", "easing", options.easing );
 		expect( panzoom._transition ).to.equal( transition );
 	});
-
 	it("should set the cursor option", function(){
 		$elem.panzoom( "option", "cursor", "default" );
 		expect( $elem.panzoom("option", "cursor") ).to.equal("default");
@@ -121,7 +114,6 @@ describe("Panzoom", function() {
 		$elem.panzoom( "option", "cursor", "move" );
 		expect( $elem.css("cursor") ).to.equal("move");
 	});
-
 	it("should not transition if transition is set to false", function() {
 		$elem.panzoom( "option", "transition", false );
 		$elem.panzoom("reset");
@@ -129,7 +121,6 @@ describe("Panzoom", function() {
 		// Clean-up
 		$elem.panzoom( "option", "transition", true );
 	});
-
 	it("should not pan if disablePan is set to true", function() {
 		$elem.panzoom( "option", "disablePan", true );
 		var panzoom = $elem.panzoom("instance");
@@ -145,7 +136,6 @@ describe("Panzoom", function() {
 		panzoom.setMatrix = setMatrix;
 		$elem.panzoom( "option", "disablePan", false );
 	});
-
 	it("should unbind zoom if disableZoom is set to true", function() {
 		$elem.panzoom( "option", "disableZoom", true );
 		var events = $._data( $zoomIn[0], "events" );
@@ -158,7 +148,6 @@ describe("Panzoom", function() {
 		clickEvent = events && ( events.click || events.touchend );
 		expect( clickEvent ).to.not.be.empty;
 	});
-
 	it("should zoom, then reset transform matrix", function() {
 		var panzoom = $elem.panzoom("instance");
 		// Zoom twice
@@ -169,7 +158,6 @@ describe("Panzoom", function() {
 		$elem.panzoom("reset");
 		expect( +panzoom.getMatrix()[0] ).to.equal( 1 );
 	});
-
 	it("should set the zoom range input's value on zoom", function() {
 		var cur = $zoomRange.val();
 		$elem.panzoom("zoom");
@@ -177,7 +165,6 @@ describe("Panzoom", function() {
 		expect( val ).to.not.equal( cur );
 		expect( val ).to.equal( $elem.panzoom("getMatrix")[0] );
 	});
-
 	it("should bind the onStart event", function() {
 		var called = false;
 		var instance = $elem.panzoom("instance");
@@ -194,7 +181,6 @@ describe("Panzoom", function() {
 		$elem.panzoom( "option", "onStart", null );
 		expect( called ).to.be.true;
 	});
-
 	it("should keep panning up-to-date for isPanning()", function() {
 		fauxStart();
 		var panzoom = $elem.panzoom("instance");
@@ -202,7 +188,6 @@ describe("Panzoom", function() {
 		$(document).trigger("mouseup").trigger("touchend");
 		expect( panzoom.isPanning() ).to.be.false;
 	});
-
 	it("should bind the onEnd event", function() {
 		var called = false;
 		var instance = $elem.panzoom("instance");
@@ -218,7 +203,6 @@ describe("Panzoom", function() {
 		$elem.panzoom( "option", "onEnd", null );
 		expect( called ).to.be.true;
 	});
-
 	it("should bind the onChange event", function() {
 		var called = false;
 		var instance = $elem.panzoom("instance");
@@ -234,7 +218,6 @@ describe("Panzoom", function() {
 		$elem.panzoom( "option", "onChange", null );
 		expect( called ).to.be.true;
 	});
-
 	it("should not trigger the change event if the silent option is true", function() {
 		var called = false;
 		function testChange() {
@@ -245,7 +228,6 @@ describe("Panzoom", function() {
 		$elem.off( "panzoomchange", testChange );
 		expect( called ).to.be.false;
 	});
-
 	it("should trigger the zoom event on zoom", function() {
 		var called = false;
 		function testZoom( e, panzoom, scale ) {
@@ -256,7 +238,6 @@ describe("Panzoom", function() {
 		$elem.panzoom("zoom");
 		expect( called ).to.be.true;
 	});
-
 	it("should not trigger the zoom event when silenced", function() {
 		var called = false;
 		function testZoom() {
@@ -266,7 +247,6 @@ describe("Panzoom", function() {
 		$elem.panzoom("zoom", { silent: true });
 		expect( called ).to.be.false;
 	});
-
 	it("should trigger the pan event on pan", function() {
 		var called = false;
 		function testPan( e, panzoom, x, y ) {
@@ -278,7 +258,6 @@ describe("Panzoom", function() {
 		fauxMove( 1, 1 );
 		expect( called ).to.be.true;
 	});
-
 	it("should allow string or arrays when setting the matrix", function() {
 		var panzoom = $elem.panzoom("instance");
 		var _matrix = panzoom.getMatrix();
@@ -287,7 +266,6 @@ describe("Panzoom", function() {
 		panzoom.setMatrix( _matrix );
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
 	});
-
 	it("should trigger the reset event on reset", function() {
 		var called = false;
 		function testReset( e, panzoom, matrix ) {
@@ -297,7 +275,6 @@ describe("Panzoom", function() {
 		$elem.on("panzoomreset", testReset).panzoom("reset");
 		expect( called ).to.be.true;
 	});
-
 	it("should reset zoom only on resetZoom", function() {
 		var panzoom = $elem.panzoom("instance");
 		panzoom.setMatrix([ 2, 0, 0, 2, 1, 1 ], false);
@@ -309,7 +286,6 @@ describe("Panzoom", function() {
 		expect( matrix[5] ).to.equal( "1" );
 		$elem.panzoom("reset");
 	});
-
 	it("should reset pan only on resetPan", function() {
 		var panzoom = $elem.panzoom("instance");
 		panzoom.setMatrix([ 2, 0, 0, 2, 1, 1 ], false);
@@ -321,7 +297,6 @@ describe("Panzoom", function() {
 		expect( matrix[5] ).to.equal( "0" );
 		$elem.panzoom("reset");
 	});
-
 	it("should reset to the specified transform on reset", function() {
 		var transform = "matrix(1, 0, 0, -1, 0, 0)";
 		// Reset to upside-down
@@ -333,7 +308,6 @@ describe("Panzoom", function() {
 		$elem.panzoom( "option", "startTransform", undefined );
 		panzoom.reset();
 	});
-
 	it("should disable/enable panzoom when disable/enable is called", function() {
 		// Disable
 		$elem.panzoom("disable");
@@ -347,14 +321,12 @@ describe("Panzoom", function() {
 		events = $._data( panzoom.elem, "events" );
 		expect( events.mousedown || events.touchstart ).to.not.be.undefined;
 	});
-
 	it("should reset styles when disabling", function() {
 		$elem.panzoom("zoom").panzoom("disable");
 		expect( $elem.css("cursor") ).to.equal("auto");
 		expect( $elem.css("transition") ).to.not.contain("transform");
 		$elem.panzoom("enable").panzoom( "reset", false );
 	});
-
 	it("should contain the panzoom element within its parent when the contain option is true", function() {
 		$elem.panzoom( "option", "contain", true );
 		fauxMove( -2, -2 );
@@ -392,7 +364,6 @@ describe("Panzoom", function() {
 		// Reset matrix
 		panzoom.setMatrix( origMatrix );
 	}
-
 	it("should pan on the middle point when zooming (and gravitate towards that point)", function() {
 		var panzoom = $elem.panzoom("instance");
 		var matrix = panzoom.getMatrix();
@@ -406,7 +377,6 @@ describe("Panzoom", function() {
 			expect( +newMatrix[5] ).to.equal( +matrix[5] + 11 );
 		});
 	});
-
 	it("should pan with 2 fingers even if disableZoom is true", function() {
 		$elem.panzoom( "option", "disableZoom", true );
 		var panzoom = $elem.panzoom("instance");
@@ -429,6 +399,23 @@ describe("Panzoom", function() {
 		// Clean-up
 		$elem.panzoom( "option", "disableZoom", false );
 	});
+	it("should pan relatively when the relative option is passed", function() {
+		var panzoom = $elem.panzoom("instance");
+		var matrix = panzoom.getMatrix().slice(0);
+		$elem.panzoom( "pan", 10, -10, { relative: true } );
+		var newMatrix = panzoom.getMatrix();
+		expect( newMatrix[4] - matrix[4] ).to.equal( 10 );
+		expect( newMatrix[5] - matrix[5] ).to.equal( -10 );
+		panzoom.reset( false );
+	});
+	it("should silence the pan event when silent is passed", function() {
+		var called = false;
+		$elem.on("panzoompan", function() {
+			called = true;
+		});
+		$elem.panzoom( "pan", 0, 0, { silent: true } );
+		expect( called ).to.be.false;
+	});
 
 
 	/* SVG
@@ -439,7 +426,6 @@ describe("Panzoom", function() {
 		expect( panzoom.isSVG ).to.be.false;
 		panzoom.destroy();
 	});
-
 	it("should create an SVG panzoom on a rect", function() {
 		$rect.panzoom({
 			$zoomIn: $zoomIn,

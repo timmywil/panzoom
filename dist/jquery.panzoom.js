@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.1.1
- * Updated: Thu Jun 20 2013
+ * @license jquery.panzoom.js v1.2.0
+ * Updated: Tue Jun 25 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -329,6 +329,36 @@
 		transition: function( off ) {
 			var transition = off || !this.options.transition ? "none" : this._transition;
 			$.style( this.elem, "transition", transition );
+		},
+
+		/**
+		 * Pan the element to the specified translation X and Y
+		 * Note: this is not the same as setting jQuery#offset() or jQuery#position()
+		 * @param {Number} x
+		 * @param {Number} y
+		 * @param {Object} [options] These options are passed along to setMatrix
+		 * @param {Array} [options.matrix] The matrix being manipulated (if already known so it doesn't have to be retrieved again)
+		 * @param {Boolean} [options.silent] Silence the pan event. Note that this will also silence the setMatrix change event.
+		 * @param {Boolean} [options.relative] Make the x and y values relative to the existing matrix
+		 */
+		pan: function( x, y, options ) {
+			if ( !options ) { options = {}; }
+			var matrix = options.matrix;
+			if ( !matrix ) {
+				matrix = this.getMatrix();
+			}
+			// Cast existing matrix values to numbers
+			if ( options.relative ) {
+				matrix[4] = +matrix[4] + x;
+				matrix[5] = +matrix[5] + y;
+			} else {
+				matrix[4] = x;
+				matrix[5] = y;
+			}
+			this.setMatrix( matrix );
+			if ( !options.silent ) {
+				this._trigger( "pan", x, y );
+			}
 		},
 
 		/**
@@ -731,6 +761,7 @@
 			var ns = options.eventNamespace;
 			var $doc = $(document).off( ns );
 			var matrix = this.getMatrix();
+			var panOptions = { matrix: matrix };
 			var original = matrix.slice( 0 );
 			var origPageX = +original[4];
 			var origPageY = +original[5];
@@ -755,10 +786,11 @@
 					// Calculate move on middle point
 					touches = e.touches;
 					var middle = self._getMiddle( touches );
-					matrix[4] = origPageX + middle.pageX - startMiddle.pageX;
-					matrix[5] = origPageY + middle.pageY - startMiddle.pageY;
-					self.setMatrix( matrix );
-					self._trigger( "pan", matrix[4], matrix[5] );
+					self.pan(
+						origPageX + middle.pageX - startMiddle.pageX,
+						origPageY + middle.pageY - startMiddle.pageY,
+						panOptions
+					);
 
 					// Set zoom
 					var diff = self._getDistance( touches ) - startDistance;
@@ -772,10 +804,11 @@
 				 */
 				move = function( e ) {
 					e.preventDefault();
-					matrix[4] = origPageX + e.pageX - startPageX;
-					matrix[5] = origPageY + e.pageY - startPageY;
-					self.setMatrix( matrix );
-					self._trigger( "pan", matrix[4], matrix[5] );
+					self.pan(
+						origPageX + e.pageX - startPageX,
+						origPageY + e.pageY - startPageY,
+						panOptions
+					);
 				};
 			}
 

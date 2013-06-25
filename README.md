@@ -4,10 +4,10 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (8.4kb/3.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (8.5kb/3.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download version 1.1.1](https://raw.github.com/timmywil/jquery.panzoom/v1.1.1/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.1.1/dist/jquery.panzoom.js)
+[Download version 1.2.0](https://raw.github.com/timmywil/jquery.panzoom/v1.2.0/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.2.0/dist/jquery.panzoom.js)
 
 ## Mobile support
 
@@ -183,6 +183,20 @@ $elem.panzoom("resetPan", false);
 ```
 
 Reset the pan to its original value.
+
+### `pan( x, y[, options] )`
+
+__Arguments__
+
+  1. `x` _{Number}_: The translation X value to set
+  2. `y` _{Number}_: The translation Y value to set
+  3. `options` _{Object}_: These options are also passed along to [setMatrix](#setmatrix-matrix-options-).
+
+    1. `options.matrix` _{Array}_: The matrix being manipulated (If this is not passed, the matrix will be calculated on every call to pan, which could be a performance bottleneck if this is bound to a move event)
+    2. `options.silent` _{Boolean}_: Silence the pan event. Note that this will also silence the setMatrix change event.
+    3. `options.relative` _{Boolean}_: Make the x and y values relative to the existing matrix.<br/>
+      e.g. $elem.panzoom("pan", 10, -10, { relative: true });<br/>
+      // => Moves the element 10 pixels right and 10 pixels up from its current position
 
 ### `zoom( [scale[, opts]] )`
 
