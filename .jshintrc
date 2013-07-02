@@ -12,7 +12,7 @@
   "newcap": true,
   "noarg": true,
   "node": true,
-  "quotmark": "double",
+  "quotmark": "single",
   "smarttabs": true,
   "strict": false,
   "supernew": true,
