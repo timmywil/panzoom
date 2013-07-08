@@ -9,10 +9,10 @@
     "demo",
     "images",
     "test",
-    "**/*.min.*",
     "*.md",
     "*.txt",
     "*.json",
-    "jquery.panzoom.js"
+    "*.html",
+    "*.js"
   ]
 }
