@@ -1,0 +1,18 @@
+{
+  "name": "jquery.panzoom",
+  "version": "1.3.0",
+  "main": "dist/jquery.panzoom.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "stylesheets",
+    "demo",
+    "images",
+    "test"
+    "**/*.min.*",
+    "*.md",
+    "*.txt",
+    "*.json",
+    "jquery.panzoom.js"
+  ]
+}
