@@ -297,7 +297,7 @@
 			if ( typeof matrix === 'string' ) {
 				matrix = this.getMatrix( matrix );
 			}
-			var contain, isInvert, container, dims;
+			var contain, isInvert, container, dims, margin;
 			var scale = +matrix[0];
 
 			// Apply containment
@@ -305,13 +305,15 @@
 				isInvert = contain === 'invert';
 				container = this.container;
 				dims = this.dimensions;
+				margin = ((dims.width * scale) - container.width) / 2;
 				matrix[4] = Math[ isInvert ? 'max' : 'min' ](
-					Math[ isInvert ? 'min' : 'max' ]( matrix[4], dims.width * scale - dims.width - dims.left ),
-					container.width - (dims.width * scale) - dims.left
+					Math[ isInvert ? 'min' : 'max' ]( matrix[4], margin - dims.left ),
+					-margin - dims.left
 				);
+				margin = ((dims.height * scale) - container.height) / 2;
 				matrix[5] = Math[ isInvert ? 'max' : 'min' ](
-					Math[ isInvert ? 'min' : 'max' ]( matrix[5], dims.height * scale - dims.height - dims.top ),
-					container.height - (dims.height * scale) - dims.top
+					Math[ isInvert ? 'min' : 'max' ]( matrix[5], margin - dims.top ),
+					-margin - dims.top
 				);
 			}
 			if ( options.animate !== 'skip' ) {
