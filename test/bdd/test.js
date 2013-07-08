@@ -20,7 +20,7 @@ describe('Panzoom', function() {
 	 * Simulates a start by triggering faux mousedown and touchstart events
 	 */
 	function fauxStart() {
-		var e = new jQuery.Event( 'mousedown', {
+		var e = new jQuery.Event('mousedown', {
 			which: 1,
 			pageX: 0,
 			pageY: 0,
@@ -40,7 +40,7 @@ describe('Panzoom', function() {
 	 */
 	function fauxMove( x, y ) {
 		fauxStart();
-		var e = jQuery.Event('mousemove', {
+		var e = new jQuery.Event('mousemove', {
 			pageX: x,
 			pageY: y,
 			touches: [
@@ -333,7 +333,29 @@ describe('Panzoom', function() {
 		var matrix = $elem.panzoom('getMatrix');
 		expect( +matrix[4] ).to.not.equal( -2 );
 		expect( +matrix[5] ).to.not.equal( -2 );
-		$elem.panzoom('option', 'contain', false).panzoom('reset');
+		// Clean up
+		$elem.panzoom('option', 'contain', false).panzoom( 'reset', false );
+	});
+	it('should invert-contain the panzoom element outside its parent when the contain option is set to "invert"', function() {
+		var panzoom = $elem.panzoom('instance');
+		// Zoom in for moving
+		$elem.panzoom('zoom', { animate: false });
+		// Set contain to 'invert'
+		$elem.panzoom('option', 'contain', 'invert');
+		fauxMove( -2, -2 );
+		var matrix = panzoom.getMatrix();
+		expect( +matrix[4] ).to.equal( -2 );
+		expect( +matrix[5] ).to.equal( -2 );
+		fauxMove( 2, 2 );
+		matrix = panzoom.getMatrix();
+		// Should normalize to 0
+		expect( +matrix[4] ).to.equal( 0 );
+		expect( +matrix[5] ).to.equal( 0 );
+		// Clean up
+		$elem.panzoom('option', 'contain', false).panzoom( 'reset', false );
+		matrix = panzoom.getMatrix();
+		expect( +matrix[4] ).to.equal( 0 );
+		expect( +matrix[5] ).to.equal( 0 );
 	});
 
 	/**

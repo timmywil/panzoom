@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.2.1
- * Updated: Tue Jul 02 2013
+ * @license jquery.panzoom.js v1.3.0
+ * Updated: Mon Jul 08 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -164,6 +164,8 @@
 
 		// Indicate that the element should be contained within it's parent when panning
 		// Note: this does not affect zooming outside of the parent
+		// Set this value to 'invert' to only allow panning outside of the parent element (basically the opposite of the normal use of contain)
+		// 'invert' is useful for a large panzoom element where you don't want to show anything behind it
 		contain: false
 	};
 
@@ -295,12 +297,22 @@
 			if ( typeof matrix === 'string' ) {
 				matrix = this.getMatrix( matrix );
 			}
+			var contain, isInvert, container, dims;
+			var scale = +matrix[0];
+
 			// Apply containment
-			if ( typeof options.contain === 'boolean' ? options.contain : this.options.contain ) {
-				var container = this.container;
-				var dims = this.dimensions;
-				matrix[4] = Math.min( Math.max( matrix[4], -dims.left ), container.width - dims.width - dims.left );
-				matrix[5] = Math.min( Math.max( matrix[5], -dims.top ), container.height - dims.height - dims.top );
+			if ( (contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain) ) {
+				isInvert = contain === 'invert';
+				container = this.container;
+				dims = this.dimensions;
+				matrix[4] = Math[ isInvert ? 'max' : 'min' ](
+					Math[ isInvert ? 'min' : 'max' ]( matrix[4], dims.width * scale - dims.width - dims.left ),
+					container.width - (dims.width * scale) - dims.left
+				);
+				matrix[5] = Math[ isInvert ? 'max' : 'min' ](
+					Math[ isInvert ? 'min' : 'max' ]( matrix[5], dims.height * scale - dims.height - dims.top ),
+					container.height - (dims.height * scale) - dims.top
+				);
 			}
 			if ( options.animate !== 'skip' ) {
 				// Set transition
@@ -308,7 +320,7 @@
 			}
 			// Update range
 			if ( options.range ) {
-				this.$zoomRange.val( matrix[0] );
+				this.$zoomRange.val( scale );
 			}
 			$[ this.isSVG ? 'attr' : 'style' ]( this.elem, 'transform', 'matrix(' + matrix.join(',') + ')' );
 			if ( !options.silent ) {
@@ -379,6 +391,7 @@
 			// Shuffle arguments
 			if ( typeof scale === 'object' ) {
 				opts = scale;
+				scale = null;
 			} else if ( !opts ) {
 				opts = {};
 			}
@@ -816,7 +829,7 @@
 
 			// Bind the handlers
 			$doc
-				.on( 'touchend' + ns + ' click' + ns, function( e ) {
+				.on( 'touchend' + ns + ' mouseup' + ns, function( e ) {
 					e.preventDefault();
 					$(this).off( ns );
 					self.panning = false;
