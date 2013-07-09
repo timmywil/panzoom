@@ -282,7 +282,6 @@
 		/**
 		 * Given a matrix object, quickly set the current matrix of the element
 		 * @param {Array|String} matrix
-		 * @param {Boolean} [animate] Whether to animate the transform change
 		 * @param {Object} [options]
 		 * @param {Boolean|String} [options.animate] Whether to animate the transform change, or 'skip' indicating that it is unnecessary to set
 		 * @param {Boolean} [options.contain] Override the global contain option

@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.3.4
- * Updated: Mon Jul 08 2013
+ * Updated: Tue Jul 09 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -282,7 +282,6 @@
 		/**
 		 * Given a matrix object, quickly set the current matrix of the element
 		 * @param {Array|String} matrix
-		 * @param {Boolean} [animate] Whether to animate the transform change
 		 * @param {Object} [options]
 		 * @param {Boolean|String} [options.animate] Whether to animate the transform change, or 'skip' indicating that it is unnecessary to set
 		 * @param {Boolean} [options.contain] Override the global contain option
