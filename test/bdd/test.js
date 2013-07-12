@@ -168,15 +168,16 @@ describe('Panzoom', function() {
 	it('should bind the onStart event', function() {
 		var called = false;
 		var instance = $elem.panzoom('instance');
-		function testStart( e, panzoom, startPageX ) {
+		function testStart( e, panzoom, event ) {
 			called = true;
-			expect( startPageX ).to.equal( 0 );
+			expect( event ).to.have.property('type');
+			expect( event ).to.have.property('pageX');
 			expect( panzoom ).to.eql( instance );
 			expect( panzoom.panning ).to.be.true;
 		}
 		$elem.panzoom( 'option', 'onStart', testStart );
-		instance._startMove( 0, 0 );
-		$(document).trigger('mouseup').trigger('touchend');
+		instance._startMove({ pageX: 0, pageY: 0, type: 'mousedown' });
+		$(document).trigger('mouseup');
 		$elem.off( 'panzoomstart', testStart );
 		$elem.panzoom( 'option', 'onStart', null );
 		expect( called ).to.be.true;
@@ -389,7 +390,7 @@ describe('Panzoom', function() {
 	it('should pan on the middle point when zooming (and gravitate towards that point)', function() {
 		var panzoom = $elem.panzoom('instance');
 		var matrix = panzoom.getMatrix();
-		panzoom._startMove([
+		panzoom._startMove({ type: 'touchstart' }, [
 			{ pageX: 0, pageY: 0 },
 			{ pageX: 10, pageY: 10 }
 		]);
@@ -437,6 +438,34 @@ describe('Panzoom', function() {
 		});
 		$elem.panzoom( 'pan', 0, 0, { silent: true } );
 		expect( called ).to.be.false;
+	});
+	it('should continue with a touch event if started with a touch event', function() {
+		var called = false;
+		$elem.on('panzoomchange', function() {
+			called = true;
+		});
+		var e = new jQuery.Event('touchstart', {
+			touches: [
+				{ pageX: 0, pageY: 0 }
+			]
+		});
+		$elem.trigger( e );
+		// Mouse
+		e = new jQuery.Event('mousemove', {
+			touches: [
+				{ pageX: 0, pageY: 0 }
+			]
+		});
+		var $doc = $(document).trigger( e );
+		expect( called ).to.be.false;
+		// Touch
+		e = new jQuery.Event('touchmove', {
+			touches: [
+				{ pageX: 0, pageY: 0 }
+			]
+		});
+		$doc.trigger( e );
+		expect( called ).to.be.true;
 	});
 
 

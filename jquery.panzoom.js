@@ -282,6 +282,7 @@
 		/**
 		 * Given a matrix object, quickly set the current matrix of the element
 		 * @param {Array|String} matrix
+		 * @param {Boolean} [animate] Whether to animate the transform change
 		 * @param {Object} [options]
 		 * @param {Boolean|String} [options.animate] Whether to animate the transform change, or 'skip' indicating that it is unnecessary to set
 		 * @param {Boolean} [options.contain] Override the global contain option
@@ -587,23 +588,15 @@
 			if ( !options.disablePan || !options.disableZoom ) {
 				events[ str_start ] = function( e ) {
 					var touches;
-					// Handle a touch
-					if ( e.type === 'touchstart' ) {
-						if ( (touches = e.touches) ) {
-							if ( touches.length === 1 && !options.disablePan ) {
-								self._startMove( e.pageX, e.pageY );
-								return false;
-							}
-							if ( touches.length === 2 ) {
-								self._startMove( touches );
-								return false;
-							}
-						}
-					// Handle a click
-					// Bypass right click
-					} else if ( !options.disablePan && e.which === 1 && e.pageX != null && e.pageY != null ) {
-						self._startMove( e.pageX, e.pageY );
-						return false;
+					if ( e.type === 'mousedown' ?
+						// Ignore right click when handling a click
+						!options.disablePan && e.which === 1 :
+						// Touch
+						(touches = e.touches) && ((touches.length === 1 && !options.disablePan) || touches.length === 2) ) {
+
+						e.preventDefault();
+						e.stopPropagation();
+						self._startMove( e, touches );
 					}
 				};
 			}
@@ -767,15 +760,19 @@
 		/**
 		 * Starts the pan
 		 * This is bound to mouse/touchmove on the element
-		 * @param {Number|TouchList} startPageX The pageX on the mousedown event or the touches list
-		 * @param {Number} startPageY The pageY on the mousedown event
+		 * @param {jQuery.Event} event An event with pageX, pageY, and possibly the touches list
+		 * @param {TouchList} [touches] The touches list if present
 		 */
-		_startMove: function( startPageX, startPageY ) {
-			var move, touches, startDistance, startScale, startMiddle;
+		_startMove: function( event, touches ) {
+			var move,
+				startDistance, startScale, startMiddle,
+				startPageX, startPageY;
 			var self = this;
 			var options = this.options;
+			var isTouch = event.type === 'touchstart';
 			var ns = options.eventNamespace;
-			var $doc = $(document).off( ns );
+			var moveEvent = (isTouch ? 'touchmove' : 'mousemove') + ns;
+			var endEvent = (isTouch ? 'touchend' : 'mouseup') + ns;
 			var matrix = this.getMatrix();
 			var panOptions = { matrix: matrix, animate: 'skip' };
 			var original = matrix.slice( 0 );
@@ -789,10 +786,9 @@
 			this.panning = true;
 
 			// Trigger start event
-			this._trigger( 'start', startPageX, startPageY );
+			this._trigger( 'start', event, touches );
 
-			if ( arguments.length === 1 ) {
-				touches = startPageX;
+			if ( touches && touches.length === 2 ) {
 				startDistance = this._getDistance( touches );
 				startScale = +matrix[0];
 				startMiddle = this._getMiddle( touches );
@@ -800,8 +796,7 @@
 					e.preventDefault();
 
 					// Calculate move on middle point
-					touches = e.touches;
-					var middle = self._getMiddle( touches );
+					var middle = self._getMiddle( touches = e.touches );
 					self.pan(
 						origPageX + middle.pageX - startMiddle.pageX,
 						origPageY + middle.pageY - startMiddle.pageY,
@@ -813,6 +808,8 @@
 					self.zoom( diff / 300 + startScale, { middle: middle } );
 				};
 			} else {
+				startPageX = event.pageX;
+				startPageY = event.pageY;
 
 				/**
 				 * Mousemove/touchmove function to pan the element
@@ -829,16 +826,17 @@
 			}
 
 			// Bind the handlers
-			$doc
-				.on( 'touchend' + ns + ' mouseup' + ns, function( e ) {
+			$(document)
+				.off( ns )
+				.on( moveEvent, move )
+				.on( endEvent, function( e ) {
 					e.preventDefault();
 					$(this).off( ns );
 					self.panning = false;
 					// Trigger our end event
 					// jQuery's not is used here to compare Array equality
 					self._trigger( 'end', matrix, !!$(original).not(matrix).length );
-				})
-				.on( 'touchmove' + ns + ' mousemove' + ns, move );
+				});
 		}
 	};
 

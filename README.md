@@ -335,12 +335,10 @@ __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
   2. `panzoom` _(Panzoom)_: The panzoom instance
-  3. `startPageX` _(Number|TouchList)_: The pageX on the mousedown event or the touches list
-  4. `startPageY` _(Number)_: The pageY on the mousedown event
+  3. `event` _(jQuery.Event)_: The starting mousedown or touchstart event
+  4. `touches` _(TouchList)_: The touches list if present
 
-Fired when the user starts a move or pinch zoom gesture on mobile, this event receives the same arguments as the private `_startMove()` method.
-
-If startPageY is undefined, you know the panzoom was triggered by a touch event and not a mousedown event.
+Fired when the user starts a move or pinch zoom gesture on mobile.
 
 ### `"panzoomchange"`
 
