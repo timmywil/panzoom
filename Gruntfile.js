@@ -17,7 +17,7 @@ module.exports = function( grunt ) {
 			},
 			manifest: {
 				dest: 'panzoom.jquery.json',
-				src: '_panzoom.jquery.json'
+				src: '_panzoom.json'
 			},
 			bower: {
 				dest: 'bower.json',
