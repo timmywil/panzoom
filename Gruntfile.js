@@ -42,6 +42,9 @@ module.exports = function( grunt ) {
 			},
 			bower: {
 				src: 'bower.json'
+			},
+			jquery: {
+				src: 'panzoom.jquery.json'
 			}
 		},
 		jshint: {
