@@ -6,8 +6,8 @@ And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (8.7kb/3.3kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download version 1.3.8](https://raw.github.com/timmywil/jquery.panzoom/v1.3.8/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.3.8/dist/jquery.panzoom.js)
+[Download version 1.4.0](https://raw.github.com/timmywil/jquery.panzoom/v1.4.0/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.4.0/dist/jquery.panzoom.js)
 
 ## Mobile support
 
@@ -148,40 +148,54 @@ $elem.panzoom("option", {
 
 Any option can be changed. See the defaults above for a list.
 
-### `reset( [animate] )`
+### `reset( [options] )`
 
 __Arguments__
 
-  1. `animate` _{Boolean}_: Whether to animate the reset (default: true)
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to setMatrix.
+  2. `options.silent` _{Boolean}_: Silence the reset event (as well as the change event as the same options are passed to setMatrix)
 
 ```js
 $elem.panzoom("reset");
+$elem.panzoom("reset", false);
+$elem.panzoom("reset", {
+  animate: false,
+  contain: false
+});
 ```
 
 Reset the transform matrix to its original value. All panning and zooming is reset.
 
-### `resetZoom( [animate] )`
+### `resetZoom( [options] )`
 
 __Arguments__
 
-  1. `animate` _{Boolean}_: Whether to animate the reset (default: true)
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to zoom.
 
 ```js
 $elem.panzoom("resetZoom");
 $elem.panzoom("resetZoom", false);
+$elem.panzoom("resetZoom", {
+  animate: false,
+  silent: true
+});
 ```
 
-Reset the scale to its original value.
+Reset the scale to its original value (resets both scale values in the matrix to their original values).
 
-### `resetPan( [animate] )`
+### `resetPan( [options] )`
 
 __Arguments__
 
-  1. `animate` _{Boolean}_: Whether to animate the reset (default: true)
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to pan.
 
 ```js
 $elem.panzoom("resetPan");
 $elem.panzoom("resetPan", false);
+$elem.panzoom("resetPan", {
+  animate: false,
+  silent: true
+});
 ```
 
 Reset the pan to its original value.
@@ -310,7 +324,7 @@ __Arguments__
 $elem.panzoom("setMatrix", [ 1, 0, 0, -1, 0, 0 ]);
 ```
 
-Sets the transform matrix of the panzoom element. It accepts the matrix as an array. The return value is `undefined`.
+Sets the transform matrix of the panzoom element. It accepts the matrix as an array. Returns the newly-set matrix as an _Array_.
 
 ### `transition( [off] )`
 

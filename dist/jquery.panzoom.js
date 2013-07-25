@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.3.8
- * Updated: Thu Jul 18 2013
+ * @license jquery.panzoom.js v1.4.0
+ * Updated: Thu Jul 25 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -55,6 +55,21 @@
 		floating + commaSpace +
 		floating + '\\)$'
 	);
+
+	/**
+	 * Creates the options object for reset functions
+	 * @param {Boolean|Object} opts See reset methods
+	 * @returns {Object} Returns the newly-created options object
+	 */
+	function createResetOptions( opts ) {
+		var options = { range: true, animate: true };
+		if ( typeof opts === 'boolean' ) {
+			options.animate = opts;
+		} else {
+			$.extend( options, opts );
+		}
+		return options;
+	}
 
 	/**
 	 * Create a Panzoom object for a given element
@@ -216,32 +231,36 @@
 
 		/**
 		 * Return the element to it's original transform matrix
-		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
+		 * @param {Boolean} [options] If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to setMatrix.
+		 * @param {Boolean} [options.silent] Silence the reset event
 		 */
-		reset: function( animate ) {
+		reset: function( options ) {
+			options = createResetOptions( options );
 			// Reset the transform to its original value
-			var matrix = this.setMatrix( this._origTransform, {
-				animate: typeof animate !== 'boolean' || animate,
-				// Set zoomRange value
-				range: true
-			});
-			this._trigger( 'reset', matrix );
+			var matrix = this.setMatrix( this._origTransform, options );
+			if ( !options.silent ) {
+				this._trigger( 'reset', matrix );
+			}
 		},
 
 		/**
 		 * Only resets zoom level
-		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
+		 * @param {Boolean|Object} [options] Whether to animate the reset (default: true) or an object of options to pass to zoom()
 		 */
-		resetZoom: function( animate ) {
-			this._resetParts( [ 0, 3 ], animate );
+		resetZoom: function( options ) {
+			options = createResetOptions( options );
+			var origMatrix = this.getMatrix( this._origTransform );
+			options.dValue = origMatrix[ 3 ];
+			this.zoom( origMatrix[0], options );
 		},
 
 		/**
 		 * Only reset panning
-		 * @param {Boolean} [animate] Whether to animate the reset (default: true)
+		 * @param {Boolean|Object} [options] Whether to animate the reset (default: true) or an object of options to pass to pan()
 		 */
-		resetPan: function( animate ) {
-			this._resetParts( [ 4, 5 ], animate );
+		resetPan: function( options ) {
+			var origMatrix = this.getMatrix( this._origTransform );
+			this.pan( origMatrix[4], origMatrix[5], createResetOptions(options) );
 		},
 
 		/**
@@ -288,7 +307,7 @@
 		 * @param {Boolean} [options.contain] Override the global contain option
 		 * @param {Boolean} [options.range] If true, $zoomRange's value will be updated.
 		 * @param {Boolean} [options.silent] If true, the change event will not be triggered
-		 * @returns {Array} Returns the matrix that was set
+		 * @returns {Array} Returns the newly-set matrix
 		 */
 		setMatrix: function( matrix, options ) {
 			if ( this.disabled ) { return; }
@@ -328,6 +347,7 @@
 			if ( !options.silent ) {
 				this._trigger( 'change', matrix );
 			}
+
 			return matrix;
 		},
 
@@ -385,6 +405,10 @@
 		 * @param {Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
 		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
 		 * @param {Boolean} [opts.silent] Silence the zoom event
+		 * @param {Number} [opts.dValue] Think of a transform matrix as four values a, b, c, d (where a/d are the horizontal/vertical scale values and b/c are the skew values) (5 and 6 of matrix array are the tx/ty transform values).
+		 *  Normally, the scale is set to both the a and d values of the matrix.
+		 *  This option allows you to specify a different d value for the zoom. For instance, to flip vertically, you could set -1 as the dValue.
+		 * @returns {Array} Returns the newly-set matrix
 		 */
 		zoom: function( scale, opts ) {
 			var animate = false;
@@ -420,7 +444,8 @@
 			}
 
 			// Set the scale
-			matrix[0] = matrix[3] = scale;
+			matrix[0] = scale;
+			matrix[3] = typeof opts.dValue === 'number' ? opts.dValue : scale;
 			this.setMatrix( matrix, {
 				animate: typeof opts.animate === 'boolean' ? opts.animate : animate,
 				// Set the zoomRange value
@@ -703,23 +728,6 @@
 					height: $elem.height()
 				};
 			}
-		},
-
-		/**
-		 * Reset certain parts of the transform
-		 */
-		_resetParts: function( indices, animate ) {
-			var origMatrix = this.getMatrix( this._origTransform );
-			var cur = this.getMatrix();
-			var i = indices.length;
-			while( i-- ) {
-				cur[ indices[i] ] = origMatrix[ indices[i] ];
-			}
-			this.setMatrix(cur, {
-				animate: typeof animate !== 'boolean' || animate,
-				// Set zoomRange value
-				range: true
-			});
 		},
 
 		/**
