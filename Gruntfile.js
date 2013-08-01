@@ -78,12 +78,22 @@ module.exports = function( grunt ) {
 			}
 		},
 		watch: {
-			files: [
-				'<%= jshint.all %>',
-				'package.json',
-				'test/index.html'
-			],
-			tasks: 'test'
+			dev: {
+				files: [
+					'<%= jshint.all %>',
+					'package.json',
+					'.jshintrc',
+					'test/index.html'
+				],
+				tasks: 'dev',
+				options: {
+					livereload: 35711
+				}
+			},
+			test: {
+				files: '<%= watch.dev.files %>',
+				tasks: 'test'
+			}
 		}
 	});
 
@@ -120,7 +130,8 @@ module.exports = function( grunt ) {
 		}
 	);
 
-	grunt.registerTask( 'test', [ 'jsonlint', 'jshint', 'build', 'uglify', 'compare_size', 'mocha' ]);
+	grunt.registerTask( 'dev', [ 'jsonlint', 'jshint', 'build', 'uglify', 'compare_size' ] );
+	grunt.registerTask( 'test', [ 'dev', 'mocha' ]);
 
 	// Default grunt
 	grunt.registerTask( 'default', [ 'test' ]);

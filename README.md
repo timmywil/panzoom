@@ -35,7 +35,7 @@ but Panzoom supports AMD for javascript module love.
 With script tags:
 
 ```html
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="/js/plugins/jquery.panzoom.js"></script>
 ```
 
@@ -324,7 +324,9 @@ __Arguments__
 $elem.panzoom("setMatrix", [ 1, 0, 0, -1, 0, 0 ]);
 ```
 
-Sets the transform matrix of the panzoom element. It accepts the matrix as an array. Returns the newly-set matrix as an _Array_.
+Sets the transform matrix of the panzoom element. It accepts the matrix as an array.
+
+_Note_: `setMatrix()` does not chain. It returns the newly-set matrix as an _Array_.
 
 ### `transition( [off] )`
 
