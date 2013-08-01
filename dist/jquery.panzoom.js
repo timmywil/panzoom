@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v1.4.1
+ * @license jquery.panzoom.js v1.5.0
  * Updated: Mon Aug 12 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -127,7 +127,7 @@
 		// Build the transition value
 		this._buildTransition();
 
-		// Build containment if necessary
+		// Build containment dimensions
 		this._buildContain();
 
 		// Add zoom and reset buttons to `this`
@@ -236,6 +236,7 @@
 			options = createResetOptions( options );
 			// Reset the transform to its original value
 			var matrix = this.setMatrix( this._origTransform, options );
+			this._focalStart = null;
 			if ( !options.silent ) {
 				this._trigger( 'reset', matrix );
 			}
@@ -390,6 +391,7 @@
 				matrix[5] = y;
 			}
 			this.setMatrix( matrix, options );
+			this._focalStart = null;
 			if ( !options.silent ) {
 				this._trigger( 'pan', x, y );
 			}
@@ -400,16 +402,24 @@
 		 * @param {Number|Boolean} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
 		 * @param {Object} [opts]
 		 * @param {Boolean} [opts.noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
-		 * @param {Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
+		 * @param {jQuery.Event|Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
+		 * @param {jQuery.Event|Object} [opts.focal] A focal point on the panzoom element on which to zoom.
+		 *  If an object, set the clientX and clientY properties to the position relative to the panzoom element
 		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
 		 * @param {Boolean} [opts.silent] Silence the zoom event
-		 * @param {Number} [opts.dValue] Think of a transform matrix as four values a, b, c, d (where a/d are the horizontal/vertical scale values and b/c are the skew values) (5 and 6 of matrix array are the tx/ty transform values).
+		 * @param {Number} [opts.dValue] Think of a transform matrix as four values a, b, c, d
+		 *  where a/d are the horizontal/vertical scale values and b/c are the skew values
+		 *  (5 and 6 of matrix array are the tx/ty transform values).
 		 *  Normally, the scale is set to both the a and d values of the matrix.
-		 *  This option allows you to specify a different d value for the zoom. For instance, to flip vertically, you could set -1 as the dValue.
+		 *  This option allows you to specify a different d value for the zoom.
+		 *  For instance, to flip vertically, you could set -1 as the dValue.
+		 * @param {Number} [opts.increment] Override the default zoom increment
+		 * @param {Number} [opts.maxScale] Override the default maxScale
+		 * @param {Number} [opts.minScale] Override the default minScale
 		 * @returns {Array} Returns the newly-set matrix
 		 */
 		zoom: function( scale, opts ) {
-			var animate = false;
+			// Check if disabled
 			var options = this.options;
 			if ( options.disableZoom ) { return; }
 			// Shuffle arguments
@@ -419,6 +429,11 @@
 			} else if ( !opts ) {
 				opts = {};
 			}
+			var animate = false;
+			// Extend default options
+			opts = $.extend( {}, options, opts );
+
+			// Get the current matrix
 			var matrix = this.getMatrix();
 
 			// Set the middle point
@@ -430,20 +445,34 @@
 
 			// Calculate zoom based on increment
 			if ( typeof scale !== 'number' ) {
-				scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
+				scale = +matrix[0] + (opts.increment * (scale ? -1 : 1));
 				animate = true;
 			}
 
 			// Constrain scale
-			if ( scale > options.maxScale ) {
-				scale = options.maxScale;
-			} else if ( scale < options.minScale ) {
-				scale = options.minScale;
+			if ( scale > opts.maxScale ) {
+				scale = opts.maxScale;
+			} else if ( scale < opts.minScale ) {
+				scale = opts.minScale;
+			}
+
+			// Calculate focal point based on scale
+			var focal = opts.focal;
+			if ( focal ) {
+				var start = this._focalStart || (this._focalStart = matrix.slice(0));
+				start[4] = +start[4];
+				start[5] = +start[5];
+				var dims = this.dimensions;
+				// FIXME: this isn't right
+				matrix[4] = (dims.width / 2 - focal.clientX) * (scale - 1);
+				matrix[5] = (dims.height / 2 - focal.clientY) * (scale - 1);
 			}
 
 			// Set the scale
 			matrix[0] = scale;
 			matrix[3] = typeof opts.dValue === 'number' ? opts.dValue : scale;
+
+			// Set the matrix
 			this.setMatrix( matrix, {
 				animate: typeof opts.animate === 'boolean' ? opts.animate : animate,
 				// Set the zoomRange value
@@ -533,9 +562,6 @@
 						break;
 					case 'maxScale':
 						self.$zoomRange.attr( 'max', value );
-						break;
-					case 'contain':
-						self._buildContain();
 						break;
 					case 'startTransform':
 						self._buildTransform();
@@ -703,29 +729,28 @@
 
 		/**
 		 * Builds the restricing dimensions from the containment element
+		 * Also used with focal points
 		 */
 		_buildContain: function() {
 			// Reset container properties
-			if ( this.options.contain ) {
-				var $parent = this.$parent;
-				this.container = {
-					width: $parent.width(),
-					height: $parent.height()
-				};
-				var elem = this.elem;
-				var $elem = this.$elem;
-				this.dimensions = this.isSVG ? {
-					left: elem.getAttribute('x') || 0,
-					top: elem.getAttribute('y') || 0,
-					width: elem.getAttribute('width') || $elem.width(),
-					height: elem.getAttribute('height') || $elem.height()
-				} : {
-					left: $.css( elem, 'left', true ) || 0,
-					top: $.css( elem, 'top', true ) || 0,
-					width: $elem.width(),
-					height: $elem.height()
-				};
-			}
+			var $parent = this.$parent;
+			this.container = {
+				width: $parent.width(),
+				height: $parent.height()
+			};
+			var elem = this.elem;
+			var $elem = this.$elem;
+			this.dimensions = this.isSVG ? {
+				left: elem.getAttribute('x') || 0,
+				top: elem.getAttribute('y') || 0,
+				width: elem.getAttribute('width') || $elem.width(),
+				height: elem.getAttribute('height') || $elem.height()
+			} : {
+				left: $.css( elem, 'left', true ) || 0,
+				top: $.css( elem, 'top', true ) || 0,
+				width: $elem.width(),
+				height: $elem.height()
+			};
 		},
 
 		/**

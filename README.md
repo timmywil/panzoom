@@ -6,8 +6,8 @@ And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (8.7kb/3.3kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download version 1.4.0](https://raw.github.com/timmywil/jquery.panzoom/v1.4.0/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.4.0/dist/jquery.panzoom.js)
+[Download version 1.5.0](https://raw.github.com/timmywil/jquery.panzoom/v1.5.0/dist/jquery.panzoom.min.js)
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.5.0/dist/jquery.panzoom.js)
 
 ## Mobile support
 
@@ -222,9 +222,20 @@ __Arguments__
   2. `opts` _{Object}_:
 
     1. `opts.noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
-    2. `opts.middle` _{Object}_: Specify a middle point towards which to gravitate when zooming
-    3. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
-    4. `opts.silent` _{Boolean}_: Silence the zoom event
+    2. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
+    3. `opts.middle` _{jQuery.Event|Object}_: Specify a middle point towards which to gravitate when zooming
+    4. `opts.focal` _{jQuery.Event|Object}_: Specify a focal point under which to freeze the zooming element.
+      Should either be a jQuery event or an object containing pageX/pageY to specify the point's position relative to the document.
+    5. `opts.silent` _{Boolean}_: Silence the zoom event
+    6. `opts.dValue` _{Number}_: Think of a transform matrix as four values a, b, c, d
+      where a/d are the horizontal/vertical scale values and b/c are the skew values
+      (5 and 6 of matrix array are the tx/ty transform values).
+      Normally, the scale is set to both the a and d values of the matrix.
+      This option allows you to specify a different d value for the zoom.
+      For instance, to flip vertically, you could set -1 as the dValue.
+    7. `opts.increment` _{Number}_: Override the default zoom increment
+    8. `opts.maxScale` _{Number}_: Override the default maxScale
+    9. `opts.minScale` _{Number}_: Override the default minScale
 
 ```js
 // Transition a zoom in based on the scale increment, min and max values
