@@ -357,7 +357,7 @@ describe('Panzoom', function() {
 		$elem.panzoom('reset', false);
 	});
 	it('should zoom on a focal point if passed as an option', function() {
-		$elem.on('mousewheel.focal', function( e ) {
+		$elem.parent().on('mousewheel.focal', function( e ) {
 			e.preventDefault();
 			$elem.panzoom('zoom', e.originalEvent.wheelDelta < 0, {
 				animate: false,

@@ -224,14 +224,15 @@ __Arguments__
     1. `opts.noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
     2. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
     3. `opts.middle` _{jQuery.Event|Object}_: Specify a middle point towards which to gravitate when zooming
-    4. `opts.focal` _{jQuery.Event|Object}_: Specify a focal point under which to freeze the zooming element.
-      Should either be a jQuery event or an object containing pageX/pageY to specify the point's position relative to the document.
+    4. `opts.focal` _{jQuery.Event|Object}_: Specify a focal point under which to freeze the zooming element.<br/>
+      Should either be a jQuery event or an object containing clientX/clientY to specify the point's position relative to the parent.<br/>
+      For an example of focal point zooming, use the mousewheel to zoom on the [demo](http://timmywil.github.io/jquery.panzoom/demo/).
     5. `opts.silent` _{Boolean}_: Silence the zoom event
-    6. `opts.dValue` _{Number}_: Think of a transform matrix as four values a, b, c, d
-      where a/d are the horizontal/vertical scale values and b/c are the skew values
-      (5 and 6 of matrix array are the tx/ty transform values).
-      Normally, the scale is set to both the a and d values of the matrix.
-      This option allows you to specify a different d value for the zoom.
+    6. `opts.dValue` _{Number}_: Think of a transform matrix as four values a, b, c, d<br/>
+      where a/d are the horizontal/vertical scale values and b/c are the skew values<br/>
+      (5 and 6 of matrix array are the tx/ty transform values).<br/>
+      Normally, the scale is set to both the a and d values of the matrix.<br/>
+      This option allows you to specify a different d value for the zoom.<br/>
       For instance, to flip vertically, you could set -1 as the dValue.
     7. `opts.increment` _{Number}_: Override the default zoom increment
     8. `opts.maxScale` _{Number}_: Override the default maxScale

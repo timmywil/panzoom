@@ -404,7 +404,7 @@
 		 * @param {Boolean} [opts.noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
 		 * @param {jQuery.Event|Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
 		 * @param {jQuery.Event|Object} [opts.focal] A focal point on the panzoom element on which to zoom.
-		 *  If an object, set the clientX and clientY properties to the position relative to the panzoom element
+		 *  If an object, set the clientX and clientY properties to the position relative to the parent
 		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
 		 * @param {Boolean} [opts.silent] Silence the zoom event
 		 * @param {Number} [opts.dValue] Think of a transform matrix as four values a, b, c, d
@@ -459,13 +459,9 @@
 			// Calculate focal point based on scale
 			var focal = opts.focal;
 			if ( focal ) {
-				var start = this._focalStart || (this._focalStart = matrix.slice(0));
-				start[4] = +start[4];
-				start[5] = +start[5];
-				var dims = this.dimensions;
-				// FIXME: this isn't right
-				matrix[4] = (dims.width / 2 - focal.clientX) * (scale - 1);
-				matrix[5] = (dims.height / 2 - focal.clientY) * (scale - 1);
+				// Calculate some offset based on where clientX is related to the parent (or maybe panzoom elem)
+				// matrix[4] = +matrix[4] + focal.clientX -
+				// matrix[5] = +matrix[5] + focal.clientY -
 			}
 
 			// Set the scale
