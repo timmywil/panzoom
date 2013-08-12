@@ -236,7 +236,6 @@
 			options = createResetOptions( options );
 			// Reset the transform to its original value
 			var matrix = this.setMatrix( this._origTransform, options );
-			this._focalStart = null;
 			if ( !options.silent ) {
 				this._trigger( 'reset', matrix );
 			}
@@ -391,7 +390,6 @@
 				matrix[5] = y;
 			}
 			this.setMatrix( matrix, options );
-			this._focalStart = null;
 			if ( !options.silent ) {
 				this._trigger( 'pan', x, y );
 			}
