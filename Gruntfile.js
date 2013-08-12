@@ -20,6 +20,9 @@ module.exports = function( grunt ) {
 			},
 			bower: {
 				src: 'bower.json'
+			},
+			readme: {
+				src: 'README.md'
 			}
 		},
 		compare_size: {
@@ -109,19 +112,30 @@ module.exports = function( grunt ) {
 		'build',
 		'Build jquery.panzoom and package manifest',
 		function() {
+			var count;
 			var data = this.data;
 			var src = data.src;
 			var dest = data.dest || src;
 			var version = grunt.config('pkg.version');
 			var compiled = grunt.file.read( src );
 
-			// Replace version and date
-			compiled = compiled
-				// Replace version in JSON files
-				.replace( /("version":\s*")[^"]+/, '$1' + version )
-				// Replace version tag
-				.replace( /@VERSION/g, version )
-				.replace( '@DATE', (new Date).toDateString() );
+			// If this is the README, replace versions to download
+			if ( /README/.test(src) ) {
+				count = 3;
+				compiled = compiled
+					// Replace the version if not v1.1.0
+					.replace( /\bv\d+\.\d+\.\d+\b/g, function( all ) {
+						return all !== 'v1.1.0' ? 'v' + version : all;
+					});
+			} else {
+				// Replace version and date
+				compiled = compiled
+					// Replace version in JSON files
+					.replace( /("version":\s*")[^"]+/, '$1' + version )
+					// Replace version tag
+					.replace( /@VERSION/g, version )
+					.replace( '@DATE', (new Date).toDateString() );
+			}
 
 			// Write source to file
 			grunt.file.write( dest, compiled );
