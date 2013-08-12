@@ -78,6 +78,31 @@ describe('Panzoom', function() {
 		panzoom.setMatrix( origMatrix );
 	}
 
+	/**
+	 * Test the invert containment option
+	 */
+	function testInvert() {
+		var panzoom = $elem.panzoom('instance');
+		// Zoom in for moving
+		$elem.panzoom('zoom', { animate: false });
+		// Set contain to 'invert'
+		$elem.panzoom('option', 'contain', 'invert');
+		fauxMove( -2, -2 );
+		var matrix = panzoom.getMatrix();
+		expect( +matrix[4] ).to.equal( -2 );
+		expect( +matrix[5] ).to.equal( -2 );
+		fauxMove( 2, 2 );
+		matrix = panzoom.getMatrix();
+		// Should normalize to 0
+		expect( +matrix[4] ).to.equal( 0 );
+		expect( +matrix[5] ).to.equal( 0 );
+		// Clean up
+		$elem.panzoom('option', 'contain', false).panzoom( 'reset', false );
+		matrix = panzoom.getMatrix();
+		expect( +matrix[4] ).to.equal( 0 );
+		expect( +matrix[5] ).to.equal( 0 );
+	}
+
 	/* panzoom creation and options
 	---------------------------------------------------------------------- */
 	it('should have elements available', function() {
@@ -185,25 +210,13 @@ describe('Panzoom', function() {
 		$elem.panzoom('option', 'contain', false).panzoom( 'reset', false );
 	});
 	it('should invert-contain the panzoom element outside its parent when the contain option is set to "invert"', function() {
-		var panzoom = $elem.panzoom('instance');
-		// Zoom in for moving
-		$elem.panzoom('zoom', { animate: false });
-		// Set contain to 'invert'
-		$elem.panzoom('option', 'contain', 'invert');
-		fauxMove( -2, -2 );
-		var matrix = panzoom.getMatrix();
-		expect( +matrix[4] ).to.equal( -2 );
-		expect( +matrix[5] ).to.equal( -2 );
-		fauxMove( 2, 2 );
-		matrix = panzoom.getMatrix();
-		// Should normalize to 0
-		expect( +matrix[4] ).to.equal( 0 );
-		expect( +matrix[5] ).to.equal( 0 );
-		// Clean up
-		$elem.panzoom('option', 'contain', false).panzoom( 'reset', false );
-		matrix = panzoom.getMatrix();
-		expect( +matrix[4] ).to.equal( 0 );
-		expect( +matrix[5] ).to.equal( 0 );
+		testInvert();
+	});
+	it('should invert-contain the panzoom element when the panzoom element is larger than the container', function() {
+		var width = $elem.width();
+		$elem.width( width * 2 );
+		testInvert();
+		$elem.width( width );
 	});
 
 

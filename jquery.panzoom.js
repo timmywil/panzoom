@@ -141,8 +141,6 @@
 
 		// Save the instance
 		$.data( elem, datakey, this );
-
-		return this;
 	};
 
 	// Attach regex for possible use (immutable)
@@ -324,12 +322,12 @@
 				isInvert = contain === 'invert';
 				container = this.container;
 				dims = this.dimensions;
-				margin = ((dims.width * scale) - container.width) / 2;
+				margin = ((dims.width * scale) - container.width) / 2 + ((container.width - dims.width) / 2);
 				matrix[4] = Math[ isInvert ? 'max' : 'min' ](
 					Math[ isInvert ? 'min' : 'max' ]( matrix[4], margin - dims.left ),
 					-margin - dims.left
 				);
-				margin = ((dims.height * scale) - container.height) / 2;
+				margin = ((dims.height * scale) - container.height) / 2 + ((container.height - dims.height) / 2);
 				matrix[5] = Math[ isInvert ? 'max' : 'min' ](
 					Math[ isInvert ? 'min' : 'max' ]( matrix[5], margin - dims.top ),
 					-margin - dims.top
