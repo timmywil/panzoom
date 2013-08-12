@@ -112,7 +112,6 @@ module.exports = function( grunt ) {
 		'build',
 		'Build jquery.panzoom and package manifest',
 		function() {
-			var count;
 			var data = this.data;
 			var src = data.src;
 			var dest = data.dest || src;
@@ -121,7 +120,6 @@ module.exports = function( grunt ) {
 
 			// If this is the README, replace versions to download
 			if ( /README/.test(src) ) {
-				count = 3;
 				compiled = compiled
 					// Replace the version if not v1.1.0
 					.replace( /\bv\d+\.\d+\.\d+\b/g, function( all ) {
