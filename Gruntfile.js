@@ -146,5 +146,5 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'test', [ 'dev', 'mocha' ]);
 
 	// Default grunt
-	grunt.registerTask( 'default', [ 'test' ]);
+	grunt.registerTask( 'default', 'test');
 };

@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.4.1
- * Updated: Mon Aug 12 2013
+ * Updated: Tue Aug 13 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -403,6 +403,7 @@
 		 * @param {Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
 		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
 		 * @param {Boolean} [opts.silent] Silence the zoom event
+		 * @param {Array} [opts.matrix] Optionally pass the current matrix so it doesn't need to be retrieved
 		 * @param {Number} [opts.dValue] Think of a transform matrix as four values a, b, c, d (where a/d are the horizontal/vertical scale values and b/c are the skew values) (5 and 6 of matrix array are the tx/ty transform values).
 		 *  Normally, the scale is set to both the a and d values of the matrix.
 		 *  This option allows you to specify a different d value for the zoom. For instance, to flip vertically, you could set -1 as the dValue.
@@ -411,7 +412,7 @@
 		zoom: function( scale, opts ) {
 			var animate = false;
 			var options = this.options;
-			if ( options.disableZoom ) { return; }
+			if ( options.disableZoom && options.disablePan ) { return; }
 			// Shuffle arguments
 			if ( typeof scale === 'object' ) {
 				opts = scale;
@@ -419,31 +420,35 @@
 			} else if ( !opts ) {
 				opts = {};
 			}
-			var matrix = this.getMatrix();
+			var matrix = opts.matrix || this.getMatrix();
 
-			// Set the middle point
-			var middle = opts.middle;
-			if ( middle ) {
-				matrix[4] = +matrix[4] + (middle.pageX === matrix[4] ? 0 : middle.pageX > matrix[4] ? 1 : -1);
-				matrix[5] = +matrix[5] + (middle.pageY === matrix[5] ? 0 : middle.pageY > matrix[5] ? 1 : -1);
+			if ( !options.disableZoom ) {
+				// Set the middle point
+				var middle = opts.middle;
+				if ( middle ) {
+					matrix[4] = +matrix[4] + (middle.pageX === matrix[4] ? 0 : middle.pageX > matrix[4] ? 1 : -1);
+					matrix[5] = +matrix[5] + (middle.pageY === matrix[5] ? 0 : middle.pageY > matrix[5] ? 1 : -1);
+				}
+
+				// Calculate zoom based on increment
+				if ( typeof scale !== 'number' ) {
+					scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
+					animate = true;
+				}
+
+				// Constrain scale
+				if ( scale > options.maxScale ) {
+					scale = options.maxScale;
+				} else if ( scale < options.minScale ) {
+					scale = options.minScale;
+				}
+
+				// Set the scale
+				matrix[0] = scale;
+				matrix[3] = typeof opts.dValue === 'number' ? opts.dValue : scale;
 			}
 
-			// Calculate zoom based on increment
-			if ( typeof scale !== 'number' ) {
-				scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
-				animate = true;
-			}
-
-			// Constrain scale
-			if ( scale > options.maxScale ) {
-				scale = options.maxScale;
-			} else if ( scale < options.minScale ) {
-				scale = options.minScale;
-			}
-
-			// Set the scale
-			matrix[0] = scale;
-			matrix[3] = typeof opts.dValue === 'number' ? opts.dValue : scale;
+			// Calling zoom may still pan the element
 			this.setMatrix( matrix, {
 				animate: typeof opts.animate === 'boolean' ? opts.animate : animate,
 				// Set the zoomRange value
@@ -451,7 +456,7 @@
 			});
 
 			// Trigger zoom event
-			if ( !opts.silent ) {
+			if ( !opts.silent && !options.disableZoom ) {
 				this._trigger( 'zoom', scale, opts );
 			}
 		},
@@ -780,7 +785,6 @@
 			var moveEvent = (isTouch ? 'touchmove' : 'mousemove') + ns;
 			var endEvent = (isTouch ? 'touchend' : 'mouseup') + ns;
 			var matrix = this.getMatrix();
-			var panOptions = { matrix: matrix, animate: 'skip' };
 			var original = matrix.slice( 0 );
 			var origPageX = +original[4];
 			var origPageY = +original[5];
@@ -803,15 +807,15 @@
 
 					// Calculate move on middle point
 					var middle = self._getMiddle( touches = e.touches );
-					self.pan(
-						origPageX + middle.pageX - startMiddle.pageX,
-						origPageY + middle.pageY - startMiddle.pageY,
-						panOptions
-					);
+					matrix[4] = origPageX + middle.pageX - startMiddle.pageX;
+					matrix[5] = origPageY + middle.pageY - startMiddle.pageY;
 
 					// Set zoom
 					var diff = self._getDistance( touches ) - startDistance;
-					self.zoom( diff / 300 + startScale, { middle: middle } );
+					self.zoom( diff / 300 + startScale, { middle: middle, matrix: matrix } );
+
+					// Trigger the pan event for the move (which was done when calling zoom)
+					self._trigger( 'pan', matrix[4], matrix[5] );
 				};
 			} else {
 				startPageX = event.pageX;
@@ -826,7 +830,7 @@
 					self.pan(
 						origPageX + e.pageX - startPageX,
 						origPageY + e.pageY - startPageY,
-						panOptions
+						{ matrix: matrix, animate: 'skip' }
 					);
 				};
 			}
