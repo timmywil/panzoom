@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v1.4.1
+ * @license jquery.panzoom.js v1.4.2
  * Updated: Tue Aug 13 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
