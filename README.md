@@ -9,7 +9,7 @@ jquery.panzoom.min.js (8.8kb/3.4kb gzip), included in this repo, is compressed w
 [Download v1.4.2](https://raw.github.com/timmywil/jquery.panzoom/v1.4.2/dist/jquery.panzoom.min.js)  
 [Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.4.2/dist/jquery.panzoom.js)
 
-For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom/edit/master/README.md#faq) at the bottom.
+For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
 ## Mobile support
 
