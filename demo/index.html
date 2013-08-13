@@ -23,12 +23,23 @@
     <script src="../test/jquery.js"></script>
     <script src="../dist/jquery.panzoom.js"></script>
     <script>
-      $("#panzoom").panzoom({
-        $zoomIn: $(".zoom-in"),
-        $zoomOut: $(".zoom-out"),
-        $zoomRange: $(".zoom-range"),
-        $reset: $(".reset")
-      });
+      (function() {
+        var $panzoom = $("#panzoom").panzoom({
+          $zoomIn: $(".zoom-in"),
+          $zoomOut: $(".zoom-out"),
+          $zoomRange: $(".zoom-range"),
+          $reset: $(".reset"),
+        });
+        // Add focal point zooming on mousewheel
+        $panzoom.parent().on('mousewheel.focal', function( e ) {
+          e.preventDefault();
+          $panzoom.panzoom('zoom', e.originalEvent.wheelDelta < 0, {
+            animate: false,
+            increment: 0.1,
+            focal: e
+          });
+        });
+      })();
     </script>
   </body>
 </html>

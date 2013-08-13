@@ -325,7 +325,7 @@ __Arguments__
   1. `matrix` _{Array}_: Matrix to set
   2. `options` _{Object}_
 
-    1. `options.animate` _{Boolean}_: If true, a transitionw will be set to animate the transform change
+    1. `options.animate` _{Boolean}_: If true, a transition will be set to animate the transform change
     2. `options.contain` _{Boolean}_: Override the global contain option
     3. `options.range` _{Boolean}_: If true, $zoomRange's value will be updated.
     4. `options.silent` _{Boolean}_: If true, the change event will not be triggered
