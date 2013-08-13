@@ -500,6 +500,35 @@ describe('Panzoom', function() {
 		// Clean-up
 		$elem.panzoom( 'option', 'disableZoom', false );
 	});
+	it('should not pan with 2 fingers if disablePan is true', function() {
+		var called = false;
+		$elem.panzoom( 'option', 'disablePan', true );
+		var panzoom = $elem.panzoom('instance');
+		var matrix = panzoom.getMatrix();
+		$elem.on( 'panzoompan', function() {
+			called = true;
+		});
+
+		// Start move by using touchstart
+		var e = new jQuery.Event('touchstart', {
+			touches: [
+				{ pageX: 0, pageY: 0 },
+				{ pageX: 10, pageY: 10 }
+			]
+		});
+		$elem.trigger( e );
+		testPinch(function() {
+			var newMatrix = panzoom.getMatrix();
+			// Make sure a pan was not done, only a gravitation towards the middle point
+			expect( +newMatrix[4] ).to.equal( +matrix[4] + 1 );
+			expect( +newMatrix[5] ).to.equal( +matrix[5] + 1 );
+		});
+
+		expect( called ).to.be.false;
+
+		// Clean-up
+		$elem.panzoom( 'option', 'disablePan', false );
+	});
 	it('should pan on the middle point when zooming (and gravitate towards that point)', function() {
 		var panzoom = $elem.panzoom('instance');
 		var matrix = panzoom.getMatrix();

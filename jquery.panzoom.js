@@ -807,15 +807,20 @@
 
 					// Calculate move on middle point
 					var middle = self._getMiddle( touches = e.touches );
-					matrix[4] = origPageX + middle.pageX - startMiddle.pageX;
-					matrix[5] = origPageY + middle.pageY - startMiddle.pageY;
+
+					if ( !options.disablePan ) {
+						matrix[4] = origPageX + middle.pageX - startMiddle.pageX;
+						matrix[5] = origPageY + middle.pageY - startMiddle.pageY;
+					}
 
 					// Set zoom
 					var diff = self._getDistance( touches ) - startDistance;
 					self.zoom( diff / 300 + startScale, { middle: middle, matrix: matrix } );
 
 					// Trigger the pan event for the move (which was done when calling zoom)
-					self._trigger( 'pan', matrix[4], matrix[5] );
+					if ( !options.disablePan ) {
+						self._trigger( 'pan', matrix[4], matrix[5] );
+					}
 				};
 			} else {
 				startPageX = event.pageX;
