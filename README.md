@@ -9,6 +9,8 @@ jquery.panzoom.min.js (8.8kb/3.4kb gzip), included in this repo, is compressed w
 [Download v1.4.2](https://raw.github.com/timmywil/jquery.panzoom/v1.4.2/dist/jquery.panzoom.min.js)  
 [Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.4.2/dist/jquery.panzoom.js)
 
+For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom/edit/master/README.md#faq) at the bottom.
+
 ## Mobile support
 
 Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming.
@@ -422,3 +424,10 @@ Fired whenever reset is called.
 Tests can be run by opening [test/index.html](http://timmywil.github.com/jquery.panzoom/test/) in a browser or by using [`grunt`](http://gruntjs.com/) and [phantomjs](http://phantomjs.org/). See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CONTRIBUTING.md) for more info.
 
 Tests are written with [mocha](http://visionmedia.github.com/mocha/) and [chai for bdd-style assertions](http://chaijs.com/api/bdd/).
+
+
+## FAQ
+
+1. How do I make it so that I never see the background behind the panzoom element? [example](http://codepen.io/timmywil/pen/qjvBF)
+  
+  - This can be done with the `contain` option. Set `contain` to `"invert"` and make sure the panzoom element is the same size or larger than its parent.
