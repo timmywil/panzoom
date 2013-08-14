@@ -68,6 +68,8 @@ $("a.panzoom-elements").panzoom({
 All options can be overridden by passing an object literal like any other plugin,<br>
 or with the `"option"` method.<br>
 
+Check out the demos of the [contain](http://timmywil.github.io/jquery.panzoom/demo/#contain) and [inverted containment](http://timmywil.github.io/jquery.panzoom/demo/#inverted-contain) options.
+
 ```js
 Panzoom.defaults = {
   // Should always be non-empty
@@ -228,7 +230,7 @@ __Arguments__
     3. `opts.middle` _{jQuery.Event|Object}_: Specify a middle point towards which to gravitate when zooming
     4. `opts.focal` _{jQuery.Event|Object}_: Specify a focal point under which to freeze the zooming element.<br/>
       Should either be a jQuery event or an object containing clientX/clientY to specify the point's position relative to the parent.<br/>
-      For an example of focal point zooming, use the mousewheel to zoom on the [demo](http://timmywil.github.io/jquery.panzoom/demo/).
+      For an example of focal point zooming, use the mousewheel to zoom on the [demo](http://timmywil.github.io/jquery.panzoom/demo/#focal).
     5. `opts.silent` _{Boolean}_: Silence the zoom event
     6. `opts.dValue` _{Number}_: Think of a transform matrix as four values a, b, c, d<br/>
       where a/d are the horizontal/vertical scale values and b/c are the skew values<br/>
