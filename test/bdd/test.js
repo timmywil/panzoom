@@ -356,16 +356,6 @@ describe('Panzoom', function() {
 		expect( +matrix[3] ).to.equal( -1 );
 		$elem.panzoom('reset', false);
 	});
-	it('should zoom on a focal point if passed as an option', function() {
-		$elem.parent().on('mousewheel.focal', function( e ) {
-			e.preventDefault();
-			$elem.panzoom('zoom', e.originalEvent.wheelDelta < 0, {
-				animate: false,
-				increment: 0.1,
-				focal: e
-			});
-		});
-	});
 
 	/* isPanning
 	---------------------------------------------------------------------- */

@@ -40,8 +40,7 @@
           $panzoom.parent().on('mousewheel.focal', function( e ) {
             e.preventDefault();
             $panzoom.panzoom('zoom', e.originalEvent.wheelDelta < 0, {
-              animate: false,
-              increment: 0.1,
+              increment: 0.05,
               focal: e
             });
           });

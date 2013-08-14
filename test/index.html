@@ -3,21 +3,20 @@
   <head>
     <title>Panzoom for jQuery</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="mocha/mocha.css" />
+    <link rel="stylesheet" href="../bower_components/mocha/mocha.css" />
     <style type="text/css">
+      .buttons { text-align: center; margin-top: 50px; }
       .visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
     </style>
-    <script src="mocha/mocha.js"></script>
+    <script src="../bower_components/mocha/mocha.js"></script>
     <script>mocha.setup("bdd")</script>
-    <script src="chai.js"></script>
+    <script src="../bower_components/chai/chai.js"></script>
     <script>expect = chai.expect</script>
     <script src="jquery.js"></script>
     <script src="../dist/jquery.panzoom.js"></script>
   </head>
   <body>
-    <div id="mocha"></div>
-
-    <h4>Zoom and pan this tiger and stuff</h4>
+    <!-- <h4>Zoom and pan this tiger and stuff</h4> -->
     <div id="pan-parent">
       <div id="panzoom" style="text-align: center">
         <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg" width="900" height="900">
@@ -28,11 +27,14 @@
         <rect x="400" y="400" width="100" height="100" rx="20" ry="20"></rect>
       </svg>
     </div>
-    <button class="zoom-in">Zoom In</button>
-    <button class="zoom-out">Zoom Out</button>
-    <input type="range" class="zoom-range">
-    <button class="reset">Reset</button>
+    <div class="buttons">
+      <button class="zoom-in">Zoom In</button>
+      <button class="zoom-out">Zoom Out</button>
+      <input type="range" class="zoom-range">
+      <button class="reset">Reset</button>
+    </div>
 
+    <div id="mocha"></div>
     <script src="bdd/test.js"></script>
     <script>onload = function() { mocha.run(); }</script>
     <!-- Load livereload if not phantom -->

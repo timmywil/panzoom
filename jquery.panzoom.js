@@ -72,6 +72,110 @@
 	}
 
 	/**
+	 * Represent a transformation matrix with a 3x3 matrix for calculations
+	 * Matrix functions adapted from Louis Remi's jQuery.transform (https://github.com/louisremi/jquery.transform.js)
+	 * @param {Array|Number} a An array of six values representing a 2d transformation matrix
+	 */
+	function Matrix( a, b, c, d, e, f, g, h, i ) {
+		if ( $.type(a) === 'array' ) {
+			this.elements = [
+				+a[0], +a[2], +a[4],
+				+a[1], +a[3], +a[5],
+				    0,     0,     1
+			];
+		} else {
+			this.elements = [
+				a, b, c,
+				d, e, f,
+				g || 0, h || 0, i || 1
+			];
+		}
+	}
+
+	Matrix.prototype = {
+		/**
+		 * Multiply a 3x3 matrix by a similar matrix or a vector
+		 * @param {Matrix|Vector} matrix
+		 * @return {Matrix|Vector} Returns a vector if multiplying by a vector
+		 */
+		x: function( matrix ) {
+			var isVector = matrix instanceof Vector;
+
+			var a = this.elements,
+				b = matrix.elements;
+
+			if ( isVector && b.length === 3 ) {
+				// b is actually a vector
+				return new Vector(
+					a[0] * b[0] + a[1] * b[1] + a[2] * b[2],
+					a[3] * b[0] + a[4] * b[1] + a[5] * b[2],
+					a[6] * b[0] + a[7] * b[1] + a[8] * b[2]
+				);
+			} else if ( b.length === a.length ) {
+				// b is a 3x3 matrix
+				return new Matrix(
+					a[0] * b[0] + a[1] * b[3] + a[2] * b[6],
+					a[0] * b[1] + a[1] * b[4] + a[2] * b[7],
+					a[0] * b[2] + a[1] * b[5] + a[2] * b[8],
+
+					a[3] * b[0] + a[4] * b[3] + a[5] * b[6],
+					a[3] * b[1] + a[4] * b[4] + a[5] * b[7],
+					a[3] * b[2] + a[4] * b[5] + a[5] * b[8],
+
+					a[6] * b[0] + a[7] * b[3] + a[8] * b[6],
+					a[6] * b[1] + a[7] * b[4] + a[8] * b[7],
+					a[6] * b[2] + a[7] * b[5] + a[8] * b[8]
+				);
+			}
+			return false; // fail
+		},
+		/**
+		 * Generates an inverse of the current matrix
+		 * @returns {Matrix}
+		 */
+		inverse: function() {
+			var d = 1 / this.determinant(),
+				a = this.elements;
+			return new Matrix(
+				d * (  a[8] * a[4] - a[7] * a[5]),
+				d * (-(a[8] * a[1] - a[7] * a[2])),
+				d * (  a[5] * a[1] - a[4] * a[2]),
+
+				d * (-(a[8] * a[3] - a[6] * a[5])),
+				d * (  a[8] * a[0] - a[6] * a[2]),
+				d * (-(a[5] * a[0] - a[3] * a[2])),
+
+				d * (  a[7] * a[3] - a[6] * a[4]),
+				d * (-(a[7] * a[0] - a[6] * a[1])),
+				d * (  a[4] * a[0] - a[3] * a[1])
+			);
+		},
+		/**
+		 * Calculates the determinant of the current matrix
+		 * @returns {Number}
+		 */
+		determinant: function() {
+			var a = this.elements;
+			return a[0] * (a[8] * a[4] - a[7] * a[5]) - a[3] * (a[8] * a[1] - a[7] * a[2]) + a[6] * (a[5] * a[1] - a[4] * a[2]);
+		}
+	};
+
+	/**
+	 * Create a vector containing three values
+	 */
+	function Vector( x, y, z ) {
+		this.elements = [ x, y, z ];
+	}
+
+	/**
+	 * Get the element at zero-indexed index i
+	 * @param {Number} i
+	 */
+	Vector.prototype.e = Matrix.prototype.e = function( i ) {
+		return this.elements[ i ];
+	};
+
+	/**
 	 * Create a Panzoom object for a given element
 	 * @constructor
 	 * @param {Element} elem - Element to use pan and zoom
@@ -84,7 +188,7 @@
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
 	 * @param {Function} [options.on[Start|Change|Zoom|Pan|End|Reset] - Optional callbacks for panzoom events
 	 */
-	var Panzoom = function( elem, options ) {
+	function Panzoom( elem, options ) {
 
 		// Sanity checks
 		if ( elem.nodeType !== 1 ) {
@@ -110,6 +214,7 @@
 		this.options = options = $.extend( {}, Panzoom.defaults, options );
 		this.elem = elem;
 		var $elem = this.$elem = $(elem);
+		this.$doc = $(elem.ownerDocument || document);
 		this.$parent = $elem.parent();
 
 		// This is SVG if the namespace is SVG
@@ -142,7 +247,7 @@
 
 		// Save the instance
 		$.data( elem, datakey, this );
-	};
+	}
 
 	// Attach regex for possible use (immutable)
 	Panzoom.rmatrix = rmatrix;
@@ -408,7 +513,7 @@
 		/**
 		 * Zoom in/out the element using the scale properties of a transform matrix
 		 * @param {Number|Boolean} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
-		 * @param {Object} [opts]
+		 * @param {Object} [opts] All global options can be overwritten by this options object. For example, override the default increment.
 		 * @param {Boolean} [opts.noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
 		 * @param {jQuery.Event|Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
 		 * @param {jQuery.Event|Object} [opts.focal] A focal point on the panzoom element on which to zoom.
@@ -422,15 +527,8 @@
 		 *  Normally, the scale is set to both the a and d values of the matrix.
 		 *  This option allows you to specify a different d value for the zoom.
 		 *  For instance, to flip vertically, you could set -1 as the dValue.
-		 * @param {Number} [opts.increment] Override the default zoom increment
-		 * @param {Number} [opts.maxScale] Override the default maxScale
-		 * @param {Number} [opts.minScale] Override the default minScale
-		 * @returns {Array} Returns the newly-set matrix
 		 */
 		zoom: function( scale, opts ) {
-			// Check if disabled
-			var options = this.options;
-			if ( options.disableZoom && options.disablePan ) { return; }
 			// Shuffle arguments
 			if ( typeof scale === 'object' ) {
 				opts = scale;
@@ -438,12 +536,15 @@
 			} else if ( !opts ) {
 				opts = {};
 			}
+			var options = $.extend( {}, this.options, opts );
+			// Check if disabled
+			if ( options.disableZoom && options.disablePan ) { return; }
 			var animate = false;
-			var matrix = opts.matrix || this.getMatrix();
+			var matrix = options.matrix || this.getMatrix();
 
 			if ( !options.disableZoom ) {
 				// Set the middle point
-				var middle = opts.middle;
+				var middle = options.middle;
 				if ( middle ) {
 					matrix[4] = +matrix[4] + (middle.pageX === matrix[4] ? 0 : middle.pageX > matrix[4] ? 1 : -1);
 					matrix[5] = +matrix[5] + (middle.pageY === matrix[5] ? 0 : middle.pageY > matrix[5] ? 1 : -1);
@@ -463,28 +564,41 @@
 				}
 
 				// Calculate focal point based on scale
-				var focal = opts.focal;
+				var focal = options.focal;
 				if ( focal ) {
-					// Calculate some offset based on where clientX is related to the parent (or maybe panzoom elem)
-					// matrix[4] = +matrix[4] + focal.clientX -
-					// matrix[5] = +matrix[5] + focal.clientY -
+					// animate isn't necessary for focal point use cases
+					animate = false;
+					// Adapted from code by Florian Günther
+					// https://github.com/florianguenther/zui53
+					// Set the origin to 0 for focal point zooming
+					$.style( this.elem, 'transform-origin', '0 0' );
+					var clientV = new Vector( focal.clientX, focal.clientY, 1 );
+					var surfaceM = new Matrix( matrix );
+					var o = this.$parent.offset();
+					var offsetM = new Matrix( 1, 0, o.left - this.$doc.scrollLeft(), 0, 1, o.top - this.$doc.scrollTop() );
+					var surfaceV = surfaceM.inverse().x( offsetM.inverse().x(clientV) );
+					var scaleBy = scale / matrix[0];
+					surfaceM = surfaceM.x( new Matrix([ scaleBy, 0, 0, scaleBy, 0, 0 ]) );
+					clientV = offsetM.x( surfaceM.x( surfaceV ) );
+					matrix[4] = +matrix[4] + (focal.clientX - clientV.e(0));
+					matrix[5] = +matrix[5] + (focal.clientY - clientV.e(1));
 				}
 
 				// Set the scale
 				matrix[0] = scale;
-				matrix[3] = typeof opts.dValue === 'number' ? opts.dValue : scale;
+				matrix[3] = typeof options.dValue === 'number' ? options.dValue : scale;
 			}
 
 			// Calling zoom may still pan the element
 			this.setMatrix( matrix, {
-				animate: typeof opts.animate === 'boolean' ? opts.animate : animate,
+				animate: typeof options.animate === 'boolean' ? options.animate : animate,
 				// Set the zoomRange value
-				range: !opts.noSetRange
+				range: !options.noSetRange
 			});
 
 			// Trigger zoom event
-			if ( !opts.silent && !options.disableZoom ) {
-				this._trigger( 'zoom', scale, opts );
+			if ( !options.silent && !options.disableZoom ) {
+				this._trigger( 'zoom', scale, options );
 			}
 		},
 

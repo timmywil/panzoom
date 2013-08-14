@@ -4,7 +4,7 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (8.8kb/3.4kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (10.6kb/4.0kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 [Download version 1.5.0](https://raw.github.com/timmywil/jquery.panzoom/v1.5.0/dist/jquery.panzoom.min.js)
 [Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.5.0/dist/jquery.panzoom.js)
@@ -221,7 +221,7 @@ __Arguments__
 __Arguments__
 
   1. `scale` _{Number|Boolean}_: The exact scale to which to zoom or a boolean indicating to transition a zoom out
-  2. `opts` _{Object}_:
+  2. `opts` _{Object}_: All global options can be overwritten by this options object. For example, override the default increment.
 
     1. `opts.noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
     2. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
@@ -236,9 +236,6 @@ __Arguments__
       Normally, the scale is set to both the a and d values of the matrix.<br/>
       This option allows you to specify a different d value for the zoom.<br/>
       For instance, to flip vertically, you could set -1 as the dValue.
-    7. `opts.increment` _{Number}_: Override the default zoom increment
-    8. `opts.maxScale` _{Number}_: Override the default maxScale
-    9. `opts.minScale` _{Number}_: Override the default minScale
 
 ```js
 // Transition a zoom in based on the scale increment, min and max values

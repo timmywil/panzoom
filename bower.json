@@ -12,5 +12,9 @@
     "*.json",
     "*.html",
     "*.js"
-  ]
+  ],
+  "devDependencies": {
+    "mocha": "~1.12.0",
+    "chai": "~1.7.2"
+  }
 }
