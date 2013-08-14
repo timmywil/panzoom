@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.4.2
- * Updated: Tue Aug 13 2013
+ * @license jquery.panzoom.js v1.4.3
+ * Updated: Wed Aug 14 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -120,14 +120,15 @@
 
 		// Save the original transform value
 		// Save the prefixed transform style key
-		this._buildTransform();
+		// Set the starting transform
+		$elem.css('transform', this._buildTransform());
 		// Build the appropriately-prefixed transform style property name
 		// De-camelcase
 		this._transform = $.cssProps.transform.replace( rupper, '-$1' ).toLowerCase();
 		// Build the transition value
 		this._buildTransition();
 
-		// Build containment if necessary
+		// Build dimensions for containment
 		this._buildContain();
 
 		// Add zoom and reset buttons to `this`
@@ -197,7 +198,6 @@
 		 */
 		enable: function() {
 			// Unbind first
-			this._unbind();
 			this._initStyle();
 			this._bind();
 			this.disabled = false;
@@ -263,13 +263,19 @@
 
 		/**
 		 * Retrieving the transform is different for SVG (unless a style transform is already present)
+		 * @param {String} [transform] Pass in an transform value (like 'scale(1.1)') to have it formatted into matrix format for use by Panzoom
 		 * @returns {String} Returns the current transform value of the element
 		 */
-		getTransform: function() {
+		getTransform: function( transform ) {
 			var elem = this.elem;
-			// Use style rather than computed
-			// If currently transitioning, computed transform might be unchanged
-			var transform = $.style( elem, 'transform' );
+			if ( transform ) {
+				// Set the passed in value
+				$.style( elem, 'transform', transform );
+			} else {
+				// Use style rather than computed
+				// If currently transitioning, computed transform might be unchanged
+				transform = $.style( elem, 'transform' );
+			}
 
 			// SVG falls back to the transform attribute
 			if ( this.isSVG && !transform ) {
@@ -277,7 +283,10 @@
 			// Convert any transforms set by the user to matrix format
 			// by setting to computed
 			} else if ( transform !== 'none' && !rmatrix.test(transform) ) {
-				transform = $.style( elem, 'transform', $.css(elem, 'transform') );
+				// Get computed
+				transform = $.css( elem, 'transform' );
+				// Set for next time
+				$.style( elem, 'transform', transform );
 			}
 
 			return transform || 'none';
@@ -285,7 +294,7 @@
 
 		/**
 		 * Retrieve the current transform matrix for $elem (or turn a transform into it's array values)
-		 * @param {String} [transform]
+		 * @param {String} [transform] matrix-formatted transform value
 		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
 		 */
 		getMatrix: function( transform ) {
@@ -314,24 +323,25 @@
 			if ( typeof matrix === 'string' ) {
 				matrix = this.getMatrix( matrix );
 			}
-			var contain, isInvert, container, dims, margin;
+			var dims, container, marginW, marginH;
 			var scale = +matrix[0];
+			var contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain;
 
 			// Apply containment
-			if ( (contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain) ) {
-				isInvert = contain === 'invert';
+			if ( contain ) {
+				dims = this._checkDims();
 				container = this.container;
-				dims = this.dimensions;
-				margin = ((dims.width * scale) - container.width) / 2 + ((container.width - dims.width) / 2);
-				matrix[4] = Math[ isInvert ? 'max' : 'min' ](
-					Math[ isInvert ? 'min' : 'max' ]( matrix[4], margin - dims.left ),
-					-margin - dims.left
-				);
-				margin = ((dims.height * scale) - container.height) / 2 + ((container.height - dims.height) / 2);
-				matrix[5] = Math[ isInvert ? 'max' : 'min' ](
-					Math[ isInvert ? 'min' : 'max' ]( matrix[5], margin - dims.top ),
-					-margin - dims.top
-				);
+				marginW = ((dims.width * scale) - container.width) / 2;
+				marginH = ((dims.height * scale) - container.height) / 2;
+				if ( contain === 'invert' ) {
+					marginW += ((container.width - dims.width) / 2);
+					marginH += ((container.height - dims.height) / 2);
+					matrix[4] = Math.max( Math.min( matrix[4], marginW - dims.left ), -marginW - dims.left );
+					matrix[5] = Math.max( Math.min( matrix[5], marginH - dims.top ), -marginH - dims.top );
+				} else {
+					matrix[4] = Math.min( Math.max( matrix[4], marginW - dims.left ), -marginW - dims.left );
+					matrix[5] = Math.min( Math.max( matrix[5], marginH - dims.top ), -marginH - dims.top );
+				}
 			}
 			if ( options.animate !== 'skip' ) {
 				// Set transition
@@ -539,9 +549,6 @@
 					case 'maxScale':
 						self.$zoomRange.attr( 'max', value );
 						break;
-					case 'contain':
-						self._buildContain();
-						break;
 					case 'startTransform':
 						self._buildTransform();
 						break;
@@ -602,6 +609,7 @@
 			var str_start = 'touchstart' + ns + ' mousedown' + ns;
 			var str_click = 'touchend' + ns + ' click' + ns;
 			var events = {};
+			var $reset = this.$reset;
 
 			// Bind panzoom events from options
 			$.each([ 'Start', 'Change', 'Zoom', 'Pan', 'End', 'Reset' ], function() {
@@ -630,6 +638,11 @@
 			}
 			this.$elem.on( events );
 
+			// Bind reset
+			if ( $reset.length ) {
+				$reset.on( str_click, function( e ) { e.preventDefault(); self.reset(); });
+			}
+
 			// No bindings if zooming is disabled
 			if ( options.disableZoom ) {
 				return;
@@ -638,7 +651,6 @@
 			var $zoomIn = this.$zoomIn;
 			var $zoomOut = this.$zoomOut;
 			var $zoomRange = this.$zoomRange;
-			var $reset = this.$reset;
 
 			// Bind zoom in/out
 			// Don't bind one without the other
@@ -667,11 +679,6 @@
 				};
 				$zoomRange.on( events );
 			}
-
-			// Bind reset
-			if ( $reset.length ) {
-				$reset.on( str_click, function( e ) { e.preventDefault(); self.reset(); });
-			}
 		},
 
 		/**
@@ -692,7 +699,7 @@
 			// Save the original transform
 			// Retrieving this also adds the correct prefixed style name
 			// to jQuery's internal $.cssProps
-			this._origTransform = this.options.startTransform || this.getTransform();
+			return this._origTransform = this.getTransform( this.options.startTransform );
 		},
 
 		/**
@@ -711,26 +718,36 @@
 		 */
 		_buildContain: function() {
 			// Reset container properties
-			if ( this.options.contain ) {
-				var $parent = this.$parent;
-				this.container = {
-					width: $parent.width(),
-					height: $parent.height()
-				};
-				var elem = this.elem;
-				var $elem = this.$elem;
-				this.dimensions = this.isSVG ? {
-					left: elem.getAttribute('x') || 0,
-					top: elem.getAttribute('y') || 0,
-					width: elem.getAttribute('width') || $elem.width(),
-					height: elem.getAttribute('height') || $elem.height()
-				} : {
-					left: $.css( elem, 'left', true ) || 0,
-					top: $.css( elem, 'top', true ) || 0,
-					width: $elem.width(),
-					height: $elem.height()
-				};
+			var $parent = this.$parent;
+			this.container = {
+				width: $parent.width(),
+				height: $parent.height()
+			};
+			var elem = this.elem;
+			var $elem = this.$elem;
+			this.dimensions = this.isSVG ? {
+				left: elem.getAttribute('x') || 0,
+				top: elem.getAttribute('y') || 0,
+				width: elem.getAttribute('width') || $elem.width(),
+				height: elem.getAttribute('height') || $elem.height()
+			} : {
+				left: $.css( elem, 'left', true ) || 0,
+				top: $.css( elem, 'top', true ) || 0,
+				width: $elem.width(),
+				height: $elem.height()
+			};
+		},
+
+		/**
+		 * Checks dimensions to make sure they don't need to be re-calculated
+		 */
+		_checkDims: function() {
+			var dims = this.dimensions;
+			// Rebuild if width or height is still 0
+			if ( !dims.width || !dims.height ) {
+				this._buildContain();
 			}
+			return this.dimensions;
 		},
 
 		/**

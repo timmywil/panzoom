@@ -409,6 +409,25 @@ describe('Panzoom', function() {
 		$elem.panzoom( 'option', 'startTransform', undefined );
 		panzoom.reset();
 	});
+	it('should save the original transform in matrix format for resetting', function() {
+		var transform = 'scale(1.1)';
+		$elem.panzoom( 'option', 'startTransform', transform );
+		expect( $elem.panzoom('instance')._origTransform ).to.not.equal( transform );
+		$elem.panzoom( 'option', 'startTransform', undefined );
+	});
+	it('should set the startTransform when initialized', function() {
+		var panzoom = $elem.panzoom('instance');
+		$elem.panzoom('destroy');
+		$elem.panzoom({
+			startTransform: 'scale(1.1)',
+			transition: false
+		});
+		expect( $elem.panzoom('getTransform') ).to.contain('1.1');
+		// Restore other instance
+		$elem.css( 'transform', '' );
+		$elem.panzoom('destroy');
+		$elem.panzoom( panzoom.option() );
+	});
 
 	/* resetZoom
 	---------------------------------------------------------------------- */
