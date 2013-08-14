@@ -31,14 +31,13 @@
       <script>
         (function() {
           var $section = $('section').first();
-          $section
-          .find('.panzoom').panzoom({
+          var $panzoom = $section.find('.panzoom').panzoom({
             $zoomIn: $section.find(".zoom-in"),
             $zoomOut: $section.find(".zoom-out"),
             $zoomRange: $section.find(".zoom-range"),
             $reset: $section.find(".reset")
-          })
-          .parent().on('mousewheel.focal', function( e ) {
+          });
+          $panzoom.parent().on('mousewheel.focal', function( e ) {
             e.preventDefault();
             $panzoom.panzoom('zoom', e.originalEvent.wheelDelta < 0, {
               animate: false,
