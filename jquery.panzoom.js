@@ -120,7 +120,8 @@
 
 		// Save the original transform value
 		// Save the prefixed transform style key
-		this._buildTransform();
+		// Set the starting transform
+		$elem.css('transform', this._buildTransform());
 		// Build the appropriately-prefixed transform style property name
 		// De-camelcase
 		this._transform = $.cssProps.transform.replace( rupper, '-$1' ).toLowerCase();
@@ -197,7 +198,6 @@
 		 */
 		enable: function() {
 			// Unbind first
-			this._unbind();
 			this._initStyle();
 			this._bind();
 			this.disabled = false;
@@ -263,13 +263,19 @@
 
 		/**
 		 * Retrieving the transform is different for SVG (unless a style transform is already present)
+		 * @param {String} [transform] Pass in an transform value (like 'scale(1.1)') to have it formatted into matrix format for use by Panzoom
 		 * @returns {String} Returns the current transform value of the element
 		 */
-		getTransform: function() {
+		getTransform: function( transform ) {
 			var elem = this.elem;
-			// Use style rather than computed
-			// If currently transitioning, computed transform might be unchanged
-			var transform = $.style( elem, 'transform' );
+			if ( transform ) {
+				// Set the passed in value
+				$.style( elem, 'transform', transform );
+			} else {
+				// Use style rather than computed
+				// If currently transitioning, computed transform might be unchanged
+				transform = $.style( elem, 'transform' );
+			}
 
 			// SVG falls back to the transform attribute
 			if ( this.isSVG && !transform ) {
@@ -277,7 +283,10 @@
 			// Convert any transforms set by the user to matrix format
 			// by setting to computed
 			} else if ( transform !== 'none' && !rmatrix.test(transform) ) {
-				transform = $.style( elem, 'transform', $.css(elem, 'transform') );
+				// Get computed
+				transform = $.css( elem, 'transform' );
+				// Set for next time
+				$.style( elem, 'transform', transform );
 			}
 
 			return transform || 'none';
@@ -285,7 +294,7 @@
 
 		/**
 		 * Retrieve the current transform matrix for $elem (or turn a transform into it's array values)
-		 * @param {String} [transform]
+		 * @param {String} [transform] matrix-formatted transform value
 		 * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
 		 */
 		getMatrix: function( transform ) {
@@ -314,24 +323,25 @@
 			if ( typeof matrix === 'string' ) {
 				matrix = this.getMatrix( matrix );
 			}
-			var contain, isInvert, container, dims, margin;
+			var dims, container, marginW, marginH;
 			var scale = +matrix[0];
+			var contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain;
 
 			// Apply containment
-			if ( (contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain) ) {
-				isInvert = contain === 'invert';
+			if ( contain ) {
+				dims = this._checkDims();
 				container = this.container;
-				dims = this.dimensions;
-				margin = ((dims.width * scale) - container.width) / 2 + ((container.width - dims.width) / 2);
-				matrix[4] = Math[ isInvert ? 'max' : 'min' ](
-					Math[ isInvert ? 'min' : 'max' ]( matrix[4], margin - dims.left ),
-					-margin - dims.left
-				);
-				margin = ((dims.height * scale) - container.height) / 2 + ((container.height - dims.height) / 2);
-				matrix[5] = Math[ isInvert ? 'max' : 'min' ](
-					Math[ isInvert ? 'min' : 'max' ]( matrix[5], margin - dims.top ),
-					-margin - dims.top
-				);
+				marginW = ((dims.width * scale) - container.width) / 2;
+				marginH = ((dims.height * scale) - container.height) / 2;
+				if ( contain === 'invert' ) {
+					marginW += ((container.width - dims.width) / 2);
+					marginH += ((container.height - dims.height) / 2);
+					matrix[4] = Math.max( Math.min( matrix[4], marginW - dims.left ), -marginW - dims.left );
+					matrix[5] = Math.max( Math.min( matrix[5], marginH - dims.top ), -marginH - dims.top );
+				} else {
+					matrix[4] = Math.min( Math.max( matrix[4], marginW - dims.left ), -marginW - dims.left );
+					matrix[5] = Math.min( Math.max( matrix[5], marginH - dims.top ), -marginH - dims.top );
+				}
 			}
 			if ( options.animate !== 'skip' ) {
 				// Set transition
@@ -405,6 +415,7 @@
 		 *  If an object, set the clientX and clientY properties to the position relative to the parent
 		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
 		 * @param {Boolean} [opts.silent] Silence the zoom event
+		 * @param {Array} [opts.matrix] Optionally pass the current matrix so it doesn't need to be retrieved
 		 * @param {Number} [opts.dValue] Think of a transform matrix as four values a, b, c, d
 		 *  where a/d are the horizontal/vertical scale values and b/c are the skew values
 		 *  (5 and 6 of matrix array are the tx/ty transform values).
@@ -419,7 +430,7 @@
 		zoom: function( scale, opts ) {
 			// Check if disabled
 			var options = this.options;
-			if ( options.disableZoom ) { return; }
+			if ( options.disableZoom && options.disablePan ) { return; }
 			// Shuffle arguments
 			if ( typeof scale === 'object' ) {
 				opts = scale;
@@ -428,45 +439,43 @@
 				opts = {};
 			}
 			var animate = false;
-			// Extend default options
-			opts = $.extend( {}, options, opts );
+			var matrix = opts.matrix || this.getMatrix();
 
-			// Get the current matrix
-			var matrix = this.getMatrix();
+			if ( !options.disableZoom ) {
+				// Set the middle point
+				var middle = opts.middle;
+				if ( middle ) {
+					matrix[4] = +matrix[4] + (middle.pageX === matrix[4] ? 0 : middle.pageX > matrix[4] ? 1 : -1);
+					matrix[5] = +matrix[5] + (middle.pageY === matrix[5] ? 0 : middle.pageY > matrix[5] ? 1 : -1);
+				}
 
-			// Set the middle point
-			var middle = opts.middle;
-			if ( middle ) {
-				matrix[4] = +matrix[4] + (middle.pageX === matrix[4] ? 0 : middle.pageX > matrix[4] ? 1 : -1);
-				matrix[5] = +matrix[5] + (middle.pageY === matrix[5] ? 0 : middle.pageY > matrix[5] ? 1 : -1);
+				// Calculate zoom based on increment
+				if ( typeof scale !== 'number' ) {
+					scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
+					animate = true;
+				}
+
+				// Constrain scale
+				if ( scale > options.maxScale ) {
+					scale = options.maxScale;
+				} else if ( scale < options.minScale ) {
+					scale = options.minScale;
+				}
+
+				// Calculate focal point based on scale
+				var focal = opts.focal;
+				if ( focal ) {
+					// Calculate some offset based on where clientX is related to the parent (or maybe panzoom elem)
+					// matrix[4] = +matrix[4] + focal.clientX -
+					// matrix[5] = +matrix[5] + focal.clientY -
+				}
+
+				// Set the scale
+				matrix[0] = scale;
+				matrix[3] = typeof opts.dValue === 'number' ? opts.dValue : scale;
 			}
 
-			// Calculate zoom based on increment
-			if ( typeof scale !== 'number' ) {
-				scale = +matrix[0] + (opts.increment * (scale ? -1 : 1));
-				animate = true;
-			}
-
-			// Constrain scale
-			if ( scale > opts.maxScale ) {
-				scale = opts.maxScale;
-			} else if ( scale < opts.minScale ) {
-				scale = opts.minScale;
-			}
-
-			// Calculate focal point based on scale
-			var focal = opts.focal;
-			if ( focal ) {
-				// Calculate some offset based on where clientX is related to the parent (or maybe panzoom elem)
-				// matrix[4] = +matrix[4] + focal.clientX -
-				// matrix[5] = +matrix[5] + focal.clientY -
-			}
-
-			// Set the scale
-			matrix[0] = scale;
-			matrix[3] = typeof opts.dValue === 'number' ? opts.dValue : scale;
-
-			// Set the matrix
+			// Calling zoom may still pan the element
 			this.setMatrix( matrix, {
 				animate: typeof opts.animate === 'boolean' ? opts.animate : animate,
 				// Set the zoomRange value
@@ -474,7 +483,7 @@
 			});
 
 			// Trigger zoom event
-			if ( !opts.silent ) {
+			if ( !opts.silent && !options.disableZoom ) {
 				this._trigger( 'zoom', scale, opts );
 			}
 		},
@@ -617,6 +626,7 @@
 			var str_start = 'touchstart' + ns + ' mousedown' + ns;
 			var str_click = 'touchend' + ns + ' click' + ns;
 			var events = {};
+			var $reset = this.$reset;
 
 			// Bind panzoom events from options
 			$.each([ 'Start', 'Change', 'Zoom', 'Pan', 'End', 'Reset' ], function() {
@@ -645,6 +655,11 @@
 			}
 			this.$elem.on( events );
 
+			// Bind reset
+			if ( $reset.length ) {
+				$reset.on( str_click, function( e ) { e.preventDefault(); self.reset(); });
+			}
+
 			// No bindings if zooming is disabled
 			if ( options.disableZoom ) {
 				return;
@@ -653,7 +668,6 @@
 			var $zoomIn = this.$zoomIn;
 			var $zoomOut = this.$zoomOut;
 			var $zoomRange = this.$zoomRange;
-			var $reset = this.$reset;
 
 			// Bind zoom in/out
 			// Don't bind one without the other
@@ -682,11 +696,6 @@
 				};
 				$zoomRange.on( events );
 			}
-
-			// Bind reset
-			if ( $reset.length ) {
-				$reset.on( str_click, function( e ) { e.preventDefault(); self.reset(); });
-			}
 		},
 
 		/**
@@ -707,7 +716,7 @@
 			// Save the original transform
 			// Retrieving this also adds the correct prefixed style name
 			// to jQuery's internal $.cssProps
-			this._origTransform = this.options.startTransform || this.getTransform();
+			return this._origTransform = this.getTransform( this.options.startTransform );
 		},
 
 		/**
@@ -745,6 +754,18 @@
 				width: $elem.width(),
 				height: $elem.height()
 			};
+		},
+
+		/**
+		 * Checks dimensions to make sure they don't need to be re-calculated
+		 */
+		_checkDims: function() {
+			var dims = this.dimensions;
+			// Rebuild if width or height is still 0
+			if ( !dims.width || !dims.height ) {
+				this._buildContain();
+			}
+			return this.dimensions;
 		},
 
 		/**
@@ -799,7 +820,6 @@
 			var moveEvent = (isTouch ? 'touchmove' : 'mousemove') + ns;
 			var endEvent = (isTouch ? 'touchend' : 'mouseup') + ns;
 			var matrix = this.getMatrix();
-			var panOptions = { matrix: matrix, animate: 'skip' };
 			var original = matrix.slice( 0 );
 			var origPageX = +original[4];
 			var origPageY = +original[5];
@@ -822,15 +842,20 @@
 
 					// Calculate move on middle point
 					var middle = self._getMiddle( touches = e.touches );
-					self.pan(
-						origPageX + middle.pageX - startMiddle.pageX,
-						origPageY + middle.pageY - startMiddle.pageY,
-						panOptions
-					);
+
+					if ( !options.disablePan ) {
+						matrix[4] = origPageX + middle.pageX - startMiddle.pageX;
+						matrix[5] = origPageY + middle.pageY - startMiddle.pageY;
+					}
 
 					// Set zoom
 					var diff = self._getDistance( touches ) - startDistance;
-					self.zoom( diff / 300 + startScale, { middle: middle } );
+					self.zoom( diff / 300 + startScale, { middle: middle, matrix: matrix } );
+
+					// Trigger the pan event for the move (which was done when calling zoom)
+					if ( !options.disablePan ) {
+						self._trigger( 'pan', matrix[4], matrix[5] );
+					}
 				};
 			} else {
 				startPageX = event.pageX;
@@ -845,7 +870,7 @@
 					self.pan(
 						origPageX + e.pageX - startPageX,
 						origPageY + e.pageY - startPageY,
-						panOptions
+						{ matrix: matrix, animate: 'skip' }
 					);
 				};
 			}

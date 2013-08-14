@@ -20,6 +20,9 @@ module.exports = function( grunt ) {
 			},
 			bower: {
 				src: 'bower.json'
+			},
+			readme: {
+				src: 'README.md'
 			}
 		},
 		compare_size: {
@@ -115,13 +118,22 @@ module.exports = function( grunt ) {
 			var version = grunt.config('pkg.version');
 			var compiled = grunt.file.read( src );
 
-			// Replace version and date
-			compiled = compiled
-				// Replace version in JSON files
-				.replace( /("version":\s*")[^"]+/, '$1' + version )
-				// Replace version tag
-				.replace( /@VERSION/g, version )
-				.replace( '@DATE', (new Date).toDateString() );
+			// If this is the README, replace versions to download
+			if ( /README/.test(src) ) {
+				compiled = compiled
+					// Replace the version if not v1.1.0
+					.replace( /\bv\d+\.\d+\.\d+\b/g, function( all ) {
+						return all !== 'v1.1.0' ? 'v' + version : all;
+					});
+			} else {
+				// Replace version and date
+				compiled = compiled
+					// Replace version in JSON files
+					.replace( /("version":\s*")[^"]+/, '$1' + version )
+					// Replace version tag
+					.replace( /@VERSION/g, version )
+					.replace( '@DATE', (new Date).toDateString() );
+			}
 
 			// Write source to file
 			grunt.file.write( dest, compiled );
@@ -134,5 +146,5 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'test', [ 'dev', 'mocha' ]);
 
 	// Default grunt
-	grunt.registerTask( 'default', [ 'test' ]);
+	grunt.registerTask( 'default', 'test');
 };
