@@ -477,7 +477,10 @@
 		 */
 		transition: function( off ) {
 			var transition = off || !this.options.transition ? 'none' : this._transition;
-			$.style( this.elem, 'transition', transition );
+			// Avoid reflows when zooming
+			if ( $.style( this.elem, 'transition') !== transition ) {
+				$.style( this.elem, 'transition', transition );
+			}
 		},
 
 		/**
@@ -515,7 +518,6 @@
 		 * @param {Number|Boolean} [scale] The scale to which to zoom or a boolean indicating to transition a zoom out
 		 * @param {Object} [opts] All global options can be overwritten by this options object. For example, override the default increment.
 		 * @param {Boolean} [opts.noSetRange] Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
-		 * @param {jQuery.Event|Object} [opts.middle] Specify a middle point towards which to gravitate when zooming
 		 * @param {jQuery.Event|Object} [opts.focal] A focal point on the panzoom element on which to zoom.
 		 *  If an object, set the clientX and clientY properties to the position relative to the parent
 		 * @param {Boolean} [opts.animate] Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
@@ -543,13 +545,6 @@
 			var matrix = options.matrix || this.getMatrix();
 
 			if ( !options.disableZoom ) {
-				// Set the middle point
-				var middle = options.middle;
-				if ( middle ) {
-					matrix[4] = +matrix[4] + (middle.pageX === matrix[4] ? 0 : middle.pageX > matrix[4] ? 1 : -1);
-					matrix[5] = +matrix[5] + (middle.pageY === matrix[5] ? 0 : middle.pageY > matrix[5] ? 1 : -1);
-				}
-
 				// Calculate zoom based on increment
 				if ( typeof scale !== 'number' ) {
 					scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
@@ -566,6 +561,7 @@
 				// Calculate focal point based on scale
 				var focal = options.focal;
 				if ( focal ) {
+					console.log( focal.clientX, focal.clientY );
 					// animate isn't necessary for focal point use cases
 					animate = false;
 					// Adapted from code by Florian Günther
@@ -891,7 +887,7 @@
 		_getDistance: function( touches ) {
 			var touch1 = touches[0];
 			var touch2 = touches[1];
-			return Math.sqrt( Math.pow(Math.abs( touch2.pageX - touch1.pageX ), 2) + Math.pow(Math.abs( touch2.pageY - touch1.pageY ), 2) );
+			return Math.sqrt( Math.pow(Math.abs( touch2.clientX - touch1.clientX ), 2) + Math.pow(Math.abs( touch2.clientY - touch1.clientY ), 2) );
 		},
 
 		/**
@@ -902,8 +898,8 @@
 			var touch1 = touches[0];
 			var touch2 = touches[1];
 			return {
-				pageX: ((touch2.pageX - touch1.pageX) / 2) + touch1.pageX,
-				pageY: ((touch2.pageY - touch1.pageY) / 2) + touch1.pageY
+				clientX: ((touch2.clientX - touch1.clientX) / 2) + touch1.clientX,
+				clientY: ((touch2.clientY - touch1.clientY) / 2) + touch1.clientY
 			};
 		},
 
@@ -937,6 +933,7 @@
 			var original = matrix.slice( 0 );
 			var origPageX = +original[4];
 			var origPageY = +original[5];
+			var panOptions = { matrix: matrix, animate: 'skip' };
 
 			// Remove any transitions happening
 			this.transition( true );
@@ -956,20 +953,19 @@
 
 					// Calculate move on middle point
 					var middle = self._getMiddle( touches = e.touches );
-
-					if ( !options.disablePan ) {
-						matrix[4] = origPageX + middle.pageX - startMiddle.pageX;
-						matrix[5] = origPageY + middle.pageY - startMiddle.pageY;
-					}
+					var diff = self._getDistance( touches ) - startDistance;
 
 					// Set zoom
-					var diff = self._getDistance( touches ) - startDistance;
-					self.zoom( diff / (1000 * options.increment) + startScale, { middle: middle, matrix: matrix } );
+					self.zoom( diff / (1000 * options.increment) + startScale, { focal: middle, matrix: matrix } );
 
-					// Trigger the pan event for the move (which was done when calling zoom)
 					if ( !options.disablePan ) {
-						self._trigger( 'pan', matrix[4], matrix[5] );
+						self.pan(
+							+matrix[4] + middle.clientX - startMiddle.clientX,
+							+matrix[5] + middle.clientY - startMiddle.clientY,
+							panOptions
+						);
 					}
+					startMiddle = middle;
 				};
 			} else {
 				startPageX = event.pageX;
@@ -984,7 +980,7 @@
 					self.pan(
 						origPageX + e.pageX - startPageX,
 						origPageY + e.pageY - startPageY,
-						{ matrix: matrix, animate: 'skip' }
+						panOptions
 					);
 				};
 			}

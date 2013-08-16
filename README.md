@@ -4,10 +4,10 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (10.6kb/4.0kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (10.5kb/4.0kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download v1.5.1](https://raw.github.com/timmywil/jquery.panzoom/v1.5.1/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.5.1/dist/jquery.panzoom.js)
+[Download v1.6.0](https://raw.github.com/timmywil/jquery.panzoom/v1.6.0/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.6.0/dist/jquery.panzoom.js)
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
@@ -227,12 +227,11 @@ __Arguments__
 
     1. `opts.noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
     2. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
-    3. `opts.middle` _{jQuery.Event|Object}_: Specify a middle point towards which to gravitate when zooming
-    4. `opts.focal` _{jQuery.Event|Object}_: Specify a focal point under which to freeze the zooming element.<br/>
+    3. `opts.focal` _{jQuery.Event|Object}_: Specify a focal point under which to freeze the zooming element.<br/>
       Should either be a jQuery event or an object containing clientX/clientY to specify the point's position relative to the parent.<br/>
-      For an example of focal point zooming, use the mousewheel to zoom on the [demo](http://timmywil.github.io/jquery.panzoom/demo/#focal).
-    5. `opts.silent` _{Boolean}_: Silence the zoom event
-    6. `opts.dValue` _{Number}_: Think of a transform matrix as four values a, b, c, d<br/>
+      For an example of focal point zooming, use the mousewheel or pinch to zoom on the [demo](http://timmywil.github.io/jquery.panzoom/demo/#focal).
+    4. `opts.silent` _{Boolean}_: Silence the zoom event
+    5. `opts.dValue` _{Number}_: Think of a transform matrix as four values a, b, c, d<br/>
       where a/d are the horizontal/vertical scale values and b/c are the skew values<br/>
       (5 and 6 of matrix array are the tx/ty transform values).<br/>
       Normally, the scale is set to both the a and d values of the matrix.<br/>

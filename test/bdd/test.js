@@ -53,16 +53,29 @@ describe('Panzoom', function() {
 	 * Simulates a pinch gesture (even in desktop browsers) starting at the move
 	 * (the move event must already be bound)
 	 * @param {Function} complete
+	 * @param {Boolean} [started] If the start has already been triggered, don't trigger another start
 	 */
-	function testPinch( complete ) {
+	function testPinch( complete, started ) {
+		var e;
 		var panzoom = $elem.panzoom('instance');
 		var origMatrix = panzoom.getMatrix();
 
+		if ( !started ) {
+			// Start move by using touchstart
+			e = new jQuery.Event('touchstart', {
+				touches: [
+					{ clientX: 0,  clientY: 0 },
+					{ clientX: 10, clientY: 10 }
+				]
+			});
+			$elem.trigger( e );
+		}
+
 		// Faux events with touches property
-		var e = new jQuery.Event('mousemove', {
+		e = new jQuery.Event('mousemove', {
 			touches: [
-				{ pageX: 10, pageY: 10 },
-				{ pageX: 20, pageY: 20 }
+				{ clientX: 10, clientY: 10 },
+				{ clientX: 30, clientY: 30 }
 			]
 		});
 		var $doc = $(document).trigger( e );
@@ -77,6 +90,7 @@ describe('Panzoom', function() {
 		// Reset matrix
 		panzoom.setMatrix( origMatrix );
 	}
+	window.testPinch = testPinch;
 
 	/**
 	 * Test the invert containment option
@@ -501,15 +515,6 @@ describe('Panzoom', function() {
 		$elem.panzoom( 'option', 'disableZoom', true );
 		var panzoom = $elem.panzoom('instance');
 		var matrix = panzoom.getMatrix();
-
-		// Start move by using touchstart
-		var e = new jQuery.Event('touchstart', {
-			touches: [
-				{ pageX: 0, pageY: 0 },
-				{ pageX: 10, pageY: 10 }
-			]
-		});
-		$elem.trigger( e );
 		testPinch(function() {
 			var newMatrix = panzoom.getMatrix();
 			// Make sure a pan was done
@@ -528,19 +533,12 @@ describe('Panzoom', function() {
 			called = true;
 		});
 
-		// Start move by using touchstart
-		var e = new jQuery.Event('touchstart', {
-			touches: [
-				{ pageX: 0, pageY: 0 },
-				{ pageX: 10, pageY: 10 }
-			]
-		});
-		$elem.trigger( e );
 		testPinch(function() {
 			var newMatrix = panzoom.getMatrix();
-			// Make sure a pan was not done, only a gravitation towards the middle point
-			expect( +newMatrix[4] ).to.equal( +matrix[4] + 1 );
-			expect( +newMatrix[5] ).to.equal( +matrix[5] + 1 );
+			// Make sure a pan was not done
+			// Account for focal point zooming changing the pan a little bit
+			expect( parseInt(newMatrix[4], 10) ).to.equal( +matrix[5] );
+			expect( parseInt(newMatrix[5], 10) ).to.equal( +matrix[5] );
 		});
 
 		expect( called ).to.be.false;
@@ -548,17 +546,13 @@ describe('Panzoom', function() {
 		// Clean-up
 		$elem.panzoom( 'option', 'disablePan', false );
 	});
-	it('should pan on the middle point when zooming (and gravitate towards that point)', function() {
+	it('should pan on the middle point as a focal point', function() {
 		var panzoom = $elem.panzoom('instance');
 		var matrix = panzoom.getMatrix();
-		panzoom._startMove({ type: 'touchstart' }, [
-			{ pageX: 0, pageY: 0 },
-			{ pageX: 10, pageY: 10 }
-		]);
 		testPinch(function() {
 			var newMatrix = panzoom.getMatrix();
-			expect( +newMatrix[4] ).to.equal( +matrix[4] + 11 );
-			expect( +newMatrix[5] ).to.equal( +matrix[5] + 11 );
+			expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
+			expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
 		});
 	});
 	it('should continue with a touch event if started with a touch event', function() {
