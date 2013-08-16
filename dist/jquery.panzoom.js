@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v1.6.0
+ * @license jquery.panzoom.js v1.6.1
  * Updated: Fri Aug 16 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -561,7 +561,6 @@
 				// Calculate focal point based on scale
 				var focal = options.focal;
 				if ( focal ) {
-					console.log( focal.clientX, focal.clientY );
 					// animate isn't necessary for focal point use cases
 					animate = false;
 					// Adapted from code by Florian Günther
@@ -956,7 +955,7 @@
 					var diff = self._getDistance( touches ) - startDistance;
 
 					// Set zoom
-					self.zoom( diff / (1000 * options.increment) + startScale, { focal: middle, matrix: matrix } );
+					self.zoom( diff * (options.increment / 100) + startScale, { focal: middle, matrix: matrix } );
 
 					if ( !options.disablePan ) {
 						self.pan(
