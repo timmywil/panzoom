@@ -964,7 +964,7 @@
 
 					// Set zoom
 					var diff = self._getDistance( touches ) - startDistance;
-					self.zoom( diff / 300 + startScale, { middle: middle, matrix: matrix } );
+					self.zoom( diff / (1000 * options.increment) + startScale, { middle: middle, matrix: matrix } );
 
 					// Trigger the pan event for the move (which was done when calling zoom)
 					if ( !options.disablePan ) {
