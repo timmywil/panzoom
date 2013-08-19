@@ -6,8 +6,8 @@ And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (10.5kb/4.0kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download v1.6.2](https://raw.github.com/timmywil/jquery.panzoom/v1.6.2/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.6.2/dist/jquery.panzoom.js)
+[Download v1.6.3](https://raw.github.com/timmywil/jquery.panzoom/v1.6.3/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.6.3/dist/jquery.panzoom.js)
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
@@ -85,6 +85,7 @@ Panzoom.defaults = {
   cursor: "move",
 
   // There may be some use cases for zooming without panning or vice versa
+  // NOTE: disablePan also disables focal point zooming
   disablePan: false,
   disableZoom: false,
 

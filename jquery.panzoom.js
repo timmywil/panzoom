@@ -494,6 +494,7 @@
 		 * @param {Boolean} [options.relative] Make the x and y values relative to the existing matrix
 		 */
 		pan: function( x, y, options ) {
+			if ( this.options.disablePan ) { return; }
 			if ( !options ) { options = {}; }
 			var matrix = options.matrix;
 			if ( !matrix ) {
@@ -540,51 +541,49 @@
 			}
 			var options = $.extend( {}, this.options, opts );
 			// Check if disabled
-			if ( options.disableZoom && options.disablePan ) { return; }
+			if ( options.disableZoom ) { return; }
 			var animate = false;
 			var matrix = options.matrix || this.getMatrix();
 
-			if ( !options.disableZoom ) {
-				// Calculate zoom based on increment
-				if ( typeof scale !== 'number' ) {
-					scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
-					animate = true;
-				}
-
-				// Constrain scale
-				if ( scale > options.maxScale ) {
-					scale = options.maxScale;
-				} else if ( scale < options.minScale ) {
-					scale = options.minScale;
-				}
-
-				// Calculate focal point based on scale
-				var focal = options.focal;
-				if ( focal && !options.disablePan ) {
-					// animate isn't necessary for focal point use cases
-					animate = false;
-					// Adapted from code by Florian Günther
-					// https://github.com/florianguenther/zui53
-					// Adjusts the focal point for default transform-origin => 50% 50%
-					var container = this.container;
-					focal.clientX -= container.width / 2;
-					focal.clientY -= container.height / 2;
-					var clientV = new Vector( focal.clientX, focal.clientY, 1 );
-					var surfaceM = new Matrix( matrix );
-					var o = this.$parent.offset();
-					var offsetM = new Matrix( 1, 0, o.left - this.$doc.scrollLeft(), 0, 1, o.top - this.$doc.scrollTop() );
-					var surfaceV = surfaceM.inverse().x( offsetM.inverse().x(clientV) );
-					var scaleBy = scale / matrix[0];
-					surfaceM = surfaceM.x( new Matrix([ scaleBy, 0, 0, scaleBy, 0, 0 ]) );
-					clientV = offsetM.x( surfaceM.x( surfaceV ) );
-					matrix[4] = +matrix[4] + (focal.clientX - clientV.e(0));
-					matrix[5] = +matrix[5] + (focal.clientY - clientV.e(1));
-				}
-
-				// Set the scale
-				matrix[0] = scale;
-				matrix[3] = typeof options.dValue === 'number' ? options.dValue : scale;
+			// Calculate zoom based on increment
+			if ( typeof scale !== 'number' ) {
+				scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
+				animate = true;
 			}
+
+			// Constrain scale
+			if ( scale > options.maxScale ) {
+				scale = options.maxScale;
+			} else if ( scale < options.minScale ) {
+				scale = options.minScale;
+			}
+
+			// Calculate focal point based on scale
+			var focal = options.focal;
+			if ( focal && !options.disablePan ) {
+				// animate isn't necessary for focal point use cases
+				animate = false;
+				// Adapted from code by Florian Günther
+				// https://github.com/florianguenther/zui53
+				// Adjusts the focal point for default transform-origin => 50% 50%
+				var container = this.container;
+				var clientX = focal.clientX - container.width / 2;
+				var clientY = focal.clientY - container.height / 2;
+				var clientV = new Vector( clientX, clientY, 1 );
+				var surfaceM = new Matrix( matrix );
+				var o = this.$parent.offset();
+				var offsetM = new Matrix( 1, 0, o.left - this.$doc.scrollLeft(), 0, 1, o.top - this.$doc.scrollTop() );
+				var surfaceV = surfaceM.inverse().x( offsetM.inverse().x(clientV) );
+				var scaleBy = scale / matrix[0];
+				surfaceM = surfaceM.x( new Matrix([ scaleBy, 0, 0, scaleBy, 0, 0 ]) );
+				clientV = offsetM.x( surfaceM.x( surfaceV ) );
+				matrix[4] = +matrix[4] + (clientX - clientV.e(0));
+				matrix[5] = +matrix[5] + (clientY - clientV.e(1));
+			}
+
+			// Set the scale
+			matrix[0] = scale;
+			matrix[3] = typeof options.dValue === 'number' ? options.dValue : scale;
 
 			// Calling zoom may still pan the element
 			this.setMatrix( matrix, {
@@ -594,7 +593,7 @@
 			});
 
 			// Trigger zoom event
-			if ( !options.silent && !options.disableZoom ) {
+			if ( !options.silent ) {
 				this._trigger( 'zoom', scale, options );
 			}
 		},
@@ -959,13 +958,12 @@
 					// Set zoom
 					self.zoom( diff * (options.increment / 100) + startScale, { focal: middle, matrix: matrix } );
 
-					if ( !options.disablePan ) {
-						self.pan(
-							+matrix[4] + middle.clientX - startMiddle.clientX,
-							+matrix[5] + middle.clientY - startMiddle.clientY,
-							panOptions
-						);
-					}
+					// Set pan
+					self.pan(
+						+matrix[4] + middle.clientX - startMiddle.clientX,
+						+matrix[5] + middle.clientY - startMiddle.clientY,
+						panOptions
+					);
 					startMiddle = middle;
 				};
 			} else {
