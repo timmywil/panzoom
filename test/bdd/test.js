@@ -343,6 +343,15 @@ describe('Panzoom', function() {
 		expect( newMatrix[5] - matrix[5] ).to.equal( -10 );
 		panzoom.reset( false );
 	});
+	it('should not pan when called if disablePan is true', function() {
+		$elem.panzoom( 'option', 'disablePan', true );
+		var matrix = $elem.panzoom('getMatrix').slice(0);
+		$elem.panzoom( 'pan', 10, -10 );
+		var newMatrix = $elem.panzoom('getMatrix');
+		expect( +newMatrix[4] ).to.equal( +matrix[4] );
+		expect( +newMatrix[5] ).to.equal( +matrix[5] );
+		$elem.panzoom( 'option', 'disablePan', false );
+	});
 
 	/* zoom
 	---------------------------------------------------------------------- */
@@ -369,6 +378,15 @@ describe('Panzoom', function() {
 		expect( +matrix[0] ).to.equal( 1 );
 		expect( +matrix[3] ).to.equal( -1 );
 		$elem.panzoom('reset', false);
+	});
+	it('should not pan when passed a focal point when disablePan is true', function() {
+		$elem.panzoom( 'option', 'disablePan', true );
+		var matrix = $elem.panzoom('getMatrix').slice(0);
+		$elem.panzoom( 'zoom', { focal: { clientX: 10, clientY: 10 } } );
+		var newMatrix = $elem.panzoom('getMatrix');
+		expect( +newMatrix[4] ).to.equal( +matrix[4] );
+		expect( +newMatrix[5] ).to.equal( +matrix[5] );
+		$elem.panzoom( 'option', 'disablePan', false );
 	});
 
 	/* isPanning
