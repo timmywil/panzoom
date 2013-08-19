@@ -536,9 +536,8 @@ describe('Panzoom', function() {
 		testPinch(function() {
 			var newMatrix = panzoom.getMatrix();
 			// Make sure a pan was not done
-			// Account for focal point zooming changing the pan a little bit
-			expect( parseInt(newMatrix[4], 10) ).to.equal( +matrix[5] );
-			expect( parseInt(newMatrix[5], 10) ).to.equal( +matrix[5] );
+			expect( +newMatrix[4] ).to.equal( +matrix[5] );
+			expect( +newMatrix[5] ).to.equal( +matrix[5] );
 		});
 
 		expect( called ).to.be.false;

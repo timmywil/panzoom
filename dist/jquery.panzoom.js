@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.6.1
- * Updated: Fri Aug 16 2013
+ * @license jquery.panzoom.js v1.6.2
+ * Updated: Mon Aug 19 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -560,13 +560,15 @@
 
 				// Calculate focal point based on scale
 				var focal = options.focal;
-				if ( focal ) {
+				if ( focal && !options.disablePan ) {
 					// animate isn't necessary for focal point use cases
 					animate = false;
 					// Adapted from code by Florian Günther
 					// https://github.com/florianguenther/zui53
-					// Set the origin to 0 for focal point zooming
-					$.style( this.elem, 'transform-origin', '0 0' );
+					// Adjusts the focal point for default transform-origin => 50% 50%
+					var container = this.container;
+					focal.clientX -= container.width / 2;
+					focal.clientY -= container.height / 2;
 					var clientV = new Vector( focal.clientX, focal.clientY, 1 );
 					var surfaceM = new Matrix( matrix );
 					var o = this.$parent.offset();
