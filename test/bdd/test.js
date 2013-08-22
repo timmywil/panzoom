@@ -621,4 +621,11 @@ describe('Panzoom', function() {
 		var panzoom = $rect.panzoom('instance');
 		expect( panzoom.isSVG ).to.be.true;
 	});
+	it('should set the starting transform value as an attribute', function() {
+		$rect.panzoom('destroy');
+		$rect.panzoom({
+			startTransform: 'none'
+		});
+		expect( $rect.attr('transform') ).to.equal('none');
+	});
 });

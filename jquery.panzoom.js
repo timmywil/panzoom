@@ -226,10 +226,15 @@
 		// Save the original transform value
 		// Save the prefixed transform style key
 		// Set the starting transform
-		$elem.css('transform', this._buildTransform());
+		this._buildTransform();
+
 		// Build the appropriately-prefixed transform style property name
 		// De-camelcase
-		this._transform = $.cssProps.transform.replace( rupper, '-$1' ).toLowerCase();
+		// Transitioning the attribute for SVG doesn't apply
+		if ( !this.isSVG ) {
+			this._transform = $.cssProps.transform.replace( rupper, '-$1' ).toLowerCase();
+		}
+
 		// Build the transition value
 		this._buildTransition();
 
@@ -373,21 +378,20 @@
 		 */
 		getTransform: function( transform ) {
 			var elem = this.elem;
+			var method = this.isSVG ? 'attr' : 'style';
 			if ( transform ) {
 				// Set the passed in value
-				$.style( elem, 'transform', transform );
+				$[ method ]( elem, 'transform', transform );
 			} else {
 				// Use style rather than computed
 				// If currently transitioning, computed transform might be unchanged
-				transform = $.style( elem, 'transform' );
+				// Retrieve with attr for SVG
+				transform = $[ method ]( elem, 'transform' );
 			}
 
-			// SVG falls back to the transform attribute
-			if ( this.isSVG && !transform ) {
-				transform = $.attr( elem, 'transform' );
 			// Convert any transforms set by the user to matrix format
 			// by setting to computed
-			} else if ( transform !== 'none' && !rmatrix.test(transform) ) {
+			if ( transform !== 'none' && !rmatrix.test(transform) && !this.isSVG ) {
 				// Get computed
 				transform = $.css( elem, 'transform' );
 				// Set for next time
