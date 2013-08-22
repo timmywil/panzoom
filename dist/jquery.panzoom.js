@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.6.3
- * Updated: Mon Aug 19 2013
+ * @license jquery.panzoom.js v1.6.4
+ * Updated: Thu Aug 22 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -428,7 +428,7 @@
 			if ( typeof matrix === 'string' ) {
 				matrix = this.getMatrix( matrix );
 			}
-			var dims, container, marginW, marginH;
+			var dims, container, marginW, marginH, diffW, diffH;
 			var scale = +matrix[0];
 			var contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain;
 
@@ -438,14 +438,16 @@
 				container = this.container;
 				marginW = ((dims.width * scale) - container.width) / 2;
 				marginH = ((dims.height * scale) - container.height) / 2;
+				diffW = dims.width > container.width ? dims.width - container.width : 0;
+				diffH = dims.height > container.height ? dims.height - container.height : 0;
 				if ( contain === 'invert' ) {
-					marginW += ((container.width - dims.width) / 2);
-					marginH += ((container.height - dims.height) / 2);
-					matrix[4] = Math.max( Math.min( matrix[4], marginW - dims.left ), -marginW - dims.left );
-					matrix[5] = Math.max( Math.min( matrix[5], marginH - dims.top ), -marginH - dims.top );
+					marginW += (container.width - dims.width) / 2;
+					marginH += (container.height - dims.height) / 2;
+					matrix[4] = Math.max( Math.min( matrix[4], marginW - dims.left ), -marginW - dims.left - diffW );
+					matrix[5] = Math.max( Math.min( matrix[5], marginH - dims.top ), -marginH - dims.top - diffH );
 				} else {
-					matrix[4] = Math.min( Math.max( matrix[4], marginW - dims.left ), -marginW - dims.left );
-					matrix[5] = Math.min( Math.max( matrix[5], marginH - dims.top ), -marginH - dims.top );
+					matrix[4] = Math.min( Math.max( matrix[4], marginW - dims.left - diffW / 2 ), -marginW - dims.left - diffW / 2 );
+					matrix[5] = Math.min( Math.max( matrix[5], marginH - dims.top - diffH / 2 ), -marginH - dims.top - diffH / 2 );
 				}
 			}
 			if ( options.animate !== 'skip' ) {
