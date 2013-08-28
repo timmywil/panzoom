@@ -13,7 +13,7 @@ module.exports = function( grunt ) {
 		build: {
 			dist: {
 				dest: 'dist/jquery.panzoom.js',
-				src: 'jquery.panzoom.js'
+				src: 'panzoom.js'
 			},
 			manifest: {
 				src: 'panzoom.jquery.json'
@@ -53,7 +53,7 @@ module.exports = function( grunt ) {
 		jshint: {
 			all: [
 				'Gruntfile.js',
-				'jquery.panzoom.js',
+				'panzoom.js',
 				'test/bdd/*.js'
 			],
 			options: {

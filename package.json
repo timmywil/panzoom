@@ -1,6 +1,6 @@
 {
   "name": "jquery.panzoom",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.1",
