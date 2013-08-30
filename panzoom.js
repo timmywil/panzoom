@@ -449,7 +449,43 @@
 					marginH += (container.height - dims.height) / 2;
 					matrix[4] = Math.max( Math.min( matrix[4], marginW - dims.left ), -marginW - dims.left - diffW );
 					matrix[5] = Math.max( Math.min( matrix[5], marginH - dims.top ), -marginH - dims.top - diffH );
-				} else {
+				} else if ( contain === 'constrain' ){
+					//constrains within the container element - useful to prevent users from losing their image in a container.
+					var max = ( (dims.width/2.0)+((dims.width*scale)/2.0))-container.width;
+					var min = (dims.width/2)-(dims.width*scale/2);
+					max = -max;
+					min = -min;
+					if ( max < min ) {
+						if ( matrix[4] < max ) {
+							matrix[4] = max;
+						} else if ( matrix[4] > min ) {
+							matrix[4] = min;
+						}
+					} else {
+						if ( matrix[4] > max ) {
+							matrix[4] = max;
+						} else if ( matrix[4] < min ) {
+							matrix[4] = min;
+						}
+					}
+					max = ( dims.height/2+( dims.height*scale/2 ))-container.height;
+					min = (dims.height/2)-(dims.height*scale/2);
+					max = -max;
+					min = -min;
+					if ( max < min ) {
+						if ( matrix[5] < max ) {
+							matrix[5] = max;
+						} else if ( matrix[5] > min ) {
+							matrix[5] = min;
+						}
+					} else {
+						if ( matrix[5] > max ) {
+							matrix[5] = max;
+						} else if ( matrix[5] < min ) {
+							matrix[5] = min;
+						}
+					}
+                } else {
 					matrix[4] = Math.min( Math.max( matrix[4], marginW - dims.left - diffW / 2 ), -marginW - dims.left - diffW / 2 );
 					matrix[5] = Math.min( Math.max( matrix[5], marginH - dims.top - diffH / 2 ), -marginH - dims.top - diffH / 2 );
 				}
