@@ -290,6 +290,7 @@
 		// Note: this does not affect zooming outside of the parent
 		// Set this value to 'invert' to only allow panning outside of the parent element (basically the opposite of the normal use of contain)
 		// 'invert' is useful for a large panzoom element where you don't want to show anything behind it
+		// @euxneks added another option called "constrain" which will constrain the pan/zoom element to its parent element.
 		contain: false
 	};
 
@@ -485,7 +486,7 @@
 							matrix[5] = min;
 						}
 					}
-                } else {
+				} else {
 					matrix[4] = Math.min( Math.max( matrix[4], marginW - dims.left - diffW / 2 ), -marginW - dims.left - diffW / 2 );
 					matrix[5] = Math.min( Math.max( matrix[5], marginH - dims.top - diffH / 2 ), -marginH - dims.top - diffH / 2 );
 				}
