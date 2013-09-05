@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <title>Testing Panzoom :)</title>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery.panzoom.min.js"></script>
+        <script type="text/javascript">
+            $(document).on('ready', function(){
+                $('#mypanner').panzoom({contain:true,$zoomIn:$('#_zoom_in'),$zoomOut:$('#_zoom_out')});
+                $( '#_pan_up' ).on( 'click', function(){
+                    $( '#mypanner' ).panzoom( 'pan', 0, -30, {relative:true} )
+                });
+                $( '#_pan_down' ).on( 'click', function(){
+                    $( '#mypanner' ).panzoom( 'pan', 0, 30, {relative:true} )
+                });
+                $( '#_pan_left' ).on( 'click', function(){
+                    $( '#mypanner' ).panzoom( 'pan', -30, 0, {relative:true} )
+                });
+                $( '#_pan_right' ).on( 'click', function(){
+                    $( '#mypanner' ).panzoom( 'pan', 30, 0, {relative:true} )
+                });
+            });
+        </script>
+        <style type="text/css">
+            #parent {
+                border: 1px dotted black;
+            }
+            #pz_controls {
+                position:absolute; 
+                bottom:10px;
+                left:5px;
+            }
+            #pz_controls span.icon {
+                color:rgba(255,255,255,0.8);
+                background-color:rgba(50, 50, 50, 0.8);
+                position:absolute;
+                width:15px;
+                height: 15px;
+                padding: 8px;
+                cursor:pointer;
+            }
+            #_pan_up {
+                bottom:37px;
+                left:37px;
+            }
+            #_pan_down {
+                left:37px;
+                bottom:0px;
+            }
+            #_pan_left {
+                left:0px;
+                bottom:0px;
+            }
+            #_pan_right {
+                left: 74px;
+                bottom:0px;
+            }
+            #_zoom_out {
+                left: 74px;
+                bottom:37px;
+            }
+            #_zoom_in {
+                bottom:37px;
+                left:0px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Minimal test to demonstrate rectangular contain not working as expected</h1>
+        <div id="parent" style="width:1000px;height:600px;">
+            <div id="mypanner" style="width:934px;height:583px">
+                <img id="img_view" src="test.jpg" width="934" height="583" />
+            </div>
+            <div id="pz_controls">
+                <span id="_pan_up" class="icon">^</span>
+                <span id="_pan_down" class="icon">v</span>
+                <span id="_pan_left" class="icon">&lt;</span>
+                <span id="_pan_right" class="icon">&gt;</span>
+                <span id="_zoom_in" class="icon">+</span>
+                <span id="_zoom_out" class="icon">-</span>
+            </div>
+        </div>
+    </body>
+</html>
