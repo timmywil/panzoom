@@ -12,6 +12,7 @@
     </style>
     <script src="../test/jquery.js"></script>
     <script src="../dist/jquery.panzoom.js"></script>
+    <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
   </head>
   <body>
     <section>
@@ -371,7 +372,7 @@
           var $panzoom = $section.find('.panzoom').panzoom();
           $panzoom.parent().on('mousewheel.focal', function( e ) {
             e.preventDefault();
-            $panzoom.panzoom('zoom', e.originalEvent.wheelDelta < 0, {
+            $panzoom.panzoom('zoom', (e.delta || e.originalEvent.deltaY) < 0, {
               increment: 0.1,
               focal: e
             });
