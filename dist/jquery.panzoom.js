@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.6.6
- * Updated: Wed Aug 28 2013
+ * @license jquery.panzoom.js v1.6.7
+ * Updated: Thu Sep 05 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -43,6 +43,7 @@
 	var slice = Array.prototype.slice;
 	var rupper = /([A-Z])/g;
 	var rsvg = /^http:[\w\.\/]+svg$/;
+	var rinline = /^inline/;
 
 	var floating = '(\\-?[\\d\\.e]+)';
 	var commaSpace = '\\,?\\s*';
@@ -434,6 +435,8 @@
 			}
 			var dims, container, marginW, marginH, diffW, diffH;
 			var scale = +matrix[0];
+			var $parent = this.$parent;
+			var elem = this.elem;
 			var contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain;
 
 			// Apply containment
@@ -442,16 +445,30 @@
 				container = this.container;
 				marginW = ((dims.width * scale) - container.width) / 2;
 				marginH = ((dims.height * scale) - container.height) / 2;
-				diffW = dims.width > container.width ? dims.width - container.width : 0;
-				diffH = dims.height > container.height ? dims.height - container.height : 0;
 				if ( contain === 'invert' ) {
+					diffW = dims.width > container.width ? dims.width - container.width : 0;
+					diffH = dims.height > container.height ? dims.height - container.height : 0;
 					marginW += (container.width - dims.width) / 2;
 					marginH += (container.height - dims.height) / 2;
 					matrix[4] = Math.max( Math.min( matrix[4], marginW - dims.left ), -marginW - dims.left - diffW );
-					matrix[5] = Math.max( Math.min( matrix[5], marginH - dims.top ), -marginH - dims.top - diffH );
+					matrix[5] = Math.max( Math.min( matrix[5], marginH - dims.top ), -marginH - dims.top - diffH + dims.heightBorder );
 				} else {
-					matrix[4] = Math.min( Math.max( matrix[4], marginW - dims.left - diffW / 2 ), -marginW - dims.left - diffW / 2 );
-					matrix[5] = Math.min( Math.max( matrix[5], marginH - dims.top - diffH / 2 ), -marginH - dims.top - diffH / 2 );
+					diffH = container.height > dims.height ? container.height - dims.height : 0;
+					// If the element is not naturally centered, assume full margin right
+					if ( $parent.css('textAlign') !== 'center' || !rinline.test($.css(elem, 'display')) ) {
+						diffW = container.width > dims.width ? container.width - dims.width : 0;
+						marginW = marginH = 0;
+					} else {
+						diffW = 0;
+					}
+					matrix[4] = Math.min(
+						Math.max( matrix[4], marginW - dims.left ),
+						-marginW - dims.left + diffW
+					);
+					matrix[5] = Math.min(
+						Math.max( matrix[5], marginH - dims.top ),
+						-marginH - dims.top + diffH
+					);
 				}
 			}
 			if ( options.animate !== 'skip' ) {
@@ -462,7 +479,7 @@
 			if ( options.range ) {
 				this.$zoomRange.val( scale );
 			}
-			$[ this.isSVG ? 'attr' : 'style' ]( this.elem, 'transform', 'matrix(' + matrix.join(',') + ')' );
+			$[ this.isSVG ? 'attr' : 'style' ]( elem, 'transform', 'matrix(' + matrix.join(',') + ')' );
 			if ( !options.silent ) {
 				this._trigger( 'change', matrix );
 			}
@@ -859,17 +876,19 @@
 			};
 			var elem = this.elem;
 			var $elem = this.$elem;
-			this.dimensions = this.isSVG ? {
+			var dims = this.dimensions = this.isSVG ? {
 				left: elem.getAttribute('x') || 0,
 				top: elem.getAttribute('y') || 0,
-				width: elem.getAttribute('width') || $elem.width(),
-				height: elem.getAttribute('height') || $elem.height()
+				width: elem.getAttribute('width') || $elem.outerWidth(),
+				height: elem.getAttribute('height') || $elem.outerHeight()
 			} : {
 				left: $.css( elem, 'left', true ) || 0,
 				top: $.css( elem, 'top', true ) || 0,
-				width: $elem.width(),
-				height: $elem.height()
+				width: $elem.outerWidth(),
+				height: $elem.outerHeight()
 			};
+			dims.widthBorder = ($.css( elem, 'borderLeftWidth', true ) + $.css( elem, 'borderRightWidth', true )) || 0;
+			dims.heightBorder = ($.css( elem, 'borderTopWidth', true ) + $.css( elem, 'borderBottomWidth', true )) || 0;
 		},
 
 		/**
@@ -878,7 +897,7 @@
 		_checkDims: function() {
 			var dims = this.dimensions;
 			// Rebuild if width or height is still 0
-			if ( !dims.width || !dims.height ) {
+			if ( dims.width === dims.widthBorder || dims.height === dims.heightBorder ) {
 				this._buildContain();
 			}
 			return this.dimensions;
