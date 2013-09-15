@@ -38,7 +38,7 @@
     <script>onload = function() { mocha.run(); }</script>
     <!-- Load livereload if not phantom -->
     <script>
-      if ( !window.phantom ) document.write('<scr' + 'ipt src="http://' + location.hostname + ':35711/livereload.js"></scr' + 'ipt>');
+      if ( !window.phantom && !/github/.test(window.location.hostname) ) document.write('<scr' + 'ipt src="http://' + location.hostname + ':35711/livereload.js"></scr' + 'ipt>');
     </script>
   </body>
 </html>
