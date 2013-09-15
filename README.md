@@ -96,6 +96,10 @@ Panzoom.defaults = {
   minScale: 0.4,
   maxScale: 5,
 
+  // The default step for the range input
+  // Precendence: default < HTML attribute < option setting
+  rangeStep: 0.05,
+
   // Animation duration (ms)
   duration: 200,
   // CSS easing used for scale transition
