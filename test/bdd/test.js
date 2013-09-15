@@ -169,6 +169,9 @@ describe('Panzoom', function() {
 		$elem.panzoom( 'option', 'easing', options.easing );
 		expect( panzoom._transition ).to.equal( transition );
 	});
+	it('returns null for nonexistent options', function() {
+		expect( $elem.panzoom('option', 'nonasdfomawefoijawef') ).to.be.null;
+	});
 	it('should set the cursor option', function(){
 		$elem.panzoom( 'option', 'cursor', 'default' );
 		expect( $elem.panzoom('option', 'cursor') ).to.equal('default');
@@ -371,6 +374,33 @@ describe('Panzoom', function() {
 		var val = $zoomRange.val();
 		expect( val ).to.not.equal( cur );
 		expect( val ).to.equal( $elem.panzoom('getMatrix')[0] );
+	});
+	it('should set the zoom range step option', function() {
+		var old = $zoomRange.attr('step');
+		$elem.panzoom('option', 'rangeStep', 1);
+		expect( $zoomRange.attr('step') ).to.equal('1');
+		expect( $elem.panzoom( 'option', 'rangeStep' ) ).to.equal( 1 );
+		// Reset
+		$elem.panzoom('option', 'rangeStep', old);
+	});
+	it('should not set the default step if an attribute exists on the input', function() {
+		var $pan = $('<div></div>').appendTo('body');
+		var $input = $('<input type="range" step="1"/>');
+		$pan.panzoom({
+			$zoomRange: $input
+		});
+		expect( $input.attr('step') ).to.equal('1');
+		$pan.remove();
+	});
+	it('should override the range\'s step attribute if explicitly specified', function() {
+		var $pan = $('<div></div>').appendTo('body');
+		var $input = $('<input type="range" step="1"/>');
+		$pan.panzoom({
+			$zoomRange: $input,
+			rangeStep: 0.7
+		});
+		expect( $input.attr('step') ).to.equal('0.7');
+		$pan.remove();
 	});
 	it('should set the dValue if specified', function() {
 		$elem.panzoom('zoom', 1, { dValue: -1 });

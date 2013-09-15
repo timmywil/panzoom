@@ -16,7 +16,7 @@
     <script src="../dist/jquery.panzoom.js"></script>
   </head>
   <body>
-    <!-- <h4>Zoom and pan this tiger and stuff</h4> -->
+    <div id="mocha"></div>
     <div id="pan-parent">
       <div id="panzoom" style="text-align: center">
         <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg" width="900" height="900">
@@ -34,7 +34,6 @@
       <button class="reset">Reset</button>
     </div>
 
-    <div id="mocha"></div>
     <script src="bdd/test.js"></script>
     <script>onload = function() { mocha.run(); }</script>
     <!-- Load livereload if not phantom -->

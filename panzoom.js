@@ -282,6 +282,10 @@
 		minScale: 0.4,
 		maxScale: 5,
 
+		// The default step for the range input
+		// Precendence: default < HTML attribute < option setting
+		rangeStep: 0.05,
+
 		// Animation duration (ms)
 		duration: 200,
 		// CSS easing used for scale transition
@@ -635,7 +639,9 @@
 
 			if ( typeof key === 'string' ) {
 				if ( arguments.length === 1 ) {
-					return this.options[ key ];
+					return this.options[ key ] !== undefined ?
+						this.options[ key ] :
+						null;
 				}
 				options = {};
 				options[ key ] = value;
@@ -699,6 +705,9 @@
 					case 'maxScale':
 						self.$zoomRange.attr( 'max', value );
 						break;
+					case 'rangeStep':
+						self.$zoomRange.attr( 'step', value );
+						break;
 					case 'startTransform':
 						self._buildTransform();
 						break;
@@ -760,6 +769,7 @@
 			var str_click = 'touchend' + ns + ' click' + ns;
 			var events = {};
 			var $reset = this.$reset;
+			var $zoomRange = this.$zoomRange;
 
 			// Bind panzoom events from options
 			$.each([ 'Start', 'Change', 'Zoom', 'Pan', 'End', 'Reset' ], function() {
@@ -793,6 +803,21 @@
 				$reset.on( str_click, function( e ) { e.preventDefault(); self.reset(); });
 			}
 
+			// Set default attributes for the range input
+			if ( $zoomRange.length ) {
+				$zoomRange.attr({
+					// Only set the range step if explicit or
+					// set the default if there is no attribute present
+					step: options.rangeStep === Panzoom.defaults.rangeStep &&
+						$zoomRange.attr('step') ||
+						options.rangeStep,
+					min: options.minScale,
+					max: options.maxScale
+				}).prop({
+					value: this.getMatrix()[0]
+				});
+			}
+
 			// No bindings if zooming is disabled
 			if ( options.disableZoom ) {
 				return;
@@ -800,7 +825,6 @@
 
 			var $zoomIn = this.$zoomIn;
 			var $zoomOut = this.$zoomOut;
-			var $zoomRange = this.$zoomRange;
 
 			// Bind zoom in/out
 			// Don't bind one without the other
@@ -811,17 +835,9 @@
 			}
 
 			if ( $zoomRange.length ) {
-				// Set default attributes
-				$zoomRange.attr({
-					min: options.minScale,
-					max: options.maxScale,
-					step: 0.05
-				}).prop({
-					value: this.getMatrix()[0]
-				});
 				events = {};
 				// Cannot prevent default action here, just use mousedown event
-				events.mousedown = function() {
+				events[ 'mousedown' + ns ] = function() {
 					self.transition( true );
 				};
 				events[ 'change' + ns ] = function() {
