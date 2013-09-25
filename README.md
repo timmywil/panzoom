@@ -424,6 +424,18 @@ __Arguments Received__
 
 This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile.
 
+*Note*: When binding to this event, you can tell the difference between a click (or tap) and a move by checking `changed`:
+
+```js
+$panzoom.on('panzoomend', function(e, panzoom, matrix, changed) {
+  if (changed) {
+    // call function to work with drags or touch moves
+  } else {
+    // call function to deal with clicks or taps
+  }
+});
+```
+
 ### `"panzoomreset"`
 
 __Arguments Received__
