@@ -429,9 +429,9 @@ This event is fired when the user finishes a move or finishes a pinch zoom gestu
 ```js
 $panzoom.on('panzoomend', function(e, panzoom, matrix, changed) {
   if (changed) {
-    // call function to work with drags or touch moves
+    // deal with drags or touch moves
   } else {
-    // call function to deal with clicks or taps
+    // deal with clicks or taps
   }
 });
 ```
