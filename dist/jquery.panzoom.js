@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.6.8
- * Updated: Sat Sep 14 2013
+ * @license jquery.panzoom.js v1.7.0
+ * Updated: Tue Oct 15 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -8,10 +8,13 @@
  */
 
 (function( global, factory ) {
-	// Define the plugin using AMD if present
-	// Skips commonjs as this is not meant for that environment
+	// AMD
 	if ( typeof define === 'function' && define.amd ) {
-		define([ 'jquery' ], factory );
+		define( [ 'jquery' ], factory );
+	// CommonJS/Browserify
+	} else if ( typeof exports === 'object' ) {
+		factory( require('jquery') );
+	// Global
 	} else {
 		factory( global.jQuery );
 	}

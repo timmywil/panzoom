@@ -8,10 +8,13 @@
  */
 
 (function( global, factory ) {
-	// Define the plugin using AMD if present
-	// Skips commonjs as this is not meant for that environment
+	// AMD
 	if ( typeof define === 'function' && define.amd ) {
-		define([ 'jquery' ], factory );
+		define( [ 'jquery' ], factory );
+	// CommonJS/Browserify
+	} else if ( typeof exports === 'object' ) {
+		factory( require('jquery') );
+	// Global
 	} else {
 		factory( global.jQuery );
 	}

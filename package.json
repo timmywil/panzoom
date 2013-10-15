@@ -1,6 +1,7 @@
 {
   "name": "jquery.panzoom",
-  "version": "1.6.8",
+  "version": "1.7.0",
+  "main": "dist/jquery.panzoom.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/timmywil/jquery.panzoom"
@@ -14,5 +15,9 @@
     "grunt-compare-size": "~0.4.0-rc.3",
     "gzip-js": "~0.3.2",
     "grunt-jsonlint": "~1.0.1"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "install": "(bower install && bower prune) || echo 'do npm -g install bower'"
   }
 }
