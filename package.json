@@ -1,6 +1,10 @@
 {
   "name": "jquery.panzoom",
   "version": "1.6.8",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/timmywil/jquery.panzoom"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.6.4",
