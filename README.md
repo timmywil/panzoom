@@ -6,8 +6,8 @@ And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (11.2kb/4.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download v1.8.0](https://raw.github.com/timmywil/jquery.panzoom/v1.8.0/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.8.0/dist/jquery.panzoom.js)
+[Download v1.8.1](https://raw.github.com/timmywil/jquery.panzoom/v1.8.1/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.8.1/dist/jquery.panzoom.js)
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
@@ -259,6 +259,15 @@ Transition a zoom in based on the scale increment, min and max values, and anima
 If the method is passed a number, `zoom()` will immediately set that scale without transitioning. This is mostly useful for the range input and pinch gestures.<br>
 If the method is passed a boolean, true will indicate to perform a zoom-out based on the increment specified in options. If false (or omitted), a zoom-in will be performed.
 
+### `resetDimensions()`
+
+```js
+// Indicate to panzoom that the dimensions of the parent and/or the element have changed.
+$elem.panzoom("resetDimensions");
+```
+
+Panzoom caches the dimensions of the panzoom element and its parent to cater to quick move events. Whenever these dimensions change, it is necessary to call `resetDimensions()`.
+
 ### `disable()`
 
 ```js
@@ -422,7 +431,7 @@ __Arguments Received__
   3. `matrix` _(Array)_: The final transform matrix
   4. `changed` _(Boolean)_: Whether the matrix changed during the panzoom event
 
-This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile.
+This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile. All properties from the original click or touch event that ended the panzoom transaction are passed through, including the event target (`e.target`).
 
 *Note*: When binding to this event, you can tell the difference between a click (or tap) and a move by checking `changed`:
 

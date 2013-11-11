@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v1.8.0
+ * @license jquery.panzoom.js v1.8.1
  * Updated: Mon Nov 11 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
@@ -951,11 +951,14 @@
 		/**
 		 * Trigger a panzoom event on our element
 		 * The event is passed the Panzoom instance
-		 * @param {String} name
+		 * @param {String|jQuery.Event} event
 		 * @param {Mixed} arg1[, arg2, arg3, ...] Arguments to append to the trigger
 		 */
-		_trigger: function ( name ) {
-			this.$elem.triggerHandler( 'panzoom' + name, [this].concat(slice.call( arguments, 1 )) );
+		_trigger: function ( event ) {
+			if ( typeof event === 'string' ) {
+				event = 'panzoom' + event;
+			}
+			this.$elem.triggerHandler( event, [this].concat(slice.call( arguments, 1 )) );
 		},
 
 		/**
@@ -1038,8 +1041,10 @@
 					$(this).off( ns );
 					self.panning = false;
 					// Trigger our end event
-					// jQuery's not is used here to compare Array equality
-					self._trigger( 'end', matrix, !!$(original).not(matrix).length );
+					// Simply set the type to "panzoomend" to pass through all end properties
+					// jQuery's `not` is used here to compare Array equality
+					e.type = 'panzoomend';
+					self._trigger( e, matrix, !!$(original).not(matrix).length );
 				});
 		}
 	};
