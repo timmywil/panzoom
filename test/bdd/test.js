@@ -449,6 +449,25 @@ describe('Panzoom', function() {
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
 	});
 
+	/* resetDimensions
+	---------------------------------------------------------------------- */
+	it('should adjust containment when the parent\'s dimensions change', function() {
+		var panzoom = $elem.panzoom('instance');
+		var $parent = panzoom.$parent;
+		$parent.css('width', '200%');
+		$elem.panzoom('option', 'contain', true);
+		$elem.panzoom('pan', 10, 0);
+		expect( +$elem.panzoom('getMatrix')[4] ).to.equal( 0 );
+		$elem.panzoom('resetDimensions');
+		$elem.panzoom('pan', 10, 0);
+		expect( +$elem.panzoom('getMatrix')[4] ).to.equal( 10 );
+
+		// Clean up
+		$parent.css('width', '');
+		$elem.panzoom('option', 'contain', false);
+		$elem.panzoom('reset');
+	});
+
 	/* reset
 	---------------------------------------------------------------------- */
 	it('should trigger the reset event on reset', function() {

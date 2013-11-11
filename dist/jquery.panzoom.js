@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.7.0
- * Updated: Tue Oct 15 2013
+ * @license jquery.panzoom.js v1.8.0
+ * Updated: Mon Nov 11 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -243,7 +243,7 @@
 		this._buildTransition();
 
 		// Build containment dimensions
-		this._buildContain();
+		this.resetDimensions();
 
 		// Add zoom and reset buttons to `this`
 		var $empty = $();
@@ -343,6 +343,35 @@
 		destroy: function() {
 			this.disable();
 			$.removeData( this.elem, datakey );
+		},
+
+		/**
+		 * Builds the restricing dimensions from the containment element
+		 * Also used with focal points
+		 * Call this method whenever the dimensions of the element or parent are changed
+		 */
+		resetDimensions: function() {
+			// Reset container properties
+			var $parent = this.$parent;
+			this.container = {
+				width: $parent.width(),
+				height: $parent.height()
+			};
+			var elem = this.elem;
+			var $elem = this.$elem;
+			var dims = this.dimensions = this.isSVG ? {
+				left: elem.getAttribute('x') || 0,
+				top: elem.getAttribute('y') || 0,
+				width: elem.getAttribute('width') || $elem.outerWidth(),
+				height: elem.getAttribute('height') || $elem.outerHeight()
+			} : {
+				left: $.css( elem, 'left', true ) || 0,
+				top: $.css( elem, 'top', true ) || 0,
+				width: $elem.outerWidth(),
+				height: $elem.outerHeight()
+			};
+			dims.widthBorder = ($.css( elem, 'borderLeftWidth', true ) + $.css( elem, 'borderRightWidth', true )) || 0;
+			dims.heightBorder = ($.css( elem, 'borderTopWidth', true ) + $.css( elem, 'borderBottomWidth', true )) || 0;
 		},
 
 		/**
@@ -883,41 +912,13 @@
 		},
 
 		/**
-		 * Builds the restricing dimensions from the containment element
-		 * Also used with focal points
-		 */
-		_buildContain: function() {
-			// Reset container properties
-			var $parent = this.$parent;
-			this.container = {
-				width: $parent.width(),
-				height: $parent.height()
-			};
-			var elem = this.elem;
-			var $elem = this.$elem;
-			var dims = this.dimensions = this.isSVG ? {
-				left: elem.getAttribute('x') || 0,
-				top: elem.getAttribute('y') || 0,
-				width: elem.getAttribute('width') || $elem.outerWidth(),
-				height: elem.getAttribute('height') || $elem.outerHeight()
-			} : {
-				left: $.css( elem, 'left', true ) || 0,
-				top: $.css( elem, 'top', true ) || 0,
-				width: $elem.outerWidth(),
-				height: $elem.outerHeight()
-			};
-			dims.widthBorder = ($.css( elem, 'borderLeftWidth', true ) + $.css( elem, 'borderRightWidth', true )) || 0;
-			dims.heightBorder = ($.css( elem, 'borderTopWidth', true ) + $.css( elem, 'borderBottomWidth', true )) || 0;
-		},
-
-		/**
 		 * Checks dimensions to make sure they don't need to be re-calculated
 		 */
 		_checkDims: function() {
 			var dims = this.dimensions;
 			// Rebuild if width or height is still 0
 			if ( dims.width === dims.widthBorder || dims.height === dims.heightBorder ) {
-				this._buildContain();
+				this.resetDimensions();
 			}
 			return this.dimensions;
 		},
