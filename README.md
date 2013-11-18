@@ -466,6 +466,23 @@ See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CON
 
 ## FAQ
 
-1. How do I make it so that I never see the background behind the panzoom element? [example](http://codepen.io/timmywil/pen/qjvBF)
+1\. How do I make it so that I never see the background behind the panzoom element? [example](http://codepen.io/timmywil/pen/qjvBF)
 
   - This can be done with the `contain` option. Set `contain` to `"invert"` and make sure the panzoom element is the same size or larger than its parent.
+
+```js
+  $('.panzoom-elements').panzoom({
+    contain: 'invert',
+    minScale: 1
+  });
+```
+
+2\. How do I make links work if they're within a panzoom element? [example](http://codepen.io/timmywil/pen/bFiqy)
+
+  - Event propagation is stopped for `mousedown` and `touchstart` events in order to allow for panzoom elements within panzoom elements. To fix the links, bind an event handler that prevents the event from reaching the panzoom handler:
+
+```js
+$('.panzoom a').on('mousedown touchstart', function( e ) {
+  e.stopImmediatePropagation();
+});
+```
