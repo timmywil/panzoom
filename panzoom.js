@@ -625,9 +625,9 @@
 				// Adapted from code by Florian Günther
 				// https://github.com/florianguenther/zui53
 				// Adjusts the focal point for default transform-origin => 50% 50%
-				var container = this.container;
-				var clientX = focal.clientX - container.width / 2;
-				var clientY = focal.clientY - container.height / 2;
+				var dims = this._checkDims();
+				var clientX = focal.clientX - dims.width / 2;
+				var clientY = focal.clientY - dims.height / 2;
 				var clientV = new Vector( clientX, clientY, 1 );
 				var surfaceM = new Matrix( matrix );
 				var o = this.$parent.offset();
