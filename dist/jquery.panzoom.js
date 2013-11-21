@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.8.2
- * Updated: Wed Nov 20 2013
+ * Updated: Thu Nov 21 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -363,12 +363,17 @@
 				left: elem.getAttribute('x') || 0,
 				top: elem.getAttribute('y') || 0,
 				width: elem.getAttribute('width') || $elem.outerWidth(),
-				height: elem.getAttribute('height') || $elem.outerHeight()
+				height: elem.getAttribute('height') || $elem.outerHeight(),
+				margin: { left: 0, top: 0 }
 			} : {
 				left: $.css( elem, 'left', true ) || 0,
 				top: $.css( elem, 'top', true ) || 0,
 				width: $elem.outerWidth(),
-				height: $elem.outerHeight()
+				height: $elem.outerHeight(),
+				margin: {
+					top: $.css( elem, 'marginTop', true ) || 0,
+					left: $.css( elem, 'marginLeft', true ) || 0
+				}
 			};
 			dims.widthBorder = ($.css( elem, 'borderLeftWidth', true ) + $.css( elem, 'borderRightWidth', true )) || 0;
 			dims.heightBorder = ($.css( elem, 'borderTopWidth', true ) + $.css( elem, 'borderBottomWidth', true )) || 0;
@@ -469,7 +474,7 @@
 			if ( typeof matrix === 'string' ) {
 				matrix = this.getMatrix( matrix );
 			}
-			var dims, container, marginW, marginH, diffW, diffH;
+			var dims, container, marginW, marginH, diffW, diffH, left, top;
 			var scale = +matrix[0];
 			var $parent = this.$parent;
 			var elem = this.elem;
@@ -486,8 +491,10 @@
 					diffH = dims.height > container.height ? dims.height - container.height : 0;
 					marginW += (container.width - dims.width) / 2;
 					marginH += (container.height - dims.height) / 2;
-					matrix[4] = Math.max( Math.min( matrix[4], marginW - dims.left ), -marginW - dims.left - diffW );
-					matrix[5] = Math.max( Math.min( matrix[5], marginH - dims.top ), -marginH - dims.top - diffH + dims.heightBorder );
+					left = dims.left + dims.margin.left;
+					top = dims.top + dims.margin.top;
+					matrix[4] = Math.max( Math.min( matrix[4], marginW - left ), -marginW - left - diffW );
+					matrix[5] = Math.max( Math.min( matrix[5], marginH - top ), -marginH - top - diffH + dims.heightBorder );
 				} else {
 					diffH = container.height > dims.height ? container.height - dims.height : 0;
 					// If the element is not naturally centered, assume full margin right
