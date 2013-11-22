@@ -6,10 +6,26 @@
 module.exports = function( grunt ) {
 	'use strict';
 
+	// Load all grunt tasks
+	require('load-grunt-tasks')( grunt );
+
 	var gzip = require('gzip-js');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		bowercopy: {
+			dev: {
+				options: {
+					destPrefix: 'test/libs'
+				},
+				files: {
+					'mocha/mocha.js': 'mocha/mocha.js',
+					'mocha/mocha.css': 'mocha/mocha.css',
+					'jquery.mousewheel.js': 'jquery-mousewheel/jquery.mousewheel.js',
+					'chai.js': 'chai/chai.js'
+				}
+			}
+		},
 		build: {
 			dist: {
 				dest: 'dist/jquery.panzoom.js',
@@ -99,14 +115,6 @@ module.exports = function( grunt ) {
 			}
 		}
 	});
-
-	// Load necessary tasks from NPM packages
-	grunt.loadNpmTasks('grunt-compare-size');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-mocha');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-jsonlint');
 
 	grunt.registerMultiTask(
 		'build',
