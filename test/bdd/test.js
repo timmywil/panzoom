@@ -687,8 +687,10 @@ describe('Panzoom', function() {
 	it('should set the starting transform value as an attribute', function() {
 		$rect.panzoom('destroy');
 		$rect.panzoom({
-			startTransform: 'none'
+			// IE10 will ignore a 'none' setting
+			startTransform: 'matrix(1,0,0,-1,0,0)'
 		});
-		expect( $rect.attr('transform') ).to.equal('none');
+		var transform = $rect.attr('transform').replace(/,\s*/g, ' ');
+		expect( transform ).to.equal('matrix(1 0 0 -1 0 0)');
 	});
 });
