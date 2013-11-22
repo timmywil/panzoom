@@ -259,29 +259,27 @@ describe('Panzoom', function() {
 	it('should bind the onEnd event', function() {
 		var called = false;
 		var instance = $elem.panzoom('instance');
-		function testEnd( e, panzoom ) {
+		instance.reset( false );
+		function testEnd( e, panzoom, matrix, changed ) {
 			called = true;
 			expect( panzoom ).to.eql( instance );
 			expect( panzoom.panning ).to.be.false;
+			expect( matrix ).to.be.an('array');
+			expect( changed ).to.be.true;
 		}
 		$elem.panzoom( 'option', 'onEnd', testEnd );
-		instance._startMove( 0, 0 );
-		$(document).trigger('mouseup').trigger('touchend');
-		$elem.off( 'panzoomend', testEnd );
+		fauxMove( 1, 0 );
 		$elem.panzoom( 'option', 'onEnd', null );
 		expect( called ).to.be.true;
 	});
 	it('should pass through the event target to the end event', function() {
 		var called = false;
-		var instance = $elem.panzoom('instance');
 		function testEnd( e ) {
 			called = true;
 			expect( e.target.nodeType ).to.be.a('number');
 		}
 		$elem.panzoom( 'option', 'onEnd', testEnd );
-		instance._startMove( 0, 0 );
-		$(document).trigger('mouseup').trigger('touchend');
-		$elem.off( 'panzoomend', testEnd );
+		fauxMove( 0, 0 );
 		$elem.panzoom( 'option', 'onEnd', null );
 		expect( called ).to.be.true;
 	});

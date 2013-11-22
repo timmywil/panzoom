@@ -61,6 +61,22 @@
 	);
 
 	/**
+	 * Utility for determing transform matrix equality
+	 * Checks backwards to test translation first
+	 * @param {Array} first
+	 * @param {Array} second
+	 */
+	function matrixEquals( first, second ) {
+		var i = first.length;
+		while( --i ) {
+			if ( +first[i] !== +second[i] ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Creates the options object for reset functions
 	 * @param {Boolean|Object} opts See reset methods
 	 * @returns {Object} Returns the newly-created options object
@@ -1045,13 +1061,14 @@
 				.on( moveEvent, move )
 				.on( endEvent, function( e ) {
 					e.preventDefault();
+					// Unbind all document events
 					$(this).off( ns );
 					self.panning = false;
 					// Trigger our end event
 					// Simply set the type to "panzoomend" to pass through all end properties
 					// jQuery's `not` is used here to compare Array equality
 					e.type = 'panzoomend';
-					self._trigger( e, matrix, !!$(original).not(matrix).length );
+					self._trigger( e, matrix, !matrixEquals(matrix, original) );
 				});
 		}
 	};
