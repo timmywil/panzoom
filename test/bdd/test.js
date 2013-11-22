@@ -586,7 +586,7 @@ describe('Panzoom', function() {
 	it('should reset styles when disabling', function() {
 		$elem.panzoom('zoom').panzoom('disable');
 		expect( $elem.css('cursor') ).to.equal('auto');
-		expect( $elem.css('transition') ).to.not.contain('transform');
+		expect( $elem.css('transition') || '' ).to.not.contain('transform');
 		$elem.panzoom('enable').panzoom( 'reset', false );
 	});
 
