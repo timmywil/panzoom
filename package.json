@@ -7,7 +7,7 @@
     "url": "http://github.com/timmywil/jquery.panzoom"
   },
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "~0.4.2",
     "grunt-bowercopy": "~0.2.0",
     "grunt-compare-size": "~0.4.0-rc.3",
     "grunt-contrib-jshint": "~0.6.4",
