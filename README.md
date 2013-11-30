@@ -117,7 +117,7 @@ Panzoom.defaults = {
   // Defaults to the original transform on the element when panzoom is initialized
   startTransform: undefined,
 
-  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzooom("zoomIn"); });` )
+  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoomIn"); });` )
   $zoomIn: $(),
   $zoomOut: $(),
   // Range input on which to bind zooming functionality
