@@ -8,8 +8,8 @@ And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (11.2kb/4.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download v1.8.5](https://raw.github.com/timmywil/jquery.panzoom/v1.8.5/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/v1.8.5/dist/jquery.panzoom.js)
+[Download v1.8.5](https://raw.github.com/timmywil/jquery.panzoom/1.8.5/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/1.8.5/dist/jquery.panzoom.js)
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
@@ -117,7 +117,7 @@ Panzoom.defaults = {
   // Defaults to the original transform on the element when panzoom is initialized
   startTransform: undefined,
 
-  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzooom("zoomIn"); });` )
+  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoomIn"); });` )
   $zoomIn: $(),
   $zoomOut: $(),
   // Range input on which to bind zooming functionality
@@ -417,8 +417,8 @@ __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
   2. `panzoom` _(Panzoom)_: The panzoom instance
-  3. `x` _(Number)_: Translate x value
-  4. `y` _(Number)_: Translate y value
+  3. `x` _(Number)_: The resulting translateX value set on the matrix (accounting for the relative option)
+  4. `y` _(Number)_: The resulting translateY value set on the matrix
 
 Fired whenever the pan is changed by this plugin.
 
