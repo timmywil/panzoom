@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.8.5
- * Updated: Fri Nov 22 2013
+ * Updated: Wed Dec 11 2013
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -584,12 +584,11 @@
 			}
 			// Cast existing matrix values to numbers
 			if ( options.relative ) {
-				matrix[4] = +matrix[4] + x;
-				matrix[5] = +matrix[5] + y;
-			} else {
-				matrix[4] = x;
-				matrix[5] = y;
+				x += +matrix[4];
+				y += +matrix[5];
 			}
+			matrix[4] = x;
+			matrix[5] = y;
 			this.setMatrix( matrix, options );
 			if ( !options.silent ) {
 				this._trigger( 'pan', x, y );

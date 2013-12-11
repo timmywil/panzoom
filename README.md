@@ -417,8 +417,8 @@ __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
   2. `panzoom` _(Panzoom)_: The panzoom instance
-  3. `x` _(Number)_: Translate x value
-  4. `y` _(Number)_: Translate y value
+  3. `x` _(Number)_: The resulting translateX value set on the matrix (accounting for the relative option)
+  4. `y` _(Number)_: The resulting translateY value set on the matrix
 
 Fired whenever the pan is changed by this plugin.
 
