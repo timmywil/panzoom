@@ -210,6 +210,11 @@
 	 */
 	function Panzoom( elem, options ) {
 
+		// Allow instantiation without `new` keyword
+		if ( !(this instanceof Panzoom) ) {
+			return new Panzoom( elem, options );
+		}
+
 		// Sanity checks
 		if ( elem.nodeType !== 1 ) {
 			$.error('Panzoom called on non-Element node');
@@ -222,11 +227,6 @@
 		var d = $.data( elem, datakey );
 		if ( d ) {
 			return d;
-		}
-
-		// Allow instantiation without `new` keyword
-		if ( !(this instanceof Panzoom) ) {
-			return new Panzoom( elem, options );
 		}
 
 		// Extend default with given object literal
