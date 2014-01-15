@@ -20,7 +20,6 @@
     "lodash": "~2.3.0"
   },
   "scripts": {
-    "test": "grunt test",
-    "install": "(bower install && bower prune) || echo 'do npm -g install bower'"
+    "test": "grunt test"
   }
 }
