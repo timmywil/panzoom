@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "grunt": "~0.4.2",
-    "grunt-bowercopy": "~0.2.0",
+    "grunt-bowercopy": "~0.6.0",
     "grunt-compare-size": "~0.4.0-rc.3",
     "grunt-contrib-jshint": "~0.6.4",
     "grunt-contrib-watch": "~0.5.3",

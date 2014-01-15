@@ -16,6 +16,7 @@ module.exports = function( grunt ) {
 		bowercopy: {
 			dev: {
 				options: {
+					clean: true,
 					destPrefix: 'test/libs'
 				},
 				files: {
