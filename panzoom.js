@@ -23,7 +23,7 @@
 
 	// Lift touch properties using fixHooks
 	var touchHook = {
-		props: [ 'touches', 'pageX', 'pageY' ],
+		props: [ 'touches', 'pageX', 'pageY', 'clientX', 'clientY' ],
 		/**
 		 * Support: Android
 		 * Android sets pageX/Y to 0 for any touch event
@@ -34,6 +34,8 @@
 			if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
 				event.pageX = touch.pageX;
 				event.pageY = touch.pageY;
+				event.clientX = touch.clientX;
+				event.clientY = touch.clientY;
 			}
 			return event;
 		}
