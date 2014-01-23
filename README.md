@@ -21,7 +21,7 @@ You'll be amazed at how well this performs on your mobile device.
 
 iOS and Android are supported.
 
-_Also note that devices that support both touch and mouse events at the same time (such as a laptop with a touch screen) are also supported._
+**Pointer** (IE11+), **touch**, and **mouse** events are supported.
 
 ## SVG support
 

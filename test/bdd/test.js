@@ -28,6 +28,8 @@ describe('Panzoom', function() {
 		$elem.trigger( e );
 		e.type = 'touchstart';
 		$elem.trigger( e );
+		e.type = 'pointerdown';
+		$elem.trigger( e );
 	}
 
 	/**
@@ -46,7 +48,11 @@ describe('Panzoom', function() {
 		});
 		var $doc = $(document).trigger( e );
 		e.type = 'touchmove';
-		$doc.trigger( e ).trigger('mouseup').trigger('touchend');
+		$doc.trigger( e );
+		e.type = 'pointermove';
+		$doc.trigger( e );
+
+		$doc.trigger('mouseup').trigger('touchend').trigger('pointerup');
 	}
 
 	/**
@@ -80,9 +86,9 @@ describe('Panzoom', function() {
 		});
 		var $doc = $(document).trigger( e );
 		e.type = 'touchmove';
-		$doc.trigger( e )
-			// Kill events
-			.trigger('touchend').trigger('mouseup');
+		$doc.trigger( e );
+		// Kill events
+		$doc.trigger('touchend').trigger('mouseup').trigger('pointerup');
 
 		// Run tests
 		complete();
@@ -205,13 +211,13 @@ describe('Panzoom', function() {
 	it('should unbind zoom if disableZoom is set to true', function() {
 		$elem.panzoom( 'option', 'disableZoom', true );
 		var events = $._data( $zoomIn[0], 'events' );
-		var clickEvent = events && ( events.click || events.touchend );
+		var clickEvent = events && ( events.click || events.touchend || events.pointerup );
 		expect( clickEvent ).to.not.exist;
 
 		// Clean-up
 		$elem.panzoom( 'option', 'disableZoom', false );
 		events = $._data( $zoomIn[0], 'events' );
-		clickEvent = events && ( events.click || events.touchend );
+		clickEvent = events && ( events.click || events.touchend || events.pointerup );
 		expect( clickEvent ).to.not.be.empty;
 	});
 
@@ -437,7 +443,7 @@ describe('Panzoom', function() {
 		fauxStart();
 		var panzoom = $elem.panzoom('instance');
 		expect( panzoom.isPanning() ).to.be.true;
-		$(document).trigger('mouseup').trigger('touchend');
+		$(document).trigger('mouseup').trigger('touchend').trigger('pointerup');
 		expect( panzoom.isPanning() ).to.be.false;
 	});
 
@@ -574,12 +580,12 @@ describe('Panzoom', function() {
 		var panzoom = $elem.panzoom('instance');
 		expect( panzoom ).to.be.an('object');
 		var events = $._data( panzoom.elem, 'events' ) || {};
-		expect( events.mousedown || events.touchstart ).to.be.undefined;
+		expect( events.mousedown || events.touchstart || events.pointerdown ).to.be.undefined;
 
 		// Enable
 		$elem.panzoom('enable');
 		events = $._data( panzoom.elem, 'events' );
-		expect( events.mousedown || events.touchstart ).to.not.be.undefined;
+		expect( events.mousedown || events.touchstart || events.pointerdown ).to.not.be.undefined;
 	});
 	it('should reset styles when disabling', function() {
 		$elem.panzoom('zoom').panzoom('disable');
@@ -590,78 +596,109 @@ describe('Panzoom', function() {
 
 	/* Touch
 	---------------------------------------------------------------------- */
-	it('should pan with 2 fingers even if disableZoom is true', function() {
-		$elem.panzoom( 'option', 'disableZoom', true );
-		var panzoom = $elem.panzoom('instance');
-		var matrix = panzoom.getMatrix();
-		testPinch(function() {
-			var newMatrix = panzoom.getMatrix();
-			// Make sure a pan was done
-			expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
-			expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
+	if ( window.PointerEvent ) {
+		it('should continue with a pointer event if started with a pointer event', function() {
+			var called = false;
+			$elem.panzoom().on('panzoomchange.continue', function() {
+				called = true;
+			});
+			var e = new jQuery.Event('pointerdown', {
+				pageX: 0,
+				pageY: 0,
+				which: 1
+			});
+			$elem.trigger( e );
+			// Mouse
+			e = new jQuery.Event('mousemove', {
+				pageX: 0,
+				pageY: 0
+			});
+			var $doc = $(document).trigger( e );
+			expect( called ).to.be.false;
+			// Pointer
+			e = new jQuery.Event('pointermove', {
+				pageX: 0,
+				pageY: 1
+			});
+			$doc.trigger( e );
+			expect( called ).to.be.true;
+			$elem.off('.continue');
+			$doc.trigger('pointerup');
 		});
-		// Clean-up
-		$elem.panzoom( 'option', 'disableZoom', false );
-	});
-	it('should not pan with 2 fingers if disablePan is true', function() {
-		var called = false;
-		$elem.panzoom( 'option', 'disablePan', true );
-		var panzoom = $elem.panzoom('instance');
-		var matrix = panzoom.getMatrix();
-		$elem.on( 'panzoompan', function() {
-			called = true;
+	} else {
+		it('should pan with 2 fingers even if disableZoom is true', function() {
+			$elem.panzoom( 'option', 'disableZoom', true );
+			var panzoom = $elem.panzoom('instance');
+			var matrix = panzoom.getMatrix();
+			testPinch(function() {
+				var newMatrix = panzoom.getMatrix();
+				// Make sure a pan was done
+				expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
+				expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
+			});
+			// Clean-up
+			$elem.panzoom( 'option', 'disableZoom', false );
 		});
+		it('should not pan with 2 fingers if disablePan is true', function() {
+			var called = false;
+			$elem.panzoom( 'option', 'disablePan', true );
+			var panzoom = $elem.panzoom('instance');
+			var matrix = panzoom.getMatrix();
+			$elem.on( 'panzoompan', function() {
+				called = true;
+			});
 
-		testPinch(function() {
-			var newMatrix = panzoom.getMatrix();
-			// Make sure a pan was not done
-			expect( +newMatrix[4] ).to.equal( +matrix[5] );
-			expect( +newMatrix[5] ).to.equal( +matrix[5] );
-		});
+			testPinch(function() {
+				var newMatrix = panzoom.getMatrix();
+				// Make sure a pan was not done
+				expect( +newMatrix[4] ).to.equal( +matrix[5] );
+				expect( +newMatrix[5] ).to.equal( +matrix[5] );
+			});
 
-		expect( called ).to.be.false;
+			expect( called ).to.be.false;
 
-		// Clean-up
-		$elem.panzoom( 'option', 'disablePan', false );
-	});
-	it('should pan on the middle point as a focal point', function() {
-		var panzoom = $elem.panzoom('instance');
-		var matrix = panzoom.getMatrix();
-		testPinch(function() {
-			var newMatrix = panzoom.getMatrix();
-			expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
-			expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
+			// Clean-up
+			$elem.panzoom( 'option', 'disablePan', false );
 		});
-	});
-	it('should continue with a touch event if started with a touch event', function() {
-		var called = false;
-		$elem.on('panzoomchange', function() {
-			called = true;
+		it('should pan on the middle point as a focal point', function() {
+			var panzoom = $elem.panzoom('instance');
+			var matrix = panzoom.getMatrix();
+			testPinch(function() {
+				var newMatrix = panzoom.getMatrix();
+				expect( +newMatrix[4] ).to.not.equal( +matrix[4] );
+				expect( +newMatrix[5] ).to.not.equal( +matrix[5] );
+			});
 		});
-		var e = new jQuery.Event('touchstart', {
-			touches: [
-				{ pageX: 0, pageY: 0 }
-			]
+		it('should continue with a touch event if started with a touch event', function() {
+			var called = false;
+			$elem.on('panzoomchange.continue', function() {
+				called = true;
+			});
+			var e = new jQuery.Event('touchstart', {
+				touches: [
+					{ pageX: 0, pageY: 0 }
+				]
+			});
+			$elem.trigger( e );
+			// Mouse
+			e = new jQuery.Event('mousemove', {
+				touches: [
+					{ pageX: 0, pageY: 0 }
+				]
+			});
+			var $doc = $(document).trigger( e );
+			expect( called ).to.be.false;
+			// Touch
+			e = new jQuery.Event('touchmove', {
+				touches: [
+					{ pageX: 0, pageY: 0 }
+				]
+			});
+			$doc.trigger( e );
+			expect( called ).to.be.true;
+			$elem.off('.continue');
 		});
-		$elem.trigger( e );
-		// Mouse
-		e = new jQuery.Event('mousemove', {
-			touches: [
-				{ pageX: 0, pageY: 0 }
-			]
-		});
-		var $doc = $(document).trigger( e );
-		expect( called ).to.be.false;
-		// Touch
-		e = new jQuery.Event('touchmove', {
-			touches: [
-				{ pageX: 0, pageY: 0 }
-			]
-		});
-		$doc.trigger( e );
-		expect( called ).to.be.true;
-	});
-
+	}
 
 	/* SVG
 	---------------------------------------------------------------------- */

@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.8.6
- * Updated: Wed Jan 15 2014
+ * Updated: Thu Jan 23 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -44,8 +44,23 @@
 		$.event.fixHooks[ name ] = touchHook;
 	});
 
+	// Support pointer events if available
+	var pointerEvents = !!window.PointerEvent;
+
+	// Lift pointer properties
+	if ( pointerEvents ) {
+		var pointerHook = {
+			props: [ 'pageX', 'pageY', 'clientX', 'clientY' ]
+		};
+		$.each([ 'pointerdown', 'pointermove', 'pointerup' ], function( i, name ) {
+			$.event.fixHooks[ name ] = pointerHook;
+		});
+	}
+
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
+
+	// Regex
 	var rupper = /([A-Z])/g;
 	var rsvg = /^http:[\w\.\/]+svg$/;
 	var rinline = /^inline/;
@@ -821,8 +836,8 @@
 			var self = this;
 			var options = this.options;
 			var ns = options.eventNamespace;
-			var str_start = 'touchstart' + ns + ' mousedown' + ns;
-			var str_click = 'touchend' + ns + ' click' + ns;
+			var str_start = pointerEvents ? 'pointerdown' + ns : ('touchstart' + ns + ' mousedown' + ns);
+			var str_click = pointerEvents ? 'pointerup' + ns : ('touchend' + ns + ' click' + ns);
 			var events = {};
 			var $reset = this.$reset;
 			var $zoomRange = this.$zoomRange;
@@ -840,11 +855,12 @@
 			if ( !options.disablePan || !options.disableZoom ) {
 				events[ str_start ] = function( e ) {
 					var touches;
-					if ( e.type === 'mousedown' ?
-						// Ignore right click when handling a click
-						!options.disablePan && e.which === 1 :
+					if ( e.type === 'touchstart' ?
 						// Touch
-						(touches = e.touches) && ((touches.length === 1 && !options.disablePan) || touches.length === 2) ) {
+						(touches = e.touches) &&
+							((touches.length === 1 && !options.disablePan) || touches.length === 2) :
+						// Mouse/Pointer: Ignore right click
+						!options.disablePan && e.which === 1 ) {
 
 						e.preventDefault();
 						e.stopPropagation();
@@ -856,7 +872,10 @@
 
 			// Bind reset
 			if ( $reset.length ) {
-				$reset.on( str_click, function( e ) { e.preventDefault(); self.reset(); });
+				$reset.on( str_click, function( e ) {
+					e.preventDefault();
+					self.reset();
+				});
 			}
 
 			// Set default attributes for the range input
@@ -886,14 +905,20 @@
 			// Don't bind one without the other
 			if ( $zoomIn.length && $zoomOut.length ) {
 				// preventDefault cancels future mouse events on touch events
-				$zoomIn.on( str_click, function( e ) { e.preventDefault(); self.zoom(); });
-				$zoomOut.on( str_click, function( e ) { e.preventDefault(); self.zoom( true ); });
+				$zoomIn.on( str_click, function( e ) {
+					e.preventDefault();
+					self.zoom();
+				});
+				$zoomOut.on( str_click, function( e ) {
+					e.preventDefault();
+					self.zoom( true );
+				});
 			}
 
 			if ( $zoomRange.length ) {
 				events = {};
-				// Cannot prevent default action here, just use mousedown event
-				events[ 'mousedown' + ns ] = function() {
+				// Cannot prevent default action here, just use pointerdown/mousedown
+				events[ (pointerEvents ? 'pointerdown' : 'mousedown') + ns ] = function() {
 					self.transition( true );
 				};
 				events[ 'change' + ns ] = function() {
@@ -992,20 +1017,33 @@
 		 * @param {TouchList} [touches] The touches list if present
 		 */
 		_startMove: function( event, touches ) {
-			var move,
+			var move, moveEvent, endEvent,
 				startDistance, startScale, startMiddle,
 				startPageX, startPageY;
 			var self = this;
 			var options = this.options;
-			var isTouch = event.type === 'touchstart';
 			var ns = options.eventNamespace;
-			var moveEvent = (isTouch ? 'touchmove' : 'mousemove') + ns;
-			var endEvent = (isTouch ? 'touchend' : 'mouseup') + ns;
 			var matrix = this.getMatrix();
 			var original = matrix.slice( 0 );
 			var origPageX = +original[4];
 			var origPageY = +original[5];
 			var panOptions = { matrix: matrix, animate: 'skip' };
+
+			// Use proper events
+			if ( pointerEvents ) {
+				moveEvent = 'pointermove';
+				endEvent = 'pointerup';
+			} else if ( event.type === 'touchstart' ) {
+				moveEvent = 'touchmove';
+				endEvent = 'touchend';
+			} else {
+				moveEvent = 'mousemove';
+				endEvent = 'mouseup';
+			}
+
+			// Add namespace
+			moveEvent += ns;
+			endEvent += ns;
 
 			// Remove any transitions happening
 			this.transition( true );
