@@ -130,10 +130,10 @@ module.exports = function( grunt ) {
 			// If this is the README, replace versions to download
 			if ( /README/.test(src) ) {
 				compiled = compiled
-					// Replace the version if not v1.1.0
-					.replace( /\bv\d+\.\d+\.\d+\b/g, function( all ) {
-						return all !== 'v1.1.0' ? 'v' + version : all;
-					});
+					// Replace first instance of vx.x.x
+					.replace( /v\d\.\d+\.\d+/, 'v' + version )
+					// Replace the version in the URLs
+					.replace( /(panzoom\/)\b\d+\.\d+\.\d+\b(\/)/g, '$1' + version + '$2' );
 			} else {
 				// Replace version and date
 				compiled = compiled
