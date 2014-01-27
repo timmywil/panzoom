@@ -359,6 +359,45 @@
       </script>
     </section>
     <hr>
+    <section id="set">
+      <h1>Using the $set option</h1>
+      <style>
+        #set .parent { text-align: center; }
+        #set .parent .panzoom { border: 3px solid; }
+        #set .parent > div { display: inline-block; width: 30%; }
+        #set .parent img { width: 100%; }
+      </style>
+      <div class="parent clearfix">
+        <div>
+          <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg">
+        </div>
+        <div class="panzoom">
+          <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg">
+        </div>
+        <div>
+          <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg">
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="zoom-in">Zoom In</button>
+        <button class="zoom-out">Zoom Out</button>
+        <input type="range" class="zoom-range">
+        <button class="reset">Reset</button>
+      </div>
+      <script>
+        (function() {
+          var $section = $('#set');
+          $section.find('.panzoom').panzoom({
+            $zoomIn: $section.find(".zoom-in"),
+            $zoomOut: $section.find(".zoom-out"),
+            $zoomRange: $section.find(".zoom-range"),
+            $reset: $section.find(".reset"),
+            $set: $section.find('.parent > div')
+          });
+        })();
+      </script>
+    </section>
+    <hr>
     <section id="focal">
       <h1>Use the mousewheel to zoom on a focal point</h1>
       <div class="parent">

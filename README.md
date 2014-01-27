@@ -6,10 +6,10 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (11.2kb/4.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (11.9kb/4.4kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download v1.8.5](https://raw.github.com/timmywil/jquery.panzoom/1.8.5/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/1.8.5/dist/jquery.panzoom.js)
+[Download v1.9.0](https://raw.github.com/timmywil/jquery.panzoom/1.9.0/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/1.9.0/dist/jquery.panzoom.js)
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
@@ -21,7 +21,7 @@ You'll be amazed at how well this performs on your mobile device.
 
 iOS and Android are supported.
 
-_Also note that devices that support both touch and mouse events at the same time (such as a laptop with a touch screen) are also supported._
+**Pointer** (IE11+), **touch**, and **mouse** events are supported.
 
 ## SVG support
 
@@ -33,7 +33,7 @@ As of v1.1.0, Panzoom no longer depends on [Modernizr](http://modernizr.com/) fo
 Before v1.1.0, this plugin depended on Modernizr for its touch support feature detect.
 
 ## Loading Panzoom
-Panzoom can obviously be included with your scripts at the end of the body,
+Panzoom can be included with your scripts at the end of the body,
 but Panzoom supports AMD for javascript module love.
 
 With script tags:
@@ -76,7 +76,7 @@ Check out the demos of the [contain](http://timmywil.github.io/jquery.panzoom/de
 Panzoom.defaults = {
   // Should always be non-empty
   // Used to bind jQuery events without collisions
-  // A guid is not added here as different instantiations/versions of panzoom
+  // A guid is not added here as different instantiations/versions of Panzoom
   // on the same element is not supported.
   eventNamespace: ".panzoom",
 
@@ -109,13 +109,24 @@ Panzoom.defaults = {
 
   // Indicate that the element should be contained within it's parent when panning
   // Note: this does not affect zooming outside of the parent
-  // Set this value to 'invert' to only allow panning outside of the parent element (basically the opposite of the normal use of contain)
-  // 'invert' is useful for a large panzoom element where you don't want to show anything behind it
+  // Set this value to 'invert' to only allow panning outside of the parent element (the opposite of the normal use of contain)
+  // 'invert' is useful for a large Panzoom element where you don't want to show anything behind it
   contain: false,
 
   // Transform value to which to always reset (string)
-  // Defaults to the original transform on the element when panzoom is initialized
+  // Defaults to the original transform on the element when Panzoom is initialized
   startTransform: undefined,
+
+  // This optional jQuery collection can be set to specify all of the elements
+  // on which the transform should always be set.
+  // It should have at least one element.
+  // This is mainly used for delegating the pan and zoom transform settings
+  // to another element or multiple elements.
+  // The default is the Panzoom element wrapped in jQuery
+  // See the [demo](http://timmywil.github.io/jquery.panzoom/demo/#set) for an example.
+  // Note: only one Panzoom element will still handle events for a Panzoom instance.
+  // Use multiple Panzoom instances for that use case.
+  $set: $elem,
 
   // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoomIn"); });` )
   $zoomIn: $(),
@@ -124,8 +135,8 @@ Panzoom.defaults = {
   $zoomRange: $(),
   // Reset buttons/links collection on which to bind the reset method
   $reset: $(),
-  // For convenience, these options will be bound to panzoom events
-  // These can all be bound normally on the panzoom element
+  // For convenience, these options will be bound to Panzoom events
+  // These can all be bound normally on the Panzoom element
   // e.g. `$elem.on("panzoomend", function( e, panzoom ) { console.log( panzoom.getMatrix() ); });`
   onStart: undefined,
   onChange: undefined,
@@ -138,7 +149,7 @@ Panzoom.defaults = {
 
 ## Methods
 
-Methods can be called in the same way as a widget from the jQuery UI widget factory. Pass a method name when calling panzoom. Strings are interpreted as method names.
+Methods can be called in the same way as a widget from the jQuery UI widget factory. Pass a method name when calling `panzoom()`. Strings are interpreted as method names.
 
 ### `option()`
 
@@ -163,7 +174,7 @@ Any option can be changed. See the defaults above for a list.
 
 __Arguments__
 
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to setMatrix.
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to setMatrix.
   2. `options.silent` _{Boolean}_: Silence the reset event (as well as the change event as the same options are passed to setMatrix)
 
 ```js
@@ -181,7 +192,7 @@ Reset the transform matrix to its original value. All panning and zooming is res
 
 __Arguments__
 
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to zoom.
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to zoom.
 
 ```js
 $elem.panzoom("resetZoom");
@@ -198,7 +209,7 @@ Reset the scale to its original value (resets both scale values in the matrix to
 
 __Arguments__
 
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to pan.
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to pan.
 
 ```js
 $elem.panzoom("resetPan");
@@ -264,11 +275,11 @@ If the method is passed a boolean, true will indicate to perform a zoom-out base
 ### `resetDimensions()`
 
 ```js
-// Indicate to panzoom that the dimensions of the parent and/or the element have changed.
+// Indicate to Panzoom that the dimensions of the parent and/or the element have changed.
 $elem.panzoom("resetDimensions");
 ```
 
-Panzoom caches the dimensions of the panzoom element and its parent to cater to quick move events. Whenever these dimensions change, it is necessary to call `resetDimensions()`.
+Panzoom caches the dimensions of the Panzoom element and its parent to cater to quick move events. Whenever these dimensions change, it is necessary to call `resetDimensions()`.
 
 ### `disable()`
 
@@ -276,7 +287,7 @@ Panzoom caches the dimensions of the panzoom element and its parent to cater to 
 $elem.panzoom("disable");
 ```
 
-Quickly disable panzoom on the element.
+Quickly disable Panzoom on the element.
 
 ### `enable()`
 
@@ -284,7 +295,7 @@ Quickly disable panzoom on the element.
 $elem.panzoom("enable");
 ```
 
-Re-enable panzoom on the element (re-binds all events).
+Re-enable Panzoom on the element (re-binds all events).
 
 ### `isDisabled()`
 
@@ -311,7 +322,7 @@ $elem.panzoom("destroy");
 var panzoom = $elem.panzoom("instance");
 ```
 
-Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will just get that instance of Panzoom.
+Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will get that instance of Panzoom.
 
 Unbinds all events and removes all data, including the Panzoom instance on the element.
 
@@ -321,13 +332,19 @@ These methods are _basically_ private, but could be useful under certain circums
 
 ### `getTransform()`
 
-Returns the string transform value used by panzoom for the element.
+Returns the string transform value used by Panzoom for the element.
+
+__Note__: The transform attribute is used for SVG. Otherwise, the appropriately prefixed transform style property is used.
+
+### `setTransform()`
+
+Set a string transform value on the Panzoom element (or the $set if using the $set option).
 
 __Note__: The transform attribute is used for SVG. Otherwise, the appropriately prefixed transform style property is used.
 
 ### `getMatrix( [transform] )`
 
-Retrieve an array of values for the specified transform or for the current transform on the panzoom element.
+Retrieve an array of values for the specified transform or for the current transform on the Panzoom element.
 
 ```js
 $elem.panzoom("getMatrix");
@@ -352,7 +369,7 @@ __Arguments__
 $elem.panzoom("setMatrix", [ 1, 0, 0, -1, 0, 0 ]);
 ```
 
-Sets the transform matrix of the panzoom element. It accepts the matrix as an array.
+Sets the transform matrix of the Panzoom element. It accepts the matrix as an array.
 
 _Note_: `setMatrix()` does not chain. It returns the newly-set matrix as an _Array_.
 
@@ -364,7 +381,7 @@ $elem.panzoom("transition");
 $elem.panzoom("transition", true);
 // Note: this is different than...
 $elem.panzoom("option", "transition", true);
-// ... which just sets the `transition` option, indicating whether transitioning is allowed at all.
+// ... which sets the `transition` option, indicating whether transitioning is allowed at all.
 // If the transition option is false, `$elem.panzoom("transition")` will only ever set transition to "none".
 ```
 
@@ -378,7 +395,7 @@ Applies the transition to the element. If `off` is true, it removes the transiti
 __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The panzoom instance
+  2. `panzoom` _(Panzoom)_: The Panzoom instance
   3. `event` _(jQuery.Event)_: The starting mousedown or touchstart event
   4. `touches` _(TouchList)_: The touches list if present
 
@@ -389,7 +406,7 @@ Fired when the user starts a move or pinch zoom gesture on mobile.
 __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The panzoom instance
+  2. `panzoom` _(Panzoom)_: The Panzoom instance
   3. `transform` _(Array)_: The transform matrix set during the change as an array of values
 
 Fired whenever the matrix is changed by `setMatrix()` (whether internally or externally).
@@ -403,7 +420,7 @@ __Note__: This event can be silenced when setMatrix is called directly.
 __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The panzoom instance
+  2. `panzoom` _(Panzoom)_: The Panzoom instance
   3. `scale` _(Number)_: The zoom scale set by the plugin
   4. `opts` _(Object)_: Same options passed to zoom
 
@@ -416,7 +433,7 @@ __Note__: This event can be silenced when zoom is called directly.
 __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The panzoom instance
+  2. `panzoom` _(Panzoom)_: The Panzoom instance
   3. `x` _(Number)_: The resulting translateX value set on the matrix (accounting for the relative option)
   4. `y` _(Number)_: The resulting translateY value set on the matrix
 
@@ -429,11 +446,11 @@ _Try not to put to much in this event as it could slow down dragging._
 __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The panzoom instance
+  2. `panzoom` _(Panzoom)_: The Panzoom instance
   3. `matrix` _(Array)_: The final transform matrix
-  4. `changed` _(Boolean)_: Whether the matrix changed during the panzoom event
+  4. `changed` _(Boolean)_: Whether the matrix changed during the Panzoom event
 
-This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile. All properties from the original click or touch event that ended the panzoom transaction are passed through, including the event target (`e.target`).
+This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile. All properties from the original click or touch event that ended the Panzoom transaction are passed through, including the event target (`e.target`).
 
 *Note*: When binding to this event, you can tell the difference between a click (or tap) and a move by checking `changed`:
 
@@ -452,7 +469,7 @@ $panzoom.on('panzoomend', function(e, panzoom, matrix, changed) {
 __Arguments Received__
 
   1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The panzoom instance
+  2. `panzoom` _(Panzoom)_: The Panzoom instance
   3. `matrix` _(Array)_: The original matrix
 
 Fired whenever reset is called.
@@ -468,9 +485,9 @@ See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CON
 
 ## FAQ
 
-1\. How do I make it so that I never see the background behind the panzoom element? [example](http://codepen.io/timmywil/pen/qjvBF)
+1\. How do I make it so that I never see the background behind the Panzoom element? [example](http://codepen.io/timmywil/pen/qjvBF)
 
-  - This can be done with the `contain` option. Set `contain` to `"invert"` and make sure the panzoom element is the same size or larger than its parent.
+  - This can be done with the `contain` option. Set `contain` to `"invert"` and make sure the Panzoom element is the same size or larger than its parent.
 
 ```js
   $('.panzoom-elements').panzoom({
@@ -479,9 +496,9 @@ See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CON
   });
 ```
 
-2\. How do I make links work if they're within a panzoom element? [example](http://codepen.io/timmywil/pen/bFiqy)
+2\. How do I make links work if they're within a Panzoom element? [example](http://codepen.io/timmywil/pen/bFiqy)
 
-  - Event propagation is stopped for `mousedown` and `touchstart` events in order to allow for panzoom elements within panzoom elements. To fix the links, bind an event handler that prevents the event from reaching the panzoom handler:
+  - Event propagation is stopped for `mousedown` and `touchstart` events in order to allow for Panzoom elements within Panzoom elements. To fix the links, bind an event handler that prevents the event from reaching the Panzoom handler:
 
 ```js
 $('.panzoom a').on('mousedown touchstart', function( e ) {
