@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.9.0
- * Updated: Thu Jan 23 2014
+ * Updated: Mon Jan 27 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -728,17 +728,16 @@
 		 * @param {Object} options - An object literal of options to set
 		 */
 		_setOptions: function( options ) {
-			var self = this;
-			$.each( options, function( key, value ) {
+			$.each( options, $.proxy(function( key, value ) {
 				switch( key ) {
 					case 'disablePan':
-						self._resetStyle();
+						this._resetStyle();
 						/* falls through */
-					case 'disableZoom':
 					case '$zoomIn':
 					case '$zoomOut':
 					case '$zoomRange':
 					case '$reset':
+					case 'disableZoom':
 					case 'onStart':
 					case 'onChange':
 					case 'onZoom':
@@ -746,18 +745,21 @@
 					case 'onEnd':
 					case 'onReset':
 					case 'eventNamespace':
-						self._unbind();
+						this._unbind();
 				}
-				self.options[ key ] = value;
+				this.options[ key ] = value;
 				switch( key ) {
 					case 'disablePan':
-						self._initStyle();
+						this._initStyle();
 						/* falls through */
-					case 'disableZoom':
 					case '$zoomIn':
 					case '$zoomOut':
 					case '$zoomRange':
 					case '$reset':
+						// Set these on the instance
+						this[ key ] = value;
+						/* falls through */
+					case 'disableZoom':
 					case 'onStart':
 					case 'onChange':
 					case 'onZoom':
@@ -765,31 +767,31 @@
 					case 'onEnd':
 					case 'onReset':
 					case 'eventNamespace':
-						self._bind();
+						this._bind();
 						break;
 					case 'cursor':
-						$.style( self.elem, 'cursor', value );
+						$.style( this.elem, 'cursor', value );
 						break;
 					case 'minScale':
-						self.$zoomRange.attr( 'min', value );
+						this.$zoomRange.attr( 'min', value );
 						break;
 					case 'maxScale':
-						self.$zoomRange.attr( 'max', value );
+						this.$zoomRange.attr( 'max', value );
 						break;
 					case 'rangeStep':
-						self.$zoomRange.attr( 'step', value );
+						this.$zoomRange.attr( 'step', value );
 						break;
 					case 'startTransform':
-						self._buildTransform();
+						this._buildTransform();
 						break;
 					case 'duration':
 					case 'easing':
-						self._buildTransition();
+						this._buildTransition();
 						/* falls through */
 					case 'transition':
-						self.transition();
+						this.transition();
 				}
-			});
+			}, this));
 		},
 
 		/**
