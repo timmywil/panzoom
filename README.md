@@ -33,7 +33,7 @@ As of v1.1.0, Panzoom no longer depends on [Modernizr](http://modernizr.com/) fo
 Before v1.1.0, this plugin depended on Modernizr for its touch support feature detect.
 
 ## Loading Panzoom
-Panzoom can obviously be included with your scripts at the end of the body,
+Panzoom can be included with your scripts at the end of the body,
 but Panzoom supports AMD for javascript module love.
 
 With script tags:
@@ -109,7 +109,7 @@ Panzoom.defaults = {
 
   // Indicate that the element should be contained within it's parent when panning
   // Note: this does not affect zooming outside of the parent
-  // Set this value to 'invert' to only allow panning outside of the parent element (basically the opposite of the normal use of contain)
+  // Set this value to 'invert' to only allow panning outside of the parent element (the opposite of the normal use of contain)
   // 'invert' is useful for a large panzoom element where you don't want to show anything behind it
   contain: false,
 
@@ -163,7 +163,7 @@ Any option can be changed. See the defaults above for a list.
 
 __Arguments__
 
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to setMatrix.
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to setMatrix.
   2. `options.silent` _{Boolean}_: Silence the reset event (as well as the change event as the same options are passed to setMatrix)
 
 ```js
@@ -181,7 +181,7 @@ Reset the transform matrix to its original value. All panning and zooming is res
 
 __Arguments__
 
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to zoom.
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to zoom.
 
 ```js
 $elem.panzoom("resetZoom");
@@ -198,7 +198,7 @@ Reset the scale to its original value (resets both scale values in the matrix to
 
 __Arguments__
 
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, simply pass that along to pan.
+  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to pan.
 
 ```js
 $elem.panzoom("resetPan");
@@ -311,7 +311,7 @@ $elem.panzoom("destroy");
 var panzoom = $elem.panzoom("instance");
 ```
 
-Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will just get that instance of Panzoom.
+Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will get that instance of Panzoom.
 
 Unbinds all events and removes all data, including the Panzoom instance on the element.
 
@@ -364,7 +364,7 @@ $elem.panzoom("transition");
 $elem.panzoom("transition", true);
 // Note: this is different than...
 $elem.panzoom("option", "transition", true);
-// ... which just sets the `transition` option, indicating whether transitioning is allowed at all.
+// ... which sets the `transition` option, indicating whether transitioning is allowed at all.
 // If the transition option is false, `$elem.panzoom("transition")` will only ever set transition to "none".
 ```
 
