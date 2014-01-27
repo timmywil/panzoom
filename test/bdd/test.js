@@ -11,7 +11,7 @@ describe('Panzoom', function() {
 	var $zoomOut = $('.zoom-out');
 	var $zoomRange = $('.zoom-range');
 	var $reset = $('.reset');
-	var rnoneMatrix = /^matrix\(1\,?\s*0\,?\s*0\,?\s*1\,?\s*0\,?\s*0\)/;
+	var rnoneMatrix = /^none|matrix\(1\,?\s*0\,?\s*0\,?\s*1\,?\s*0\,?\s*0\)$/;
 
 	/**
 	 * Simulates a start by triggering faux mousedown and touchstart events
@@ -450,7 +450,8 @@ describe('Panzoom', function() {
 	/* destroy
 	---------------------------------------------------------------------- */
 	it('should destroy itself', function() {
-		var options = $elem.panzoom('instance').options;
+		$elem.panzoom('reset', false);
+		var options = $elem.panzoom('option');
 		$elem.panzoom('destroy');
 		expect( $elem.panzoom('instance') ).to.be.undefined;
 		$elem.panzoom( options );
@@ -465,6 +466,27 @@ describe('Panzoom', function() {
 		expect( panzoom.getTransform() ).to.match( rnoneMatrix );
 		panzoom.setMatrix( _matrix );
 		expect( panzoom.getMatrix() ).to.eql( _matrix );
+	});
+	it('should respect the $set option when getting and setting', function() {
+		$elem.panzoom('reset', false);
+		var $set = $('<div/>');
+		$elem.panzoom('option', '$set', $set);
+		fauxMove( 1, 1 );
+		expect( $elem.panzoom('getMatrix').join('') ).to.equal('100111');
+		expect( $elem.css('transform') ).to.match( rnoneMatrix );
+		expect( $set.css('transform') ).to.not.match( rnoneMatrix );
+		$elem.panzoom('option', '$set', $elem);
+		$elem.panzoom('reset', false);
+	});
+	it('should set the transition on elements in $set', function() {
+		$elem.panzoom('reset', false);
+		var $set = $('<div/>');
+		$elem.panzoom('option', '$set', $set);
+		$elem.panzoom('zoom');
+		expect( $elem.css('transition') ).to.match(/none|^$/);
+		expect( $set.css('transition') ).to.not.match(/none|^$/);
+		$elem.panzoom('option', '$set', $elem);
+		$elem.panzoom('reset', false);
 	});
 
 	/* resetDimensions

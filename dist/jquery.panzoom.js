@@ -251,6 +251,7 @@
 		this.options = options = $.extend( {}, Panzoom.defaults, options );
 		this.elem = elem;
 		var $elem = this.$elem = $(elem);
+		this.$set = options.$set && options.$set.length ? options.$set : $elem;
 		this.$doc = $(elem.ownerDocument || document);
 		this.$parent = $elem.parent();
 
@@ -447,30 +448,40 @@
 		},
 
 		/**
-		 * Retrieving the transform is different for SVG (unless a style transform is already present)
-		 * @param {String} [transform] Pass in an transform value (like 'scale(1.1)') to have it formatted into matrix format for use by Panzoom
+		 * Sets a transform on the $set
+		 * @param {String} transform
+		 */
+		setTransform: function( transform ) {
+			var method = this.isSVG ? 'attr' : 'style';
+			this.$set.each(function() {
+				$[ method ]( this, 'transform', transform );
+			});
+		},
+
+		/**
+		 * Retrieving the transform is different for SVG
+		 *  (unless a style transform is already present)
+		 * Uses the $set collection for retrieving the transform
+		 * @param {String} [transform] Pass in an transform value (like 'scale(1.1)')
+		 *  to have it formatted into matrix format for use by Panzoom
 		 * @returns {String} Returns the current transform value of the element
 		 */
 		getTransform: function( transform ) {
-			var elem = this.elem;
-			var method = this.isSVG ? 'attr' : 'style';
+			var transformElem = this.$set[0];
 			if ( transform ) {
-				// Set the passed in value
-				$[ method ]( elem, 'transform', transform );
+				this.setTransform( transform );
 			} else {
 				// Use style rather than computed
 				// If currently transitioning, computed transform might be unchanged
 				// Retrieve with attr for SVG
-				transform = $[ method ]( elem, 'transform' );
+				transform = $[ this.isSVG ? 'attr' : 'style' ]( transformElem, 'transform' );
 			}
 
 			// Convert any transforms set by the user to matrix format
 			// by setting to computed
 			if ( transform !== 'none' && !rmatrix.test(transform) && !this.isSVG ) {
-				// Get computed
-				transform = $.css( elem, 'transform' );
-				// Set for next time
-				$.style( elem, 'transform', transform );
+				// Get computed and set for next time
+				this.setTransform( transform = $.css( transformElem, 'transform' ) );
 			}
 
 			return transform || 'none';
@@ -510,7 +521,6 @@
 			var dims, container, marginW, marginH, diffW, diffH, left, top;
 			var scale = +matrix[0];
 			var $parent = this.$parent;
-			var elem = this.elem;
 			var contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain;
 
 			// Apply containment
@@ -531,7 +541,7 @@
 				} else {
 					diffH = container.height > dims.height ? container.height - dims.height : 0;
 					// If the element is not naturally centered, assume full margin right
-					if ( $parent.css('textAlign') !== 'center' || !rinline.test($.css(elem, 'display')) ) {
+					if ( $parent.css('textAlign') !== 'center' || !rinline.test($.css(this.elem, 'display')) ) {
 						diffW = container.width > dims.width ? container.width - dims.width : 0;
 						marginW = marginH = 0;
 					} else {
@@ -555,7 +565,10 @@
 			if ( options.range ) {
 				this.$zoomRange.val( scale );
 			}
-			$[ this.isSVG ? 'attr' : 'style' ]( elem, 'transform', 'matrix(' + matrix.join(',') + ')' );
+
+			// Set the matrix on this.$set
+			this.setTransform( 'matrix(' + matrix.join(',') + ')' );
+
 			if ( !options.silent ) {
 				this._trigger( 'change', matrix );
 			}
@@ -576,10 +589,12 @@
 		 */
 		transition: function( off ) {
 			var transition = off || !this.options.transition ? 'none' : this._transition;
-			// Avoid reflows when zooming
-			if ( $.style( this.elem, 'transition') !== transition ) {
-				$.style( this.elem, 'transition', transition );
-			}
+			this.$set.each(function() {
+				// Avoid reflows when zooming
+				if ( $.style( this, 'transition') !== transition ) {
+					$.style( this, 'transition', transition );
+				}
+			});
 		},
 
 		/**
@@ -790,6 +805,11 @@
 						/* falls through */
 					case 'transition':
 						this.transition();
+						break;
+					case '$set':
+						if ( value instanceof $ && value.length ) {
+							this.$set = value;
+						}
 				}
 			}, this));
 		},

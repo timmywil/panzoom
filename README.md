@@ -6,7 +6,7 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (11.2kb/4.2kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (11.9kb/4.4kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 [Download v1.9.0](https://raw.github.com/timmywil/jquery.panzoom/1.9.0/dist/jquery.panzoom.min.js)  
 [Development version](https://raw.github.com/timmywil/jquery.panzoom/1.9.0/dist/jquery.panzoom.js)
@@ -116,6 +116,17 @@ Panzoom.defaults = {
   // Transform value to which to always reset (string)
   // Defaults to the original transform on the element when Panzoom is initialized
   startTransform: undefined,
+
+  // This optional jQuery collection can be set to specify all of the elements
+  // on which the transform should always be set.
+  // It should have at least one element.
+  // This is mainly used for delegating the pan and zoom transform settings
+  // to another element or multiple elements.
+  // The default is the Panzoom element wrapped in jQuery
+  // See the [demo](http://timmywil.github.io/jquery.panzoom/demo/#set) for an example.
+  // Note: only one Panzoom element will still handle events for a Panzoom instance.
+  // Use multiple Panzoom instances for that use case.
+  $set: $elem,
 
   // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoomIn"); });` )
   $zoomIn: $(),
@@ -322,6 +333,12 @@ These methods are _basically_ private, but could be useful under certain circums
 ### `getTransform()`
 
 Returns the string transform value used by Panzoom for the element.
+
+__Note__: The transform attribute is used for SVG. Otherwise, the appropriately prefixed transform style property is used.
+
+### `setTransform()`
+
+Set a string transform value on the Panzoom element (or the $set if using the $set option).
 
 __Note__: The transform attribute is used for SVG. Otherwise, the appropriately prefixed transform style property is used.
 
