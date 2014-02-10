@@ -530,31 +530,37 @@ describe('Panzoom', function() {
 		$elem.panzoom( 'option', 'startTransform', undefined );
 		panzoom.reset();
 	});
-	it('should save the original transform in matrix format for resetting', function() {
-		var transform = 'scale(1.1)';
-		$elem.panzoom( 'option', 'startTransform', transform );
-		expect( $elem.panzoom('instance')._origTransform ).to.not.equal( transform );
-		$elem.panzoom( 'option', 'startTransform', undefined );
-	});
 	it('should set the startTransform when initialized', function() {
-		var panzoom = $elem.panzoom('instance');
+		var panzoom = $elem.panzoom().panzoom('instance');
 		$elem.panzoom('destroy');
 		$elem.panzoom({
 			startTransform: 'scale(1.1)',
 			transition: false
 		});
-		expect( $elem.panzoom('getTransform') ).to.contain('1.1');
+		var transform = $elem.panzoom('getTransform');
+		expect( transform ).to.contain('1.1');
 		// Restore other instance
 		$elem.css( 'transform', '' );
 		$elem.panzoom('destroy');
 		$elem.panzoom( panzoom.option() );
 	});
+	it('should save the original transform in matrix format for resetting', function() {
+		var transform = 'scale(1.1)';
+		var instance = $elem.panzoom().panzoom('instance');
+		var startTransform = $elem.panzoom('option', 'startTransform');
+		$elem.panzoom( 'option', 'startTransform', transform );
+		expect( instance._origTransform ).to.not.equal( transform );
+		$elem.css('transform', '');
+		instance._origTransform = startTransform || 'none';
+		expect( $elem.css('transform') ).to.not.contain('1.1');
+	});
+
 
 	/* resetZoom
 	---------------------------------------------------------------------- */
 	it('should reset only zoom on resetZoom', function() {
 		var panzoom = $elem.panzoom('instance');
-		panzoom.setMatrix([ 2, 0, 0, 2, 1, 1 ], false);
+		panzoom.setMatrix([ 2, 0, 0, 2, 1, 1 ]);
 		$elem.panzoom('resetZoom', false);
 		var matrix = panzoom.getMatrix();
 		expect( matrix[0] ).to.equal( '1' );

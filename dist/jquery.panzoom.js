@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.10.0
- * Updated: Mon Jan 27 2014
+ * @license jquery.panzoom.js v1.10.1
+ * Updated: Mon Feb 10 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2013 timmy willison
  * Released under the MIT license
@@ -453,9 +453,11 @@
 		 */
 		setTransform: function( transform ) {
 			var method = this.isSVG ? 'attr' : 'style';
-			this.$set.each(function() {
-				$[ method ]( this, 'transform', transform );
-			});
+			var $set = this.$set;
+			var i = $set.length;
+			while( i-- ) {
+				$[ method ]( $set[i], 'transform', transform );
+			}
 		},
 
 		/**
@@ -589,12 +591,14 @@
 		 */
 		transition: function( off ) {
 			var transition = off || !this.options.transition ? 'none' : this._transition;
-			this.$set.each(function() {
+			var $set = this.$set;
+			var i = $set.length;
+			while( i-- ) {
 				// Avoid reflows when zooming
-				if ( $.style( this, 'transition') !== transition ) {
-					$.style( this, 'transition', transition );
+				if ( $.style( $set[i], 'transition') !== transition ) {
+					$.style( $set[i], 'transition', transition );
 				}
-			});
+			}
 		},
 
 		/**

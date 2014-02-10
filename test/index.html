@@ -7,6 +7,7 @@
     <style type="text/css">
       .buttons { text-align: center; margin-top: 50px; }
       .visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+      #panzoom { text-align: center; margin-left: -1px; margin-top: -1px; }
     </style>
     <script src="libs/mocha/mocha.js"></script>
     <script>mocha.setup("bdd")</script>
@@ -18,7 +19,7 @@
   <body>
     <div id="mocha"></div>
     <div id="pan-parent">
-      <div id="panzoom" style="text-align: center; margin-left: -1px; margin-top: -1px">
+      <div id="panzoom">
         <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg" width="900" height="900">
       </div>
     </div>
@@ -36,7 +37,7 @@
 
     <script src="bdd/test.js"></script>
     <script>onload = function() { mocha.run(); }</script>
-    <!-- Load livereload if not phantom -->
+    <!-- Load livereload if not phantom or github -->
     <script>
       if ( !window.phantom && !/github/.test(window.location.hostname) ) document.write('<scr' + 'ipt src="http://' + location.hostname + ':35711/livereload.js"></scr' + 'ipt>');
     </script>
