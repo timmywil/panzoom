@@ -455,8 +455,8 @@
 			var method = this.isSVG ? 'attr' : 'style';
 			var $set = this.$set;
 			var i = $set.length;
-			while( i ) {
-				$[ method ]( $set[--i], 'transform', transform );
+			while( i-- ) {
+				$[ method ]( $set[i], 'transform', transform );
 			}
 		},
 
@@ -593,9 +593,9 @@
 			var transition = off || !this.options.transition ? 'none' : this._transition;
 			var $set = this.$set;
 			var i = $set.length;
-			while( i ) {
+			while( i-- ) {
 				// Avoid reflows when zooming
-				if ( $.style( $set[--i], 'transition') !== transition ) {
+				if ( $.style( $set[i], 'transition') !== transition ) {
 					$.style( $set[i], 'transition', transition );
 				}
 			}
