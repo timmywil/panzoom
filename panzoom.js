@@ -21,42 +21,6 @@
 }( this, function( $ ) {
 	'use strict';
 
-	// Lift touch properties using fixHooks
-	var touchHook = {
-		props: [ 'touches', 'pageX', 'pageY', 'clientX', 'clientY' ],
-		/**
-		 * Support: Android
-		 * Android sets pageX/Y to 0 for any touch event
-		 * Attach first touch's pageX/pageY if not set correctly
-		 */
-		filter: function( event, originalEvent ) {
-			var touch;
-			if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
-				event.pageX = touch.pageX;
-				event.pageY = touch.pageY;
-				event.clientX = touch.clientX;
-				event.clientY = touch.clientY;
-			}
-			return event;
-		}
-	};
-	$.each([ 'touchstart', 'touchmove', 'touchend' ], function( i, name ) {
-		$.event.fixHooks[ name ] = touchHook;
-	});
-
-	// Support pointer events if available
-	var pointerEvents = !!window.PointerEvent;
-
-	// Lift pointer properties
-	if ( pointerEvents ) {
-		var pointerHook = {
-			props: [ 'pageX', 'pageY', 'clientX', 'clientY' ]
-		};
-		$.each([ 'pointerdown', 'pointermove', 'pointerup' ], function( i, name ) {
-			$.event.fixHooks[ name ] = pointerHook;
-		});
-	}
-
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
 
@@ -294,6 +258,56 @@
 
 	// Attach regex for possible use (immutable)
 	Panzoom.rmatrix = rmatrix;
+
+	// Container for event names
+	Panzoom.events = {};
+
+	// Support pointer events if available
+	var pointerEvents = !!window.PointerEvent;
+
+	// Add events used to the Panzoom object for convenience
+	if ( pointerEvents ) {
+		// Lift pointer properties
+		var pointerHook = {
+			props: [ 'pageX', 'pageY', 'clientX', 'clientY' ]
+		};
+		$.each([ 'pointerdown', 'pointermove', 'pointerup' ], function( i, name ) {
+			// Add event name to events property
+			Panzoom.events[ name.replace('pointer', '') ] = name;
+			// Add fixHook
+			$.event.fixHooks[ name ] = pointerHook;
+		});
+	} else {
+		// Lift touch properties using fixHooks
+		var touchHook = {
+			props: [ 'touches', 'pageX', 'pageY', 'clientX', 'clientY' ],
+			/**
+			 * Support: Android
+			 * Android sets pageX/Y to 0 for any touch event
+			 * Attach first touch's pageX/pageY if not set correctly
+			 */
+			filter: function( event, originalEvent ) {
+				var touch;
+				if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
+					event.pageX = touch.pageX;
+					event.pageY = touch.pageY;
+					event.clientX = touch.clientX;
+					event.clientY = touch.clientY;
+				}
+				return event;
+			}
+		};
+		$.each({
+			mousedown: 'touchstart',
+			mousemove: 'touchmove',
+			mouseup: 'touchend'
+		}, function( mouse, touch ) {
+			// Add event names to events property
+			Panzoom.events[ mouse.replace('mouse', '') ] = mouse + ' ' + touch;
+			// Add fixHook
+			$.event.fixHooks[ touch ] = touchHook;
+		});
+	}
 
 	Panzoom.defaults = {
 		// Should always be non-empty
@@ -1137,6 +1151,9 @@
 				});
 		}
 	};
+
+	// Add Panzoom as a static property
+	$.Panzoom = Panzoom;
 
 	/**
 	 * Extend jQuery
