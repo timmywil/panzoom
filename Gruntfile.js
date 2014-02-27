@@ -10,13 +10,16 @@ module.exports = function( grunt ) {
 	require('load-grunt-tasks')( grunt );
 
 	var gzip = require('gzip-js');
+	var fs = require('graceful-fs');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		bowercopy: {
+			options: {
+				clean: true
+			},
 			dev: {
 				options: {
-					clean: true,
 					destPrefix: 'test/libs'
 				},
 				files: {
@@ -25,6 +28,10 @@ module.exports = function( grunt ) {
 					'jquery.mousewheel.js': 'jquery-mousewheel/jquery.mousewheel.js',
 					'chai.js': 'chai/chai.js'
 				}
+			},
+			pointertouch: {
+				src: 'jquery.event.pointertouch/dist/jquery.event.pointertouch.js',
+				dest: 'pointertouch.js'
 			}
 		},
 		build: {
@@ -142,6 +149,16 @@ module.exports = function( grunt ) {
 					// Replace version tag
 					.replace( /@VERSION/g, version )
 					.replace( '@DATE', (new Date).toDateString() );
+			}
+
+			if ( /panzoom/.test(src) ) {
+				var fixhook = fs.readFileSync(__dirname + '/pointertouch.js', 'utf8')
+					.replace(/\/\*\*[\w\W]*'use strict';\s*/, '')
+					.replace(/\s*return \w+;\s*\}\)\);\s*$/, '');
+				console.log(fixhook);
+				compiled = compiled
+					// Insert pointer/touch fixhook
+					.replace( /\/\/ INSERT FIXHOOK/, fixhook );
 			}
 
 			// Write source to file

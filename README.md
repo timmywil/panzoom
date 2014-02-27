@@ -6,7 +6,7 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (12.12kb/4.56kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (12.09kb/4.55kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 [Download v1.11.0](https://raw.github.com/timmywil/jquery.panzoom/1.11.0/dist/jquery.panzoom.min.js)  
 [Development version](https://raw.github.com/timmywil/jquery.panzoom/1.11.0/dist/jquery.panzoom.js)
@@ -27,11 +27,6 @@ iOS and Android are supported.
 
 Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
 
-## Dependencies
-
-As of v1.1.0, Panzoom no longer depends on [Modernizr](http://modernizr.com/) for anything. Just jQuery.
-Before v1.1.0, this plugin depended on Modernizr for its touch support feature detect.
-
 ## Loading Panzoom
 Panzoom can be included with your scripts at the end of the body,
 but Panzoom supports AMD for javascript module love.
@@ -39,7 +34,7 @@ but Panzoom supports AMD for javascript module love.
 With script tags:
 
 ```html
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="/js/plugins/jquery.panzoom.js"></script>
 ```
 
