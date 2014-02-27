@@ -263,8 +263,7 @@
 	Panzoom.rmatrix = rmatrix;
 
 	// Container for event names
-	/* global events: false */
-	Panzoom.events = events;
+	Panzoom.events = $.pointertouch;
 
 	Panzoom.defaults = {
 		// Should always be non-empty

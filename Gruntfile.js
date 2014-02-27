@@ -155,7 +155,6 @@ module.exports = function( grunt ) {
 				var fixhook = fs.readFileSync(__dirname + '/pointertouch.js', 'utf8')
 					.replace(/\/\*\*[\w\W]*'use strict';\s*/, '')
 					.replace(/\s*return \w+;\s*\}\)\);\s*$/, '');
-				console.log(fixhook);
 				compiled = compiled
 					// Insert pointer/touch fixhook
 					.replace( /\/\/ INSERT FIXHOOK/, fixhook );

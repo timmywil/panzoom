@@ -66,6 +66,8 @@
 		$.event.fixHooks[ touch ] = hook;
 	});
 
+	$.pointertouch = events;
+
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
 	var pointerEvents = !!window.PointerEvent;
@@ -306,8 +308,7 @@
 	Panzoom.rmatrix = rmatrix;
 
 	// Container for event names
-	/* global events: false */
-	Panzoom.events = events;
+	Panzoom.events = $.pointertouch;
 
 	Panzoom.defaults = {
 		// Should always be non-empty

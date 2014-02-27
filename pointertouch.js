@@ -1,7 +1,7 @@
 /**
  * jquery.event.pointertouch
  * Lift touch and pointer event properties to the jQuery event object
- * @version v0.0.5
+ * @version v0.0.6
  * @license MIT
  */
 (function( global, factory ) {
@@ -62,6 +62,8 @@
 		// Add fixHook
 		$.event.fixHooks[ touch ] = hook;
 	});
+
+	$.pointertouch = events;
 
 	return events;
 }));
