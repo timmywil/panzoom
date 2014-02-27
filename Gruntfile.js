@@ -31,13 +31,13 @@ module.exports = function( grunt ) {
 			},
 			pointertouch: {
 				src: 'jquery.event.pointertouch/dist/jquery.event.pointertouch.js',
-				dest: 'pointertouch.js'
+				dest: 'src/pointertouch.js'
 			}
 		},
 		build: {
 			dist: {
 				dest: 'dist/jquery.panzoom.js',
-				src: 'panzoom.js'
+				src: 'src/panzoom.js'
 			},
 			manifest: {
 				src: 'panzoom.jquery.json'
@@ -77,7 +77,7 @@ module.exports = function( grunt ) {
 		jshint: {
 			all: [
 				'Gruntfile.js',
-				'panzoom.js',
+				'src/panzoom.js',
 				'test/bdd/*.js'
 			],
 			options: {
@@ -152,7 +152,7 @@ module.exports = function( grunt ) {
 			}
 
 			if ( /panzoom/.test(src) ) {
-				var fixhook = fs.readFileSync(__dirname + '/pointertouch.js', 'utf8')
+				var fixhook = fs.readFileSync(__dirname + '/src/pointertouch.js', 'utf8')
 					.replace(/\/\*\*[\w\W]*'use strict';\s*/, '')
 					.replace(/\s*return \w+;\s*\}\)\);\s*$/, '');
 				compiled = compiled

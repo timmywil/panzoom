@@ -11,8 +11,7 @@
     "test",
     "*.json",
     "*.html",
-    "Gruntfile.js",
-    "panzoom.js"
+    "Gruntfile.js"
   ],
   "devDependencies": {
     "jquery-mousewheel": "~3.1.9",
