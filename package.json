@@ -1,6 +1,6 @@
 {
   "name": "jquery.panzoom",
-  "version": "1.11.3",
+  "version": "1.12.0",
   "main": "dist/jquery.panzoom.js",
   "repository": {
     "type": "git",
