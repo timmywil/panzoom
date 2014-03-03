@@ -597,7 +597,7 @@
 			matrix[5] = y;
 			this.setMatrix( matrix, options );
 			if ( !options.silent ) {
-				this._trigger( 'pan', x, y );
+				this._trigger( 'pan', matrix[4], matrix[5] );
 			}
 		},
 
@@ -681,7 +681,7 @@
 
 			// Trigger zoom event
 			if ( !options.silent ) {
-				this._trigger( 'zoom', scale, options );
+				this._trigger( 'zoom', matrix[0], options );
 			}
 		},
 

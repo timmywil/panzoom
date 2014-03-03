@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.11.2
- * Updated: Thu Feb 27 2014
+ * Updated: Mon Mar 03 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -642,7 +642,7 @@
 			matrix[5] = y;
 			this.setMatrix( matrix, options );
 			if ( !options.silent ) {
-				this._trigger( 'pan', x, y );
+				this._trigger( 'pan', matrix[4], matrix[5] );
 			}
 		},
 
@@ -726,7 +726,7 @@
 
 			// Trigger zoom event
 			if ( !options.silent ) {
-				this._trigger( 'zoom', scale, options );
+				this._trigger( 'zoom', matrix[0], options );
 			}
 		},
 
