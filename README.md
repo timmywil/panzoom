@@ -6,10 +6,10 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (12.00kb/4.50kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (12.09kb/4.55kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download v1.10.1](https://raw.github.com/timmywil/jquery.panzoom/1.10.1/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/1.10.1/dist/jquery.panzoom.js)
+[Download v1.11.3](https://raw.github.com/timmywil/jquery.panzoom/1.11.3/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/1.11.3/dist/jquery.panzoom.js)
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
@@ -27,11 +27,6 @@ iOS and Android are supported.
 
 Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
 
-## Dependencies
-
-As of v1.1.0, Panzoom no longer depends on [Modernizr](http://modernizr.com/) for anything. Just jQuery.
-Before v1.1.0, this plugin depended on Modernizr for its touch support feature detect.
-
 ## Loading Panzoom
 Panzoom can be included with your scripts at the end of the body,
 but Panzoom supports AMD for javascript module love.
@@ -39,7 +34,7 @@ but Panzoom supports AMD for javascript module love.
 With script tags:
 
 ```html
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="/js/plugins/jquery.panzoom.js"></script>
 ```
 
@@ -387,6 +382,29 @@ $elem.panzoom("option", "transition", true);
 
 Applies the transition to the element. If `off` is true, it removes the transition.
 
+## Static properties
+
+Static properties are there for convenience, but are subject to change in future versions.
+
+### `Panzoom.events`
+Type: *Object*
+
+This is a convenience object for binding your own pointer/touch/mouse events.
+
+**Properties:**
+```js
+// May equal "mousedown touchstart" or "pointerdown" depending on PointerEvent support
+Panzoom.events.down;
+// "mouseup touchend" or "pointerup"
+Panzoom.events.up;
+// "mousemove touchmove" or "pointermove"
+Panzoom.events.move;
+```
+
+### `Panzoom.rmatrix`
+Type: *RegExp*
+
+This is a copy of the regex used by Panzoom to parse tranformation matrices.
 
 ## Events
 

@@ -2,7 +2,7 @@
  * @license jquery.panzoom.js v@VERSION
  * Updated: @DATE
  * Add pan and zoom functionality to any element
- * Copyright (c) 2013 timmy willison
+ * Copyright (c) 2014 timmy willison
  * Released under the MIT license
  * https://github.com/timmywil/jquery.panzoom/blob/master/MIT-License.txt
  */
@@ -21,44 +21,11 @@
 }( this, function( $ ) {
 	'use strict';
 
-	// Lift touch properties using fixHooks
-	var touchHook = {
-		props: [ 'touches', 'pageX', 'pageY', 'clientX', 'clientY' ],
-		/**
-		 * Support: Android
-		 * Android sets pageX/Y to 0 for any touch event
-		 * Attach first touch's pageX/pageY if not set correctly
-		 */
-		filter: function( event, originalEvent ) {
-			var touch;
-			if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
-				event.pageX = touch.pageX;
-				event.pageY = touch.pageY;
-				event.clientX = touch.clientX;
-				event.clientY = touch.clientY;
-			}
-			return event;
-		}
-	};
-	$.each([ 'touchstart', 'touchmove', 'touchend' ], function( i, name ) {
-		$.event.fixHooks[ name ] = touchHook;
-	});
-
-	// Support pointer events if available
-	var pointerEvents = !!window.PointerEvent;
-
-	// Lift pointer properties
-	if ( pointerEvents ) {
-		var pointerHook = {
-			props: [ 'pageX', 'pageY', 'clientX', 'clientY' ]
-		};
-		$.each([ 'pointerdown', 'pointermove', 'pointerup' ], function( i, name ) {
-			$.event.fixHooks[ name ] = pointerHook;
-		});
-	}
+	// INSERT FIXHOOK
 
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
+	var pointerEvents = !!window.PointerEvent;
 
 	// Regex
 	var rupper = /([A-Z])/g;
@@ -294,6 +261,9 @@
 
 	// Attach regex for possible use (immutable)
 	Panzoom.rmatrix = rmatrix;
+
+	// Container for event names
+	Panzoom.events = $.pointertouch;
 
 	Panzoom.defaults = {
 		// Should always be non-empty
@@ -627,7 +597,7 @@
 			matrix[5] = y;
 			this.setMatrix( matrix, options );
 			if ( !options.silent ) {
-				this._trigger( 'pan', x, y );
+				this._trigger( 'pan', matrix[4], matrix[5] );
 			}
 		},
 
@@ -711,7 +681,7 @@
 
 			// Trigger zoom event
 			if ( !options.silent ) {
-				this._trigger( 'zoom', scale, options );
+				this._trigger( 'zoom', matrix[0], options );
 			}
 		},
 
@@ -1137,6 +1107,9 @@
 				});
 		}
 	};
+
+	// Add Panzoom as a static property
+	$.Panzoom = Panzoom;
 
 	/**
 	 * Extend jQuery

@@ -1,8 +1,8 @@
 /**
- * @license jquery.panzoom.js v1.10.1
- * Updated: Mon Feb 10 2014
+ * @license jquery.panzoom.js v1.11.3
+ * Updated: Mon Mar 03 2014
  * Add pan and zoom functionality to any element
- * Copyright (c) 2013 timmy willison
+ * Copyright (c) 2014 timmy willison
  * Released under the MIT license
  * https://github.com/timmywil/jquery.panzoom/blob/master/MIT-License.txt
  */
@@ -21,44 +21,56 @@
 }( this, function( $ ) {
 	'use strict';
 
-	// Lift touch properties using fixHooks
-	var touchHook = {
-		props: [ 'touches', 'pageX', 'pageY', 'clientX', 'clientY' ],
-		/**
-		 * Support: Android
-		 * Android sets pageX/Y to 0 for any touch event
-		 * Attach first touch's pageX/pageY if not set correctly
-		 */
-		filter: function( event, originalEvent ) {
-			var touch;
-			if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
-				event.pageX = touch.pageX;
-				event.pageY = touch.pageY;
-				event.clientX = touch.clientX;
-				event.clientY = touch.clientY;
-			}
-			return event;
-		}
-	};
-	$.each([ 'touchstart', 'touchmove', 'touchend' ], function( i, name ) {
-		$.event.fixHooks[ name ] = touchHook;
-	});
+	// Common properties to lift for touch or pointer events
+	var props = [ 'pageX', 'pageY', 'clientX', 'clientY' ];
+	var hook = { props: props };
+	var events = {};
 
-	// Support pointer events if available
-	var pointerEvents = !!window.PointerEvent;
-
-	// Lift pointer properties
-	if ( pointerEvents ) {
-		var pointerHook = {
-			props: [ 'pageX', 'pageY', 'clientX', 'clientY' ]
-		};
+	// Support pointer events in IE11+ if available
+	if ( window.PointerEvent ) {
 		$.each([ 'pointerdown', 'pointermove', 'pointerup' ], function( i, name ) {
-			$.event.fixHooks[ name ] = pointerHook;
+			// Add event name to events property
+			events[ name.replace('pointer', '') ] = name;
+			// Add fixHook
+			$.event.fixHooks[ name ] = hook;
 		});
 	}
 
+	// Add touches property for the touch hook
+	props.push('touches');
+
+	/**
+	 * Support: Android
+	 * Android sets pageX/Y to 0 for any touch event
+	 * Attach first touch's pageX/pageY and clientX/clientY if not set correctly
+	 */
+	hook.filter = function( event, originalEvent ) {
+		var touch;
+		if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
+			event.pageX = touch.pageX;
+			event.pageY = touch.pageY;
+			event.clientX = touch.clientX;
+			event.clientY = touch.clientY;
+		}
+		return event;
+	};
+
+	$.each({
+		mousedown: 'touchstart',
+		mousemove: 'touchmove',
+		mouseup: 'touchend'
+	}, function( mouse, touch ) {
+		// Add event names to events property
+		events[ mouse.replace('mouse', '') ] = mouse + ' ' + touch;
+		// Add fixHook
+		$.event.fixHooks[ touch ] = hook;
+	});
+
+	$.pointertouch = events;
+
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
+	var pointerEvents = !!window.PointerEvent;
 
 	// Regex
 	var rupper = /([A-Z])/g;
@@ -294,6 +306,9 @@
 
 	// Attach regex for possible use (immutable)
 	Panzoom.rmatrix = rmatrix;
+
+	// Container for event names
+	Panzoom.events = $.pointertouch;
 
 	Panzoom.defaults = {
 		// Should always be non-empty
@@ -627,7 +642,7 @@
 			matrix[5] = y;
 			this.setMatrix( matrix, options );
 			if ( !options.silent ) {
-				this._trigger( 'pan', x, y );
+				this._trigger( 'pan', matrix[4], matrix[5] );
 			}
 		},
 
@@ -711,7 +726,7 @@
 
 			// Trigger zoom event
 			if ( !options.silent ) {
-				this._trigger( 'zoom', scale, options );
+				this._trigger( 'zoom', matrix[0], options );
 			}
 		},
 
@@ -1137,6 +1152,9 @@
 				});
 		}
 	};
+
+	// Add Panzoom as a static property
+	$.Panzoom = Panzoom;
 
 	/**
 	 * Extend jQuery

@@ -1,10 +1,10 @@
 {
   "name": "jquery.panzoom",
-  "version": "1.10.1",
+  "version": "1.11.3",
   "main": "dist/jquery.panzoom.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/timmywil/jquery.panzoom"
+    "url": "https://github.com/timmywil/jquery.panzoom.git"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -17,7 +17,8 @@
     "grunt-mocha": "~0.4.10",
     "gzip-js": "~0.3.2",
     "load-grunt-tasks": "~0.2.1",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "graceful-fs": "~2.0.2"
   },
   "scripts": {
     "test": "grunt test"
