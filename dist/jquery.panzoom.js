@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.12.0
- * Updated: Mon Mar 03 2014
+ * Updated: Tue Mar 04 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -22,11 +22,9 @@
 	'use strict';
 
 	// Common properties to lift for touch or pointer events
-	var hook = $.event.mouseHooks;
-	var props = hook.props;
-	var events = {};
 	var list = 'over out down up move enter leave cancel'.split(' ');
-	var touchReplace = { down: 'start', up: 'end' };
+	var hook = $.extend({}, $.event.mouseHooks);
+	var events = {};
 
 	// Support pointer events in IE11+ if available
 	if ( window.PointerEvent ) {
@@ -37,8 +35,9 @@
 			] = hook;
 		});
 	} else {
-		// Add touches property for the touch hook
-		props.push('touches', 'changedTouches', 'targetTouches', 'altKey', 'ctrlKey', 'metaKey', 'shiftKey');
+		var mouseProps = hook.props;
+		// Add touch properties for the touch hook
+		hook.props = mouseProps.concat(['touches', 'changedTouches', 'targetTouches', 'altKey', 'ctrlKey', 'metaKey', 'shiftKey']);
 
 		/**
 		 * Support: Android
@@ -47,22 +46,29 @@
 		 */
 		hook.filter = function( event, originalEvent ) {
 			var touch;
+			var i = mouseProps.length;
 			if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
-				event.pageX = touch.pageX;
-				event.pageY = touch.pageY;
-				event.clientX = touch.clientX;
-				event.clientY = touch.clientY;
+				// Copy over all mouse properties
+				while(i--) {
+					event[mouseProps[i]] = touch[mouseProps[i]];
+				}
 			}
 			return event;
 		};
 
 		// Take off 'over' and 'out' when attaching touch hooks
-		$.each(list.slice(2), function( i, name ) {
-			var touch = 'touch' + (touchReplace[name] || name);
-			// Add fixHook
-			$.event.fixHooks[ touch ] = hook;
-			// Add event names to events property
-			events[ name ] = touch + ' mouse' + name;
+		$.each(list, function( i, name ) {
+			// No equivalent touch events for over and out
+			if (i < 2) {
+				events[ name ] = 'mouse' + name;
+			} else {
+				var touch = 'touch' +
+					(name === 'down' ? 'start' : name === 'up' ? 'end' : name);
+				// Add fixHook
+				$.event.fixHooks[ touch ] = hook;
+				// Add event names to events property
+				events[ name ] = touch + ' mouse' + name;
+			}
 		});
 	}
 
