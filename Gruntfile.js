@@ -157,7 +157,10 @@ module.exports = function( grunt ) {
 					.replace(/\s*return \w+;\s*\}\)\);\s*$/, '');
 				compiled = compiled
 					// Insert pointer/touch fixhook
-					.replace( /\/\/ INSERT FIXHOOK/, fixhook );
+					.replace( /\/\/ INSERT FIXHOOK/, fixhook )
+					// Remove pointerhook dependency
+					.replace(', \'./pointertouch\'', '')
+					.replace(', require(\'./pointertouch\')', '');
 			}
 
 			// Write source to file

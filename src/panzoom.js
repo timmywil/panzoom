@@ -10,10 +10,10 @@
 (function( global, factory ) {
 	// AMD
 	if ( typeof define === 'function' && define.amd ) {
-		define( [ 'jquery' ], factory );
+		define( [ 'jquery', './pointertouch' ], factory );
 	// CommonJS/Browserify
 	} else if ( typeof exports === 'object' ) {
-		factory( require('jquery') );
+		factory( require('jquery'), require('./pointertouch') );
 	// Global
 	} else {
 		factory( global.jQuery );
