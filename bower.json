@@ -1,6 +1,6 @@
 {
   "name": "jquery.panzoom",
-  "version": "1.11.3",
+  "version": "1.12.3",
   "main": "dist/jquery.panzoom.js",
   "ignore": [
     "**/.*",
@@ -14,9 +14,9 @@
     "Gruntfile.js"
   ],
   "devDependencies": {
+    "chai": "~1.9.0",
     "jquery-mousewheel": "~3.1.9",
-    "mocha": "~1.17.1",
-    "chai": "~1.8.1",
-    "jquery.event.pointertouch": "~0.0.5"
+    "jquery.event.pointertouch": "~0.1.0",
+    "mocha": "~1.17.1"
   }
 }

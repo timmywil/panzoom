@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.11.3
- * Updated: Mon Mar 03 2014
+ * @license jquery.panzoom.js v1.12.3
+ * Updated: Wed Mar 12 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -22,49 +22,55 @@
 	'use strict';
 
 	// Common properties to lift for touch or pointer events
-	var props = [ 'pageX', 'pageY', 'clientX', 'clientY' ];
-	var hook = { props: props };
+	var list = 'over out down up move enter leave cancel'.split(' ');
+	var hook = $.extend({}, $.event.mouseHooks);
 	var events = {};
 
 	// Support pointer events in IE11+ if available
 	if ( window.PointerEvent ) {
-		$.each([ 'pointerdown', 'pointermove', 'pointerup' ], function( i, name ) {
-			// Add event name to events property
-			events[ name.replace('pointer', '') ] = name;
-			// Add fixHook
-			$.event.fixHooks[ name ] = hook;
+		$.each(list, function( i, name ) {
+			// Add event name to events property and add fixHook
+			$.event.fixHooks[
+				(events[name] = 'pointer' + name)
+			] = hook;
+		});
+	} else {
+		var mouseProps = hook.props;
+		// Add touch properties for the touch hook
+		hook.props = mouseProps.concat(['touches', 'changedTouches', 'targetTouches', 'altKey', 'ctrlKey', 'metaKey', 'shiftKey']);
+
+		/**
+		 * Support: Android
+		 * Android sets pageX/Y to 0 for any touch event
+		 * Attach first touch's pageX/pageY and clientX/clientY if not set correctly
+		 */
+		hook.filter = function( event, originalEvent ) {
+			var touch;
+			var i = mouseProps.length;
+			if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
+				// Copy over all mouse properties
+				while(i--) {
+					event[mouseProps[i]] = touch[mouseProps[i]];
+				}
+			}
+			return event;
+		};
+
+		// Take off 'over' and 'out' when attaching touch hooks
+		$.each(list, function( i, name ) {
+			// No equivalent touch events for over and out
+			if (i < 2) {
+				events[ name ] = 'mouse' + name;
+			} else {
+				var touch = 'touch' +
+					(name === 'down' ? 'start' : name === 'up' ? 'end' : name);
+				// Add fixHook
+				$.event.fixHooks[ touch ] = hook;
+				// Add event names to events property
+				events[ name ] = touch + ' mouse' + name;
+			}
 		});
 	}
-
-	// Add touches property for the touch hook
-	props.push('touches');
-
-	/**
-	 * Support: Android
-	 * Android sets pageX/Y to 0 for any touch event
-	 * Attach first touch's pageX/pageY and clientX/clientY if not set correctly
-	 */
-	hook.filter = function( event, originalEvent ) {
-		var touch;
-		if ( !originalEvent.pageX && originalEvent.touches && (touch = originalEvent.touches[0]) ) {
-			event.pageX = touch.pageX;
-			event.pageY = touch.pageY;
-			event.clientX = touch.clientX;
-			event.clientY = touch.clientY;
-		}
-		return event;
-	};
-
-	$.each({
-		mousedown: 'touchstart',
-		mousemove: 'touchmove',
-		mouseup: 'touchend'
-	}, function( mouse, touch ) {
-		// Add event names to events property
-		events[ mouse.replace('mouse', '') ] = mouse + ' ' + touch;
-		// Add fixHook
-		$.event.fixHooks[ touch ] = hook;
-	});
 
 	$.pointertouch = events;
 
@@ -546,13 +552,13 @@
 				container = this.container;
 				marginW = ((dims.width * scale) - container.width) / 2;
 				marginH = ((dims.height * scale) - container.height) / 2;
+				left = dims.left + dims.margin.left;
+				top = dims.top + dims.margin.top;
 				if ( contain === 'invert' ) {
 					diffW = dims.width > container.width ? dims.width - container.width : 0;
 					diffH = dims.height > container.height ? dims.height - container.height : 0;
 					marginW += (container.width - dims.width) / 2;
 					marginH += (container.height - dims.height) / 2;
-					left = dims.left + dims.margin.left;
-					top = dims.top + dims.margin.top;
 					matrix[4] = Math.max( Math.min( matrix[4], marginW - left ), -marginW - left - diffW );
 					matrix[5] = Math.max( Math.min( matrix[5], marginH - top ), -marginH - top - diffH + dims.heightBorder );
 				} else {
@@ -565,12 +571,12 @@
 						diffW = 0;
 					}
 					matrix[4] = Math.min(
-						Math.max( matrix[4], marginW - dims.left ),
-						-marginW - dims.left + diffW
+						Math.max( matrix[4], marginW - left ),
+						-marginW - left + diffW
 					);
 					matrix[5] = Math.min(
-						Math.max( matrix[5], marginH - dims.top ),
-						-marginH - dims.top + diffH
+						Math.max( matrix[5], marginH - top ),
+						-marginH - top + diffH
 					);
 				}
 			}

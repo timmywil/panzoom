@@ -10,10 +10,10 @@
 (function( global, factory ) {
 	// AMD
 	if ( typeof define === 'function' && define.amd ) {
-		define( [ 'jquery' ], factory );
+		define( [ 'jquery', './pointertouch' ], factory );
 	// CommonJS/Browserify
 	} else if ( typeof exports === 'object' ) {
-		factory( require('jquery') );
+		factory( require('jquery'), require('./pointertouch') );
 	// Global
 	} else {
 		factory( global.jQuery );
@@ -501,13 +501,13 @@
 				container = this.container;
 				marginW = ((dims.width * scale) - container.width) / 2;
 				marginH = ((dims.height * scale) - container.height) / 2;
+				left = dims.left + dims.margin.left;
+				top = dims.top + dims.margin.top;
 				if ( contain === 'invert' ) {
 					diffW = dims.width > container.width ? dims.width - container.width : 0;
 					diffH = dims.height > container.height ? dims.height - container.height : 0;
 					marginW += (container.width - dims.width) / 2;
 					marginH += (container.height - dims.height) / 2;
-					left = dims.left + dims.margin.left;
-					top = dims.top + dims.margin.top;
 					matrix[4] = Math.max( Math.min( matrix[4], marginW - left ), -marginW - left - diffW );
 					matrix[5] = Math.max( Math.min( matrix[5], marginH - top ), -marginH - top - diffH + dims.heightBorder );
 				} else {
@@ -520,12 +520,12 @@
 						diffW = 0;
 					}
 					matrix[4] = Math.min(
-						Math.max( matrix[4], marginW - dims.left ),
-						-marginW - dims.left + diffW
+						Math.max( matrix[4], marginW - left ),
+						-marginW - left + diffW
 					);
 					matrix[5] = Math.min(
-						Math.max( matrix[5], marginH - dims.top ),
-						-marginH - dims.top + diffH
+						Math.max( matrix[5], marginH - top ),
+						-marginH - top + diffH
 					);
 				}
 			}

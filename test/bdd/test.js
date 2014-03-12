@@ -507,16 +507,16 @@ describe('Panzoom', function() {
 		var $parent = panzoom.$parent;
 		$parent.css('width', '200%');
 		$elem.panzoom('option', 'contain', true);
-		$elem.panzoom('pan', 10, 0);
-		expect( +$elem.panzoom('getMatrix')[4] ).to.equal( 0 );
+		$elem.panzoom('pan', 10, 0, { animate: false });
+		expect( +$elem.panzoom('getMatrix')[4] ).to.equal( 1 );
 		$elem.panzoom('resetDimensions');
-		$elem.panzoom('pan', 10, 0);
+		$elem.panzoom('pan', 10, 0, { animate: false });
 		expect( +$elem.panzoom('getMatrix')[4] ).to.equal( 10 );
 
 		// Clean up
 		$parent.css('width', '');
 		$elem.panzoom('option', 'contain', false);
-		$elem.panzoom('reset');
+		$elem.panzoom('reset', false);
 	});
 
 	/* reset
