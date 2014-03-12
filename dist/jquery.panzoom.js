@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.12.2
- * Updated: Tue Mar 11 2014
+ * Updated: Wed Mar 12 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -552,13 +552,13 @@
 				container = this.container;
 				marginW = ((dims.width * scale) - container.width) / 2;
 				marginH = ((dims.height * scale) - container.height) / 2;
+				left = dims.left + dims.margin.left;
+				top = dims.top + dims.margin.top;
 				if ( contain === 'invert' ) {
 					diffW = dims.width > container.width ? dims.width - container.width : 0;
 					diffH = dims.height > container.height ? dims.height - container.height : 0;
 					marginW += (container.width - dims.width) / 2;
 					marginH += (container.height - dims.height) / 2;
-					left = dims.left + dims.margin.left;
-					top = dims.top + dims.margin.top;
 					matrix[4] = Math.max( Math.min( matrix[4], marginW - left ), -marginW - left - diffW );
 					matrix[5] = Math.max( Math.min( matrix[5], marginH - top ), -marginH - top - diffH + dims.heightBorder );
 				} else {
@@ -571,12 +571,12 @@
 						diffW = 0;
 					}
 					matrix[4] = Math.min(
-						Math.max( matrix[4], marginW - dims.left ),
-						-marginW - dims.left + diffW
+						Math.max( matrix[4], marginW - left ),
+						-marginW - left + diffW
 					);
 					matrix[5] = Math.min(
-						Math.max( matrix[5], marginH - dims.top ),
-						-marginH - dims.top + diffH
+						Math.max( matrix[5], marginH - top ),
+						-marginH - top + diffH
 					);
 				}
 			}
