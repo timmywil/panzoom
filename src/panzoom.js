@@ -499,8 +499,9 @@
 			if ( contain ) {
 				dims = this._checkDims();
 				container = this.container;
-				marginW = ((dims.width * scale) - container.width) / 2;
-				marginH = ((dims.height * scale) - container.height) / 2;
+				// Use absolute value of scale here as negative scale doesn't mean even smaller
+				marginW = ((dims.width * Math.abs(scale)) - container.width) / 2;
+				marginH = ((dims.height * Math.abs(scale)) - container.height) / 2;
 				left = dims.left + dims.margin.left;
 				top = dims.top + dims.margin.top;
 				if ( contain === 'invert' ) {

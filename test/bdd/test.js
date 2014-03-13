@@ -447,6 +447,14 @@ describe('Panzoom', function() {
 		expect( +newMatrix[5] ).to.equal( +matrix[5] );
 		$elem.panzoom( 'option', 'disablePan', false );
 	});
+	it('should not calculate margins with negative scale', function() {
+		var panzoom = $elem.panzoom('instance');
+		var matrix = panzoom.setMatrix([ -2, 0, 0, 1, 0, 0 ]);
+		expect(matrix[0]).to.equal(-2);
+		matrix[4] = 100;
+		matrix = panzoom.setMatrix(matrix, { contain: 'invert' });
+		expect(matrix[4]).to.equal(100);
+	});
 
 	/* isPanning
 	---------------------------------------------------------------------- */
