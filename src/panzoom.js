@@ -358,22 +358,22 @@
 			// Reset container properties
 			var $parent = this.$parent;
 			this.container = {
-				width: $parent.width(),
-				height: $parent.height()
+				width: $parent.innerWidth(),
+				height: $parent.innerHeight()
 			};
 			var elem = this.elem;
 			var $elem = this.$elem;
 			var dims = this.dimensions = this.isSVG ? {
 				left: elem.getAttribute('x') || 0,
 				top: elem.getAttribute('y') || 0,
-				width: elem.getAttribute('width') || $elem.outerWidth(),
-				height: elem.getAttribute('height') || $elem.outerHeight(),
+				width: elem.getAttribute('width') || $elem.innerWidth(),
+				height: elem.getAttribute('height') || $elem.innerHeight(),
 				margin: { left: 0, top: 0 }
 			} : {
 				left: $.css( elem, 'left', true ) || 0,
 				top: $.css( elem, 'top', true ) || 0,
-				width: $elem.outerWidth(),
-				height: $elem.outerHeight(),
+				width: $elem.innerWidth(),
+				height: $elem.innerHeight(),
 				margin: {
 					top: $.css( elem, 'marginTop', true ) || 0,
 					left: $.css( elem, 'marginLeft', true ) || 0
@@ -490,7 +490,7 @@
 			if ( typeof matrix === 'string' ) {
 				matrix = this.getMatrix( matrix );
 			}
-			var dims, container, marginW, marginH, diffW, diffH, left, top;
+			var dims, container, marginW, marginH, diffW, diffH, left, top, width, height;
 			var scale = +matrix[0];
 			var $parent = this.$parent;
 			var contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain;
@@ -499,23 +499,27 @@
 			if ( contain ) {
 				dims = this._checkDims();
 				container = this.container;
+				width = dims.width + dims.widthBorder;
+				height = dims.height + dims.heightBorder;
 				// Use absolute value of scale here as negative scale doesn't mean even smaller
-				marginW = ((dims.width * Math.abs(scale)) - container.width) / 2;
-				marginH = ((dims.height * Math.abs(scale)) - container.height) / 2;
+				marginW = ((width * Math.abs(scale)) - container.width) / 2;
+				marginH = ((height * Math.abs(scale)) - container.height) / 2;
 				left = dims.left + dims.margin.left;
 				top = dims.top + dims.margin.top;
 				if ( contain === 'invert' ) {
-					diffW = dims.width > container.width ? dims.width - container.width : 0;
-					diffH = dims.height > container.height ? dims.height - container.height : 0;
-					marginW += (container.width - dims.width) / 2;
-					marginH += (container.height - dims.height) / 2;
+					diffW = width > container.width ? width - container.width : 0;
+					diffH = height > container.height ? height - container.height : 0;
+					marginW += (container.width - width) / 2;
+					marginH += (container.height - height) / 2;
 					matrix[4] = Math.max( Math.min( matrix[4], marginW - left ), -marginW - left - diffW );
 					matrix[5] = Math.max( Math.min( matrix[5], marginH - top ), -marginH - top - diffH + dims.heightBorder );
 				} else {
-					diffH = container.height > dims.height ? container.height - dims.height : 0;
+					// marginW += dims.widthBorder / 2;
+					marginH += dims.heightBorder / 2;
+					diffW = container.width > width ? container.width - width : 0;
+					diffH = container.height > height ? container.height - height : 0;
 					// If the element is not naturally centered, assume full margin right
 					if ( $parent.css('textAlign') !== 'center' || !rinline.test($.css(this.elem, 'display')) ) {
-						diffW = container.width > dims.width ? container.width - dims.width : 0;
 						marginW = marginH = 0;
 					} else {
 						diffW = 0;
@@ -655,8 +659,8 @@
 				// https://github.com/florianguenther/zui53
 				// Adjusts the focal point for default transform-origin => 50% 50%
 				var dims = this._checkDims();
-				var clientX = focal.clientX - dims.width / 2;
-				var clientY = focal.clientY - dims.height / 2;
+				var clientX = focal.clientX - (dims.width + dims.widthBorder) / 2;
+				var clientY = focal.clientY - (dims.height + dims.heightBorder) / 2;
 				var clientV = new Vector( clientX, clientY, 1 );
 				var surfaceM = new Matrix( matrix );
 				var o = this.$parent.offset();
@@ -968,7 +972,7 @@
 		_checkDims: function() {
 			var dims = this.dimensions;
 			// Rebuild if width or height is still 0
-			if ( dims.width === dims.widthBorder || dims.height === dims.heightBorder ) {
+			if ( !dims.width || !dims.height ) {
 				this.resetDimensions();
 			}
 			return this.dimensions;
