@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.12.4
- * Updated: Thu Mar 13 2014
+ * Updated: Mon Mar 24 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -844,22 +844,27 @@
 		 * Initialize base styles for the element and its parent
 		 */
 		_initStyle: function() {
+			var styles = {
+				// Promote the element to it's own compositor layer
+				'backface-visibility': 'hidden'
+			};
 			// Set elem styles
 			if ( !this.options.disablePan ) {
-				this.$elem.css( 'cursor', this.options.cursor );
+				styles.cursor = this.options.cursor;
 			}
+			this.$elem.css(styles);
 
 			// Set parent to relative if set to static
 			var $parent = this.$parent;
 			// No need to add styles to the body
 			if ( $parent.length && !$.nodeName($parent[0], 'body') ) {
-				var parentStyles = {
+				styles = {
 					overflow: 'hidden'
 				};
 				if ( $parent.css('position') === 'static' ) {
-					parentStyles.position = 'relative';
+					styles.position = 'relative';
 				}
-				$parent.css( parentStyles );
+				$parent.css( styles );
 			}
 		},
 
