@@ -10,15 +10,17 @@
 (function( global, factory ) {
 	// AMD
 	if ( typeof define === 'function' && define.amd ) {
-		define( [ 'jquery', './pointertouch' ], factory );
+		define([ 'jquery', './pointertouch' ], function(jQuery) {
+			return factory(global, jQuery);
+		});
 	// CommonJS/Browserify
 	} else if ( typeof exports === 'object' ) {
-		factory( require('jquery'), require('./pointertouch') );
+		factory(global, require('jquery'), require('./pointertouch'));
 	// Global
 	} else {
-		factory( global.jQuery );
+		factory(global, global.jQuery);
 	}
-}( this, function( $ ) {
+}( typeof window !== 'undefined' ? window : this, function( window, $ ) {
 	'use strict';
 
 	// INSERT FIXHOOK

@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v1.12.5
- * Updated: Mon Mar 24 2014
+ * Updated: Wed Mar 26 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -10,15 +10,17 @@
 (function( global, factory ) {
 	// AMD
 	if ( typeof define === 'function' && define.amd ) {
-		define( [ 'jquery' ], factory );
+		define([ 'jquery' ], function(jQuery) {
+			return factory(global, jQuery);
+		});
 	// CommonJS/Browserify
 	} else if ( typeof exports === 'object' ) {
-		factory( require('jquery') );
+		factory(global, require('jquery'));
 	// Global
 	} else {
-		factory( global.jQuery );
+		factory(global, global.jQuery);
 	}
-}( this, function( $ ) {
+}( typeof window !== 'undefined' ? window : this, function( window, $ ) {
 	'use strict';
 
 	// Common properties to lift for touch or pointer events
@@ -56,7 +58,6 @@
 			return event;
 		};
 
-		// Take off 'over' and 'out' when attaching touch hooks
 		$.each(list, function( i, name ) {
 			// No equivalent touch events for over and out
 			if (i < 2) {
