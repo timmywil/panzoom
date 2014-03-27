@@ -1130,7 +1130,11 @@
 					var diff = self._getDistance( touches ) - startDistance;
 
 					// Set zoom
-					self.zoom( diff * (options.increment / 100) + startScale, { focal: middle, matrix: matrix } );
+					self.zoom( diff * (options.increment / 100) + startScale, {
+						focal: middle,
+						matrix: matrix,
+						animate: false
+					});
 
 					// Set pan
 					self.pan(
