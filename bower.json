@@ -1,6 +1,6 @@
 {
   "name": "jquery.panzoom",
-  "version": "1.12.6",
+  "version": "2.0.0",
   "main": "dist/jquery.panzoom.js",
   "ignore": [
     "**/.*",
