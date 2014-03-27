@@ -6,10 +6,10 @@ Panzoom is a progressive plugin to create panning and zooming functionality for 
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 And although IE<=8 is not supported, this plugin is future-proof.
 
-jquery.panzoom.min.js (12.09kb/4.55kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (12.42kb/4.74kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download v2.0.1](https://raw.github.com/timmywil/jquery.panzoom/2.0.1/dist/jquery.panzoom.min.js)  
-[Development version](https://raw.github.com/timmywil/jquery.panzoom/2.0.1/dist/jquery.panzoom.js)
+[Download v2.0.2](https://raw.github.com/timmywil/jquery.panzoom/2.0.2/dist/jquery.panzoom.min.js)  
+[Development version](https://raw.github.com/timmywil/jquery.panzoom/2.0.2/dist/jquery.panzoom.js)
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
@@ -26,6 +26,8 @@ iOS and Android are supported.
 ## SVG support
 
 Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
+
+**Note:** *There is a [known issue with Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=530985) and using the `focal` option. Firefox does not correctly maintain the dimensions of SVG parent elements, which throws off offsets.*
 
 ## Loading Panzoom
 Panzoom can be included with your scripts at the end of the body,
@@ -523,3 +525,9 @@ $('.panzoom a').on('mousedown touchstart', function( e ) {
   e.stopImmediatePropagation();
 });
 ```
+
+3\. What is `transform-origin` and why is it added to the panzoom element?
+
+  - The `transform-origin` is the origin from which transforms are applied. Panzoom ensures the defaults are set to what it expects to calculate focal points and containment.
+  - HTML elements default to '50% 50%'.
+  - SVG elements default to '0 0'.

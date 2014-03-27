@@ -360,26 +360,34 @@
 				width: $parent.innerWidth(),
 				height: $parent.innerHeight()
 			};
+			var po = this.parentOffset = $parent.offset();
 			var elem = this.elem;
 			var $elem = this.$elem;
-			var dims = this.dimensions = this.isSVG ? {
-				left: elem.getAttribute('x') || 0,
-				top: elem.getAttribute('y') || 0,
-				width: elem.getAttribute('width') || $elem.innerWidth(),
-				height: elem.getAttribute('height') || $elem.innerHeight(),
-				margin: { left: 0, top: 0 }
-			} : {
-				left: $.css( elem, 'left', true ) || 0,
-				top: $.css( elem, 'top', true ) || 0,
-				width: $elem.innerWidth(),
-				height: $elem.innerHeight(),
-				margin: {
-					top: $.css( elem, 'marginTop', true ) || 0,
-					left: $.css( elem, 'marginLeft', true ) || 0
-				}
-			};
+			var dims;
+			if (this.isSVG) {
+				dims = elem.getBoundingClientRect();
+				dims = {
+					left: dims.left - po.left,
+					top: dims.top - po.top,
+					width: dims.width,
+					height: dims.height,
+					margin: { left: 0, top: 0 }
+				};
+			} else {
+				dims = {
+					left: $.css( elem, 'left', true ) || 0,
+					top: $.css( elem, 'top', true ) || 0,
+					width: $elem.innerWidth(),
+					height: $elem.innerHeight(),
+					margin: {
+						top: $.css( elem, 'marginTop', true ) || 0,
+						left: $.css( elem, 'marginLeft', true ) || 0
+					}
+				};
+			}
 			dims.widthBorder = ($.css( elem, 'borderLeftWidth', true ) + $.css( elem, 'borderRightWidth', true )) || 0;
 			dims.heightBorder = ($.css( elem, 'borderTopWidth', true ) + $.css( elem, 'borderBottomWidth', true )) || 0;
+			this.dimensions = dims;
 		},
 
 		/**
@@ -665,13 +673,17 @@
 			if ( focal && !options.disablePan ) {
 				// Adapted from code by Florian Günther
 				// https://github.com/florianguenther/zui53
-				// Adjusts the focal point for default transform-origin => 50% 50%
 				var dims = this._checkDims();
-				var clientX = focal.clientX - (dims.width + dims.widthBorder) / 2;
-				var clientY = focal.clientY - (dims.height + dims.heightBorder) / 2;
+				var clientX = focal.clientX;
+				var clientY = focal.clientY;
+				// Adjust the focal point for default transform-origin => 50% 50%
+				if (!this.isSVG) {
+					clientX -= (dims.width + dims.widthBorder) / 2;
+					clientY -= (dims.height + dims.heightBorder) / 2;
+				}
 				var clientV = new Vector( clientX, clientY, 1 );
 				var surfaceM = new Matrix( matrix );
-				var o = this.$parent.offset();
+				var o = this.parentOffset;
 				var offsetM = new Matrix( 1, 0, o.left - this.$doc.scrollLeft(), 0, 1, o.top - this.$doc.scrollTop() );
 				var surfaceV = surfaceM.inverse().x( offsetM.inverse().x(clientV) );
 				var scaleBy = scale / matrix[0];
@@ -796,7 +808,8 @@
 					case '$set':
 						if ( value instanceof $ && value.length ) {
 							this.$set = value;
-							// Rebuild the original transform
+							// Reset styles
+							this._initStyle();
 							this._buildTransform();
 						}
 				}
@@ -809,13 +822,15 @@
 		_initStyle: function() {
 			var styles = {
 				// Promote the element to it's own compositor layer
-				'backface-visibility': 'hidden'
+				'backface-visibility': 'hidden',
+				// Set to defaults for the namespace
+				'transform-origin': this.isSVG ? '0 0' : '50% 50%'
 			};
 			// Set elem styles
-			if ( !this.options.disablePan ) {
+			if (!this.options.disablePan) {
 				styles.cursor = this.options.cursor;
 			}
-			this.$elem.css(styles);
+			this.$set.css(styles);
 
 			// Set parent to relative if set to static
 			var $parent = this.$parent;
