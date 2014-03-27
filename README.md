@@ -523,3 +523,9 @@ $('.panzoom a').on('mousedown touchstart', function( e ) {
   e.stopImmediatePropagation();
 });
 ```
+
+3\. What is `transform-origin` and why is it added to the panzoom element?
+
+  - The `transform-origin` is the origin from which transforms are applied. Panzoom ensures the defaults are set to what it expects to calculate focal points and containment.
+  - HTML elements default to '50% 50%'.
+  - SVG elements default to '0 0'.
