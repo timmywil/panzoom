@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v2.0.0
+ * @license jquery.panzoom.js v2.0.1
  * Updated: Thu Mar 27 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
@@ -1130,7 +1130,11 @@
 					var diff = self._getDistance( touches ) - startDistance;
 
 					// Set zoom
-					self.zoom( diff * (options.increment / 100) + startScale, { focal: middle, matrix: matrix } );
+					self.zoom( diff * (options.increment / 100) + startScale, {
+						focal: middle,
+						matrix: matrix,
+						animate: false
+					});
 
 					// Set pan
 					self.pan(
