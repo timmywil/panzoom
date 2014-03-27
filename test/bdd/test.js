@@ -12,6 +12,7 @@ describe('Panzoom', function() {
 	var $zoomRange = $('.zoom-range');
 	var $reset = $('.reset');
 	var rnoneMatrix = /^none|matrix\(1\,?\s*0\,?\s*0\,?\s*1\,?\s*0\,?\s*0\)$/;
+	var rcommaSpace = /,\s*/g;
 
 	/**
 	 * Simulates a start by triggering faux mousedown and touchstart events
@@ -766,13 +767,17 @@ describe('Panzoom', function() {
 		var panzoom = $rect.panzoom('instance');
 		expect( panzoom.isSVG ).to.be.true;
 	});
-	it('should set the starting transform value as an attribute', function() {
+	it('should set the starting transform value as a style', function() {
 		$rect.panzoom('destroy');
 		$rect.panzoom({
 			// IE10 will ignore a 'none' setting
 			startTransform: 'matrix(1,0,0,-1,0,0)'
 		});
-		var transform = $rect.attr('transform').replace(/,\s*/g, ' ');
+		var transform = $.style($rect[0], 'transform').replace(rcommaSpace, ' ');
 		expect( transform ).to.equal('matrix(1 0 0 -1 0 0)');
+	});
+	it('should retrieve the transform attribute and add it as a style instead for transitions', function() {
+		$rect.panzoom('destroy').attr('transform', 'matrix(2,0,0,2,0,0)').panzoom();
+		expect($.style($rect[0], 'transform').replace(rcommaSpace, ' ')).to.equal('matrix(2 0 0 2 0 0)');
 	});
 });
