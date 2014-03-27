@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v1.12.5
- * Updated: Mon Mar 24 2014
+ * @license jquery.panzoom.js v1.12.6
+ * Updated: Thu Mar 27 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -10,15 +10,17 @@
 (function( global, factory ) {
 	// AMD
 	if ( typeof define === 'function' && define.amd ) {
-		define( [ 'jquery' ], factory );
+		define([ 'jquery' ], function(jQuery) {
+			return factory(global, jQuery);
+		});
 	// CommonJS/Browserify
 	} else if ( typeof exports === 'object' ) {
-		factory( require('jquery') );
+		factory(global, require('jquery'));
 	// Global
 	} else {
-		factory( global.jQuery );
+		factory(global, global.jQuery);
 	}
-}( this, function( $ ) {
+}( typeof window !== 'undefined' ? window : this, function( window, $ ) {
 	'use strict';
 
 	// Common properties to lift for touch or pointer events
@@ -56,7 +58,6 @@
 			return event;
 		};
 
-		// Take off 'over' and 'out' when attaching touch hooks
 		$.each(list, function( i, name ) {
 			// No equivalent touch events for over and out
 			if (i < 2) {
@@ -286,10 +287,7 @@
 
 		// Build the appropriately-prefixed transform style property name
 		// De-camelcase
-		// Transitioning the attribute for SVG doesn't apply
-		if ( !this.isSVG ) {
-			this._transform = $.cssProps.transform.replace( rupper, '-$1' ).toLowerCase();
-		}
+		this._transform = $.cssProps.transform.replace( rupper, '-$1' ).toLowerCase();
 
 		// Build the transition value
 		this._buildTransition();
@@ -473,11 +471,10 @@
 		 * @param {String} transform
 		 */
 		setTransform: function( transform ) {
-			var method = this.isSVG ? 'attr' : 'style';
 			var $set = this.$set;
 			var i = $set.length;
 			while( i-- ) {
-				$[ method ]( $set[i], 'transform', transform );
+				$.style( $set[i], 'transform', transform );
 			}
 		},
 
@@ -490,21 +487,33 @@
 		 * @returns {String} Returns the current transform value of the element
 		 */
 		getTransform: function( transform ) {
-			var transformElem = this.$set[0];
+			var $set = this.$set;
+			var transformElem = $set[0];
 			if ( transform ) {
-				this.setTransform( transform );
+				// Remove the SVG attribute if present
+				if (this.isSVG) {
+					$set.removeAttr('transform');
+				}
+				this.setTransform(transform);
 			} else {
+				// Retrieve with attr for SVG first
+				// Convert to style attribute
+				if (this.isSVG && (transform = $.attr(transformElem, 'transform'))) {
+					$set.removeAttr('transform');
+					this.setTransform(transform);
+				}
 				// Use style rather than computed
 				// If currently transitioning, computed transform might be unchanged
-				// Retrieve with attr for SVG
-				transform = $[ this.isSVG ? 'attr' : 'style' ]( transformElem, 'transform' );
+				// Call this even if already retrieved with attr
+				// To initialize the proper browser prefix for the style attr
+				transform = $.style(transformElem, 'transform');
 			}
 
 			// Convert any transforms set by the user to matrix format
 			// by setting to computed
-			if ( transform !== 'none' && !rmatrix.test(transform) && !this.isSVG ) {
+			if ( transform !== 'none' && !rmatrix.test(transform) ) {
 				// Get computed and set for next time
-				this.setTransform( transform = $.css( transformElem, 'transform' ) );
+				this.setTransform( transform = $.css(transformElem, 'transform') );
 			}
 
 			return transform || 'none';
@@ -704,8 +713,6 @@
 			// Calculate focal point based on scale
 			var focal = options.focal;
 			if ( focal && !options.disablePan ) {
-				// animate isn't necessary for focal point use cases
-				animate = false;
 				// Adapted from code by Florian Günther
 				// https://github.com/florianguenther/zui53
 				// Adjusts the focal point for default transform-origin => 50% 50%
@@ -839,6 +846,8 @@
 					case '$set':
 						if ( value instanceof $ && value.length ) {
 							this.$set = value;
+							// Rebuild the original transform
+							this._buildTransform();
 						}
 				}
 			}, this));
@@ -1012,9 +1021,7 @@
 		 */
 		_buildTransition: function() {
 			var options = this.options;
-			if ( this._transform ) {
-				this._transition = this._transform + ' ' + options.duration + 'ms ' + options.easing;
-			}
+			this._transition = this._transform + ' ' + options.duration + 'ms ' + options.easing;
 		},
 
 		/**
