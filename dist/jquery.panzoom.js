@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v2.0.2
- * Updated: Thu Mar 27 2014
+ * @license jquery.panzoom.js v2.0.3
+ * Updated: Fri Mar 28 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -410,7 +410,7 @@
 				width: $parent.innerWidth(),
 				height: $parent.innerHeight()
 			};
-			var po = this.parentOffset = $parent.offset();
+			var po = $parent.offset();
 			var elem = this.elem;
 			var $elem = this.$elem;
 			var dims;
@@ -733,7 +733,8 @@
 				}
 				var clientV = new Vector( clientX, clientY, 1 );
 				var surfaceM = new Matrix( matrix );
-				var o = this.parentOffset;
+				// Supply an offset manually if necessary
+				var o = this.parentOffset || this.$parent.offset();
 				var offsetM = new Matrix( 1, 0, o.left - this.$doc.scrollLeft(), 0, 1, o.top - this.$doc.scrollTop() );
 				var surfaceV = surfaceM.inverse().x( offsetM.inverse().x(clientV) );
 				var scaleBy = scale / matrix[0];
