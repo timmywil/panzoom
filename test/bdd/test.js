@@ -765,19 +765,19 @@ describe('Panzoom', function() {
 			eventNamespace: '.svg'
 		});
 		var panzoom = $rect.panzoom('instance');
-		expect( panzoom.isSVG ).to.be.true;
+		expect(panzoom.isSVG).to.be.true;
 	});
-	it('should set the starting transform value as a style', function() {
+	it('should set the starting transform value as an attribute', function() {
 		$rect.panzoom('destroy');
 		$rect.panzoom({
 			// IE10 will ignore a 'none' setting
 			startTransform: 'matrix(1,0,0,-1,0,0)'
 		});
-		var transform = $.style($rect[0], 'transform').replace(rcommaSpace, ' ');
-		expect( transform ).to.equal('matrix(1 0 0 -1 0 0)');
+		var transform = $.attr($rect[0], 'transform').replace(rcommaSpace, ' ');
+		expect(transform).to.equal('matrix(1 0 0 -1 0 0)');
 	});
-	it('should retrieve the transform attribute and add it as a style instead for transitions', function() {
-		$rect.panzoom('destroy').attr('transform', 'matrix(2,0,0,2,0,0)').panzoom();
-		expect($.style($rect[0], 'transform').replace(rcommaSpace, ' ')).to.equal('matrix(2 0 0 2 0 0)');
+	it('should retrieve the transform attribute and use that as the start', function() {
+		var panzoom = $rect.panzoom('destroy').attr('transform', 'matrix(2,0,0,2,0,0)').panzoom().panzoom('instance');
+		expect(panzoom._origTransform.replace(rcommaSpace, ' ')).to.equal('matrix(2 0 0 2 0 0)');
 	});
 });

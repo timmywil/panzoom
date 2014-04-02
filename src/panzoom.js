@@ -52,10 +52,10 @@
 	 * @param {Array} first
 	 * @param {Array} second
 	 */
-	function matrixEquals( first, second ) {
+	function matrixEquals(first, second) {
 		var i = first.length;
-		while( --i ) {
-			if ( +first[i] !== +second[i] ) {
+		while(--i) {
+			if (+first[i] !== +second[i]) {
 				return false;
 			}
 		}
@@ -69,10 +69,10 @@
 	 */
 	function createResetOptions( opts ) {
 		var options = { range: true, animate: true };
-		if ( typeof opts === 'boolean' ) {
+		if (typeof opts === 'boolean') {
 			options.animate = opts;
 		} else {
-			$.extend( options, opts );
+			$.extend(options, opts);
 		}
 		return options;
 	}
@@ -428,11 +428,12 @@
 		 * Sets a transform on the $set
 		 * @param {String} transform
 		 */
-		setTransform: function( transform ) {
+		setTransform: function(transform) {
+			var method = this.isSVG ? 'attr' : 'style';
 			var $set = this.$set;
 			var i = $set.length;
-			while( i-- ) {
-				$.style( $set[i], 'transform', transform );
+			while(i--) {
+				$[method]($set[i], 'transform', transform);
 			}
 		},
 
@@ -447,31 +448,18 @@
 		getTransform: function( transform ) {
 			var $set = this.$set;
 			var transformElem = $set[0];
-			if ( transform ) {
-				// Remove the SVG attribute if present
-				if (this.isSVG) {
-					$set.removeAttr('transform');
-				}
+			if (transform) {
 				this.setTransform(transform);
 			} else {
-				// Retrieve with attr for SVG first
-				// Convert to style attribute
-				if (this.isSVG && (transform = $.attr(transformElem, 'transform'))) {
-					$set.removeAttr('transform');
-					this.setTransform(transform);
-				}
-				// Use style rather than computed
-				// If currently transitioning, computed transform might be unchanged
-				// Call this even if already retrieved with attr
-				// To initialize the proper browser prefix for the style attr
-				transform = $.style(transformElem, 'transform');
+				// Retrieve the transform
+				transform = $[this.isSVG ? 'attr' : 'style'](transformElem, 'transform');
 			}
 
 			// Convert any transforms set by the user to matrix format
 			// by setting to computed
 			if ( transform !== 'none' && !rmatrix.test(transform) ) {
 				// Get computed and set for next time
-				this.setTransform( transform = $.css(transformElem, 'transform') );
+				this.setTransform(transform = $.css(transformElem, 'transform'));
 			}
 
 			return transform || 'none';
@@ -582,11 +570,11 @@
 		 * Apply the current transition to the element, if allowed
 		 * @param {Boolean} [off] Indicates that the transition should be turned off
 		 */
-		transition: function( off ) {
+		transition: function(off) {
 			var transition = off || !this.options.transition ? 'none' : this._transition;
 			var $set = this.$set;
 			var i = $set.length;
-			while( i-- ) {
+			while(i--) {
 				// Avoid reflows when zooming
 				if ( $.style( $set[i], 'transition') !== transition ) {
 					$.style( $set[i], 'transition', transition );
@@ -978,7 +966,7 @@
 			// Save the original transform
 			// Retrieving this also adds the correct prefixed style name
 			// to jQuery's internal $.cssProps
-			return this._origTransform = this.getTransform( this.options.startTransform );
+			return this._origTransform = this.getTransform(this.options.startTransform);
 		},
 
 		/**
