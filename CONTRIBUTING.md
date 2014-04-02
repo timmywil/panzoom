@@ -5,6 +5,7 @@ Follow the [jQuery style guide](http://contribute.jquery.org/style-guide/js/), w
 - Use single quotes
 - Multiple var statements can be used to group variable declarations logically
 - Use [jsdoc-style](http://usejsdoc.org/#JSDoc3_Tag_Dictionary) comments for functions
+- Don't put extra spaces in parens and brackets.
 
 Add tests to test.js.
 
