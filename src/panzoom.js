@@ -237,7 +237,7 @@
 
 		// Build the appropriately-prefixed transform style property name
 		// De-camelcase
-		this._transform = $.cssProps.transform.replace(rupper, '-$1').toLowerCase();
+		this._transform = !this.isSVG && $.cssProps.transform.replace(rupper, '-$1').toLowerCase();
 
 		// Build the transition value
 		this._buildTransition();
@@ -571,6 +571,7 @@
 		 * @param {Boolean} [off] Indicates that the transition should be turned off
 		 */
 		transition: function(off) {
+			if (!this._transition) { return; }
 			var transition = off || !this.options.transition ? 'none' : this._transition;
 			var $set = this.$set;
 			var i = $set.length;
@@ -974,8 +975,10 @@
 		 * If SVG, create necessary animations elements for translations and scaling
 		 */
 		_buildTransition: function() {
-			var options = this.options;
-			this._transition = this._transform + ' ' + options.duration + 'ms ' + options.easing;
+			if (this._transform) {
+				var options = this.options;
+				this._transition = this._transform + ' ' + options.duration + 'ms ' + options.easing;
+			}
 		},
 
 		/**
