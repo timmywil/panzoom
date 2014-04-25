@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v2.0.4
- * Updated: Wed Apr 02 2014
+ * @license jquery.panzoom.js v2.0.5
+ * Updated: Thu Apr 24 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -75,9 +75,15 @@
 
 	$.pointertouch = events;
 
+	var document = window.document;
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
 	var pointerEvents = !!window.PointerEvent;
+	var supportsInputEvent = (function() {
+		var input = document.createElement('input');
+		input.setAttribute('oninput', 'return');
+		return typeof input.oninput === 'function';
+	})();
 
 	// Regex
 	var rupper = /([A-Z])/g;
@@ -287,7 +293,7 @@
 
 		// Build the appropriately-prefixed transform style property name
 		// De-camelcase
-		this._transform = $.cssProps.transform.replace(rupper, '-$1').toLowerCase();
+		this._transform = !this.isSVG && $.cssProps.transform.replace(rupper, '-$1').toLowerCase();
 
 		// Build the transition value
 		this._buildTransition();
@@ -621,6 +627,7 @@
 		 * @param {Boolean} [off] Indicates that the transition should be turned off
 		 */
 		transition: function(off) {
+			if (!this._transition) { return; }
 			var transition = off || !this.options.transition ? 'none' : this._transition;
 			var $set = this.$set;
 			var i = $set.length;
@@ -991,7 +998,9 @@
 				events[ (pointerEvents ? 'pointerdown' : 'mousedown') + ns ] = function() {
 					self.transition(true);
 				};
-				events[ 'change' + ns ] = function() {
+				// Zoom on input events if available and change events
+				// See https://github.com/timmywil/jquery.panzoom/issues/90
+				events[ (supportsInputEvent ? 'input' : 'change') + ns ] = function() {
 					self.zoom(+this.value, { noSetRange: true });
 				};
 				$zoomRange.on(events);
@@ -1024,8 +1033,10 @@
 		 * If SVG, create necessary animations elements for translations and scaling
 		 */
 		_buildTransition: function() {
-			var options = this.options;
-			this._transition = this._transform + ' ' + options.duration + 'ms ' + options.easing;
+			if (this._transform) {
+				var options = this.options;
+				this._transition = this._transform + ' ' + options.duration + 'ms ' + options.easing;
+			}
 		},
 
 		/**
