@@ -8,7 +8,7 @@ And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (12.42kb/4.74kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-[Download v2.0.5](https://raw.github.com/timmywil/jquery.panzoom/2.0.5/dist/jquery.panzoom.min.js)  
+[Download v2.0.5](https://raw.github.com/timmywil/jquery.panzoom/2.0.5/dist/jquery.panzoom.min.js)
 [Development version](https://raw.github.com/timmywil/jquery.panzoom/2.0.5/dist/jquery.panzoom.js)
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
@@ -534,10 +534,16 @@ $('.panzoom a').on('mousedown touchstart', function( e ) {
 
 4\. How do I prevent zooming beyond the image's original size?
 
- - The `maxScale` option can be set using the images `naturalWidth` divided by the `clientWidth`:
- 
+ - The `maxScale` option can be set using the image's `naturalWidth` divided by the `clientWidth`:
+
 ```js
 $('#large-image').panzoom({
     maxScale: elem.naturalWidth / elem.clientWidth
 });
 ```
+
+5\. I am using Panzoom with an `<object>` tag. Why isn't it working?
+
+In some legacy browsers, data cannot be attached to `<object>` elements.
+This means that events don't get attached when using jQuery 1.x.
+Switching to jQuery 2.x, which allows attaching data to `<object>` elements, should fix the issue.
