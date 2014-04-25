@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v2.0.5
- * Updated: Thu Apr 03 2014
+ * Updated: Thu Apr 24 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -75,9 +75,15 @@
 
 	$.pointertouch = events;
 
+	var document = window.document;
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
 	var pointerEvents = !!window.PointerEvent;
+	var supportsInputEvent = (function() {
+		var input = document.createElement('input');
+		input.setAttribute('oninput', 'return');
+		return typeof input.oninput === 'function';
+	})();
 
 	// Regex
 	var rupper = /([A-Z])/g;
@@ -992,7 +998,9 @@
 				events[ (pointerEvents ? 'pointerdown' : 'mousedown') + ns ] = function() {
 					self.transition(true);
 				};
-				events[ 'change' + ns ] = function() {
+				// Zoom on input events if available and change events
+				// See https://github.com/timmywil/jquery.panzoom/issues/90
+				events[ (supportsInputEvent ? 'input' : 'change') + ns ] = function() {
 					self.zoom(+this.value, { noSetRange: true });
 				};
 				$zoomRange.on(events);
