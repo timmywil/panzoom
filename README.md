@@ -531,3 +531,13 @@ $('.panzoom a').on('mousedown touchstart', function( e ) {
   - The `transform-origin` is the origin from which transforms are applied. Panzoom ensures the defaults are set to what it expects to calculate focal points and containment.
   - HTML elements default to '50% 50%'.
   - SVG elements default to '0 0'.
+
+4\. How do I prevent zooming beyond the image's original size?
+
+ - The `maxScale` option should be set using the images `naturalWidth` divided by the `clientWidth`:
+ 
+```js
+$('.panzoom-elements').panzoom({
+    maxScale: this.naturalWidth / this.clientWidth
+});
+```
