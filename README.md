@@ -537,7 +537,7 @@ $('.panzoom a').on('mousedown touchstart', function( e ) {
  - The `maxScale` option should be set using the images `naturalWidth` divided by the `clientWidth`:
  
 ```js
-$('.panzoom-elements').panzoom({
-    maxScale: this.naturalWidth / this.clientWidth
+$('#large-image').panzoom({
+    maxScale: elem.naturalWidth / elem.clientWidth
 });
 ```
