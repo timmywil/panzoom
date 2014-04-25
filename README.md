@@ -534,7 +534,7 @@ $('.panzoom a').on('mousedown touchstart', function( e ) {
 
 4\. How do I prevent zooming beyond the image's original size?
 
- - The `maxScale` option should be set using the images `naturalWidth` divided by the `clientWidth`:
+ - The `maxScale` option can be set using the images `naturalWidth` divided by the `clientWidth`:
  
 ```js
 $('#large-image').panzoom({
