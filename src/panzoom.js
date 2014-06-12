@@ -525,6 +525,23 @@
 					marginH += (container.height - height) / 2;
 					matrix[4] = Math.max(Math.min(matrix[4], marginW - left), -marginW - left - diffW);
 					matrix[5] = Math.max(Math.min(matrix[5], marginH - top), -marginH - top - diffH + dims.heightBorder);
+				} else if (contain === 'automatic') {
+					diffW = width > container.width ? width - container.width : 0;
+					diffH = height > container.height ? height - container.height : 0;
+					marginW += (container.width - width) / 2;
+					marginH += (container.height - height) / 2;
+					var zoomAspectW = (container.width / width) / scale;
+					var zoomAspectH = (container.height / height) / scale;
+					if (zoomAspectW < 1.05) {
+					    matrix[4] = Math.max(Math.min(matrix[4], marginW - left), -marginW - left - diffW);
+					} else if (zoomAspectW > 0.95) {
+					    matrix[4] = Math.min(Math.max(matrix[4], marginW - left), -marginW - left - diffW);
+					}
+					if (zoomAspectH < 1.05) {
+					    matrix[5] = Math.max(Math.min(matrix[5], marginH - top), -marginH - top - diffH + dims.heightBorder);
+					} else if (zoomAspectW > 0.95) {
+					    matrix[5] = Math.min(Math.max(matrix[5], marginH - top), -marginH - top - diffH + dims.heightBorder);
+					}
 				} else {
 					// marginW += dims.widthBorder / 2;
 					marginH += dims.heightBorder / 2;
