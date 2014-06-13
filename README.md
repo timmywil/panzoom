@@ -548,3 +548,14 @@ $('#large-image').panzoom({
 In some legacy browsers, data cannot be attached to `<object>` elements.
 This means that events don't get attached when using jQuery 1.x.
 Switching to jQuery 2.x, which allows attaching data to `<object>` elements, should fix the issue.
+
+6\. When the browser is resized, focal point zooming seems to go haywire. What's going on?
+
+Panzoom caches the dimensions of the Panzoom element and its parent to obviate the need for these calculations during zooming.
+Fortunately, Panzoom exposes a method to fix this. Whenever dimensions change, call the `resetDimensions()` method.
+
+```js
+$(window).on('resize', function() {
+  $elem.panzoom('resetDimensions');
+});
+```
