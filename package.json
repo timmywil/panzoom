@@ -1,10 +1,22 @@
 {
   "name": "jquery.panzoom",
   "version": "2.0.5",
+  "description": "A jQuery plugin to pan and/or zoom elements using CSS3",
   "main": "dist/jquery.panzoom.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/timmywil/jquery.panzoom.git"
+  "files": [
+    "MIT-License.txt",
+    "dist/jquery.panzoom.js",
+    "dist/jquery.panzoom.min.js",
+    "src/panzoom.js",
+    "src/pointertouch.js"
+  ],
+  "keywords": ["jquery", "panzoom", "pan", "zoom", "draggable", "dragging", "drag"],
+  "repository": "timmywil/jquery.panzoom",
+  "license": "MIT",
+  "author": {
+    "name": "Timmy Willison",
+    "email": "timmywillisn@gmail.com",
+    "url": "http://timmywillison.com"
   },
   "devDependencies": {
     "grunt": "~0.4.3",
