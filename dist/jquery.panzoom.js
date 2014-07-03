@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v2.0.5
- * Updated: Thu Apr 24 2014
+ * Updated: Thu Jul 03 2014
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -244,7 +244,7 @@
 	 * @param {Object} [options] - An object literal containing options to override default options
 	 *  (See Panzoom.defaults for ones not listed below)
 	 * @param {jQuery} [options.$zoomIn] - zoom in buttons/links collection (you can also bind these yourself
-	 *  e.g. $button.on('click', function(e) { e.preventDefault(); $elem.panzooom('zoomIn'); });)
+	 *  e.g. $button.on('click', function(e) { e.preventDefault(); $elem.panzoom('zoomIn'); });)
 	 * @param {jQuery} [options.$zoomOut] - zoom out buttons/links collection on which to bind zoomOut
 	 * @param {jQuery} [options.$zoomRange] - zoom in/out with this range control
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
