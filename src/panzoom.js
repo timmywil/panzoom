@@ -307,7 +307,11 @@
 		// Note: this does not affect zooming outside of the parent
 		// Set this value to 'invert' to only allow panning outside of the parent element (basically the opposite of the normal use of contain)
 		// 'invert' is useful for a large panzoom element where you don't want to show anything behind it
-		contain: false
+		contain: false,
+		
+		// Make images' default position centered to their parent elements rather than
+		// aligned (only works if 'contain' === 'invert)
+		centered: false
 	};
 
 	Panzoom.prototype = {
@@ -506,6 +510,7 @@
 			var scale = +matrix[0];
 			var $parent = this.$parent;
 			var contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain;
+			var centered = typeof options.centered !== 'undefined' ? options.centered : this.options.centered;
 
 			// Apply containment
 			if (contain) {
@@ -521,7 +526,7 @@
 				if (contain === 'invert') {
 					diffW = width > container.width ? width - container.width : 0;
 					diffH = height > container.height ? height - container.height : 0;
-					marginW += (container.width - width) / 2;
+					marginW += centered === true ? (container.width - width) / 2 : 0;
 					marginH += (container.height - height) / 2;
 					matrix[4] = Math.max(Math.min(matrix[4], marginW - left), -marginW - left - diffW);
 					matrix[5] = Math.max(Math.min(matrix[5], marginH - top), -marginH - top - diffH + dims.heightBorder);
