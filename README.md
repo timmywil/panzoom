@@ -157,7 +157,7 @@ Methods can be called in the same way as a widget from the jQuery UI widget fact
 $elem.panzoom("option", "increment", 0.4);
 
 // Several options at once
-$elem.panzoom("option", {
+$elem.panzoom({
   increment: 0.4,
   minScale: 0.1,
   maxScale: 2,
