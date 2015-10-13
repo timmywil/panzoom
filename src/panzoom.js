@@ -329,6 +329,20 @@
 			this._bind();
 			this.disabled = false;
 		},
+		
+		/**
+		 * Enable panning 
+		 */
+		enablePan: function() {
+			this.options.disablePan = false;
+		},
+		
+		/**
+		 * Disable panning 
+		 */
+		disablePan: function() {
+			this.options.disablePan = true;		
+		},		
 
 		/**
 		 * Disable panzoom
