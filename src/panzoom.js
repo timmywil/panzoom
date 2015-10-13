@@ -331,18 +331,18 @@
 		},
 		
 		/**
-		 * Enable panning 
+		 * Enable panning
 		 */
 		enablePan: function() {
 			this.options.disablePan = false;
 		},
 		
 		/**
-		 * Disable panning 
+		 * Disable panning
 		 */
 		disablePan: function() {
-			this.options.disablePan = true;		
-		},		
+			this.options.disablePan = true;
+		},
 
 		/**
 		 * Disable panzoom
