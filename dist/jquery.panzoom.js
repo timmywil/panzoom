@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v2.0.5
- * Updated: Thu Jul 03 2014
+ * @license jquery.panzoom.js v2.0.6
+ * Updated: Fri Dec 18 2015
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -108,10 +108,11 @@
 	 * @param {Array} first
 	 * @param {Array} second
 	 */
-	function matrixEquals(first, second) {
+	function matrixClose(first, second) {
 		var i = first.length;
 		while(--i) {
-			if (+first[i] !== +second[i]) {
+         var delta = Math.abs(first[i] - second[i]);
+			if (delta > 10) {
 				return false;
 			}
 		}
@@ -344,6 +345,9 @@
 		minScale: 0.4,
 		maxScale: 5,
 
+		// The default rotation value for the element in degrees
+		rotate: 0,
+
 		// The default step for the range input
 		// Precendence: default < HTML attribute < option setting
 		rangeStep: 0.05,
@@ -489,7 +493,7 @@
 			var $set = this.$set;
 			var i = $set.length;
 			while(i--) {
-				$[method]($set[i], 'transform', transform);
+				$[method]($set[i], 'transform', transform + ' rotate(' + this.options.rotate + 'deg)');
 			}
 		},
 
@@ -509,6 +513,7 @@
 			} else {
 				// Retrieve the transform
 				transform = $[this.isSVG ? 'attr' : 'style'](transformElem, 'transform');
+				transform = transform.split(' rotate')[0];
 			}
 
 			// Convert any transforms set by the user to matrix format
@@ -603,6 +608,19 @@
 			// Update range
 			if (options.range) {
 				this.$zoomRange.val(scale);
+			}
+
+			container = this.container;
+			dims = this._checkDims();
+			width = dims.width + dims.widthBorder;
+			height = dims.height + dims.heightBorder;
+
+			var x = (container.width / 2) - (width / 2);
+			var y = (container.height / 2) - (height / 2);
+
+			if (scale <= 1) {
+				matrix[4] = x;
+				matrix[5] = y;
 			}
 
 			// Set the matrix on this.$set
@@ -851,6 +869,9 @@
 					case 'transition':
 						this.transition();
 						break;
+					case 'rotate':
+						this.rotate = value;
+						break;
 					case '$set':
 						if (value instanceof $ && value.length) {
 							this.$set = value;
@@ -870,7 +891,8 @@
 				// Promote the element to it's own compositor layer
 				'backface-visibility': 'hidden',
 				// Set to defaults for the namespace
-				'transform-origin': this.isSVG ? '0 0' : '50% 50%'
+				'transform-origin': this.isSVG ? '0 0' : '50% 50%',
+				'image-orientation': '0deg'
 			};
 			// Set elem styles
 			if (!this.options.disablePan) {
@@ -1190,7 +1212,7 @@
 					// Simply set the type to "panzoomend" to pass through all end properties
 					// jQuery's `not` is used here to compare Array equality
 					e.type = 'panzoomend';
-					self._trigger(e, matrix, !matrixEquals(matrix, original));
+					self._trigger(e, matrix, !matrixClose(matrix, original));
 				});
 		}
 	};
