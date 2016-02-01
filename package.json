@@ -10,7 +10,15 @@
     "src/panzoom.js",
     "src/pointertouch.js"
   ],
-  "keywords": ["jquery", "panzoom", "pan", "zoom", "draggable", "dragging", "drag"],
+  "keywords": [
+    "jquery",
+    "panzoom",
+    "pan",
+    "zoom",
+    "draggable",
+    "dragging",
+    "drag"
+  ],
   "repository": "timmywil/jquery.panzoom",
   "license": "MIT",
   "author": {
@@ -19,18 +27,19 @@
     "url": "http://timmywillison.com"
   },
   "devDependencies": {
-    "grunt": "~0.4.3",
-    "grunt-bowercopy": "~0.9.0",
+    "graceful-fs": "^4.1.2",
+    "grunt": "^0.4.5",
+    "grunt-bowercopy": "^1.2.4",
+    "grunt-bump": "^0.7.0",
     "grunt-compare-size": "~0.4.0",
-    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-jshint": "^0.12.0",
+    "grunt-contrib-uglify": "^0.11.0",
     "grunt-contrib-watch": "~0.6.0",
-    "grunt-contrib-uglify": "~0.4.0",
-    "grunt-jsonlint": "~1.0.4",
-    "grunt-mocha": "~0.4.10",
+    "grunt-jsonlint": "^1.0.7",
+    "grunt-mocha": "^0.4.15",
     "gzip-js": "~0.3.2",
-    "load-grunt-tasks": "~0.4.0",
-    "lodash": "~2.4.1",
-    "graceful-fs": "~2.0.2"
+    "load-grunt-tasks": "^3.4.0",
+    "lodash": "^4.1.0"
   },
   "scripts": {
     "test": "grunt test"
