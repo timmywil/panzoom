@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v2.0.5
- * Updated: Thu Jul 03 2014
+ * Updated: Mon Feb 01 2016
  * Add pan and zoom functionality to any element
  * Copyright (c) 2014 timmy willison
  * Released under the MIT license
@@ -564,8 +564,8 @@
 				width = dims.width + dims.widthBorder;
 				height = dims.height + dims.heightBorder;
 				// Use absolute value of scale here as negative scale doesn't mean even smaller
-				marginW = ((width * Math.abs(scale)) - container.width) / 2;
-				marginH = ((height * Math.abs(scale)) - container.height) / 2;
+				marginW = (width * Math.abs(scale)) > container.width ? ((width * Math.abs(scale)) - container.width) / 2 : 0;
+				marginH = (height * Math.abs(scale)) > container.height ? ((height * Math.abs(scale)) - container.height) / 2 : 0;
 				left = dims.left + dims.margin.left;
 				top = dims.top + dims.margin.top;
 				if (contain === 'invert') {
