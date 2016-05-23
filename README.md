@@ -102,7 +102,7 @@ Panzoom.defaults = {
   // CSS easing used for scale transition
   easing: "ease-in-out",
 
-  // Indicate that the element should be contained within it's parent when panning
+  // Indicate that the element should be contained within its parent when panning
   // Note: this does not affect zooming outside of the parent
   // Set this value to 'invert' to only allow panning outside of the parent element (the opposite of the normal use of contain)
   // 'invert' is useful for a large Panzoom element where you don't want to show anything behind it
