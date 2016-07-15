@@ -26,7 +26,6 @@
 	var document = window.document;
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
-	var pointerEvents = !!window.PointerEvent;
 	var supportsInputEvent = (function() {
 		var input = document.createElement('input');
 		input.setAttribute('oninput', 'return');
@@ -38,7 +37,7 @@
 	var rsvg = /^http:[\w\.\/]+svg$/;
 	var rinline = /^inline/;
 
-	var floating = '(\\-?[\\d\\.e]+)';
+	var floating = '(\\-?\\d[\\d\\.e-]*)';
 	var commaSpace = '\\,?\\s*';
 	var rmatrix = new RegExp(
 		'^matrix\\(' +
@@ -51,7 +50,7 @@
 	);
 
 	/**
-	 * Utility for determing transform matrix equality
+	 * Utility for determining transform matrix equality
 	 * Checks backwards to test translation first
 	 * @param {Array} first
 	 * @param {Array} second
@@ -59,7 +58,7 @@
 	function matrixEquals(first, second) {
 		var i = first.length;
 		while(--i) {
-			if (+first[i] !== +second[i]) {
+			if (Math.round(+first[i]) !== Math.round(+second[i])) {
 				return false;
 			}
 		}
@@ -281,6 +280,13 @@
 		// There may be some use cases for zooming without panning or vice versa
 		disablePan: false,
 		disableZoom: false,
+
+		// Pan only on the X or Y axes
+		disableXAxis: false,
+		disableYAxis: false,
+
+		// Set whether you'd like to pan on left (1), middle (2), or right click (3)
+		which: 1,
 
 		// The increment at which to zoom
 		// adds/subtracts to the scale each time zoomIn/Out is called
@@ -513,8 +519,8 @@
 				left = dims.left + dims.margin.left;
 				top = dims.top + dims.margin.top;
 				if (contain === 'invert') {
-					diffW = width > container.width ? width - container.width : 0;
-					diffH = height > container.height ? height - container.height : 0;
+					diffW = width - container.width;
+					diffH = height - container.height;
 					marginW += (container.width - width) / 2;
 					marginH += (container.height - height) / 2;
 					matrix[4] = Math.max(Math.min(matrix[4], marginW - left), -marginW - left - diffW);
@@ -530,14 +536,8 @@
 					} else {
 						diffW = 0;
 					}
-					matrix[4] = Math.min(
-						Math.max(matrix[4], marginW - left),
-						-marginW - left + diffW
-					);
-					matrix[5] = Math.min(
-						Math.max(matrix[5], marginH - top),
-						-marginH - top + diffH
-					);
+					matrix[4] = Math.min(Math.max(matrix[4], marginW - left), -marginW - left + diffW);
+					matrix[5] = Math.min(Math.max(matrix[5], marginH - top), -marginH - top + diffH);
 				}
 			}
 			if (options.animate !== 'skip') {
@@ -550,6 +550,15 @@
 			}
 
 			// Set the matrix on this.$set
+			if (this.options.disableXAxis || this.options.disableYAxis) {
+				var originalMatrix = this.getMatrix();
+				if (this.options.disableXAxis) {
+					matrix[4] = originalMatrix[4];
+				}
+				if (this.options.disableYAxis) {
+					matrix[5] = originalMatrix[5];
+				}
+			}
 			this.setTransform('matrix(' + matrix.join(',') + ')');
 
 			if (!options.silent) {
@@ -811,8 +820,6 @@
 		 */
 		_initStyle: function() {
 			var styles = {
-				// Promote the element to it's own compositor layer
-				'backface-visibility': 'hidden',
 				// Set to defaults for the namespace
 				'transform-origin': this.isSVG ? '0 0' : '50% 50%'
 			};
@@ -857,8 +864,8 @@
 			var self = this;
 			var options = this.options;
 			var ns = options.eventNamespace;
-			var str_start = pointerEvents ? 'pointerdown' + ns : ('touchstart' + ns + ' mousedown' + ns);
-			var str_click = pointerEvents ? 'pointerup' + ns : ('touchend' + ns + ' click' + ns);
+			var str_start = 'touchstart' + ns + ' mousedown' + ns;
+			var str_click = 'touchend' + ns + ' click' + ns;
 			var events = {};
 			var $reset = this.$reset;
 			var $zoomRange = this.$zoomRange;
@@ -880,14 +887,19 @@
 						// Touch
 						(touches = e.touches) &&
 							((touches.length === 1 && !options.disablePan) || touches.length === 2) :
-						// Mouse/Pointer: Ignore right click
-						!options.disablePan && e.which === 1) {
+						// Mouse: Ignore right click
+						!options.disablePan && e.which === options.which) {
 
 						e.preventDefault();
 						e.stopPropagation();
 						self._startMove(e, touches);
 					}
 				};
+				// Prevent the contextmenu event
+				// if we're binding to right-click
+				if (options.which === 3) {
+					events.contextmenu = false;
+				}
 			}
 			this.$elem.on(events);
 
@@ -938,8 +950,8 @@
 
 			if ($zoomRange.length) {
 				events = {};
-				// Cannot prevent default action here, just use pointerdown/mousedown
-				events[ (pointerEvents ? 'pointerdown' : 'mousedown') + ns ] = function() {
+				// Cannot prevent default action here, just use mousedown
+				events[ 'mousedown' + ns ] = function() {
 					self.transition(true);
 				};
 				// Zoom on input events if available and change events
@@ -1053,10 +1065,7 @@
 			var panOptions = { matrix: matrix, animate: 'skip' };
 
 			// Use proper events
-			if (pointerEvents) {
-				moveEvent = 'pointermove';
-				endEvent = 'pointerup';
-			} else if (event.type === 'touchstart') {
+			if (event.type === 'touchstart') {
 				moveEvent = 'touchmove';
 				endEvent = 'touchend';
 			} else {

@@ -21,7 +21,7 @@ You'll be amazed at how well this performs on your mobile device.
 
 iOS and Android are supported.
 
-**Pointer** (IE11+), **touch**, and **mouse** events are supported.
+**Touch** and **mouse** events are supported.
 
 ## SVG support
 
@@ -89,6 +89,13 @@ Panzoom.defaults = {
   disablePan: false,
   disableZoom: false,
 
+  // Pan only on the X or Y axes
+  disableXAxis: false,
+  disableYAxis: false,
+
+  // Set whether you'd like to pan on left (1), middle (2), or right click (3)
+  which: 1,
+
   // The increment at which to zoom
   // adds/subtracts to the scale each time zoomIn/Out is called
   increment: 0.3,
@@ -126,7 +133,7 @@ Panzoom.defaults = {
   // Use multiple Panzoom instances for that use case.
   $set: $elem,
 
-  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoomIn"); });` )
+  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoom"); });` )
   $zoomIn: $(),
   $zoomOut: $(),
   // Range input on which to bind zooming functionality
