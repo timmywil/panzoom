@@ -10,7 +10,6 @@ module.exports = function( grunt ) {
 	require('load-grunt-tasks')( grunt );
 
 	var gzip = require('gzip-js');
-	var fs = require('graceful-fs');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -31,15 +30,12 @@ module.exports = function( grunt ) {
 					destPrefix: 'test/libs'
 				},
 				files: {
+					'test/libs/jquery.js': 'jquery/dist/jquery.js',
 					'mocha/mocha.js': 'mocha/mocha.js',
 					'mocha/mocha.css': 'mocha/mocha.css',
 					'jquery.mousewheel.js': 'jquery-mousewheel/jquery.mousewheel.js',
 					'chai.js': 'chai/chai.js'
 				}
-			},
-			pointertouch: {
-				src: 'jquery.event.pointertouch/dist/jquery.event.pointertouch.js',
-				dest: 'src/pointertouch.js'
 			}
 		},
 		build: {
@@ -157,18 +153,6 @@ module.exports = function( grunt ) {
 					// Replace version tag
 					.replace( /@VERSION/g, version )
 					.replace( '@DATE', (new Date).toDateString() );
-			}
-
-			if ( /panzoom/.test(src) ) {
-				var fixhook = fs.readFileSync(__dirname + '/src/pointertouch.js', 'utf8')
-					.replace(/\/\*\*[\w\W]*'use strict';\s*/, '')
-					.replace(/\s*return \w+;\s*\}\)\);\s*$/, '');
-				compiled = compiled
-					// Insert pointer/touch fixhook
-					.replace( /\/\/ INSERT FIXHOOK/, fixhook )
-					// Remove pointerhook dependency
-					.replace(', \'./pointertouch\'', '')
-					.replace(', require(\'./pointertouch\')', '');
 			}
 
 			// Write source to file

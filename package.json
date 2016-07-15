@@ -7,8 +7,7 @@
     "MIT-License.txt",
     "dist/jquery.panzoom.js",
     "dist/jquery.panzoom.min.js",
-    "src/panzoom.js",
-    "src/pointertouch.js"
+    "src/panzoom.js"
   ],
   "keywords": [
     "jquery",
@@ -23,8 +22,7 @@
   "license": "MIT",
   "author": {
     "name": "Timmy Willison",
-    "email": "timmywillisn@gmail.com",
-    "url": "http://timmywillison.com"
+    "email": "timmywillisn@gmail.com"
   },
   "devDependencies": {
     "graceful-fs": "^4.1.2",
@@ -42,6 +40,7 @@
     "lodash": "^4.1.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "build": "grunt build"
   }
 }

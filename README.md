@@ -2,13 +2,16 @@
 
 [![Build Status](https://travis-ci.org/timmywil/jquery.panzoom.png?branch=master)](https://travis-ci.org/timmywil/jquery.panzoom)
 
-Panzoom is a progressive plugin to create panning and zooming functionality for an element. Panzoom supports the same browsers as jQuery 2.0 and can be used with jQuery 1.9.0+ or jQuery 2.0+.
+Panzoom is a progressive plugin to create panning and zooming functionality for an element.
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
-And although IE<=8 is not supported, this plugin is future-proof.
 
 jquery.panzoom.min.js (12.42kb/4.74kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
+
+## Dependencies
+
+jQuery 3.0+ is required.
 
 ## Mobile support
 
@@ -384,22 +387,7 @@ Applies the transition to the element. If `off` is true, it removes the transiti
 
 ## Static properties
 
-Static properties are there for convenience, but are subject to change in future versions.
-
-### `Panzoom.events`
-Type: *Object*
-
-This is a convenience object for binding your own pointer/touch/mouse events.
-
-**Properties:**
-```js
-// May equal "mousedown touchstart" or "pointerdown" depending on PointerEvent support
-Panzoom.events.down;
-// "mouseup touchend" or "pointerup"
-Panzoom.events.up;
-// "mousemove touchmove" or "pointermove"
-Panzoom.events.move;
-```
+Static properties are there for convenience, but are **subject to change in future versions**.
 
 ### `Panzoom.rmatrix`
 Type: *RegExp*
