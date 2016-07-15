@@ -257,6 +257,8 @@
 
 		this.enable();
 
+		this._checkPanWhenZoomed();
+
 		// Save the instance
 		$.data(elem, datakey, this);
 	}
@@ -292,6 +294,10 @@
 		// adds/subtracts to the scale each time zoomIn/Out is called
 		increment: 0.3,
 
+		// Pan only when the scale is greater than minScale
+		panOnlyWhenZoomed: false,
+
+		// min and max zoom scales
 		minScale: 0.4,
 		maxScale: 5,
 
@@ -561,6 +567,9 @@
 			}
 			this.setTransform('matrix(' + matrix.join(',') + ')');
 
+			// Disable/enable panning if zooming is at minimum and panOnlyWhenZoomed is true
+			this._checkPanWhenZoomed(scale);
+
 			if (!options.silent) {
 				this._trigger('change', matrix);
 			}
@@ -804,6 +813,9 @@
 					case 'transition':
 						this.transition();
 						break;
+					case 'panOnlyWhenZoomed':
+						this._checkPanWhenZoomed();
+						break;
 					case '$set':
 						if (value instanceof $ && value.length) {
 							this.$set = value;
@@ -813,6 +825,25 @@
 						}
 				}
 			}, this));
+		},
+
+		/**
+		 * Disable/enable panning depending on whether the current scale
+		 * matches the minimum
+		 * @param {Number} [scale]
+		 * @private
+		 */
+		_checkPanWhenZoomed: function(scale) {
+			if (!scale) {
+				scale = this.getMatrix()[0];
+			}
+			var options = this.options;
+			if (options.panOnlyWhenZoomed) {
+				var toDisable = scale === options.minScale;
+				if (options.disablePan !== toDisable) {
+					this.option('disablePan', toDisable);
+				}
+			}
 		},
 
 		/**
