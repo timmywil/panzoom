@@ -2,7 +2,7 @@
  * @license jquery.panzoom.js v@VERSION
  * Updated: @DATE
  * Add pan and zoom functionality to any element
- * Copyright (c) 2014 timmy willison
+ * Copyright (c) timmy willison
  * Released under the MIT license
  * https://github.com/timmywil/jquery.panzoom/blob/master/MIT-License.txt
  */
@@ -10,20 +10,18 @@
 (function(global, factory) {
 	// AMD
 	if (typeof define === 'function' && define.amd) {
-		define([ 'jquery', './pointertouch' ], function(jQuery) {
+		define([ 'jquery' ], function(jQuery) {
 			return factory(global, jQuery);
 		});
 	// CommonJS/Browserify
 	} else if (typeof exports === 'object') {
-		factory(global, require('jquery'), require('./pointertouch'));
+		factory(global, require('jquery'));
 	// Global
 	} else {
 		factory(global, global.jQuery);
 	}
 }(typeof window !== 'undefined' ? window : this, function(window, $) {
 	'use strict';
-
-	// INSERT FIXHOOK
 
 	var document = window.document;
 	var datakey = '__pz__';
@@ -194,7 +192,7 @@
 	 * @param {Object} [options] - An object literal containing options to override default options
 	 *  (See Panzoom.defaults for ones not listed below)
 	 * @param {jQuery} [options.$zoomIn] - zoom in buttons/links collection (you can also bind these yourself
-	 *  e.g. $button.on('click', function(e) { e.preventDefault(); $elem.panzooom('zoomIn'); });)
+	 *  e.g. $button.on('click', function(e) { e.preventDefault(); $elem.panzoom('zoomIn'); });)
 	 * @param {jQuery} [options.$zoomOut] - zoom out buttons/links collection on which to bind zoomOut
 	 * @param {jQuery} [options.$zoomRange] - zoom in/out with this range control
 	 * @param {jQuery} [options.$reset] - Reset buttons/links collection on which to bind the reset method
@@ -266,9 +264,6 @@
 
 	// Attach regex for possible use (immutable)
 	Panzoom.rmatrix = rmatrix;
-
-	// Container for event names
-	Panzoom.events = $.pointertouch;
 
 	Panzoom.defaults = {
 		// Should always be non-empty
@@ -368,7 +363,6 @@
 			};
 			var po = $parent.offset();
 			var elem = this.elem;
-			var $elem = this.$elem;
 			var dims;
 			if (this.isSVG) {
 				dims = elem.getBoundingClientRect();
@@ -383,8 +377,8 @@
 				dims = {
 					left: $.css(elem, 'left', true) || 0,
 					top: $.css(elem, 'top', true) || 0,
-					width: $elem.innerWidth(),
-					height: $elem.innerHeight(),
+					width: elem.offsetWidth - $.css(elem, 'borderLeftWidth', true) - $.css(elem, 'borderRightWidth', true),
+					height: elem.offsetHeight - $.css(elem, 'borderTopWidth', true) - $.css(elem, 'borderBottomWidth', true),
 					margin: {
 						top: $.css(elem, 'marginTop', true) || 0,
 						left: $.css(elem, 'marginLeft', true) || 0
@@ -435,7 +429,7 @@
 		 * @param {String} transform
 		 */
 		setTransform: function(transform) {
-			var method = this.isSVG ? 'attr' : 'style';
+			var method = this.isSVG ? (transform === 'none' ? 'removeAttr' : 'attr') : 'style';
 			var $set = this.$set;
 			var i = $set.length;
 			while(i--) {
@@ -526,7 +520,7 @@
 					matrix[4] = Math.max(Math.min(matrix[4], marginW - left), -marginW - left - diffW);
 					matrix[5] = Math.max(Math.min(matrix[5], marginH - top), -marginH - top - diffH + dims.heightBorder);
 				} else {
-					// marginW += dims.widthBorder / 2;
+					marginW += dims.widthBorder / 2;
 					marginH += dims.heightBorder / 2;
 					diffW = container.width > width ? container.width - width : 0;
 					diffH = container.height > height ? container.height - height : 0;

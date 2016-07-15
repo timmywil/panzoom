@@ -248,12 +248,6 @@ describe('Panzoom', function() {
 	it('should have rmatrix present on the Panzoom object', function() {
 		expect( $.Panzoom.rmatrix ).to.be.a('regexp');
 	});
-	it('should have event name(s) on the Panzoom object', function() {
-		var events = $.Panzoom.events;
-		$.each([ 'down', 'up', 'move' ], function(i, event) {
-			expect( events[ event ] ).to.be.a('string');
-		});
-	});
 
 	/* Events
 	---------------------------------------------------------------------- */
