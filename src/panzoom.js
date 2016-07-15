@@ -26,7 +26,6 @@
 	var document = window.document;
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
-	var pointerEvents = !!window.PointerEvent;
 	var supportsInputEvent = (function() {
 		var input = document.createElement('input');
 		input.setAttribute('oninput', 'return');
@@ -857,8 +856,8 @@
 			var self = this;
 			var options = this.options;
 			var ns = options.eventNamespace;
-			var str_start = pointerEvents ? 'pointerdown' + ns : ('touchstart' + ns + ' mousedown' + ns);
-			var str_click = pointerEvents ? 'pointerup' + ns : ('touchend' + ns + ' click' + ns);
+			var str_start = 'touchstart' + ns + ' mousedown' + ns;
+			var str_click = 'touchend' + ns + ' click' + ns;
 			var events = {};
 			var $reset = this.$reset;
 			var $zoomRange = this.$zoomRange;
@@ -938,8 +937,8 @@
 
 			if ($zoomRange.length) {
 				events = {};
-				// Cannot prevent default action here, just use pointerdown/mousedown
-				events[ (pointerEvents ? 'pointerdown' : 'mousedown') + ns ] = function() {
+				// Cannot prevent default action here, just use mousedown
+				events[ 'mousedown' + ns ] = function() {
 					self.transition(true);
 				};
 				// Zoom on input events if available and change events
@@ -1053,10 +1052,7 @@
 			var panOptions = { matrix: matrix, animate: 'skip' };
 
 			// Use proper events
-			if (pointerEvents) {
-				moveEvent = 'pointermove';
-				endEvent = 'pointerup';
-			} else if (event.type === 'touchstart') {
+			if (event.type === 'touchstart') {
 				moveEvent = 'touchmove';
 				endEvent = 'touchend';
 			} else {
