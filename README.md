@@ -100,6 +100,10 @@ Panzoom.defaults = {
   // adds/subtracts to the scale each time zoomIn/Out is called
   increment: 0.3,
 
+  // Turns on exponential zooming
+  // If false, zooming will be incremented linearly
+  exponential: true,
+
   // Pan only when the scale is greater than minScale
   panOnlyWhenZoomed: false,
 

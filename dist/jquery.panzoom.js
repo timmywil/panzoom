@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v2.0.6
+ * @license jquery.panzoom.js v3.0.0
  * Updated: Fri Jul 15 2016
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
@@ -26,7 +26,12 @@
 	var document = window.document;
 	var datakey = '__pz__';
 	var slice = Array.prototype.slice;
+	var rIE11 = /trident\/7./i;
 	var supportsInputEvent = (function() {
+		// IE11 returns a false positive
+		if (rIE11.test(navigator.userAgent)) {
+			return false;
+		}
 		var input = document.createElement('input');
 		input.setAttribute('oninput', 'return');
 		return typeof input.oninput === 'function';
@@ -294,12 +299,16 @@
 		// adds/subtracts to the scale each time zoomIn/Out is called
 		increment: 0.3,
 
+		// Turns on exponential zooming
+		// If false, zooming will be incremented linearly
+		exponential: true,
+
 		// Pan only when the scale is greater than minScale
 		panOnlyWhenZoomed: false,
 
 		// min and max zoom scales
-		minScale: 0.4,
-		maxScale: 5,
+		minScale: 0.3,
+		maxScale: 6,
 
 		// The default step for the range input
 		// Precendence: default < HTML attribute < option setting
@@ -664,7 +673,14 @@
 
 			// Calculate zoom based on increment
 			if (typeof scale !== 'number') {
-				scale = +matrix[0] + (options.increment * (scale ? -1 : 1));
+				var startScale = +matrix[0];
+				// Just use a number a little greater than 1
+				// Below 1 can use normal increments
+				if (options.exponential && startScale - options.increment >= 1) {
+					scale = Math[scale ? 'sqrt' : 'pow'](startScale, 2);
+				} else {
+					scale = startScale + (options.increment * (scale ? -1 : 1));
+				}
 				animate = true;
 			}
 

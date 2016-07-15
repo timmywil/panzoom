@@ -13,14 +13,6 @@ module.exports = function( grunt ) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		bump: {
-			options: {
-				files: ['package.json', 'bower.json', 'panzoom.jquery.json'],
-				commitFiles: ['package.json', 'bower.json', 'panzoom.jquery.json'],
-				tagName: '%VERSION%',
-				push: false
-			}
-		},
 		bowercopy: {
 			options: {
 				clean: true
@@ -93,7 +85,7 @@ module.exports = function( grunt ) {
 				'dist/jquery.panzoom.js'
 			],
 			options: {
-				preserveComments: 'some'
+				banner: '/* jquery.panzoom.min.js <%= pkg.version %> (c) Timmy Willison - MIT License */\n'
 			}
 		},
 		mocha: {
