@@ -535,11 +535,9 @@ $('#large-image').panzoom({
 });
 ```
 
-5\. I am using Panzoom with an `<object>` tag. Why isn't it working?
+5\. I am using Panzoom with an `<object>` tag. It zooms but does not pan. [example](http://codepen.io/timmywil/pen/qNpykA)
 
-In some legacy browsers, data cannot be attached to `<object>` elements.
-This means that events don't get attached when using jQuery 1.x.
-Switching to jQuery 2.x, which allows attaching data to `<object>` elements, should fix the issue.
+Object elements can eat up events, making it so they never reach Panzoom. To fix this, disable pointer events on the object tag and call Panzoom using a wrapper.
 
 6\. When the browser is resized, focal point zooming seems to go haywire. What's going on?
 
