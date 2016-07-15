@@ -126,7 +126,7 @@ Panzoom.defaults = {
   // Use multiple Panzoom instances for that use case.
   $set: $elem,
 
-  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoomIn"); });` )
+  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoom", "zoomIn"); });` )
   $zoomIn: $(),
   $zoomOut: $(),
   // Range input on which to bind zooming functionality
