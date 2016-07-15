@@ -89,6 +89,10 @@ Panzoom.defaults = {
   disablePan: false,
   disableZoom: false,
 
+  // Pan only on the X or Y axes
+  disableXAxis: false,
+  disableYAxis: false,
+
   // The increment at which to zoom
   // adds/subtracts to the scale each time zoomIn/Out is called
   increment: 0.3,

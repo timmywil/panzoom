@@ -529,14 +529,8 @@
 					} else {
 						diffW = 0;
 					}
-					matrix[4] = Math.min(
-						Math.max(matrix[4], marginW - left),
-						-marginW - left + diffW
-					);
-					matrix[5] = Math.min(
-						Math.max(matrix[5], marginH - top),
-						-marginH - top + diffH
-					);
+					matrix[4] = Math.min(Math.max(matrix[4], marginW - left), -marginW - left + diffW);
+					matrix[5] = Math.min(Math.max(matrix[5], marginH - top), -marginH - top + diffH);
 				}
 			}
 			if (options.animate !== 'skip') {
@@ -549,6 +543,15 @@
 			}
 
 			// Set the matrix on this.$set
+			if (this.options.disableXAxis || this.options.disableYAxis) {
+				var originalMatrix = this.getMatrix(this.getTransform());
+				if (this.options.disableXAxis) {
+					matrix[4] = originalMatrix[4];
+				}
+				if (this.options.disableYAxis) {
+					matrix[5] = originalMatrix[5];
+				}
+			}
 			this.setTransform('matrix(' + matrix.join(',') + ')');
 
 			if (!options.silent) {
