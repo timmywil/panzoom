@@ -281,6 +281,13 @@
 		disablePan: false,
 		disableZoom: false,
 
+		// Pan only on the X or Y axes
+		disableXAxis: false,
+		disableYAxis: false,
+
+		// Set whether you'd like to pan on left (1), middle (2), or right click (3)
+		which: 1,
+
 		// The increment at which to zoom
 		// adds/subtracts to the scale each time zoomIn/Out is called
 		increment: 0.3,
@@ -880,14 +887,19 @@
 						// Touch
 						(touches = e.touches) &&
 							((touches.length === 1 && !options.disablePan) || touches.length === 2) :
-						// Mouse/Pointer: Ignore right click
-						!options.disablePan && e.which === 1) {
+						// Mouse: Ignore right click
+						!options.disablePan && e.which === options.which) {
 
 						e.preventDefault();
 						e.stopPropagation();
 						self._startMove(e, touches);
 					}
 				};
+				// Prevent the contextmenu event
+				// if we're binding to right-click
+				if (options.which === 3) {
+					events.contextmenu = false;
+				}
 			}
 			this.$elem.on(events);
 

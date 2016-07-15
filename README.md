@@ -93,6 +93,9 @@ Panzoom.defaults = {
   disableXAxis: false,
   disableYAxis: false,
 
+  // Set whether you'd like to pan on left (1), middle (2), or right click (3)
+  which: 1,
+
   // The increment at which to zoom
   // adds/subtracts to the scale each time zoomIn/Out is called
   increment: 0.3,
