@@ -512,8 +512,8 @@
 				left = dims.left + dims.margin.left;
 				top = dims.top + dims.margin.top;
 				if (contain === 'invert') {
-					diffW = width > container.width ? width - container.width : 0;
-					diffH = height > container.height ? height - container.height : 0;
+					diffW = width - container.width;
+					diffH = height - container.height;
 					marginW += (container.width - width) / 2;
 					marginH += (container.height - height) / 2;
 					matrix[4] = Math.max(Math.min(matrix[4], marginW - left), -marginW - left - diffW);
