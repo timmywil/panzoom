@@ -101,6 +101,33 @@
       </script>
     </section>
     <hr>
+    <section id="rotated">
+      <h1>Panning and zooming a rotated element</h1>
+      <div class="parent">
+        <div class="panzoom">
+          <img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg" width="900" height="900">
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="zoom-in">Zoom In</button>
+        <button class="zoom-out">Zoom Out</button>
+        <input type="range" class="zoom-range">
+        <button class="reset">Reset</button>
+      </div>
+      <script>
+        (function() {
+          var $section = $('#rotated').first();
+          $section.find('.panzoom').panzoom({
+            $zoomIn: $section.find(".zoom-in"),
+            $zoomOut: $section.find(".zoom-out"),
+            $zoomRange: $section.find(".zoom-range"),
+            $reset: $section.find(".reset"),
+            startTransform: 'rotateZ(180deg)'
+          });
+        })();
+      </script>
+    </section>
+    <hr>
     <section id="svg">
       <h1>SVG support (move it all!)</h1>
       <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="basic" id="svg2" x="0px" y="0px" width="900px" height="900px" viewBox="0 0 900 900" xml:space="preserve" xmlns:xml="http://www.w3.org/XML/1998/namespace">

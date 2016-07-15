@@ -37,7 +37,7 @@
 	var rsvg = /^http:[\w\.\/]+svg$/;
 	var rinline = /^inline/;
 
-	var floating = '(\\-?[\\d\\.e]+)';
+	var floating = '(\\-?\\d[\\d\\.e-]*)';
 	var commaSpace = '\\,?\\s*';
 	var rmatrix = new RegExp(
 		'^matrix\\(' +
@@ -544,7 +544,7 @@
 
 			// Set the matrix on this.$set
 			if (this.options.disableXAxis || this.options.disableYAxis) {
-				var originalMatrix = this.getMatrix(this.getTransform());
+				var originalMatrix = this.getMatrix();
 				if (this.options.disableXAxis) {
 					matrix[4] = originalMatrix[4];
 				}
