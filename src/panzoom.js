@@ -50,7 +50,7 @@
 	);
 
 	/**
-	 * Utility for determing transform matrix equality
+	 * Utility for determining transform matrix equality
 	 * Checks backwards to test translation first
 	 * @param {Array} first
 	 * @param {Array} second
@@ -58,7 +58,7 @@
 	function matrixEquals(first, second) {
 		var i = first.length;
 		while(--i) {
-			if (+first[i] !== +second[i]) {
+			if (Math.round(+first[i]) !== Math.round(+second[i])) {
 				return false;
 			}
 		}
