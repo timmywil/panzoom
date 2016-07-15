@@ -85,7 +85,7 @@ module.exports = function( grunt ) {
 				'dist/jquery.panzoom.js'
 			],
 			options: {
-				preserveComments: 'some'
+				banner: '/* jquery.panzoom.min.js <%= pkg.version %> (c) Timmy Willison - MIT License */\n'
 			}
 		},
 		mocha: {
