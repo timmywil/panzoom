@@ -505,13 +505,13 @@ describe('Panzoom', function() {
 
 	/* resetDimensions
 	---------------------------------------------------------------------- */
-	it('should adjust containment when the parent\'s dimensions change', function() {
+	it('resetDimensions no longer required when dimensions change with contain option', function() {
 		var panzoom = $elem.panzoom('instance');
 		var $parent = panzoom.$parent;
 		$parent.css('width', '200%');
 		$elem.panzoom('option', 'contain', true);
 		$elem.panzoom('pan', 10, 0, { animate: false });
-		expect( +$elem.panzoom('getMatrix')[4] ).to.equal( 1 );
+		expect( +$elem.panzoom('getMatrix')[4] ).to.equal( 10 );
 		$elem.panzoom('resetDimensions');
 		$elem.panzoom('pan', 10, 0, { animate: false });
 		expect( +$elem.panzoom('getMatrix')[4] ).to.equal( 10 );

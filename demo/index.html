@@ -110,7 +110,7 @@
         <button class="reset">Reset</button>
       </div>
       <style>
-        #inverted-contain .panzoom { width: 100%; height: 100%; }
+        #inverted-contain .panzoom { width: 100%; }
       </style>
       <script>
         (function() {
@@ -124,6 +124,34 @@
             increment: 0.1,
             minScale: 1,
             contain: 'invert'
+          }).panzoom('zoom');
+        })();
+      </script>
+    </section>
+    <hr>
+    <section id="auto-contain">
+      <h1>Automatically determine the best containment option based on the panzoom element's relation to the parent</h1>
+      <div class="panzoom-parent">
+        <img class="panzoom" src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg" width="900" height="900">
+      </div>
+      <div class="buttons">
+        <button class="zoom-in">Zoom In</button>
+        <button class="zoom-out">Zoom Out</button>
+        <input type="range" class="zoom-range">
+        <button class="reset">Reset</button>
+      </div>
+      <script>
+        (function() {
+          var $section = $('#auto-contain');
+          $section.find('.panzoom').panzoom({
+            $zoomIn: $section.find(".zoom-in"),
+            $zoomOut: $section.find(".zoom-out"),
+            $zoomRange: $section.find(".zoom-range"),
+            $reset: $section.find(".reset"),
+            startTransform: 'scale(1.1)',
+            increment: 0.1,
+            minScale: 0.5,
+            contain: 'automatic'
           }).panzoom('zoom');
         })();
       </script>
