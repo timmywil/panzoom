@@ -40,7 +40,6 @@
 	// Regex
 	var rupper = /([A-Z])/g;
 	var rsvg = /^http:[\w\.\/]+svg$/;
-	var rinline = /^inline/;
 
 	var floating = '(\\-?\\d[\\d\\.e-]*)';
 	var commaSpace = '\\,?\\s*';
@@ -262,6 +261,7 @@
 
 		this.enable();
 
+		this.scale = this.getMatrix()[0];
 		this._checkPanWhenZoomed();
 
 		// Save the instance
@@ -377,38 +377,30 @@
 		 */
 		resetDimensions: function() {
 			// Reset container properties
-			var $parent = this.$parent;
-			this.container = {
-				width: $parent.innerWidth(),
-				height: $parent.innerHeight()
-			};
-			var po = $parent.offset();
+			this.container = this.$parent[0].getBoundingClientRect();
+
+			// Set element properties
 			var elem = this.elem;
-			var dims;
-			if (this.isSVG) {
-				dims = elem.getBoundingClientRect();
-				dims = {
-					left: dims.left - po.left,
-					top: dims.top - po.top,
-					width: dims.width,
-					height: dims.height,
-					margin: { left: 0, top: 0 }
-				};
-			} else {
-				dims = {
-					left: $.css(elem, 'left', true) || 0,
-					top: $.css(elem, 'top', true) || 0,
-					width: elem.offsetWidth - $.css(elem, 'borderLeftWidth', true) - $.css(elem, 'borderRightWidth', true),
-					height: elem.offsetHeight - $.css(elem, 'borderTopWidth', true) - $.css(elem, 'borderBottomWidth', true),
-					margin: {
-						top: $.css(elem, 'marginTop', true) || 0,
-						left: $.css(elem, 'marginLeft', true) || 0
-					}
-				};
-			}
-			dims.widthBorder = ($.css(elem, 'borderLeftWidth', true) + $.css(elem, 'borderRightWidth', true)) || 0;
-			dims.heightBorder = ($.css(elem, 'borderTopWidth', true) + $.css(elem, 'borderBottomWidth', true)) || 0;
-			this.dimensions = dims;
+			// getBoundingClientRect() works with SVG, offsetWidth does not
+			var dims = elem.getBoundingClientRect();
+			var absScale = Math.abs(this.scale);
+			this.dimensions = {
+				width: dims.width,
+				height: dims.height,
+				left: $.css(elem, 'left', true) || 0,
+				top: $.css(elem, 'top', true) || 0,
+				// Borders and margins are scaled
+				border: {
+					top: $.css(elem, 'borderTopWidth', true) * absScale || 0,
+					bottom: $.css(elem, 'borderBottomWidth', true) * absScale || 0,
+					left: $.css(elem, 'borderLeftWidth', true) * absScale || 0,
+					right: $.css(elem, 'borderRightWidth', true) * absScale || 0
+				},
+				margin: {
+					top: $.css(elem, 'marginTop', true) * absScale || 0,
+					left: $.css(elem, 'marginLeft', true) * absScale || 0
+				}
+			};
 		},
 
 		/**
@@ -517,49 +509,47 @@
 			if (typeof matrix === 'string') {
 				matrix = this.getMatrix(matrix);
 			}
-			var dims, container, marginW, marginH, diffW, diffH, left, top, width, height;
 			var scale = +matrix[0];
-			var $parent = this.$parent;
 			var contain = typeof options.contain !== 'undefined' ? options.contain : this.options.contain;
 
 			// Apply containment
 			if (contain) {
-				dims = this._checkDims();
-				container = this.container;
-				width = dims.width + dims.widthBorder;
-				height = dims.height + dims.heightBorder;
-				// Use absolute value of scale here as negative scale doesn't mean even smaller
-				marginW = ((width * Math.abs(scale)) - container.width) / 2;
-				marginH = ((height * Math.abs(scale)) - container.height) / 2;
-				left = dims.left + dims.margin.left;
-				top = dims.top + dims.margin.top;
-				if (contain === 'invert') {
-					diffW = width - container.width;
-					diffH = height - container.height;
-					marginW += (container.width - width) / 2;
-					marginH += (container.height - height) / 2;
-					matrix[4] = Math.max(Math.min(matrix[4], marginW - left), -marginW - left - diffW);
-					matrix[5] = Math.max(Math.min(matrix[5], marginH - top), -marginH - top - diffH + dims.heightBorder);
+				var dims = options.dims;
+				if (!dims) {
+					this.resetDimensions();
+					dims = this.dimensions;
+				}
+				var container = this.container;
+				var width = dims.width;
+				var height = dims.height;
+				var conWidth = container.width;
+				var conHeight = container.height;
+				var zoomAspectW = conWidth / width;
+				var zoomAspectH = conHeight / height;
+
+				var marginW = ((width - conWidth) / 2);
+				var marginH = ((height - conHeight) / 2);
+
+				if (contain === 'invert' || contain === 'automatic' && zoomAspectW < 1.01) {
+					matrix[4] = Math.max(Math.min(matrix[4], marginW), -marginW);
 				} else {
-					marginW += dims.widthBorder / 2;
-					marginH += dims.heightBorder / 2;
-					diffW = container.width > width ? container.width - width : 0;
-					diffH = container.height > height ? container.height - height : 0;
-					// If the element is not naturally centered, assume full margin right
-					if ($parent.css('textAlign') !== 'center' || !rinline.test($.css(this.elem, 'display'))) {
-						marginW = marginH = 0;
-					} else {
-						diffW = 0;
-					}
-					matrix[4] = Math.min(Math.max(matrix[4], marginW - left), -marginW - left + diffW);
-					matrix[5] = Math.min(Math.max(matrix[5], marginH - top), -marginH - top + diffH);
+					matrix[4] = Math.min(Math.max(matrix[4], marginW), -marginW);
+				}
+
+				if (contain === 'invert' || (contain === 'automatic' && zoomAspectH < 1.01)) {
+					matrix[5] = Math.max(Math.min(matrix[5], marginH), -marginH);
+				} else {
+					matrix[5] = Math.min(Math.max(matrix[5], marginH), -marginH);
 				}
 			}
+
+			// Animate
 			if (options.animate !== 'skip') {
 				// Set transition
 				this.transition(!options.animate);
 			}
-			// Update range
+
+			// Update range element
 			if (options.range) {
 				this.$zoomRange.val(scale);
 			}
@@ -575,6 +565,8 @@
 				}
 			}
 			this.setTransform('matrix(' + matrix.join(',') + ')');
+
+			this.scale = scale;
 
 			// Disable/enable panning if zooming is at minimum and panOnlyWhenZoomed is true
 			this._checkPanWhenZoomed(scale);
@@ -670,10 +662,10 @@
 			if (options.disableZoom) { return; }
 			var animate = false;
 			var matrix = options.matrix || this.getMatrix();
+			var startScale = +matrix[0];
 
 			// Calculate zoom based on increment
 			if (typeof scale !== 'number') {
-				var startScale = +matrix[0];
 				// Just use a number a little greater than 1
 				// Below 1 can use normal increments
 				if (options.exponential && startScale - options.increment >= 1) {
@@ -696,13 +688,14 @@
 			if (focal && !options.disablePan) {
 				// Adapted from code by Florian Günther
 				// https://github.com/florianguenther/zui53
-				var dims = this._checkDims();
+				this.resetDimensions();
+				var dims = options.dims = this.dimensions;
 				var clientX = focal.clientX;
 				var clientY = focal.clientY;
 				// Adjust the focal point for default transform-origin => 50% 50%
 				if (!this.isSVG) {
-					clientX -= (dims.width + dims.widthBorder) / 2;
-					clientY -= (dims.height + dims.heightBorder) / 2;
+					clientX -= (dims.width / startScale) / 2;
+					clientY -= (dims.height / startScale) / 2;
 				}
 				var clientV = new Vector(clientX, clientY, 1);
 				var surfaceM = new Matrix(matrix);
@@ -711,7 +704,7 @@
 				var offsetM = new Matrix(1, 0, o.left - this.$doc.scrollLeft(), 0, 1, o.top - this.$doc.scrollTop());
 				var surfaceV = surfaceM.inverse().x(offsetM.inverse().x(clientV));
 				var scaleBy = scale / matrix[0];
-				surfaceM = surfaceM.x(new Matrix([ scaleBy, 0, 0, scaleBy, 0, 0 ]));
+				surfaceM = surfaceM.x(new Matrix([scaleBy, 0, 0, scaleBy, 0, 0]));
 				clientV = offsetM.x(surfaceM.x(surfaceV));
 				matrix[4] = +matrix[4] + (clientX - clientV.e(0));
 				matrix[5] = +matrix[5] + (clientY - clientV.e(1));
@@ -1040,18 +1033,6 @@
 				var options = this.options;
 				this._transition = this._transform + ' ' + options.duration + 'ms ' + options.easing;
 			}
-		},
-
-		/**
-		 * Checks dimensions to make sure they don't need to be re-calculated
-		 */
-		_checkDims: function() {
-			var dims = this.dimensions;
-			// Rebuild if width or height is still 0
-			if (!dims.width || !dims.height) {
-				this.resetDimensions();
-			}
-			return this.dimensions;
 		},
 
 		/**

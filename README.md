@@ -292,7 +292,9 @@ If the method is passed a boolean, true will indicate to perform a zoom-out base
 $elem.panzoom("resetDimensions");
 ```
 
-Panzoom caches the dimensions of the Panzoom element and its parent to cater to quick move events. Whenever these dimensions change, it is necessary to call `resetDimensions()`.
+Panzoom caches the dimensions of the Panzoom element and its parent to cater to quick move events.
+Whenever these dimensions change, it is necessary to call `resetDimensions()`.
+However, as of version 3.1.0, this is not required if using the `contain` option. It is still required for focal point zooming.
 
 ### `disable()`
 
