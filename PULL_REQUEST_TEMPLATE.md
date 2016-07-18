@@ -1,5 +1,5 @@
 ### PR Checklist
-🚨Please review the [guidelines for contributing](CONTRIBUTING.md) to this repository.
+Please review the [guidelines for contributing](CONTRIBUTING.md) to this repository.
 
 - [ ] I am requesting to **pull a topic/feature/bugfix branch** (right side). In other words, not *master*.
 - [ ] I have run `grunt` against my changes and both linting and tests pass.
