@@ -11,7 +11,7 @@ For common support questions, see [the FAQ](https://github.com/timmywil/jquery.p
 
 ## Dependencies
 
-jQuery 3.0+ is required.
+jquery.panzoom prefers jQuery 3.0.0+, but works with jQuery 1.9.0+ and jQuery 2.0.0+.
 
 ## Mobile support
 
