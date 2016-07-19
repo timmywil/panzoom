@@ -925,7 +925,7 @@
 					var touches;
 					if (e.type === 'touchstart' ?
 						// Touch
-						(touches = e.touches) &&
+						(touches = e.touches || e.originalEvent.touches) &&
 							((touches.length === 1 && !options.disablePan) || touches.length === 2) :
 						// Mouse: Ignore right click
 						!options.disablePan && e.which === options.which) {
@@ -1082,7 +1082,7 @@
 		_startMove: function(event, touches) {
 			var move, moveEvent, endEvent,
 				startDistance, startScale, startMiddle,
-				startPageX, startPageY;
+				startPageX, startPageY, touch;
 			var self = this;
 			var options = this.options;
 			var ns = options.eventNamespace;
@@ -1120,9 +1120,10 @@
 				startMiddle = this._getMiddle(touches);
 				move = function(e) {
 					e.preventDefault();
+					touches = e.touches || e.originalEvent.touches;
 
 					// Calculate move on middle point
-					var middle = self._getMiddle(touches = e.touches);
+					var middle = self._getMiddle(touches);
 					var diff = self._getDistance(touches) - startDistance;
 
 					// Set zoom
@@ -1141,8 +1142,13 @@
 					startMiddle = middle;
 				};
 			} else {
-				startPageX = event.pageX;
-				startPageY = event.pageY;
+				if (touches && (touch = touches[0])) {
+					startPageX = touch.pageX;
+					startPageY = touch.pageY;
+				} else {
+					startPageX = event.pageX;
+					startPageY = event.pageY;
+				}
 
 				/**
 				 * Mousemove/touchmove function to pan the element
@@ -1150,9 +1156,17 @@
 				 */
 				move = function(e) {
 					e.preventDefault();
+					touches = e.touches || e.originalEvent.touches;
+					var coords;
+					if (touches) {
+						coords = touches[0] || { pageX: 0, pageY: 0 };
+					} else {
+						coords = e;
+					}
+
 					self.pan(
-						origPageX + e.pageX - startPageX,
-						origPageY + e.pageY - startPageY,
+						origPageX + coords.pageX - startPageX,
+						origPageY + coords.pageY - startPageY,
 						panOptions
 					);
 				};
