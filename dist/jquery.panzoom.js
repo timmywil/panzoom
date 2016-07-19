@@ -1,5 +1,5 @@
 /**
- * @license jquery.panzoom.js v3.1.0
+ * @license jquery.panzoom.js v3.1.1
  * Updated: Tue Jul 19 2016
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
@@ -1076,7 +1076,7 @@
 		/**
 		 * Starts the pan
 		 * This is bound to mouse/touchmove on the element
-		 * @param {jQuery.Event} event The start event, whether touchstart or mousedown
+		 * @param {jQuery.Event} event An event with pageX, pageY, and possibly the touches list
 		 * @param {TouchList} [touches] The touches list if present
 		 */
 		_startMove: function(event, touches) {
