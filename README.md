@@ -5,7 +5,7 @@
 Panzoom is a progressive plugin to create panning and zooming functionality for an element.
 Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 
-jquery.panzoom.min.js (11.8kb/4.4kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+jquery.panzoom.min.js (11.9kb/4.4kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
 
@@ -37,7 +37,7 @@ but Panzoom supports AMD for javascript module love.
 With script tags:
 
 ```html
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="/js/plugins/jquery.panzoom.js"></script>
 ```
 
@@ -294,7 +294,7 @@ $elem.panzoom("resetDimensions");
 
 Panzoom caches the dimensions of the Panzoom element and its parent to cater to quick move events.
 Whenever these dimensions change, it is necessary to call `resetDimensions()`.
-However, as of version 3.1.0, this is not required if using the `contain` option. It is still required for focal point zooming.
+However, as of version 3.1.0, this is no longer required.
 
 ### `disable()`
 
@@ -510,7 +510,7 @@ See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CON
 
 1\. How do I make it so that I never see the background behind the Panzoom element? [example](http://codepen.io/timmywil/pen/qjvBF)
 
-  - This can be done with the `contain` option. Set `contain` to `"invert"` and make sure the Panzoom element is the same size or larger than its parent.
+  - This can be done with the `contain` option. Set `contain` to `"invert"` or `"automatic"` and make sure the Panzoom element is the same size or larger than its parent.
 
 ```js
   $('.panzoom-elements').panzoom({
@@ -549,13 +549,3 @@ $('#large-image').panzoom({
 
 Object elements can eat up events, making it so they never reach Panzoom. To fix this, disable pointer events on the object tag and call Panzoom using a wrapper.
 
-6\. When the browser is resized, focal point zooming seems to go haywire. What's going on?
-
-Panzoom caches the dimensions of the Panzoom element and its parent to obviate the need for these calculations during zooming.
-Fortunately, Panzoom exposes a method to fix this. Whenever dimensions change, call the `resetDimensions()` method.
-
-```js
-$(window).on('resize', function() {
-  $elem.panzoom('resetDimensions');
-});
-```
