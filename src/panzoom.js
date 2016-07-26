@@ -244,7 +244,7 @@
 
 		// Build the appropriately-prefixed transform style property name
 		// De-camelcase
-		this._transform = !this.isSVG && $.cssProps.transform.replace(rupper, '-$1').toLowerCase();
+		this._transform = $.cssProps.transform.replace(rupper, '-$1').toLowerCase();
 
 		// Build the transition value
 		this._buildTransition();
@@ -439,14 +439,23 @@
 
 		/**
 		 * Sets a transform on the $set
+		 * For SVG, the style attribute takes precedence
+		 * and allows us to animate
 		 * @param {String} transform
 		 */
 		setTransform: function(transform) {
-			var method = this.isSVG ? (transform === 'none' ? 'removeAttr' : 'attr') : 'style';
 			var $set = this.$set;
 			var i = $set.length;
 			while(i--) {
-				$[method]($set[i], 'transform', transform);
+				$.style($set[i], 'transform', transform);
+
+				// Support IE9-11, Edge 13-14+
+				// Set attribute alongside style attribute
+				// since IE and Edge do not respect style settings on SVG
+				// See https://css-tricks.com/transforms-on-svg-elements/
+				if (this.isSVG) {
+					$set[i].setAttribute('transform', transform);
+				}
 			}
 		},
 
@@ -464,13 +473,21 @@
 			if (transform) {
 				this.setTransform(transform);
 			} else {
-				// Retrieve the transform
-				transform = $[this.isSVG ? 'attr' : 'style'](transformElem, 'transform');
+
+				// IE and Edge still set the transform style properly
+				// They just don't render it on SVG
+				// So we get a correct value here
+				transform = $.style(transformElem, 'transform');
+
+				if (this.isSVG && (!transform || transform === 'none')) {
+					transform = $.attr(transformElem, 'transform') || 'none';
+				}
 			}
 
 			// Convert any transforms set by the user to matrix format
 			// by setting to computed
 			if (transform !== 'none' && !rmatrix.test(transform)) {
+
 				// Get computed and set for next time
 				this.setTransform(transform = $.css(transformElem, 'transform'));
 			}
@@ -692,11 +709,14 @@
 				var dims = options.dims = this.dimensions;
 				var clientX = focal.clientX;
 				var clientY = focal.clientY;
-				// Adjust the focal point for default transform-origin => 50% 50%
+
+				// Adjust the focal point for transform-origin 50% 50%
+				// SVG elements have a transform origin of 0 0
 				if (!this.isSVG) {
 					clientX -= (dims.width / startScale) / 2;
 					clientY -= (dims.height / startScale) / 2;
 				}
+
 				var clientV = new Vector(clientX, clientY, 1);
 				var surfaceM = new Matrix(matrix);
 				// Supply an offset manually if necessary
@@ -860,7 +880,8 @@
 		 */
 		_initStyle: function() {
 			var styles = {
-				// Set to defaults for the namespace
+				// Set the same default whether SVG or HTML
+				// transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+
 				'transform-origin': this.isSVG ? '0 0' : '50% 50%'
 			};
 			// Set elem styles
@@ -1026,7 +1047,6 @@
 
 		/**
 		 * Set transition property for later use when zooming
-		 * If SVG, create necessary animations elements for translations and scaling
 		 */
 		_buildTransition: function() {
 			if (this._transform) {
