@@ -550,13 +550,15 @@
 				if (contain === 'invert' || contain === 'automatic' && zoomAspectW < 1.01) {
 					matrix[4] = Math.max(Math.min(matrix[4], marginW), -marginW);
 				} else {
-					matrix[4] = Math.min(Math.max(matrix[4], marginW), -marginW);
+					matrix[4] = Math.max(matrix[4], 0);
+					matrix[4] = Math.min(matrix[4], conWidth - width);
 				}
 
 				if (contain === 'invert' || (contain === 'automatic' && zoomAspectH < 1.01)) {
 					matrix[5] = Math.max(Math.min(matrix[5], marginH), -marginH);
 				} else {
-					matrix[5] = Math.min(Math.max(matrix[5], marginH), -marginH);
+					matrix[5] = Math.max(matrix[5], 0);
+					matrix[5] = Math.min(matrix[5], conHeight - height);
 				}
 			}
 
