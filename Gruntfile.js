@@ -110,7 +110,8 @@ module.exports = function( grunt ) {
 				],
 				tasks: 'dev',
 				options: {
-					livereload: 35711
+					livereload: 35711,
+					atBegin: true
 				}
 			},
 			test: {
