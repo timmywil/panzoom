@@ -6,8 +6,7 @@
   "files": [
     "MIT-License.txt",
     "dist/jquery.panzoom.js",
-    "dist/jquery.panzoom.min.js",
-    "src/panzoom.js"
+    "dist/jquery.panzoom.min.js"
   ],
   "keywords": [
     "jquery",
