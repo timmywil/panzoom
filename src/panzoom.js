@@ -925,8 +925,9 @@
 			var self = this;
 			var options = this.options;
 			var ns = options.eventNamespace;
-			var str_start = 'touchstart' + ns + ' mousedown' + ns;
-			var str_click = 'touchend' + ns + ' click' + ns;
+			var str_down = 'mousedown' + ns + ' pointerdown' + ns + ' MSPointerDown' + ns;
+			var str_start = 'touchstart' + ns + ' ' + str_down;
+			var str_click = 'touchend' + ns + ' click' + ns + ' pointerup' + ns + ' MSPointerUp' + ns;
 			var events = {};
 			var $reset = this.$reset;
 			var $zoomRange = this.$zoomRange;
@@ -948,8 +949,10 @@
 						// Touch
 						(touches = e.touches || e.originalEvent.touches) &&
 							((touches.length === 1 && !options.disablePan) || touches.length === 2) :
-						// Mouse: Ignore right click
-						!options.disablePan && e.which === options.which) {
+						// Mouse/Pointer: Ignore unexpected click types
+						// Support: IE10 only
+						// IE10 does not support e.button for MSPointerDown, but does have e.which
+						!options.disablePan && (e.which || e.originalEvent.which) === options.which) {
 
 						e.preventDefault();
 						e.stopPropagation();
@@ -1011,8 +1014,8 @@
 
 			if ($zoomRange.length) {
 				events = {};
-				// Cannot prevent default action here, just use mousedown
-				events[ 'mousedown' + ns ] = function() {
+				// Cannot prevent default action here
+				events[ str_down ] = function() {
 					self.transition(true);
 				};
 				// Zoom on input events if available and change events
@@ -1100,6 +1103,9 @@
 		 * @param {TouchList} [touches] The touches list if present
 		 */
 		_startMove: function(event, touches) {
+			if (this.panning) {
+				return;
+			}
 			var move, moveEvent, endEvent,
 				startDistance, startScale, startMiddle,
 				startPageX, startPageY, touch;
@@ -1111,11 +1117,18 @@
 			var origPageX = +original[4];
 			var origPageY = +original[5];
 			var panOptions = { matrix: matrix, animate: 'skip' };
+			var type = event.type;
 
 			// Use proper events
-			if (event.type === 'touchstart') {
+			if (type === 'pointerdown') {
+				moveEvent = 'pointermove';
+				endEvent = 'pointerup';
+			} else if (type === 'touchstart') {
 				moveEvent = 'touchmove';
 				endEvent = 'touchend';
+			} else if (type === 'MSPointerDown') {
+				moveEvent = 'MSPointerMove';
+				endEvent = 'MSPointerUp';
 			} else {
 				moveEvent = 'mousemove';
 				endEvent = 'mouseup';
