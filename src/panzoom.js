@@ -537,6 +537,7 @@
 					this.resetDimensions();
 					dims = this.dimensions;
 				}
+				var spaceWLeft, spaceWRight, scaleDiff;
 				var container = this.container;
 				var width = dims.width;
 				var height = dims.height;
@@ -545,19 +546,29 @@
 				var zoomAspectW = conWidth / width;
 				var zoomAspectH = conHeight / height;
 
-				var marginW = ((width - conWidth) / 2);
-				var marginH = ((height - conHeight) / 2);
+				// If the element is not naturally centered,
+				// assume full space right
+				if (this.$parent.css('textAlign') !== 'center' || $.css(this.elem, 'display') !== 'inline') {
+					// offsetWidth gets us the width without the transform
+					scaleDiff = (width - this.elem.offsetWidth) / 2;
+					spaceWLeft = scaleDiff - dims.border.left;
+					spaceWRight = width - conWidth - scaleDiff + dims.border.right;
+				} else {
+					spaceWLeft = spaceWRight = ((width - conWidth) / 2);
+				}
+				var spaceHTop = ((height - conHeight) / 2) + dims.border.top;
+				var spaceHBottom = ((height - conHeight) / 2) - dims.border.top - dims.border.bottom;
 
 				if (contain === 'invert' || contain === 'automatic' && zoomAspectW < 1.01) {
-					matrix[4] = Math.max(Math.min(matrix[4], marginW), -marginW);
+					matrix[4] = Math.max(Math.min(matrix[4], spaceWLeft - dims.border.left), -spaceWRight);
 				} else {
-					matrix[4] = Math.min(Math.max(matrix[4], marginW), -marginW);
+					matrix[4] = Math.min(Math.max(matrix[4], spaceWLeft), -spaceWRight);
 				}
 
 				if (contain === 'invert' || (contain === 'automatic' && zoomAspectH < 1.01)) {
-					matrix[5] = Math.max(Math.min(matrix[5], marginH), -marginH);
+					matrix[5] = Math.max(Math.min(matrix[5], spaceHTop - dims.border.top), -spaceHBottom);
 				} else {
-					matrix[5] = Math.min(Math.max(matrix[5], marginH), -marginH);
+					matrix[5] = Math.min(Math.max(matrix[5], spaceHTop), -spaceHBottom);
 				}
 			}
 
