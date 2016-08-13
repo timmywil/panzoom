@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v3.1.1
- * Updated: Tue Jul 19 2016
+ * @license jquery.panzoom.js v3.2.1
+ * Updated: Sat Aug 13 2016
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
  * Released under the MIT license
@@ -230,6 +230,7 @@
 		this.$set = options.$set && options.$set.length ? options.$set : $elem;
 		this.$doc = $(elem.ownerDocument || document);
 		this.$parent = $elem.parent();
+		this.parent = this.$parent[0];
 
 		// This is SVG if the namespace is SVG
 		// However, while <svg> elements are SVG, we want to treat those like other elements
@@ -244,7 +245,7 @@
 
 		// Build the appropriately-prefixed transform style property name
 		// De-camelcase
-		this._transform = !this.isSVG && $.cssProps.transform.replace(rupper, '-$1').toLowerCase();
+		this._transform = $.cssProps.transform.replace(rupper, '-$1').toLowerCase();
 
 		// Build the transition value
 		this._buildTransition();
@@ -377,7 +378,7 @@
 		 */
 		resetDimensions: function() {
 			// Reset container properties
-			this.container = this.$parent[0].getBoundingClientRect();
+			this.container = this.parent.getBoundingClientRect();
 
 			// Set element properties
 			var elem = this.elem;
@@ -439,14 +440,23 @@
 
 		/**
 		 * Sets a transform on the $set
+		 * For SVG, the style attribute takes precedence
+		 * and allows us to animate
 		 * @param {String} transform
 		 */
 		setTransform: function(transform) {
-			var method = this.isSVG ? (transform === 'none' ? 'removeAttr' : 'attr') : 'style';
 			var $set = this.$set;
 			var i = $set.length;
 			while(i--) {
-				$[method]($set[i], 'transform', transform);
+				$.style($set[i], 'transform', transform);
+
+				// Support IE9-11, Edge 13-14+
+				// Set attribute alongside style attribute
+				// since IE and Edge do not respect style settings on SVG
+				// See https://css-tricks.com/transforms-on-svg-elements/
+				if (this.isSVG) {
+					$set[i].setAttribute('transform', transform);
+				}
 			}
 		},
 
@@ -464,13 +474,21 @@
 			if (transform) {
 				this.setTransform(transform);
 			} else {
-				// Retrieve the transform
-				transform = $[this.isSVG ? 'attr' : 'style'](transformElem, 'transform');
+
+				// IE and Edge still set the transform style properly
+				// They just don't render it on SVG
+				// So we get a correct value here
+				transform = $.style(transformElem, 'transform');
+
+				if (this.isSVG && (!transform || transform === 'none')) {
+					transform = $.attr(transformElem, 'transform') || 'none';
+				}
 			}
 
 			// Convert any transforms set by the user to matrix format
 			// by setting to computed
 			if (transform !== 'none' && !rmatrix.test(transform)) {
+
 				// Get computed and set for next time
 				this.setTransform(transform = $.css(transformElem, 'transform'));
 			}
@@ -494,7 +512,6 @@
 		/**
 		 * Given a matrix object, quickly set the current matrix of the element
 		 * @param {Array|String} matrix
-		 * @param {Boolean} [animate] Whether to animate the transform change
 		 * @param {Object} [options]
 		 * @param {Boolean|String} [options.animate] Whether to animate the transform change, or 'skip' indicating that it is unnecessary to set
 		 * @param {Boolean} [options.contain] Override the global contain option
@@ -519,6 +536,7 @@
 					this.resetDimensions();
 					dims = this.dimensions;
 				}
+				var spaceWLeft, spaceWRight, scaleDiff;
 				var container = this.container;
 				var width = dims.width;
 				var height = dims.height;
@@ -527,19 +545,29 @@
 				var zoomAspectW = conWidth / width;
 				var zoomAspectH = conHeight / height;
 
-				var marginW = ((width - conWidth) / 2);
-				var marginH = ((height - conHeight) / 2);
+				// If the element is not naturally centered,
+				// assume full space right
+				if (this.$parent.css('textAlign') !== 'center' || $.css(this.elem, 'display') !== 'inline') {
+					// offsetWidth gets us the width without the transform
+					scaleDiff = (width - this.elem.offsetWidth) / 2;
+					spaceWLeft = scaleDiff - dims.border.left;
+					spaceWRight = width - conWidth - scaleDiff + dims.border.right;
+				} else {
+					spaceWLeft = spaceWRight = ((width - conWidth) / 2);
+				}
+				var spaceHTop = ((height - conHeight) / 2) + dims.border.top;
+				var spaceHBottom = ((height - conHeight) / 2) - dims.border.top - dims.border.bottom;
 
 				if (contain === 'invert' || contain === 'automatic' && zoomAspectW < 1.01) {
-					matrix[4] = Math.max(Math.min(matrix[4], marginW), -marginW);
+					matrix[4] = Math.max(Math.min(matrix[4], spaceWLeft - dims.border.left), -spaceWRight);
 				} else {
-					matrix[4] = Math.min(Math.max(matrix[4], marginW), -marginW);
+					matrix[4] = Math.min(Math.max(matrix[4], spaceWLeft), -spaceWRight);
 				}
 
 				if (contain === 'invert' || (contain === 'automatic' && zoomAspectH < 1.01)) {
-					matrix[5] = Math.max(Math.min(matrix[5], marginH), -marginH);
+					matrix[5] = Math.max(Math.min(matrix[5], spaceHTop - dims.border.top), -spaceHBottom);
 				} else {
-					matrix[5] = Math.min(Math.max(matrix[5], marginH), -marginH);
+					matrix[5] = Math.min(Math.max(matrix[5], spaceHTop), -spaceHBottom);
 				}
 			}
 
@@ -692,11 +720,14 @@
 				var dims = options.dims = this.dimensions;
 				var clientX = focal.clientX;
 				var clientY = focal.clientY;
-				// Adjust the focal point for default transform-origin => 50% 50%
+
+				// Adjust the focal point for transform-origin 50% 50%
+				// SVG elements have a transform origin of 0 0
 				if (!this.isSVG) {
 					clientX -= (dims.width / startScale) / 2;
 					clientY -= (dims.height / startScale) / 2;
 				}
+
 				var clientV = new Vector(clientX, clientY, 1);
 				var surfaceM = new Matrix(matrix);
 				// Supply an offset manually if necessary
@@ -716,7 +747,7 @@
 
 			// Calling zoom may still pan the element
 			this.setMatrix(matrix, {
-				animate: typeof options.animate === 'boolean' ? options.animate : animate,
+				animate: typeof options.animate !== 'undefined' ? options.animate : animate,
 				// Set the zoomRange value
 				range: !options.noSetRange
 			});
@@ -757,6 +788,7 @@
 		/**
 		 * Internally sets options
 		 * @param {Object} options - An object literal of options to set
+		 * @private
 		 */
 		_setOptions: function(options) {
 			$.each(options, $.proxy(function(key, value) {
@@ -843,12 +875,12 @@
 		 * @private
 		 */
 		_checkPanWhenZoomed: function(scale) {
-			if (!scale) {
-				scale = this.getMatrix()[0];
-			}
 			var options = this.options;
 			if (options.panOnlyWhenZoomed) {
-				var toDisable = scale === options.minScale;
+				if (!scale) {
+					scale = this.getMatrix()[0];
+				}
+				var toDisable = scale <= options.minScale;
 				if (options.disablePan !== toDisable) {
 					this.option('disablePan', toDisable);
 				}
@@ -857,10 +889,12 @@
 
 		/**
 		 * Initialize base styles for the element and its parent
+		 * @private
 		 */
 		_initStyle: function() {
 			var styles = {
-				// Set to defaults for the namespace
+				// Set the same default whether SVG or HTML
+				// transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+
 				'transform-origin': this.isSVG ? '0 0' : '50% 50%'
 			};
 			// Set elem styles
@@ -872,7 +906,7 @@
 			// Set parent to relative if set to static
 			var $parent = this.$parent;
 			// No need to add styles to the body
-			if ($parent.length && !$.nodeName($parent[0], 'body')) {
+			if ($parent.length && !$.nodeName(this.parent, 'body')) {
 				styles = {
 					overflow: 'hidden'
 				};
@@ -885,6 +919,7 @@
 
 		/**
 		 * Undo any styles attached in this plugin
+		 * @private
 		 */
 		_resetStyle: function() {
 			this.$elem.css({
@@ -899,13 +934,15 @@
 
 		/**
 		 * Binds all necessary events
+		 * @private
 		 */
 		_bind: function() {
 			var self = this;
 			var options = this.options;
 			var ns = options.eventNamespace;
-			var str_start = 'touchstart' + ns + ' mousedown' + ns;
-			var str_click = 'touchend' + ns + ' click' + ns;
+			var str_down = 'mousedown' + ns + ' pointerdown' + ns + ' MSPointerDown' + ns;
+			var str_start = 'touchstart' + ns + ' ' + str_down;
+			var str_click = 'touchend' + ns + ' click' + ns + ' pointerup' + ns + ' MSPointerUp' + ns;
 			var events = {};
 			var $reset = this.$reset;
 			var $zoomRange = this.$zoomRange;
@@ -927,8 +964,10 @@
 						// Touch
 						(touches = e.touches || e.originalEvent.touches) &&
 							((touches.length === 1 && !options.disablePan) || touches.length === 2) :
-						// Mouse: Ignore right click
-						!options.disablePan && e.which === options.which) {
+						// Mouse/Pointer: Ignore unexpected click types
+						// Support: IE10 only
+						// IE10 does not support e.button for MSPointerDown, but does have e.which
+						!options.disablePan && (e.which || e.originalEvent.which) === options.which) {
 
 						e.preventDefault();
 						e.stopPropagation();
@@ -990,8 +1029,8 @@
 
 			if ($zoomRange.length) {
 				events = {};
-				// Cannot prevent default action here, just use mousedown
-				events[ 'mousedown' + ns ] = function() {
+				// Cannot prevent default action here
+				events[ str_down ] = function() {
 					self.transition(true);
 				};
 				// Zoom on input events if available and change events
@@ -1005,6 +1044,7 @@
 
 		/**
 		 * Unbind all events
+		 * @private
 		 */
 		_unbind: function() {
 			this.$elem
@@ -1016,6 +1056,7 @@
 
 		/**
 		 * Builds the original transform value
+		 * @private
 		 */
 		_buildTransform: function() {
 			// Save the original transform
@@ -1026,7 +1067,7 @@
 
 		/**
 		 * Set transition property for later use when zooming
-		 * If SVG, create necessary animations elements for translations and scaling
+		 * @private
 		 */
 		_buildTransition: function() {
 			if (this._transform) {
@@ -1040,6 +1081,7 @@
 		 * Remember pythagorean?
 		 * @param {Array} touches
 		 * @returns {Number} Returns the distance
+		 * @private
 		 */
 		_getDistance: function(touches) {
 			var touch1 = touches[0];
@@ -1050,6 +1092,7 @@
 		/**
 		 * Constructs an approximated point in the middle of two touch points
 		 * @returns {Object} Returns an object containing pageX and pageY
+		 * @private
 		 */
 		_getMiddle: function(touches) {
 			var touch1 = touches[0];
@@ -1065,6 +1108,7 @@
 		 * The event is passed the Panzoom instance
 		 * @param {String|jQuery.Event} event
 		 * @param {Mixed} arg1[, arg2, arg3, ...] Arguments to append to the trigger
+		 * @private
 		 */
 		_trigger: function (event) {
 			if (typeof event === 'string') {
@@ -1078,8 +1122,12 @@
 		 * This is bound to mouse/touchmove on the element
 		 * @param {jQuery.Event} event An event with pageX, pageY, and possibly the touches list
 		 * @param {TouchList} [touches] The touches list if present
+		 * @private
 		 */
 		_startMove: function(event, touches) {
+			if (this.panning) {
+				return;
+			}
 			var move, moveEvent, endEvent,
 				startDistance, startScale, startMiddle,
 				startPageX, startPageY, touch;
@@ -1091,11 +1139,18 @@
 			var origPageX = +original[4];
 			var origPageY = +original[5];
 			var panOptions = { matrix: matrix, animate: 'skip' };
+			var type = event.type;
 
 			// Use proper events
-			if (event.type === 'touchstart') {
+			if (type === 'pointerdown') {
+				moveEvent = 'pointermove';
+				endEvent = 'pointerup';
+			} else if (type === 'touchstart') {
 				moveEvent = 'touchmove';
 				endEvent = 'touchend';
+			} else if (type === 'MSPointerDown') {
+				moveEvent = 'MSPointerMove';
+				endEvent = 'MSPointerUp';
 			} else {
 				moveEvent = 'mousemove';
 				endEvent = 'mouseup';
@@ -1130,7 +1185,7 @@
 					self.zoom(diff * (options.increment / 100) + startScale, {
 						focal: middle,
 						matrix: matrix,
-						animate: false
+						animate: 'skip'
 					});
 
 					// Set pan

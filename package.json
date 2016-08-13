@@ -1,13 +1,12 @@
 {
   "name": "jquery.panzoom",
-  "version": "3.1.1",
+  "version": "3.2.1",
   "description": "A jQuery plugin to pan and/or zoom elements using CSS3",
   "main": "dist/jquery.panzoom.js",
   "files": [
     "MIT-License.txt",
     "dist/jquery.panzoom.js",
-    "dist/jquery.panzoom.min.js",
-    "src/panzoom.js"
+    "dist/jquery.panzoom.min.js"
   ],
   "keywords": [
     "jquery",

@@ -77,7 +77,7 @@ module.exports = function( grunt ) {
 				'test/bdd/*.js'
 			],
 			options: {
-				jshintrc: '.jshintrc'
+				jshintrc: true
 			}
 		},
 		uglify: {
@@ -105,12 +105,12 @@ module.exports = function( grunt ) {
 				files: [
 					'<%= jshint.all %>',
 					'package.json',
-					'.jshintrc',
 					'test/index.html'
 				],
 				tasks: 'dev',
 				options: {
-					livereload: 35711
+					livereload: 35711,
+					atBegin: true
 				}
 			},
 			test: {

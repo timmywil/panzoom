@@ -11,7 +11,7 @@ For common support questions, see [the FAQ](https://github.com/timmywil/jquery.p
 
 ## Dependencies
 
-jquery.panzoom prefers jQuery 3.0.0+, but works with jQuery 1.9.0+ and jQuery 2.0.0+.
+jquery.panzoom prefers jQuery 3.0.0+, but works with jQuery 1.9.0+ and jQuery 2.0.0+. jquery.panzoom supports IE9+.
 
 ## Mobile support
 
@@ -21,12 +21,15 @@ You'll be amazed at how well this performs on your mobile device.
 
 iOS and Android are supported.
 
-**Touch** and **mouse** events are supported.
+**Pointer (IE 10+)**, **touch**, and **mouse** events are supported.
 
 ## SVG support
 
-Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG. Note that animations do not work on SVG elements,
-but one could implement transitions manually by overriding the `setTransform()` method and integrating a tweening library for javascript animations (such as [tween.js](http://www.createjs.com/#!/TweenJS)).
+Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
+
+In IE9-11 and Edge 13-14+, CSS animations/transitions do not work on SVG elements, at least for the transform style. They do work in other browsers.
+
+One could implement transitions manually in those browsers by overriding the `setTransform()` method and integrating a tweening library for javascript animations (such as [tween.js](http://www.createjs.com/#!/TweenJS)).
 
 **Compatibility note:** *There is a [known issue with Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=530985) and using the `focal` option. Firefox does not correctly maintain the dimensions of SVG parent elements, which throws off offsets. If using the `focal` option with SVG, the workaround is to set the correct offset on the Panzoom instance manually using `Panzoom.prototype.parentOffset` ([example](http://jsfiddle.net/timmywil/Vu8nA/)).*
 
