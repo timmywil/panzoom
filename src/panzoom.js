@@ -230,6 +230,7 @@
 		this.$set = options.$set && options.$set.length ? options.$set : $elem;
 		this.$doc = $(elem.ownerDocument || document);
 		this.$parent = $elem.parent();
+		this.parent = this.$parent[0];
 
 		// This is SVG if the namespace is SVG
 		// However, while <svg> elements are SVG, we want to treat those like other elements
@@ -377,7 +378,7 @@
 		 */
 		resetDimensions: function() {
 			// Reset container properties
-			this.container = this.$parent[0].getBoundingClientRect();
+			this.container = this.parent.getBoundingClientRect();
 
 			// Set element properties
 			var elem = this.elem;
@@ -893,7 +894,7 @@
 			// Set parent to relative if set to static
 			var $parent = this.$parent;
 			// No need to add styles to the body
-			if ($parent.length && !$.nodeName($parent[0], 'body')) {
+			if ($parent.length && !$.nodeName(this.parent, 'body')) {
 				styles = {
 					overflow: 'hidden'
 				};
