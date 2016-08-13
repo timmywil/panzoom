@@ -512,7 +512,6 @@
 		/**
 		 * Given a matrix object, quickly set the current matrix of the element
 		 * @param {Array|String} matrix
-		 * @param {Boolean} [animate] Whether to animate the transform change
 		 * @param {Object} [options]
 		 * @param {Boolean|String} [options.animate] Whether to animate the transform change, or 'skip' indicating that it is unnecessary to set
 		 * @param {Boolean} [options.contain] Override the global contain option
@@ -789,6 +788,7 @@
 		/**
 		 * Internally sets options
 		 * @param {Object} options - An object literal of options to set
+		 * @private
 		 */
 		_setOptions: function(options) {
 			$.each(options, $.proxy(function(key, value) {
@@ -875,12 +875,12 @@
 		 * @private
 		 */
 		_checkPanWhenZoomed: function(scale) {
-			if (!scale) {
-				scale = this.getMatrix()[0];
-			}
 			var options = this.options;
 			if (options.panOnlyWhenZoomed) {
-				var toDisable = scale === options.minScale;
+				if (!scale) {
+					scale = this.getMatrix()[0];
+				}
+				var toDisable = scale <= options.minScale;
 				if (options.disablePan !== toDisable) {
 					this.option('disablePan', toDisable);
 				}
@@ -889,6 +889,7 @@
 
 		/**
 		 * Initialize base styles for the element and its parent
+		 * @private
 		 */
 		_initStyle: function() {
 			var styles = {
@@ -918,6 +919,7 @@
 
 		/**
 		 * Undo any styles attached in this plugin
+		 * @private
 		 */
 		_resetStyle: function() {
 			this.$elem.css({
@@ -932,6 +934,7 @@
 
 		/**
 		 * Binds all necessary events
+		 * @private
 		 */
 		_bind: function() {
 			var self = this;
@@ -1041,6 +1044,7 @@
 
 		/**
 		 * Unbind all events
+		 * @private
 		 */
 		_unbind: function() {
 			this.$elem
@@ -1052,6 +1056,7 @@
 
 		/**
 		 * Builds the original transform value
+		 * @private
 		 */
 		_buildTransform: function() {
 			// Save the original transform
@@ -1062,6 +1067,7 @@
 
 		/**
 		 * Set transition property for later use when zooming
+		 * @private
 		 */
 		_buildTransition: function() {
 			if (this._transform) {
@@ -1075,6 +1081,7 @@
 		 * Remember pythagorean?
 		 * @param {Array} touches
 		 * @returns {Number} Returns the distance
+		 * @private
 		 */
 		_getDistance: function(touches) {
 			var touch1 = touches[0];
@@ -1085,6 +1092,7 @@
 		/**
 		 * Constructs an approximated point in the middle of two touch points
 		 * @returns {Object} Returns an object containing pageX and pageY
+		 * @private
 		 */
 		_getMiddle: function(touches) {
 			var touch1 = touches[0];
@@ -1100,6 +1108,7 @@
 		 * The event is passed the Panzoom instance
 		 * @param {String|jQuery.Event} event
 		 * @param {Mixed} arg1[, arg2, arg3, ...] Arguments to append to the trigger
+		 * @private
 		 */
 		_trigger: function (event) {
 			if (typeof event === 'string') {
@@ -1113,6 +1122,7 @@
 		 * This is bound to mouse/touchmove on the element
 		 * @param {jQuery.Event} event An event with pageX, pageY, and possibly the touches list
 		 * @param {TouchList} [touches] The touches list if present
+		 * @private
 		 */
 		_startMove: function(event, touches) {
 			if (this.panning) {

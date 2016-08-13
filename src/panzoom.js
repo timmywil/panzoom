@@ -875,12 +875,12 @@
 		 * @private
 		 */
 		_checkPanWhenZoomed: function(scale) {
-			if (!scale) {
-				scale = this.getMatrix()[0];
-			}
 			var options = this.options;
 			if (options.panOnlyWhenZoomed) {
-				var toDisable = scale === options.minScale;
+				if (!scale) {
+					scale = this.getMatrix()[0];
+				}
+				var toDisable = scale <= options.minScale;
 				if (options.disablePan !== toDisable) {
 					this.option('disablePan', toDisable);
 				}
