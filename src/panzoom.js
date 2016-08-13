@@ -737,7 +737,7 @@
 
 			// Calling zoom may still pan the element
 			this.setMatrix(matrix, {
-				animate: typeof options.animate === 'boolean' ? options.animate : animate,
+				animate: typeof options.animate !== 'undefined' ? options.animate : animate,
 				// Set the zoomRange value
 				range: !options.noSetRange
 			});
@@ -1164,7 +1164,7 @@
 					self.zoom(diff * (options.increment / 100) + startScale, {
 						focal: middle,
 						matrix: matrix,
-						animate: false
+						animate: 'skip'
 					});
 
 					// Set pan
