@@ -19,7 +19,23 @@
   "undef": true,
   "unused": true,
   "wsh": true,
+
   "globals": {
-	"define": false
+	"define": true,
+	"require": true,
+	"module": true,
+	"exports": true,
+	"Modernizr": true,
+	"process": true,
+	"__dirname": true,
+	"console": true,
+	"Buffer": true,
+	"describe": true,
+	"it": true,
+	"expect": true,
+	"beforeEach": true,
+	"afterEach": true,
+	"before": true,
+	"after": true
   }
 }
