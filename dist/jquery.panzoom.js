@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v3.2.1
- * Updated: Sat Aug 13 2016
+ * Updated: Sat Aug 27 2016
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
  * Released under the MIT license
@@ -1128,7 +1128,7 @@
 			if (this.panning) {
 				return;
 			}
-			var move, moveEvent, endEvent,
+			var moveEvent, endEvent,
 				startDistance, startScale, startMiddle,
 				startPageX, startPageY, touch;
 			var self = this;
@@ -1169,63 +1169,76 @@
 			// Trigger start event
 			this._trigger('start', event, touches);
 
-			if (touches && touches.length === 2) {
-				startDistance = this._getDistance(touches);
-				startScale = +matrix[0];
-				startMiddle = this._getMiddle(touches);
-				move = function(e) {
-					e.preventDefault();
-					touches = e.touches || e.originalEvent.touches;
+			var setStart = function(event, touches) {
+				if (touches) {
+					if (touches.length === 2) {
+						if (startDistance != null) {
+							return;
+						}
+						startDistance = self._getDistance(touches);
+						startScale = +matrix[0];
+						startMiddle = self._getMiddle(touches);
+						return;
+					}
+					if (startPageX != null) {
+						return;
+					}
+					if ((touch = touches[0])) {
+						startPageX = touch.pageX;
+						startPageY = touch.pageY;
+					}
+				}
+				if (startPageX != null) {
+					return;
+				}
+				startPageX = event.pageX;
+				startPageY = event.pageY;
+			};
 
-					// Calculate move on middle point
-					var middle = self._getMiddle(touches);
-					var diff = self._getDistance(touches) - startDistance;
+			setStart(event, touches);
 
-					// Set zoom
-					self.zoom(diff * (options.increment / 100) + startScale, {
-						focal: middle,
-						matrix: matrix,
-						animate: 'skip'
-					});
+			var move = function(e) {
+				var coords;
+				e.preventDefault();
+				touches = e.touches || e.originalEvent.touches;
+				setStart(e, touches);
 
-					// Set pan
-					self.pan(
-						+matrix[4] + middle.clientX - startMiddle.clientX,
-						+matrix[5] + middle.clientY - startMiddle.clientY,
-						panOptions
-					);
-					startMiddle = middle;
-				};
-			} else {
-				if (touches && (touch = touches[0])) {
-					startPageX = touch.pageX;
-					startPageY = touch.pageY;
-				} else {
-					startPageX = event.pageX;
-					startPageY = event.pageY;
+				if (touches) {
+					if (touches.length === 2) {
+
+						// Calculate move on middle point
+						var middle = self._getMiddle(touches);
+						var diff = self._getDistance(touches) - startDistance;
+
+						// Set zoom
+						self.zoom(diff * (options.increment / 100) + startScale, {
+							focal: middle,
+							matrix: matrix,
+							animate: 'skip'
+						});
+
+						// Set pan
+						self.pan(
+							+matrix[4] + middle.clientX - startMiddle.clientX,
+							+matrix[5] + middle.clientY - startMiddle.clientY,
+							panOptions
+						);
+						startMiddle = middle;
+						return;
+					}
+					coords = touches[0] || { pageX: 0, pageY: 0 };
 				}
 
-				/**
-				 * Mousemove/touchmove function to pan the element
-				 * @param {Object} e Event object
-				 */
-				move = function(e) {
-					e.preventDefault();
-					touches = e.touches || e.originalEvent.touches;
-					var coords;
-					if (touches) {
-						coords = touches[0] || { pageX: 0, pageY: 0 };
-					} else {
-						coords = e;
-					}
+				if (!coords) {
+					coords = e;
+				}
 
-					self.pan(
-						origPageX + coords.pageX - startPageX,
-						origPageY + coords.pageY - startPageY,
-						panOptions
-					);
-				};
-			}
+				self.pan(
+					origPageX + coords.pageX - startPageX,
+					origPageY + coords.pageY - startPageY,
+					panOptions
+				);
+			};
 
 			// Bind the handlers
 			$(document)
