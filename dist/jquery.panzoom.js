@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v3.2.2
- * Updated: Sat Aug 27 2016
+ * Updated: Sun Aug 28 2016
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
  * Released under the MIT license
@@ -297,12 +297,15 @@
 		which: 1,
 
 		// The increment at which to zoom
-		// adds/subtracts to the scale each time zoomIn/Out is called
+		// Should be a number greater than 0
 		increment: 0.3,
 
-		// Turns on exponential zooming
-		// If false, zooming will be incremented linearly
-		exponential: true,
+		// When no scale is passed, this option tells
+		// the `zoom` method to increment
+		// the scale *linearly* based on the increment option.
+		// This often ends up looking like very little happened at larger zoom levels.
+		// The default is to multiply/divide the scale based on the increment.
+		linearZoom: false,
 
 		// Pan only when the scale is greater than minScale
 		panOnlyWhenZoomed: false,
@@ -694,22 +697,16 @@
 
 			// Calculate zoom based on increment
 			if (typeof scale !== 'number') {
-				// Just use a number a little greater than 1
-				// Below 1 can use normal increments
-				if (options.exponential && startScale - options.increment >= 1) {
-					scale = Math[scale ? 'sqrt' : 'pow'](startScale, 2);
-				} else {
+				if (options.linearZoom) {
 					scale = startScale + (options.increment * (scale ? -1 : 1));
+				} else {
+					scale = scale ? (startScale / (1 + options.increment)) : (startScale * (1 + options.increment));
 				}
 				animate = true;
 			}
 
 			// Constrain scale
-			if (scale > options.maxScale) {
-				scale = options.maxScale;
-			} else if (scale < options.minScale) {
-				scale = options.minScale;
-			}
+			scale = Math.max(Math.min(scale, options.maxScale), options.minScale);
 
 			// Calculate focal point based on scale
 			var focal = options.focal;
