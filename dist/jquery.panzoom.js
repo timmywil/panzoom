@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v3.2.2
- * Updated: Sun Aug 28 2016
+ * Updated: Thu Oct 06 2016
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
  * Released under the MIT license
@@ -570,7 +570,9 @@
 				if (contain === 'invert' || (contain === 'automatic' && zoomAspectH < 1.01)) {
 					matrix[5] = Math.max(Math.min(matrix[5], spaceHTop - dims.border.top), -spaceHBottom);
 				} else {
-					matrix[5] = Math.min(Math.max(matrix[5], spaceHTop), -spaceHBottom);
+					var originalHeight = height / scale;
+					var originDiff = (originalHeight - height) / 2;
+					matrix[5] = Math.max(Math.min(matrix[5], conHeight - originalHeight + originDiff), -originDiff);
 				}
 			}
 
