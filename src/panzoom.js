@@ -539,33 +539,34 @@
 					this.resetDimensions();
 					dims = this.dimensions;
 				}
-				var spaceWLeft, spaceWRight, scaleDiff;
 				var container = this.container;
 				var width = dims.width;
 				var height = dims.height;
-				var parentBorderBottom = parseInt(this.$parent.css('border-left-width'),10);
+				var parentBorderBottom = parseInt(this.$parent.css('border-bottom-width'), 10);
+				var parentBorderRight = parseInt(this.$parent.css('border-right-width'), 10);
 				var originalElementHeight = this.elem.offsetHeight;
-				var conWidth = container.width;
+				var originalElementWidth = this.elem.offsetWidth;
+				var conWidth = container.width - parentBorderRight;
 				var conHeight = container.height - parentBorderBottom;
 				var zoomAspectW = conWidth / width;
 				var zoomAspectH = conHeight / height;
 
-				// If the element is not naturally centered,
-				// assume full space right
-				if (this.$parent.css('textAlign') !== 'center' || $.css(this.elem, 'display') !== 'inline') {
-					// offsetWidth gets us the width without the transform
-					scaleDiff = (width - this.elem.offsetWidth) / 2;
-					spaceWLeft = scaleDiff - dims.border.left;
-					spaceWRight = width - conWidth - scaleDiff + dims.border.right;
-				} else {
-					spaceWLeft = spaceWRight = ((width - conWidth) / 2);
-				}
+
+				//Constrain Y-axis position to the container
+				//Be careful about how Origin is being calculated when transform matrix is used
+
+				//Original X origin - Scaled X Origin
+				var originX = originalElementWidth / 2 - width / 2;
+
+				//Original Element Max X + OriginX - ContainerBorderRight
+				var maxXPos = conWidth - originalElementWidth + originX - parentBorderRight;
 
 				if (contain === 'invert' || contain === 'automatic' && zoomAspectW < 1.01) {
-					matrix[4] = Math.max(Math.min(matrix[4], spaceWLeft - dims.border.left), -spaceWRight);
+					matrix[4] = Math.min(Math.max(matrix[4], maxXPos), -originX);
 				} else {
-					matrix[4] = Math.min(Math.max(matrix[4], spaceWLeft), -spaceWRight);
+					matrix[4] = Math.max(Math.min(matrix[4], maxXPos), -originX);
 				}
+
 
 				//Constrain Y-axis position to the container
 				//Be careful about how Origin is being calculated when transform matrix is used
