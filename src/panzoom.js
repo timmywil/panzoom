@@ -543,8 +543,10 @@
 				var container = this.container;
 				var width = dims.width;
 				var height = dims.height;
+				var parentBorderBottom = parseInt(this.$parent.css('border-left-width'),10);
+				var originalElementHeight = this.elem.offsetHeight;
 				var conWidth = container.width;
-				var conHeight = container.height;
+				var conHeight = container.height - parentBorderBottom;
 				var zoomAspectW = conWidth / width;
 				var zoomAspectH = conHeight / height;
 
@@ -558,8 +560,6 @@
 				} else {
 					spaceWLeft = spaceWRight = ((width - conWidth) / 2);
 				}
-				var spaceHTop = ((height - conHeight) / 2) + dims.border.top;
-				var spaceHBottom = ((height - conHeight) / 2) - dims.border.top - dims.border.bottom;
 
 				if (contain === 'invert' || contain === 'automatic' && zoomAspectW < 1.01) {
 					matrix[4] = Math.max(Math.min(matrix[4], spaceWLeft - dims.border.left), -spaceWRight);
@@ -567,12 +567,19 @@
 					matrix[4] = Math.min(Math.max(matrix[4], spaceWLeft), -spaceWRight);
 				}
 
+				//Constrain Y-axis position to the container
+				//Be careful about how Origin is being calculated when transform matrix is used
+
+				//Original Y origin - Scaled Y Origin
+				var originY = originalElementHeight / 2 - height / 2;
+
+				//Original Element Max Y + OriginY - ContainerBorderBottom
+				var maxYPos = conHeight - originalElementHeight + originY - parentBorderBottom;
+
 				if (contain === 'invert' || (contain === 'automatic' && zoomAspectH < 1.01)) {
-					matrix[5] = Math.max(Math.min(matrix[5], spaceHTop - dims.border.top), -spaceHBottom);
+					matrix[5] = Math.min(Math.max(matrix[5], maxYPos), -originY);
 				} else {
-					var originalHeight = height / scale;
-					var originDiff = (originalHeight - height) / 2;
-					matrix[5] = Math.max(Math.min(matrix[5], conHeight - originalHeight + originDiff), -originDiff);
+					matrix[5] = Math.max(Math.min(matrix[5], maxYPos), -originY);
 				}
 			}
 

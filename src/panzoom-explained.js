@@ -1,6 +1,6 @@
 /**
- * @license jquery.panzoom.js v3.2.2
- * Updated: Tue Oct 11 2016
+ * @license jquery.panzoom.js v@VERSION
+ * Updated: @DATE
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
  * Released under the MIT license
@@ -543,10 +543,8 @@
 				var container = this.container;
 				var width = dims.width;
 				var height = dims.height;
-				var parentBorderBottom = parseInt(this.$parent.css('border-left-width'),10);
-				var originalElementHeight = this.elem.offsetHeight;
 				var conWidth = container.width;
-				var conHeight = container.height - parentBorderBottom;
+				var conHeight = container.height;
 				var zoomAspectW = conWidth / width;
 				var zoomAspectH = conHeight / height;
 
@@ -560,6 +558,8 @@
 				} else {
 					spaceWLeft = spaceWRight = ((width - conWidth) / 2);
 				}
+				var spaceHTop = ((height - conHeight) / 2) + dims.border.top;
+				var spaceHBottom = ((height - conHeight) / 2) - dims.border.top - dims.border.bottom;
 
 				if (contain === 'invert' || contain === 'automatic' && zoomAspectW < 1.01) {
 					matrix[4] = Math.max(Math.min(matrix[4], spaceWLeft - dims.border.left), -spaceWRight);
@@ -567,20 +567,45 @@
 					matrix[4] = Math.min(Math.max(matrix[4], spaceWLeft), -spaceWRight);
 				}
 
-				//Constrain Y-axis position to the container
-				//Be careful about how Origin is being calculated when transform matrix is used
-
-				//Original Y origin - Scaled Y Origin
-				var originY = originalElementHeight / 2 - height / 2;
-
-				//Original Element Max Y + OriginY - ContainerBorderBottom
-				var maxYPos = conHeight - originalElementHeight + originY - parentBorderBottom;
-
+				console.log(spaceHBottom);
+				var originalHeight = height / scale;
+				var originDiff = (originalHeight - height) / 2;
+				var newY = conHeight - originalHeight + originDiff;
 				if (contain === 'invert' || (contain === 'automatic' && zoomAspectH < 1.01)) {
-					matrix[5] = Math.min(Math.max(matrix[5], maxYPos), -originY);
+
+					console.log('@1', 'originalHeight',originalHeight, 'height',height, 'scale',scale, 'originDiff',originDiff, 'matrix[5]',matrix[5], 'newY',newY, '-originDiff',-originDiff);
+					matrix[5] = Math.min(Math.max(matrix[5], newY), -originDiff);
+					if(matrix[5] < newY) {
+						matrix[5] = newY
+					}
+					if(matrix[5] > -originDiff) {
+						matrix[5] = -originDiff
+					}
+					//matrix[5] = Math.max(Math.min(matrix[5], spaceHTop - dims.border.top), -spaceHBottom);
+					//matrix[5] = Math.min(Math.max(matrix[5], spaceHTop), -spaceHBottom);
+					//Math.max(Math.min(matrix[5], conHeight - originalHeight + originDiff - dims.border.top), -originDiff);
+
+					//var newY = conHeight - originalHeight + originDiff
+					//if(matrix[5] > newY) {
+					//	matrix[5] = newY
+					//}
+					//if(matrix[5] < -originDiff) {
+					//	matrix[5] = -originDiff
+					//}
+
 				} else {
-					matrix[5] = Math.max(Math.min(matrix[5], maxYPos), -originY);
+					//matrix[5] = Math.min(Math.max(matrix[5], spaceHTop), -spaceHBottom);
+					console.log('@2');
+					matrix[5] = Math.max(Math.min(matrix[5], newY), -originDiff);
+					//if(matrix[5] > newY) {
+					//	matrix[5] = newY
+					//}
+					//if(matrix[5] < -originDiff) {
+					//	matrix[5] = -originDiff
+					//}
+					//console.log(matrix);
 				}
+
 			}
 
 			// Animate
