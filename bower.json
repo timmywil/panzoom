@@ -14,8 +14,8 @@
     "Gruntfile.js"
   ],
   "devDependencies": {
-    "jquery": "^3.0.0",
     "chai": "~1.9.0",
+    "jquery": "^3.0.0",
     "jquery-mousewheel": "~3.1.9",
     "mocha": "~1.17.1"
   }

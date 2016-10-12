@@ -28,7 +28,7 @@
     "grunt-bowercopy": "^1.2.4",
     "grunt-compare-size": "^0.4.2",
     "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-jsonlint": "^1.1.0",
     "grunt-mocha": "^1.0.2",
