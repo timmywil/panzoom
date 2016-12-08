@@ -438,7 +438,7 @@
 		 */
 		resetPan: function(options) {
 			var origMatrix = this.getMatrix(this._origTransform);
-			this.pan(origMatrix[4], origMatrix[5], createResetOptions(options));
+			this.pan(origMatrix[4], origMatrix[5], createResetOptions(options), true);
 		},
 
 		/**
@@ -643,8 +643,8 @@
 		 * @param {Boolean} [options.silent] Silence the pan event. Note that this will also silence the setMatrix change event.
 		 * @param {Boolean} [options.relative] Make the x and y values relative to the existing matrix
 		 */
-		pan: function(x, y, options) {
-			if (this.options.disablePan) { return; }
+		pan: function(x, y, options, force) {
+			if (this.options.disablePan && !(force || false)) { return; }
 			if (!options) { options = {}; }
 			var matrix = options.matrix;
 			if (!matrix) {
