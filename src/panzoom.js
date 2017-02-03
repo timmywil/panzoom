@@ -739,8 +739,8 @@
 				clientV = offsetM.x(surfaceM.x(surfaceV));
 				matrix[4] = +matrix[4] + (clientX - clientV.e(0));
 				matrix[5] = +matrix[5] + (clientY - clientV.e(1));
-			} else if (options.zoomCentered === 'visible') {
-				// Keep image centered on same coordinates
+			} else if (options.zoomCenter === 'visible') {
+				// Keep image centered on middle of visible part of image
 				matrix[4] = +matrix[4] * scale / matrix[0];
 				matrix[5] = +matrix[5] * scale / matrix[0];
 			}
