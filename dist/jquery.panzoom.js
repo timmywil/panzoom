@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v3.2.2
- * Updated: Sun Aug 28 2016
+ * Updated: Wed Apr 12 2017
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
  * Released under the MIT license
@@ -541,8 +541,8 @@
 				}
 				var spaceWLeft, spaceWRight, scaleDiff;
 				var container = this.container;
-				var width = dims.width;
-				var height = dims.height;
+				var width = this.elem.offsetWidth * scale;
+				var height = this.elem.offsetHeight * scale;
 				var conWidth = container.width;
 				var conHeight = container.height;
 				var zoomAspectW = conWidth / width;
