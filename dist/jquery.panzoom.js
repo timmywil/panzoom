@@ -310,6 +310,9 @@
 		// Pan only when the scale is greater than minScale
 		panOnlyWhenZoomed: false,
 
+		// Pan sensitivity, min pixels to start to panning
+		panSensitivity: 4,
+
 		// min and max zoom scales
 		minScale: 0.3,
 		maxScale: 6,
@@ -957,7 +960,7 @@
 			if (!options.disablePan || !options.disableZoom) {
 				events[ str_start ] = function(e) {
 					var touches;
-					if (e.type === 'touchstart' ?
+					if ( /touchstart|pointerdown/.test(e.type) ?  // fix double events pointer/touch on Chrome >=55 #303
 						// Touch
 						(touches = e.touches || e.originalEvent.touches) &&
 							((touches.length === 1 && !options.disablePan) || touches.length === 2) :
@@ -1125,6 +1128,10 @@
 			if (this.panning) {
 				return;
 			}
+
+			var type = event.type;
+			if (window.PointerEvents&&(type === 'touchstart')) return false;  // fix double events pointer/touch on Chrome >=55 #303
+
 			var moveEvent, endEvent,
 				startDistance, startScale, startMiddle,
 				startPageX, startPageY, touch;
@@ -1136,7 +1143,9 @@
 			var origPageX = +original[4];
 			var origPageY = +original[5];
 			var panOptions = { matrix: matrix, animate: 'skip' };
-			var type = event.type;
+
+			// Indicate that we are currently panning
+			//this.panning = true;
 
 			// Use proper events
 			if (type === 'pointerdown') {
@@ -1144,7 +1153,7 @@
 				endEvent = 'pointerup';
 			} else if (type === 'touchstart') {
 				moveEvent = 'touchmove';
-				endEvent = 'touchend';
+				endEvent = 'touchend';				
 			} else if (type === 'MSPointerDown') {
 				moveEvent = 'MSPointerMove';
 				endEvent = 'MSPointerUp';
@@ -1159,9 +1168,6 @@
 
 			// Remove any transitions happening
 			this.transition(true);
-
-			// Indicate that we are currently panning
-			this.panning = true;
 
 			// Trigger start event
 			this._trigger('start', event, touches);
@@ -1196,7 +1202,8 @@
 
 			var move = function(e) {
 				var coords;
-				e.preventDefault();
+				//e.preventDefault();  // chrome passive event warning https://www.chromestatus.com/features/5093566007214080  #328
+				e.stopPropagation();
 				touches = e.touches || e.originalEvent.touches;
 				setStart(e, touches);
 
@@ -1230,6 +1237,11 @@
 					coords = e;
 				}
 
+				if (!self.panning) {
+					if ((Math.abs(coords.pageX-startPageX)<self.options.panSensitivity)&&(Math.abs(coords.pageY-startPageY)<self.options.panSensitivity)) return true;
+				}
+
+				self.panning = true;
 				self.pan(
 					origPageX + coords.pageX - startPageX,
 					origPageY + coords.pageY - startPageY,
