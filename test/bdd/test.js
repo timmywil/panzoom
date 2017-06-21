@@ -147,6 +147,26 @@ describe('Panzoom', function() {
 		// Clean-up
 		$elem.css( 'transform', '' );
 		$elem.panzoom('destroy');
+		expect( $elem.css('transform') ).to.match( rnoneMatrix );
+	});
+	it('should preserve matrix transformations like rotate', function() {
+		$elem.panzoom('destroy');
+		var panzoom = $elem.panzoom({ $zoomRange: $zoomRange }).panzoom('instance');
+		var origMatrix = panzoom.getMatrix();
+		$elem.css( 'transform', 'rotate(60deg)' );
+		// scale * cos(60deg) -> scale is 1.0
+		expect( +panzoom.getMatrix()[0] ).to.be.closeTo(0.5, 0.00001);
+		// scale * sin(60deg) -> scale is 1.0
+		expect( +panzoom.getMatrix()[1] ).to.be.closeTo(0.866025, 0.00001);
+		$elem.panzoom('zoom');
+		// scale * cos(60deg) -> scale is 1.3
+		expect( +panzoom.getMatrix()[0] ).to.be.closeTo(0.65, 0.00001);
+		// scale * sin(60deg) -> scale is 1.3
+		expect( +panzoom.getMatrix()[1] ).to.be.closeTo(1.12583, 0.00001);
+		// Reset matrix
+		panzoom.setMatrix( origMatrix );
+		$elem.panzoom('destroy');
+		expect( $elem.css('transform') ).to.match( rnoneMatrix );
 	});
 	it('should create a new panzoom with buttons', function() {
 		$elem.panzoom({
