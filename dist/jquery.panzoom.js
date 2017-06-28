@@ -1,6 +1,6 @@
 /**
  * @license jquery.panzoom.js v3.2.2
- * Updated: Wed Jun 21 2017
+ * Updated: Wed Jun 28 2017
  * Add pan and zoom functionality to any element
  * Copyright (c) timmy willison
  * Released under the MIT license
@@ -970,7 +970,7 @@
 			if (!options.disablePan || !options.disableZoom) {
 				events[ str_start ] = function(e) {
 					var touches;
-					if (e.type === 'touchstart' ?
+					if (/touchstart|pointerdown/.test(e.type) ?  // fix double events pointer/touch on Chrome >=55 #303
 						// Touch
 						(touches = e.touches || e.originalEvent.touches) &&
 							((touches.length === 1 && !options.disablePan) || touches.length === 2) :
@@ -1138,6 +1138,12 @@
 			if (this.panning) {
 				return;
 			}
+
+      var type = event.type;
+			if (window.PointerEvent && (type === 'touchstart')) {  // fix double events pointer/touch on Chrome >=55 #303        
+//        return false;  
+      }
+
 			var moveEvent, endEvent,
 				startDistance, startScale, startMiddle,
 				startPageX, startPageY, touch;
@@ -1149,7 +1155,6 @@
 			var origPageX = +original[4];
 			var origPageY = +original[5];
 			var panOptions = { matrix: matrix, animate: 'skip' };
-			var type = event.type;
 
 			// Use proper events
 			if (type === 'pointerdown') {
@@ -1172,9 +1177,6 @@
 
 			// Remove any transitions happening
 			this.transition(true);
-
-			// Indicate that we are currently panning
-			this.panning = true;
 
 			// Trigger start event
 			this._trigger('start', event, touches);
@@ -1209,7 +1211,7 @@
 
 			var move = function(e) {
 				var coords;
-				e.preventDefault();
+				e.stopPropagation();  // chrome passive event warning https://www.chromestatus.com/features/5093566007214080  #328
 				touches = e.touches || e.originalEvent.touches;
 				setStart(e, touches);
 
@@ -1242,6 +1244,9 @@
 				if (!coords) {
 					coords = e;
 				}
+
+        // Indicate that we are currently panning
+        this.panning = true;
 
 				self.pan(
 					origPageX + coords.pageX - startPageX,
