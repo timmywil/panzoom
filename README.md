@@ -507,7 +507,7 @@ Fired whenever reset is called.
 
 Tests can be run by opening [test/index.html](http://timmywil.github.io/jquery.panzoom/test/) in a browser or by using [`grunt`](http://gruntjs.com/) and [phantomjs](http://phantomjs.org/).
 
-Tests are written with [mocha](http://visionmedia.github.com/mocha/) and [chai for bdd-style assertions](http://chaijs.com/api/bdd/).
+Tests are written with [mocha](https://mochajs.org/) and [chai for bdd-style assertions](http://chaijs.com/api/bdd/).
 
 See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CONTRIBUTING.md) for more info.
 
