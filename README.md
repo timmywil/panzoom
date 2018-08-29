@@ -337,6 +337,8 @@ Returns a boolean indicating whether the element is currently panning.
 $elem.panzoom("destroy");
 ```
 
+Unbinds all events and removes all data, including the Panzoom instance on the element.
+
 ### `instance()`
 
 ```js
@@ -344,8 +346,6 @@ var panzoom = $elem.panzoom("instance");
 ```
 
 Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will get that instance of Panzoom.
-
-Unbinds all events and removes all data, including the Panzoom instance on the element.
 
 ## Internal
 
