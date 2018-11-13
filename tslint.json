@@ -1,0 +1,21 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:latest", "tslint-config-prettier"],
+  "jsRules": {},
+  "rules": {
+    "member-access": [true, "no-public"],
+    "interface-name": false,
+    "no-bitwise": false,
+    "no-conditional-assignment": false,
+    "no-console": {
+      "severity": "warning",
+      "options": ["debug", "info", "log", "trace"]
+    },
+    "no-empty": [true, "allow-empty-catch", "allow-empty-functions"],
+    "no-namespace": false,
+    "no-shadowed-variable": false,
+    "no-submodule-imports": false,
+    "object-literal-sort-keys": false
+  },
+  "rulesDirectory": []
+}

@@ -1,4 +1,5 @@
 node_modules
-dist/.sizecache.json
-bower_components
+package-lock.json
 *.log
+panzoom.*
+.rpt2_cache/

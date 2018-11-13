@@ -1,15 +1,26 @@
 {
-  "name": "jquery.panzoom",
-  "version": "3.2.3",
-  "description": "A jQuery plugin to pan and/or zoom elements using CSS3",
-  "main": "dist/jquery.panzoom.js",
+  "name": "panzoom",
+  "version": "4.0.0-pre",
+  "description": "Pan and zoom elements using CSS transforms.",
+  "main": "panzoom.js",
+  "scripts": {
+    "types": "tsc -p tsconfig.json --noEmit",
+    "tslint": "tslint -p tsconfig.json -c tslint.json",
+    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\"",
+    "lint": "concurrently \"yarn types\" \"yarn tslint\" \"yarn prettier\"",
+    "lint:fix": "concurrently \"yarn types\" \"yarn tslint --fix\" \"precise-commits\"",
+    "dev": "rollup --config --watch",
+    "docs": "yarn typedoc --out docs/",
+    "build": "rollup --config && uglifyjs --compress --mangle --output panzoom.min.js -- panzoom.js",
+    "release": "semantic-release"
+  },
   "files": [
     "MIT-License.txt",
-    "dist/jquery.panzoom.js",
-    "dist/jquery.panzoom.min.js"
+    "panzoom.js",
+    "panzoom.min.js",
+    "README.md"
   ],
   "keywords": [
-    "jquery",
     "panzoom",
     "pan",
     "zoom",
@@ -17,27 +28,74 @@
     "dragging",
     "drag"
   ],
-  "repository": "timmywil/jquery.panzoom",
+  "repository": "timmywil/panzoom",
   "license": "MIT",
   "author": {
     "name": "Timmy Willison",
-    "email": "timmywillisn@gmail.com"
+    "email": "4timmywil@gmail.com"
   },
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-bowercopy": "^1.2.4",
-    "grunt-compare-size": "^0.4.2",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-uglify": "^2.0.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-jsonlint": "^1.1.0",
-    "grunt-mocha": "^1.0.2",
-    "gzip-js": "~0.3.2",
-    "load-grunt-tasks": "^3.5.0",
-    "lodash": "^4.13.1"
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "@commitlint/cli": "^7.5.2",
+    "@commitlint/config-conventional": "^7.5.0",
+    "@commitlint/prompt": "^7.5.0",
+    "@semantic-release/exec": "^3.3.2",
+    "@semantic-release/git": "^7.0.8",
+    "commitizen": "^3.1.1",
+    "commitlint": "^7.5.2",
+    "concurrently": "^4.1.0",
+    "husky": "^2.1.0",
+    "precise-commits": "^1.0.2",
+    "prettier": "^1.17.0",
+    "rollup": "^1.10.1",
+    "rollup-plugin-typescript2": "^0.21.0",
+    "semantic-release": "^15.13.3",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.1.6",
+    "uglify-js": "^3.4.9"
   },
-  "scripts": {
-    "test": "grunt test",
-    "build": "grunt dev"
+  "prettier": {
+    "printWidth": 100,
+    "semi": false,
+    "singleQuote": true,
+    "jsxBracketSameLine": true,
+    "arrowParens": "always"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint:fix",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "release": {
+    "branch": "master",
+    "ci": false,
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "yarn build && yarn docs"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "docs",
+            "panzoom.js",
+            "panzoom.min.js",
+            "package.json"
+          ]
+        }
+      ],
+      "@semantic-release/github"
+    ],
+    "tagFormat": "${version}"
   }
 }
