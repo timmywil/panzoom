@@ -27,13 +27,13 @@
     "grunt": "^1.0.1",
     "grunt-bowercopy": "^1.2.4",
     "grunt-compare-size": "^0.4.2",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-uglify": "^4.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-jsonlint": "^1.1.0",
     "grunt-mocha": "^1.0.2",
     "gzip-js": "~0.3.2",
-    "load-grunt-tasks": "^3.5.0",
+    "load-grunt-tasks": "^4.0.0",
     "lodash": "^4.13.1"
   },
   "scripts": {
