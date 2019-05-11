@@ -3,6 +3,7 @@
   "extends": ["tslint:latest", "tslint-config-prettier"],
   "jsRules": {},
   "rules": {
+    "only-arrow-functions": false,
     "member-access": [true, "no-public"],
     "interface-name": false,
     "no-bitwise": false,

@@ -1,13 +1,22 @@
 import typescript from 'rollup-plugin-typescript2'
 export default {
-  input: './index.ts',
-  plugins: [typescript()],
+  input: './panzoom.ts',
+  plugins: [
+    typescript({
+      tsconfigOverride: {
+        compilerOptions: {
+          module: 'ES2015'
+        }
+      },
+      exclude: ['node_modules', '**/*.test.ts']
+    })
+  ],
   output: {
     format: 'umd',
     name: 'Panzoom',
-    file: 'panzoom.js'
+    file: 'dist/panzoom.js'
   },
   watch: {
-    include: './index.ts'
+    include: './panzoom.ts'
   }
 }

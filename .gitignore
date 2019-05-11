@@ -1,5 +1,7 @@
 node_modules
 package-lock.json
 *.log
-panzoom.*
 .rpt2_cache/
+*.d.ts
+dist/
+coverage/
