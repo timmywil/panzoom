@@ -16,6 +16,7 @@
     "no-namespace": false,
     "no-shadowed-variable": false,
     "no-submodule-imports": false,
+    "no-implicit-dependencies": false,
     "object-literal-sort-keys": false
   },
   "rulesDirectory": []

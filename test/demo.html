@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Panzoom for panning and zooming elements using modern CSS</title>
+    <title>Panzoom</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style type="text/css">
       body {
         background: #f5fcff;
         color: #333666;
+        padding-left: 20px;
+        padding-right: 20px;
       }
       section {
         text-align: center;
@@ -22,9 +24,12 @@
         margin: 40px 0 0;
       }
     </style>
-    <script src="../panzoom.js"></script>
+    <script src="../dist/panzoom.js"></script>
   </head>
   <body>
+    <header>
+      <h1>Panzoom for panning and zooming elements using modern CSS</h1>
+    </header>
     <section>
       <h1>Panning and zooming</h1>
       <div class="parent">
@@ -1648,13 +1653,5 @@
         })()
       </script>
     </section>
-
-    <!-- Load livereload if not phantom or github -->
-    <script>
-      if (!window.phantom && !/github/.test(window.location.hostname))
-        document.write(
-          '<scr' + 'ipt src="http://' + location.hostname + ':35711/livereload.js"></scr' + 'ipt>'
-        )
-    </script>
   </body>
 </html>

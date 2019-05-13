@@ -1,7 +1,8 @@
 # Contributing to Panzoom
 
 - Prettier enforces the style guide and should at least format on commit. Make sure those changes are added to the commit.
-- Run unit tests with `yarn test`, and make sure `demo/index.html` works as it should.
+- Run unit tests with `yarn test`
+- Check demos with `yarn start`
 
 **Supported browsers**: IE11+, Edge, Firefox, Chrome, Safari, Opera, iOS & Android.
 

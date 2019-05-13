@@ -8,8 +8,9 @@ module.exports = function(config) {
     },
     karmaTypescriptConfig: {
       tsconfig: './tsconfig.json',
+      exclude: ['node_modules', 'test/demo'],
       compilerOptions: {
-        sourceMap: true
+        module: 'commonjs'
       }
     },
     reporters: ['progress', 'karma-typescript'],

@@ -3,6 +3,5 @@
  */
 const Panzoom: { awesome?: string } = {}
 Panzoom.awesome = 'awesome'
-console.log(Panzoom)
 
 export default Panzoom

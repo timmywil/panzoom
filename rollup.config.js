@@ -4,11 +4,11 @@ export default {
   plugins: [
     typescript({
       tsconfigOverride: {
+        exclude: ['node_modules', 'test'],
         compilerOptions: {
-          module: 'ES2015'
+          declaration: true
         }
-      },
-      exclude: ['node_modules', '**/*.test.ts']
+      }
     })
   ],
   output: {
