@@ -12,4 +12,4 @@ function Demos() {
   )
 }
 
-ReactDOM.render(<Demos />, document.body)
+ReactDOM.render(<Demos />, document.getElementById('container'))

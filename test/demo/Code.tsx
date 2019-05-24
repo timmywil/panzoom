@@ -10,11 +10,11 @@ interface Props {
 export default function Code({ children, language = 'javascript' }: Props) {
   const elem = useRef(null)
   useEffect(() => {
-    Prism.highlightElement(elem.current, true)
+    Prism.highlightElement(elem.current, false)
   }, [])
   return (
-    <code className={`language-${language}`} ref={elem}>
-      {children}
-    </code>
+    <pre className={`language-${language}`} ref={elem}>
+      <code>{children}</code>
+    </pre>
   )
 }

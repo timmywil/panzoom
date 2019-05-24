@@ -31,7 +31,8 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Panzoom Demo'
+      title: 'Panzoom Demo',
+      template: 'test/demo/index.html'
     }),
     new webpack.HotModuleReplacementPlugin()
   ]

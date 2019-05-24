@@ -1,23 +1,28 @@
 import React, { useEffect, useRef } from 'react'
-import Panzoom from '../../panzoom'
+import Panzoom from '../../src/panzoom'
 import Demo from './Demo'
 
-const exampleCode = `
-Panzoom(elem, {
-  focal: true
+const exampleCode = `const panzoom = Panzoom(elem)
+elem.parentElement.addEventListener('wheel', function(event) {
+  if (!event.shiftKey) return
+  event.preventDefault()
+  panzoom.zoomUsingWheel(event)
 })
 `
-
-console.log(Panzoom.awesome)
 
 export default function Focal() {
   const elem = useRef(null)
   useEffect(() => {
-    console.log(elem.current)
-    // Panzoom()
+    const panzoom = Panzoom(elem.current)
+    elem.current.parentElement.addEventListener('wheel', function(event: WheelEvent) {
+      if (event.shiftKey) {
+        event.preventDefault()
+        panzoom.zoomUsingWheel(event)
+      }
+    })
   }, [])
   return (
-    <Demo title="Focal point zooming using mousewheel" code={exampleCode}>
+    <Demo title="Panning and focal-point zooming with shift+mousewheel" code={exampleCode}>
       <div className="panzoom" ref={elem}>
         <img src="/test/demo/awesome_tiger.svg" />
       </div>

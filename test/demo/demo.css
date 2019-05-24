@@ -1,13 +1,16 @@
+* {
+  box-sizing: border-box;
+}
 .container {
   display: flex;
   flex-direction: column;
-  align-items: center;
   max-width: 1200px;
   margin: 0 auto;
   color: #333666;
 }
-.header {
-  text-align: center;
+.main-header {
+  padding: 0 5px 10px;
+  border-bottom: 1px solid #eeeeee;
 }
 .demo {
   width: 100%;
@@ -17,9 +20,9 @@
   padding: 20px;
   margin-bottom: 30px;
 }
-code {
-  padding: 5px 10px !important;
-  margin-bottom: 50px;
+pre {
+  border-radius: 5px;
+  margin: 0 0 20px !important;
 }
 .live-example {
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);

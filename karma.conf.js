@@ -2,7 +2,7 @@ module.exports = function(config) {
   config.set({
     basePath: '',
     frameworks: ['mocha', 'karma-typescript'],
-    files: ['panzoom.ts', 'test/unit/*.test.ts'],
+    files: ['src/**/*.ts', 'test/unit/*.test.ts'],
     preprocessors: {
       '**/*.ts': ['karma-typescript']
     },

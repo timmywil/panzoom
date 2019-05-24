@@ -14,7 +14,7 @@
     },
     "no-empty": [true, "allow-empty-catch", "allow-empty-functions"],
     "no-namespace": false,
-    "no-shadowed-variable": false,
+    "no-shadowed-variable": true,
     "no-submodule-imports": false,
     "no-implicit-dependencies": false,
     "object-literal-sort-keys": false

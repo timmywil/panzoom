@@ -13,10 +13,10 @@
     "test:unit:watch": "karma start --singleRun=false --autoWatch",
     "test": "yarn lint && yarn test:unit",
     "start": "webpack-dev-server",
-    "docs": "yarn typedoc --out docs/",
-    "clean": "rm -rf dist/",
+    "docs": "yarn typedoc --exclude \"test/**/*\" --out docs --theme markdown",
+    "clean": "rm -rf dist/ docs/",
     "minify": "uglifyjs --compress --mangle --output dist/panzoom.min.js -- dist/panzoom.js",
-    "build": "yarn clean && rollup --config && yarn minify",
+    "build": "yarn clean && rollup --config && yarn minify && yarn docs",
     "release": "semantic-release"
   },
   "files": [
@@ -79,6 +79,7 @@
     "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0",
     "typedoc": "^0.14.2",
+    "typedoc-plugin-markdown": "^1.2.1",
     "typescript": "^3.1.6",
     "uglify-js": "^3.4.9",
     "webpack": "^4.31.0",

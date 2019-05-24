@@ -1,6 +1,6 @@
 import typescript from 'rollup-plugin-typescript2'
 export default {
-  input: './panzoom.ts',
+  input: './src/panzoom.ts',
   plugins: [
     typescript({
       tsconfigOverride: {
@@ -17,6 +17,6 @@ export default {
     file: 'dist/panzoom.js'
   },
   watch: {
-    include: './panzoom.ts'
+    include: './src'
   }
 }
