@@ -147,8 +147,6 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions) {
     const startPageY = startEvent.pageY
 
     function move(event: PointerEvent) {
-      event.preventDefault()
-      event.stopPropagation()
       pan(origX + event.pageX - startPageX, origY + event.pageY - startPageY)
     }
 
@@ -160,9 +158,9 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions) {
       htmlElem.releasePointerCapture(event.pointerId)
     }
 
-    htmlElem.addEventListener('pointermove', move)
-    htmlElem.addEventListener('pointerup', cancel)
-    htmlElem.addEventListener('pointercancel', cancel)
+    htmlElem.addEventListener('pointermove', move, { passive: true })
+    htmlElem.addEventListener('pointerup', cancel, { passive: true })
+    htmlElem.addEventListener('pointercancel', cancel, { passive: true })
   }
 
   if (!options.disablePan) {
