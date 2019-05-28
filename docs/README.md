@@ -4,13 +4,15 @@ Panzoom
 
 [![Build Status](https://travis-ci.org/timmywil/panzoom.png?branch=master)](https://travis-ci.org/timmywil/panzoom)
 
+**[Documentation](./docs/)**
+
+**[Examples](https://timmywil.com/panzoom/test/demo/)**
+
 Panzoom is a small library to add panning and zooming functionality to an element. Rather than setting width and height, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 
 panzoom.min.js (12.5kb/4.6kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 For common support questions, see [the FAQ](https://github.com/timmywil/panzoom#faq) at the bottom.
-
-**[Examples](./test/demo/)** **[Documentation](./docs/)**
 
 Dependencies
 ------------

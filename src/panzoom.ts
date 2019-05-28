@@ -53,7 +53,43 @@ const defaultOptions: PanzoomOptions = {
   cursor: 'move'
 }
 
-function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions) {
+interface PanzoomInstance {
+  /**
+   * Pan the Panzoom element to the given x and y coordinates
+   *
+   * ```js
+   * // Translates the element to 50px, 100px
+   * panzoom.pan(50, 100)
+   * // Pans the element right 10px and down 10px from its current position
+   * panzoom.pan(10, 10, { relative: true })
+   * ```
+   */
+  pan: (x: number | string, y: number | string, panOptions?: PanOptions) => void
+  /**
+   * Zoom the Panzoom element to the given scale
+   *
+   * ```js
+   * panzoom.zoom(2.2)
+   * panzoom.zoom(2.2, { animate: true })
+   * ```
+   */
+  zoom: (scale: number, zoomOptions?: ZoomOptions) => void
+  /**
+   * Zoom the Panzoom element to a focal point using the given WheelEvent
+   *
+   * ```js
+   * elem.parentElement.addEventListener('wheel', function(event) {
+   *   if (!event.shiftKey) return
+   *   panzoom.zoomUsingWheel(event)
+   * })
+   * ```
+   */
+  zoomWithWheel: (event: WheelEvent, zoomOptions?: PanzoomOptions) => void
+  /** The contructed options for this Panzoom instance */
+  options: PanzoomOptions
+}
+
+function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): PanzoomInstance {
   if (!elem) {
     throw new Error('Panzoom requires an element as an argument')
   }
@@ -128,7 +164,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions) {
     setTransform(elem, { x, y, scale })
   }
 
-  function zoomUsingWheel(event: WheelEvent, zoomOptions?: PanzoomOptions) {
+  function zoomWithWheel(event: WheelEvent, zoomOptions?: PanzoomOptions) {
     // Need to prevent the default here
     // or it conflicts with regular page scroll
     event.preventDefault()
@@ -171,10 +207,10 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions) {
   }
 
   return {
-    options,
     pan,
     zoom,
-    zoomUsingWheel
+    zoomWithWheel,
+    options
   }
 }
 

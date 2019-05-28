@@ -15,7 +15,7 @@ export default function Focal() {
     const panzoom = Panzoom(elem.current)
     elem.current.parentElement.addEventListener('wheel', function(event: WheelEvent) {
       if (event.shiftKey) {
-        panzoom.zoomUsingWheel(event)
+        panzoom.zoomWithWheel(event)
       }
     })
   }, [])

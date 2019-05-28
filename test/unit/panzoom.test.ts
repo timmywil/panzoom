@@ -27,7 +27,7 @@ describe('Panzoom', () => {
     const panzoom = Panzoom(div)
     assert(panzoom.pan)
     assert(panzoom.zoom)
-    assert(panzoom.zoomUsingWheel)
+    assert(panzoom.zoomWithWheel)
     assert(panzoom.options)
   })
 })

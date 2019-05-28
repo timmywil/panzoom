@@ -25,7 +25,7 @@
 
 **● disableZoom**: *`boolean`*
 
-*Defined in [panzoom.ts:25](https://github.com/timmywil/panzoom/blob/db0abd4/src/panzoom.ts#L25)*
+*Defined in [panzoom.ts:25](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L25)*
 
 Disable zooming functionality
 
@@ -36,7 +36,7 @@ ___
 
 **● maxScale**: *`number`*
 
-*Defined in [panzoom.ts:29](https://github.com/timmywil/panzoom/blob/db0abd4/src/panzoom.ts#L29)*
+*Defined in [panzoom.ts:29](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L29)*
 
 The maximum scale when zooming
 
@@ -47,7 +47,7 @@ ___
 
 **● minScale**: *`number`*
 
-*Defined in [panzoom.ts:27](https://github.com/timmywil/panzoom/blob/db0abd4/src/panzoom.ts#L27)*
+*Defined in [panzoom.ts:27](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L27)*
 
 The minimum scale when zooming
 
@@ -58,7 +58,7 @@ ___
 
 **● step**: *`number`*
 
-*Defined in [panzoom.ts:31](https://github.com/timmywil/panzoom/blob/db0abd4/src/panzoom.ts#L31)*
+*Defined in [panzoom.ts:31](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L31)*
 
 The step affects the rate of zooming with a mouse wheel, pinching, or range element
 
