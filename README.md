@@ -10,7 +10,7 @@ panzoom.min.js (12.5kb/4.6kb gzip), included in this repo, is compressed with [u
 For common support questions, see [the FAQ](https://github.com/timmywil/panzoom#faq) at the bottom.
 
 **[Examples](./test/demo/)**
-**[Documentation](./docs/README.md)**
+**[Documentation](./docs/)**
 
 ## Dependencies
 
