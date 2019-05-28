@@ -4,7 +4,7 @@
 - Run unit tests with `yarn test`
 - Check demos with `yarn start`
 
-**Supported browsers**: IE11+, Edge, Firefox, Chrome, Safari, Opera, iOS & Android.
+**Supported browsers**: (basically IE 11, modern desktop and mobile browsers) https://browserl.ist/?q=%3E0.35%25%2C+not+op_mini+all
 
 Contributions are always welcome. Before contributing please [search the issue tracker](https://github.com/timmywil/panzoom/issues); your issue
 may have already been discussed or fixed in `master`. To contribute,
@@ -87,4 +87,16 @@ Run the following after staging files:
 
 ```bash
 $ yarn commit
+```
+
+## Testing
+
+Tests are written with [mocha](https://mochajs.org/) and [Node's official assert module](https://nodejs.org/api/assert.html#assert_assert).
+
+Here are the npm scripts that run tests:
+
+```bash
+$ yarn test # Lints and runs the unit tests
+$ yarn test:unit # Runs the unit tests
+$ yarn test:unit:watch # Watches files and runs the unit tests on file save
 ```

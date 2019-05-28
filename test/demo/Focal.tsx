@@ -5,7 +5,6 @@ import Demo from './Demo'
 const exampleCode = `const panzoom = Panzoom(elem)
 elem.parentElement.addEventListener('wheel', function(event) {
   if (!event.shiftKey) return
-  event.preventDefault()
   panzoom.zoomUsingWheel(event)
 })
 `
@@ -16,7 +15,6 @@ export default function Focal() {
     const panzoom = Panzoom(elem.current)
     elem.current.parentElement.addEventListener('wheel', function(event: WheelEvent) {
       if (event.shiftKey) {
-        event.preventDefault()
         panzoom.zoomUsingWheel(event)
       }
     })

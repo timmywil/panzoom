@@ -129,6 +129,9 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions) {
   }
 
   function zoomUsingWheel(event: WheelEvent, zoomOptions?: PanzoomOptions) {
+    // Need to prevent the default here
+    // or it conflicts with regular page scroll
+    event.preventDefault()
     setOptions(zoomOptions)
     scale += event.deltaY * -options.step
     zoom(scale)
