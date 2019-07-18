@@ -714,7 +714,7 @@
 				}
 				animate = true;
 			} else {
-				scale = 1 / startScale;
+				scale /= startScale;
 			}
 
 			// Constrain scale
