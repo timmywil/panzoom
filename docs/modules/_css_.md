@@ -1,4 +1,6 @@
-[panzoom](../README.md) > ["css"](../modules/_css_.md)
+> **[panzoom](../README.md)**
+
+[Globals](../globals.md) / ["css"](_css_.md) /
 
 # External module: "css"
 
@@ -6,9 +8,9 @@
 
 ### Variables
 
-* [divStyle](_css_.md#divstyle)
-* [prefixCache](_css_.md#prefixcache)
-* [prefixes](_css_.md#prefixes)
+* [divStyle](_css_.md#const-divstyle)
+* [prefixCache](_css_.md#const-prefixcache)
+* [prefixes](_css_.md#const-prefixes)
 
 ### Functions
 
@@ -17,127 +19,112 @@
 * [setTransform](_css_.md#settransform)
 * [setTransformOrigin](_css_.md#settransformorigin)
 
----
-
 ## Variables
 
-<a id="divstyle"></a>
+### `Const` divStyle
 
-### `<Const>` divStyle
+• **divStyle**: *`CSSStyleDeclaration`* =  document.createElement('div').style
 
-**● divStyle**: *`CSSStyleDeclaration`* =  document.createElement('div').style
-
-*Defined in [css.ts:4](https://github.com/timmywil/panzoom/blob/ea9f617/src/css.ts#L4)*
+*Defined in [css.ts:4](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L4)*
 
 Proper prefixing for cross-browser compatibility
 
 ___
-<a id="prefixcache"></a>
 
-### `<Const>` prefixCache
+### `Const` prefixCache
 
-**● prefixCache**: *`object`*
+• **prefixCache**: *object*
 
-*Defined in [css.ts:6](https://github.com/timmywil/panzoom/blob/ea9f617/src/css.ts#L6)*
+*Defined in [css.ts:6](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L6)*
 
-#### Type declaration
+#### Type declaration:
 
-[key: `string`]: `string`
-
-___
-<a id="prefixes"></a>
-
-### `<Const>` prefixes
-
-**● prefixes**: *`string`[]* =  ['webkit', 'moz', 'ms']
-
-*Defined in [css.ts:5](https://github.com/timmywil/panzoom/blob/ea9f617/src/css.ts#L5)*
+● \[▪ **key**: *string*\]: string
 
 ___
+
+### `Const` prefixes
+
+• **prefixes**: *string[]* =  ['webkit', 'moz', 'ms']
+
+*Defined in [css.ts:5](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L5)*
 
 ## Functions
 
-<a id="getprefixedname"></a>
-
 ###  getPrefixedName
 
-▸ **getPrefixedName**(name: *`string`*): `string`
+▸ **getPrefixedName**(`name`: string): *string*
 
-*Defined in [css.ts:7](https://github.com/timmywil/panzoom/blob/ea9f617/src/css.ts#L7)*
+*Defined in [css.ts:7](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L7)*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| name | `string` |
+Name | Type |
+------ | ------ |
+`name` | string |
 
-**Returns:** `string`
+**Returns:** *string*
 
 ___
-<a id="setstyle"></a>
 
 ###  setStyle
 
-▸ **setStyle**(elem: *`HTMLElement` \| `SVGElement`*, name: *`string`*, value: *`string`*): `void`
+▸ **setStyle**(`elem`: `HTMLElement` | `SVGElement`, `name`: string, `value`: string): *void*
 
-*Defined in [css.ts:25](https://github.com/timmywil/panzoom/blob/ea9f617/src/css.ts#L25)*
+*Defined in [css.ts:25](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L25)*
 
 Set a style using the properly prefixed name
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| elem | `HTMLElement` \| `SVGElement` |
-| name | `string` |
-| value | `string` |
+Name | Type |
+------ | ------ |
+`elem` | `HTMLElement` \| `SVGElement` |
+`name` | string |
+`value` | string |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="settransform"></a>
 
 ###  setTransform
 
-▸ **setTransform**(elem: *`HTMLElement` \| `SVGElement`*, __namedParameters: *`object`*): `void`
+▸ **setTransform**(`elem`: `HTMLElement` | `SVGElement`, `__namedParameters`: object): *void*
 
-*Defined in [css.ts:40](https://github.com/timmywil/panzoom/blob/ea9f617/src/css.ts#L40)*
+*Defined in [css.ts:40](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L40)*
 
 Set the transform using the proper prefix
 
 **Parameters:**
 
-**elem: `HTMLElement` \| `SVGElement`**
+▪ **elem**: *`HTMLElement` | `SVGElement`*
 
-**__namedParameters: `object`**
+▪ **__namedParameters**: *object*
 
-| Name | Type |
-| ------ | ------ |
-| scale | `number` |
-| x | `number` |
-| y | `number` |
+Name | Type |
+------ | ------ |
+`scale` | number |
+`x` | number |
+`y` | number |
 
-**Returns:** `void`
+**Returns:** *void*
 
 ___
-<a id="settransformorigin"></a>
 
 ###  setTransformOrigin
 
-▸ **setTransformOrigin**(elem: *`HTMLElement` \| `SVGElement`*, isSVG: *`boolean`*): `void`
+▸ **setTransformOrigin**(`elem`: `HTMLElement` | `SVGElement`, `isSVG`: boolean): *void*
 
-*Defined in [css.ts:33](https://github.com/timmywil/panzoom/blob/ea9f617/src/css.ts#L33)*
+*Defined in [css.ts:33](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L33)*
 
-Set the default transform-origin for HTML and SVG SVG transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+
+Set the default transform-origin for HTML and SVG
+SVG transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| elem | `HTMLElement` \| `SVGElement` |
-| isSVG | `boolean` |
+Name | Type |
+------ | ------ |
+`elem` | `HTMLElement` \| `SVGElement` |
+`isSVG` | boolean |
 
-**Returns:** `void`
-
-___
-
+**Returns:** *void*

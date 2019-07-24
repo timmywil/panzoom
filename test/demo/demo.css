@@ -1,6 +1,9 @@
 * {
   box-sizing: border-box;
 }
+body {
+  margin: 0;
+}
 .container {
   display: flex;
   flex-direction: column;
@@ -25,10 +28,26 @@ pre {
   margin: 0 0 20px !important;
 }
 .live-example {
+  position: relative;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
   padding: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: 2px solid black;
   border-radius: 5px;
+}
+.panzoom {
+  position: relative;
+}
+.panzoom img {
+  display: block;
+  margin: 0 auto;
+  border: 1px solid;
+}
+.dot {
+  position: absolute;
+  top: calc(50% - 2px);
+  left: calc(50% - 2px - 100px);
+  width: 4px;
+  height: 4px;
+  background-color: red;
+  border-radius: 50%;
 }

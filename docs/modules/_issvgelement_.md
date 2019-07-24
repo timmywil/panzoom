@@ -1,4 +1,6 @@
-[panzoom](../README.md) > ["isSVGElement"](../modules/_issvgelement_.md)
+> **[panzoom](../README.md)**
+
+[Globals](../globals.md) / ["isSVGElement"](_issvgelement_.md) /
 
 # External module: "isSVGElement"
 
@@ -6,45 +8,35 @@
 
 ### Variables
 
-* [rsvg](_issvgelement_.md#rsvg)
+* [rsvg](_issvgelement_.md#const-rsvg)
 
 ### Functions
 
 * [isSVGElement](_issvgelement_.md#issvgelement)
 
----
-
 ## Variables
 
-<a id="rsvg"></a>
+### `Const` rsvg
 
-### `<Const>` rsvg
+• **rsvg**: *`RegExp`* =  /^http:[\w\.\/]+svg$/
 
-**● rsvg**: *`RegExp`* =  /^http:[\w\.\/]+svg$/
+*Defined in [isSVGElement.ts:5](https://github.com/timmywil/panzoom/blob/45fed7d/src/isSVGElement.ts#L5)*
 
-*Defined in [isSVGElement.ts:5](https://github.com/timmywil/panzoom/blob/ea9f617/src/isSVGElement.ts#L5)*
-
-Determine if an element is SVG The element itself should be treated like HTML
-
-___
+Determine if an element is SVG
+The <svg> element itself should be treated like HTML
 
 ## Functions
 
-<a id="issvgelement"></a>
-
 ###  isSVGElement
 
-▸ **isSVGElement**(elem: *`HTMLElement` \| `SVGElement`*): `boolean`
+▸ **isSVGElement**(`elem`: `HTMLElement` | `SVGElement`): *boolean*
 
-*Defined in [isSVGElement.ts:6](https://github.com/timmywil/panzoom/blob/ea9f617/src/isSVGElement.ts#L6)*
+*Defined in [isSVGElement.ts:6](https://github.com/timmywil/panzoom/blob/45fed7d/src/isSVGElement.ts#L6)*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| elem | `HTMLElement` \| `SVGElement` |
+Name | Type |
+------ | ------ |
+`elem` | `HTMLElement` \| `SVGElement` |
 
-**Returns:** `boolean`
-
-___
-
+**Returns:** *boolean*

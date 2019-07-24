@@ -1,4 +1,6 @@
-[panzoom](../README.md) > ["panzoom"](../modules/_panzoom_.md)
+> **[panzoom](../README.md)**
+
+[Globals](../globals.md) / ["panzoom"](_panzoom_.md) /
 
 # External module: "panzoom"
 
@@ -20,134 +22,91 @@
 
 ### Object literals
 
-* [defaultOptions](_panzoom_.md#defaultoptions)
-
----
+* [defaultOptions](_panzoom_.md#const-defaultoptions)
 
 ## Type aliases
 
-<a id="panzoomoptions"></a>
-
 ###  PanzoomOptions
 
-**Ƭ PanzoomOptions**: *[PanOptions](../interfaces/_panzoom_.panoptions.md) & [ZoomOptions](../interfaces/_panzoom_.zoomoptions.md) & `object`*
+Ƭ **PanzoomOptions**: *[PanOptions](../interfaces/_panzoom_.panoptions.md) & [ZoomOptions](../interfaces/_panzoom_.zoomoptions.md) & object*
 
-*Defined in [panzoom.ts:34](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L34)*
-
-___
+*Defined in [panzoom.ts:34](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L34)*
 
 ## Functions
 
-<a id="panzoom"></a>
-
 ###  Panzoom
 
-▸ **Panzoom**(elem: *`HTMLElement` \| `SVGElement`*, options?: *[PanzoomOptions](_panzoom_.md#panzoomoptions)*): [PanzoomInstance](../interfaces/_panzoom_.panzoominstance.md)
+▸ **Panzoom**(`elem`: `HTMLElement` | `SVGElement`, `options?`: [PanzoomOptions](_panzoom_.md#panzoomoptions)): *[PanzoomInstance](../interfaces/_panzoom_.panzoominstance.md)*
 
-*Defined in [panzoom.ts:92](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L92)*
+*Defined in [panzoom.ts:92](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L92)*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| elem | `HTMLElement` \| `SVGElement` |
-| `Optional` options | [PanzoomOptions](_panzoom_.md#panzoomoptions) |
+Name | Type |
+------ | ------ |
+`elem` | `HTMLElement` \| `SVGElement` |
+`options?` | [PanzoomOptions](_panzoom_.md#panzoomoptions) |
 
-**Returns:** [PanzoomInstance](../interfaces/_panzoom_.panzoominstance.md)
-
-___
+**Returns:** *[PanzoomInstance](../interfaces/_panzoom_.panzoominstance.md)*
 
 ## Object literals
 
-<a id="defaultoptions"></a>
+### `Const` defaultOptions
 
-### `<Const>` defaultOptions
+### ▪ **defaultOptions**: *object*
 
-**defaultOptions**: *`object`*
+*Defined in [panzoom.ts:44](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L44)*
 
-*Defined in [panzoom.ts:44](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L44)*
+###  animate
 
-<a id="defaultoptions.animate"></a>
+• **animate**: *false* = false
 
-####  animate
+*Defined in [panzoom.ts:48](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L48)*
 
-**● animate**: *`false`* = false
+###  cursor
 
-*Defined in [panzoom.ts:48](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L48)*
+• **cursor**: *string* = "move"
 
-___
-<a id="defaultoptions.cursor"></a>
+*Defined in [panzoom.ts:53](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L53)*
 
-####  cursor
+###  disablePan
 
-**● cursor**: *`string`* = "move"
+• **disablePan**: *false* = false
 
-*Defined in [panzoom.ts:53](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L53)*
+*Defined in [panzoom.ts:45](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L45)*
 
-___
-<a id="defaultoptions.disablepan"></a>
+###  disableZoom
 
-####  disablePan
+• **disableZoom**: *false* = false
 
-**● disablePan**: *`false`* = false
+*Defined in [panzoom.ts:46](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L46)*
 
-*Defined in [panzoom.ts:45](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L45)*
+###  easing
 
-___
-<a id="defaultoptions.disablezoom"></a>
+• **easing**: *string* = "ease-in-out"
 
-####  disableZoom
+*Defined in [panzoom.ts:47](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L47)*
 
-**● disableZoom**: *`false`* = false
+###  maxScale
 
-*Defined in [panzoom.ts:46](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L46)*
+• **maxScale**: *number* = 4
 
-___
-<a id="defaultoptions.easing"></a>
+*Defined in [panzoom.ts:50](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L50)*
 
-####  easing
+###  minScale
 
-**● easing**: *`string`* = "ease-in-out"
+• **minScale**: *number* = 0.125
 
-*Defined in [panzoom.ts:47](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L47)*
+*Defined in [panzoom.ts:49](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L49)*
 
-___
-<a id="defaultoptions.maxscale"></a>
+###  relative
 
-####  maxScale
+• **relative**: *false* = false
 
-**● maxScale**: *`number`* = 4
+*Defined in [panzoom.ts:52](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L52)*
 
-*Defined in [panzoom.ts:50](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L50)*
+###  step
 
-___
-<a id="defaultoptions.minscale"></a>
+• **step**: *number* = 0.005
 
-####  minScale
-
-**● minScale**: *`number`* = 0.125
-
-*Defined in [panzoom.ts:49](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L49)*
-
-___
-<a id="defaultoptions.relative"></a>
-
-####  relative
-
-**● relative**: *`false`* = false
-
-*Defined in [panzoom.ts:52](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L52)*
-
-___
-<a id="defaultoptions.step"></a>
-
-####  step
-
-**● step**: *`number`* = 0.005
-
-*Defined in [panzoom.ts:51](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L51)*
-
-___
-
-___
-
+*Defined in [panzoom.ts:51](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L51)*

@@ -1,6 +1,6 @@
 /**
- * Determine if an element is SVG
- * The <svg> element itself should be treated like HTML
+ * Determine if an element is SVG by checking the namespace
+ * Exception: the <svg> element itself should be treated like HTML
  */
 const rsvg = /^http:[\w\.\/]+svg$/
 export default function isSVGElement(elem: HTMLElement | SVGElement) {

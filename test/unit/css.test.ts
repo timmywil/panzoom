@@ -15,6 +15,20 @@ function assertStyle(elem: HTMLElement | SVGElement, name: string, value: string
   }
 }
 
+function assertStyleMatches(elem: HTMLElement | SVGElement, name: string, value: string) {
+  const capName = name[0].toUpperCase() + name.slice(1)
+  const style: any = elem.style
+  if (style[name]) {
+    assert.ok(style[name].includes(value))
+  } else if (style[`webkit${capName}`]) {
+    assert.ok(style[`webkit${capName}`].includes(value))
+  } else if (style[`moz${capName}`]) {
+    assert.ok(style[`moz${capName}`].includes(value))
+  } else if (style[`ms${capName}`]) {
+    assert.ok(style[`ms${capName}`].includes(value))
+  }
+}
+
 describe('css', () => {
   describe('setStyle', () => {
     it('sets a style on an HTMLElement', () => {
@@ -32,15 +46,15 @@ describe('css', () => {
   })
 
   describe('setTransformOrigin', () => {
-    it('sets the default transform-origin for HTML', () => {
+    it('sets the transform-origin for HTML', () => {
       const elem = document.createElement('div')
-      setTransformOrigin(elem, false)
-      assertStyle(elem, 'transformOrigin', '50% 50%')
+      setTransformOrigin(elem)
+      assertStyleMatches(elem, 'transformOrigin', '0px 0px')
     })
-    it('sets the default transform-origin for SVG', () => {
+    it('sets the transform-origin for SVG', () => {
       const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      setTransformOrigin(elem, true)
-      assertStyle(elem, 'transformOrigin', '0px 0px')
+      setTransformOrigin(elem)
+      assertStyleMatches(elem, 'transformOrigin', '0px 0px')
     })
   })
 

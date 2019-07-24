@@ -98,5 +98,5 @@ Here are the npm scripts that run tests:
 ```bash
 $ yarn test # Lints and runs the unit tests
 $ yarn test:unit # Runs the unit tests
-$ yarn test:unit:watch # Watches files and runs the unit tests on file save
+$ yarn test:watch # Watches files and runs the unit tests on file save
 ```

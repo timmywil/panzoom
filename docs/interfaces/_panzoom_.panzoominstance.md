@@ -1,10 +1,12 @@
-[panzoom](../README.md) > ["panzoom"](../modules/_panzoom_.md) > [PanzoomInstance](../interfaces/_panzoom_.panzoominstance.md)
+> **[panzoom](../README.md)**
+
+[Globals](../globals.md) / ["panzoom"](../modules/_panzoom_.md) / [PanzoomInstance](_panzoom_.panzoominstance.md) /
 
 # Interface: PanzoomInstance
 
 ## Hierarchy
 
-**PanzoomInstance**
+* **PanzoomInstance**
 
 ## Index
 
@@ -15,28 +17,23 @@
 * [zoom](_panzoom_.panzoominstance.md#zoom)
 * [zoomWithWheel](_panzoom_.panzoominstance.md#zoomwithwheel)
 
----
-
 ## Properties
-
-<a id="options"></a>
 
 ###  options
 
-**● options**: *[PanzoomOptions](../modules/_panzoom_.md#panzoomoptions)*
+• **options**: *[PanzoomOptions](../modules/_panzoom_.md#panzoomoptions)*
 
-*Defined in [panzoom.ts:89](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L89)*
+*Defined in [panzoom.ts:89](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L89)*
 
 The contructed options for this Panzoom instance
 
 ___
-<a id="pan"></a>
 
 ###  pan
 
-**● pan**: *`function`*
+• **pan**: *function*
 
-*Defined in [panzoom.ts:67](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L67)*
+*Defined in [panzoom.ts:67](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L67)*
 
 Pan the Panzoom element to the given x and y coordinates
 
@@ -47,27 +44,25 @@ panzoom.pan(50, 100)
 panzoom.pan(10, 10, { relative: true })
 ```
 
-#### Type declaration
-▸(x: *`number` \| `string`*, y: *`number` \| `string`*, panOptions?: *[PanOptions](_panzoom_.panoptions.md)*): `void`
+#### Type declaration:
+
+▸ (`x`: number | string, `y`: number | string, `panOptions?`: [PanOptions](_panzoom_.panoptions.md)): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| x | `number` \| `string` |
-| y | `number` \| `string` |
-| `Optional` panOptions | [PanOptions](_panzoom_.panoptions.md) |
-
-**Returns:** `void`
+Name | Type |
+------ | ------ |
+`x` | number \| string |
+`y` | number \| string |
+`panOptions?` | [PanOptions](_panzoom_.panoptions.md) |
 
 ___
-<a id="zoom"></a>
 
 ###  zoom
 
-**● zoom**: *`function`*
+• **zoom**: *function*
 
-*Defined in [panzoom.ts:76](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L76)*
+*Defined in [panzoom.ts:76](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L76)*
 
 Zoom the Panzoom element to the given scale
 
@@ -76,26 +71,24 @@ panzoom.zoom(2.2)
 panzoom.zoom(2.2, { animate: true })
 ```
 
-#### Type declaration
-▸(scale: *`number`*, zoomOptions?: *[ZoomOptions](_panzoom_.zoomoptions.md)*): `void`
+#### Type declaration:
+
+▸ (`scale`: number, `zoomOptions?`: [ZoomOptions](_panzoom_.zoomoptions.md)): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| scale | `number` |
-| `Optional` zoomOptions | [ZoomOptions](_panzoom_.zoomoptions.md) |
-
-**Returns:** `void`
+Name | Type |
+------ | ------ |
+`scale` | number |
+`zoomOptions?` | [ZoomOptions](_panzoom_.zoomoptions.md) |
 
 ___
-<a id="zoomwithwheel"></a>
 
 ###  zoomWithWheel
 
-**● zoomWithWheel**: *`function`*
+• **zoomWithWheel**: *function*
 
-*Defined in [panzoom.ts:87](https://github.com/timmywil/panzoom/blob/ea9f617/src/panzoom.ts#L87)*
+*Defined in [panzoom.ts:87](https://github.com/timmywil/panzoom/blob/45fed7d/src/panzoom.ts#L87)*
 
 Zoom the Panzoom element to a focal point using the given WheelEvent
 
@@ -106,17 +99,13 @@ elem.parentElement.addEventListener('wheel', function(event) {
 })
 ```
 
-#### Type declaration
-▸(event: *`WheelEvent`*, zoomOptions?: *[PanzoomOptions](../modules/_panzoom_.md#panzoomoptions)*): `void`
+#### Type declaration:
+
+▸ (`event`: `WheelEvent`, `zoomOptions?`: [PanzoomOptions](../modules/_panzoom_.md#panzoomoptions)): *void*
 
 **Parameters:**
 
-| Name | Type |
-| ------ | ------ |
-| event | `WheelEvent` |
-| `Optional` zoomOptions | [PanzoomOptions](../modules/_panzoom_.md#panzoomoptions) |
-
-**Returns:** `void`
-
-___
-
+Name | Type |
+------ | ------ |
+`event` | `WheelEvent` |
+`zoomOptions?` | [PanzoomOptions](../modules/_panzoom_.md#panzoomoptions) |

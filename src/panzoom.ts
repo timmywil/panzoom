@@ -1,5 +1,5 @@
 /**
- * Panzoom for panning and zooming elements using CSS
+ * Panzoom for panning and zooming elements using CSS transforms
  * https://github.com/timmywil/panzoom
  *
  * Copyright Timmy Willison and other contributors
@@ -7,89 +7,26 @@
  * https://github.com/timmywil/panzoom/blob/master/MIT-License.txt
  */
 
-import { setTransform, setTransformOrigin } from './css'
+import { getCSSNum, setStyle, setTransform, setTransformOrigin } from './css'
 import isAttached from './isAttached'
-import isSVGElement from './isSVGElement'
-
-export interface PanOptions {
-  /** Disable panning functionality. Note: disablePan also disables focal point zooming */
-  disablePan?: boolean
-  /** When passing x and y values to .pan(), treat the values as relative to their current values */
-  relative?: boolean
-  /** The cursor style to set on the panzoom element */
-  cursor?: string
-}
-
-export interface ZoomOptions {
-  /** Disable zooming functionality */
-  disableZoom?: boolean
-  /** The minimum scale when zooming */
-  minScale?: number
-  /** The maximum scale when zooming */
-  maxScale?: number
-  /** The step affects the rate of zooming with a mouse wheel, pinching, or range element */
-  step?: number
-}
-
-export type PanzoomOptions = PanOptions &
-  ZoomOptions & {
-    /** CSS Easing used for transitions */
-    easing?: string
-    /** Whether to animate transitions by default */
-    animate?: boolean
-    /** Pass through any options like data */
-    [key: string]: any
-  }
+import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
 const defaultOptions: PanzoomOptions = {
+  animate: false,
+  cursor: 'move',
   disablePan: false,
   disableZoom: false,
+  disableXAxis: false,
+  disableYAxis: false,
   easing: 'ease-in-out',
-  animate: false,
-  minScale: 0.125,
   maxScale: 4,
-  step: 0.005,
+  minScale: 0.125,
   relative: false,
-  cursor: 'move'
+  setTransform,
+  step: 0.1
 }
 
-interface PanzoomInstance {
-  /**
-   * Pan the Panzoom element to the given x and y coordinates
-   *
-   * ```js
-   * // Translates the element to 50px, 100px
-   * panzoom.pan(50, 100)
-   * // Pans the element right 10px and down 10px from its current position
-   * panzoom.pan(10, 10, { relative: true })
-   * ```
-   */
-  pan: (x: number | string, y: number | string, panOptions?: PanOptions) => void
-  /**
-   * Zoom the Panzoom element to the given scale
-   *
-   * ```js
-   * panzoom.zoom(2.2)
-   * panzoom.zoom(2.2, { animate: true })
-   * ```
-   */
-  zoom: (scale: number, zoomOptions?: ZoomOptions) => void
-  /**
-   * Zoom the Panzoom element to a focal point using the given WheelEvent
-   *
-   * ```js
-   * elem.parentElement.addEventListener('wheel', function(event) {
-   *   if (!event.shiftKey) return
-   *   panzoom.zoomUsingWheel(event)
-   * })
-   * ```
-   */
-  zoomWithWheel: (event: WheelEvent, zoomOptions?: PanzoomOptions) => void
-  /** The contructed options for this Panzoom instance */
-  options: PanzoomOptions
-}
-
-function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): PanzoomInstance {
+function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): PanzoomObject {
   if (!elem) {
     throw new Error('Panzoom requires an element as an argument')
   }
@@ -115,13 +52,9 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     }
   }
 
-  // This is SVG if the namespace is SVG
-  // However, while <svg> elements are SVG, we want to treat those like other elements
-  const isSVG = isSVGElement(elem)
-
   // Set some default styles on the panzoom element
   elem.style.cursor = options.cursor
-  setTransformOrigin(elem, isSVG)
+  setTransformOrigin(elem)
 
   // Set overflow on the parent
   const parent = elem.parentElement
@@ -133,44 +66,95 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   let isPanning = false
 
   function pan(toX: number | string, toY: number | string, panOptions?: PanOptions) {
-    setOptions(panOptions)
-    if (options.disablePan) {
+    const opts = { ...options, ...panOptions }
+    if (opts.disablePan) {
       return
     }
 
     toX = parseFloat(toX as string)
     toY = parseFloat(toY as string)
 
-    if (options.relative) {
-      x += toX
-      y += toY
-    } else {
-      x = toX
-      y = toY
+    if (!opts.disableXAxis) {
+      x = (opts.relative ? x : 0) + toX
     }
 
-    setTransform(elem, { x, y, scale })
+    if (!opts.disableYAxis) {
+      y = (opts.relative ? y : 0) + toY
+    }
+
+    if (!opts.skipUpdate) {
+      opts.setTransform(elem, { x, y, scale })
+    }
   }
 
   function zoom(toScale: number, zoomOptions?: ZoomOptions) {
-    setOptions(zoomOptions)
-    if (options.disableZoom) {
+    const opts = { ...options, ...zoomOptions }
+    if (opts.disableZoom) {
       return
     }
 
     // Restrict scale
-    scale = Math.min(Math.max(options.minScale, toScale), options.maxScale)
+    scale = Math.min(Math.max(opts.minScale, toScale), opts.maxScale)
 
-    setTransform(elem, { x, y, scale })
+    if (!opts.skipUpdate) {
+      opts.setTransform(elem, { x, y, scale })
+    }
   }
 
-  function zoomWithWheel(event: WheelEvent, zoomOptions?: PanzoomOptions) {
+  function zoomWithWheel(event: WheelEvent) {
     // Need to prevent the default here
     // or it conflicts with regular page scroll
     event.preventDefault()
-    setOptions(zoomOptions)
-    scale += event.deltaY * -options.step
-    zoom(scale)
+    // Normalize to deltaX in case shift modifier is used on Mac
+    const delta = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY
+    const wheel = delta < 0 ? 1 : -1
+    const startScale = scale
+    // scale becomes the new scale in the subsequent lines
+    zoom(startScale * Math.exp(wheel * options.step), { skipUpdate: true })
+    // zoom(3, { skipUpdate: true })
+    const parentRect = parent.getBoundingClientRect()
+    const parentStyle = window.getComputedStyle(parent)
+    const paddings = {
+      left: getCSSNum(parentStyle, 'paddingLeft'),
+      right: getCSSNum(parentStyle, 'paddingRight'),
+      top: getCSSNum(parentStyle, 'paddingTop'),
+      bottom: getCSSNum(parentStyle, 'paddingBottom')
+    }
+    const rect = elem.getBoundingClientRect()
+    const newWidth = (rect.width / startScale) * scale
+    const newHeight = (rect.height / startScale) * scale
+    // Convert the mouse point from it's position over the
+    // panzoom element before the scale to the position
+    // over element after the scale
+    // Parent padding affects the element position,
+    // so pretend the area inside the padding is all
+    // we care about
+    const focalX =
+      ((event.clientX - parentRect.left - paddings.left) /
+        (parentRect.width - paddings.left - paddings.right)) *
+      newWidth
+    const focalY =
+      ((event.clientY - parentRect.top - paddings.top) /
+        (parentRect.height - paddings.top - paddings.bottom)) *
+      newHeight
+    // The difference between the point after the scale and the point before the scale
+    // plus the current translation after the scale
+    // neutralized to no scale (as the transform scale will apply to the translation)
+    const toX = (focalX / scale - focalX / startScale + x * scale) / scale
+    const toY = (focalY / scale - focalY / startScale + y * scale) / scale
+    console.log(`old width: ${rect.width}, new width: ${newWidth}`)
+    console.log(`old height: ${rect.height}, new height: ${newHeight}`)
+    console.log(`elem left: ${rect.left}`)
+    console.log(`clientX: ${event.clientX}, clientY: ${event.clientY}`)
+    console.log(`focalX: ${focalX}, focalY: ${focalY}`)
+    pan(toX, toY, { relative: false, skipUpdate: true })
+    options.setTransform(elem, { x, y, scale })
+  }
+
+  function reset() {
+    zoom(1, { skipUpdate: true })
+    pan(0, 0, { skipUpdate: true })
+    options.setTransform(elem, { x, y, scale })
   }
 
   function startMove(startEvent: PointerEvent) {
@@ -186,7 +170,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     const startPageY = startEvent.pageY
 
     function move(event: PointerEvent) {
-      pan(origX + event.pageX - startPageX, origY + event.pageY - startPageY)
+      pan(origX + (event.pageX - startPageX) / scale, origY + (event.pageY - startPageY) / scale)
     }
 
     function cancel(event: PointerEvent) {
@@ -207,10 +191,15 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   return {
+    getPan: () => ({ x, y }),
+    getScale: () => scale,
+    options,
     pan,
+    reset,
+    setOptions,
+    setStyle,
     zoom,
-    zoomWithWheel,
-    options
+    zoomWithWheel
   }
 }
 
