@@ -100,3 +100,18 @@ $ yarn test # Lints and runs the unit tests
 $ yarn test:unit # Runs the unit tests
 $ yarn test:watch # Watches files and runs the unit tests on file save
 ```
+
+## Debugging in VS Code
+
+First run `yarn start`, then run VS Code Debug with the following config to enable breakpoints:
+
+```json
+{
+  "type": "chrome",
+  "request": "launch",
+  "name": "Launch Chrome",
+  "url": "http://localhost:8080",
+  "webRoot": "${workspaceRoot}",
+  "sourceMaps": true
+}
+```

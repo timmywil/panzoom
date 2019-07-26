@@ -4,9 +4,9 @@ const webpack = require('webpack')
 
 module.exports = {
   mode: 'development',
-  devtool: 'inline-source-map',
+  devtool: 'eval-source-map',
   entry: {
-    demo: './test/demo/index.tsx'
+    'test/demo/index': './test/demo/index.tsx'
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json']
@@ -26,7 +26,7 @@ module.exports = {
   devServer: {
     contentBase: __dirname,
     hot: true,
-    open: true
+    open: false
   },
   plugins: [
     new CleanWebpackPlugin(),
