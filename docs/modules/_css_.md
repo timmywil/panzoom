@@ -25,7 +25,7 @@
 
 • **divStyle**: *`CSSStyleDeclaration`* =  document.createElement('div').style
 
-*Defined in [css.ts:4](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L4)*
+*Defined in [css.ts:4](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L4)*
 
 Proper prefixing for cross-browser compatibility
 
@@ -35,7 +35,7 @@ ___
 
 • **prefixCache**: *object*
 
-*Defined in [css.ts:6](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L6)*
+*Defined in [css.ts:6](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L6)*
 
 #### Type declaration:
 
@@ -47,7 +47,7 @@ ___
 
 • **prefixes**: *string[]* =  ['webkit', 'moz', 'ms']
 
-*Defined in [css.ts:5](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L5)*
+*Defined in [css.ts:5](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L5)*
 
 ## Functions
 
@@ -55,7 +55,7 @@ ___
 
 ▸ **getPrefixedName**(`name`: string): *string*
 
-*Defined in [css.ts:7](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L7)*
+*Defined in [css.ts:7](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L7)*
 
 **Parameters:**
 
@@ -71,7 +71,7 @@ ___
 
 ▸ **setStyle**(`elem`: `HTMLElement` | `SVGElement`, `name`: string, `value`: string): *void*
 
-*Defined in [css.ts:25](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L25)*
+*Defined in [css.ts:25](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L25)*
 
 Set a style using the properly prefixed name
 
@@ -91,7 +91,7 @@ ___
 
 ▸ **setTransform**(`elem`: `HTMLElement` | `SVGElement`, `__namedParameters`: object): *void*
 
-*Defined in [css.ts:40](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L40)*
+*Defined in [css.ts:41](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L41)*
 
 Set the transform using the proper prefix
 
@@ -113,18 +113,18 @@ ___
 
 ###  setTransformOrigin
 
-▸ **setTransformOrigin**(`elem`: `HTMLElement` | `SVGElement`, `isSVG`: boolean): *void*
+▸ **setTransformOrigin**(`elem`: `HTMLElement` | `SVGElement`): *void*
 
-*Defined in [css.ts:33](https://github.com/timmywil/panzoom/blob/45fed7d/src/css.ts#L33)*
+*Defined in [css.ts:34](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L34)*
 
-Set the default transform-origin for HTML and SVG
-SVG transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+
+Sets the default transform-origin for both HTML and SVG to 0 0
+SVG transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+,
+so we default to 0 0 for everything.
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `elem` | `HTMLElement` \| `SVGElement` |
-`isSVG` | boolean |
 
 **Returns:** *void*
