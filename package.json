@@ -4,20 +4,21 @@
   "description": "Pan and zoom elements using CSS transforms.",
   "main": "dist/panzoom.js",
   "scripts": {
-    "type-check": "tsc -p tsconfig.json --noEmit",
-    "tslint": "tslint -p tsconfig.json -c tslint.json",
-    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"test/demo.html\"",
+    "build": "yarn clean && rollup --config && yarn minify && yarn docs",
+    "clean": "rm -rf dist/ docs/",
+    "commit": "git-cz",
+    "docs": "yarn typedoc --exclude \"test/**/*\" --out docs --theme markdown",
     "lint": "concurrently \"yarn type-check\" \"yarn tslint\" \"yarn prettier\"",
     "lint:fix": "concurrently \"yarn type-check\" \"yarn tslint --fix\" \"precise-commits\"",
+    "minify": "uglifyjs --compress --mangle --output dist/panzoom.min.js -- dist/panzoom.js",
+    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"test/demo.html\"",
+    "release": "semantic-release",
+    "start": "webpack-dev-server",
+    "test": "yarn lint && yarn test:unit",
     "test:unit": "karma start",
     "test:watch": "karma start --singleRun=false --autoWatch",
-    "test": "yarn lint && yarn test:unit",
-    "start": "webpack-dev-server",
-    "docs": "yarn typedoc --exclude \"test/**/*\" --out docs --theme markdown",
-    "clean": "rm -rf dist/ docs/",
-    "minify": "uglifyjs --compress --mangle --output dist/panzoom.min.js -- dist/panzoom.js",
-    "build": "yarn clean && rollup --config && yarn minify && yarn docs",
-    "release": "semantic-release"
+    "tslint": "tslint -p tsconfig.json -c tslint.json",
+    "type-check": "tsc -p tsconfig.json --noEmit"
   },
   "files": [
     "MIT-License.txt",
@@ -92,6 +93,11 @@
     "singleQuote": true,
     "jsxBracketSameLine": true,
     "arrowParens": "always"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@commitlint/prompt"
+    }
   },
   "husky": {
     "hooks": {
