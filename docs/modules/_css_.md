@@ -14,6 +14,7 @@
 
 ### Functions
 
+* [getCSSNum](_css_.md#getcssnum)
 * [getPrefixedName](_css_.md#getprefixedname)
 * [setStyle](_css_.md#setstyle)
 * [setTransform](_css_.md#settransform)
@@ -25,7 +26,7 @@
 
 • **divStyle**: *`CSSStyleDeclaration`* =  document.createElement('div').style
 
-*Defined in [css.ts:4](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L4)*
+*Defined in [css.ts:4](https://github.com/timmywil/panzoom/blob/37fd043/src/css.ts#L4)*
 
 Proper prefixing for cross-browser compatibility
 
@@ -35,7 +36,7 @@ ___
 
 • **prefixCache**: *object*
 
-*Defined in [css.ts:6](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L6)*
+*Defined in [css.ts:6](https://github.com/timmywil/panzoom/blob/37fd043/src/css.ts#L6)*
 
 #### Type declaration:
 
@@ -47,15 +48,34 @@ ___
 
 • **prefixes**: *string[]* =  ['webkit', 'moz', 'ms']
 
-*Defined in [css.ts:5](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L5)*
+*Defined in [css.ts:5](https://github.com/timmywil/panzoom/blob/37fd043/src/css.ts#L5)*
 
 ## Functions
+
+###  getCSSNum
+
+▸ **getCSSNum**(`style`: `CSSStyleDeclaration`, `name`: string): *number*
+
+*Defined in [css.ts:25](https://github.com/timmywil/panzoom/blob/37fd043/src/css.ts#L25)*
+
+Gets a style value expected to be a number
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`style` | `CSSStyleDeclaration` |
+`name` | string |
+
+**Returns:** *number*
+
+___
 
 ###  getPrefixedName
 
 ▸ **getPrefixedName**(`name`: string): *string*
 
-*Defined in [css.ts:7](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L7)*
+*Defined in [css.ts:7](https://github.com/timmywil/panzoom/blob/37fd043/src/css.ts#L7)*
 
 **Parameters:**
 
@@ -71,7 +91,7 @@ ___
 
 ▸ **setStyle**(`elem`: `HTMLElement` | `SVGElement`, `name`: string, `value`: string): *void*
 
-*Defined in [css.ts:25](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L25)*
+*Defined in [css.ts:32](https://github.com/timmywil/panzoom/blob/37fd043/src/css.ts#L32)*
 
 Set a style using the properly prefixed name
 
@@ -91,7 +111,7 @@ ___
 
 ▸ **setTransform**(`elem`: `HTMLElement` | `SVGElement`, `__namedParameters`: object): *void*
 
-*Defined in [css.ts:41](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L41)*
+*Defined in [css.ts:48](https://github.com/timmywil/panzoom/blob/37fd043/src/css.ts#L48)*
 
 Set the transform using the proper prefix
 
@@ -115,7 +135,7 @@ ___
 
 ▸ **setTransformOrigin**(`elem`: `HTMLElement` | `SVGElement`): *void*
 
-*Defined in [css.ts:34](https://github.com/timmywil/panzoom/blob/2260b94/src/css.ts#L34)*
+*Defined in [css.ts:41](https://github.com/timmywil/panzoom/blob/37fd043/src/css.ts#L41)*
 
 Sets the default transform-origin for both HTML and SVG to 0 0
 SVG transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+,

@@ -24,7 +24,7 @@
 
 • **disableZoom**? : *boolean*
 
-*Defined in [types.ts:23](https://github.com/timmywil/panzoom/blob/2260b94/src/types.ts#L23)*
+*Defined in [types.ts:23](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L23)*
 
 Disable zooming functionality
 
@@ -34,7 +34,7 @@ ___
 
 • **maxScale**? : *number*
 
-*Defined in [types.ts:27](https://github.com/timmywil/panzoom/blob/2260b94/src/types.ts#L27)*
+*Defined in [types.ts:27](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L27)*
 
 The maximum scale when zooming
 
@@ -44,7 +44,7 @@ ___
 
 • **minScale**? : *number*
 
-*Defined in [types.ts:25](https://github.com/timmywil/panzoom/blob/2260b94/src/types.ts#L25)*
+*Defined in [types.ts:25](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L25)*
 
 The minimum scale when zooming
 
@@ -54,7 +54,7 @@ ___
 
 • **skipUpdate**? : *boolean*
 
-*Defined in [types.ts:34](https://github.com/timmywil/panzoom/blob/2260b94/src/types.ts#L34)*
+*Defined in [types.ts:34](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L34)*
 
 Set relevant Panzoom internal values without
 actually updating the transform
@@ -65,6 +65,6 @@ ___
 
 • **step**? : *number*
 
-*Defined in [types.ts:29](https://github.com/timmywil/panzoom/blob/2260b94/src/types.ts#L29)*
+*Defined in [types.ts:29](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L29)*
 
 The step affects the rate of zooming with a mouse wheel, pinching, or range element

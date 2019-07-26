@@ -16,7 +16,7 @@
 
 ▸ **isAttached**(`elem`: `HTMLElement` | `SVGElement`): *boolean*
 
-*Defined in [isAttached.ts:5](https://github.com/timmywil/panzoom/blob/2260b94/src/isAttached.ts#L5)*
+*Defined in [isAttached.ts:5](https://github.com/timmywil/panzoom/blob/37fd043/src/isAttached.ts#L5)*
 
 Determine if an element is attached to the DOM
 Panzoom requires this so events work properly

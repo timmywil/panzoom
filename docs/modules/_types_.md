@@ -22,4 +22,4 @@
 
 Ƭ **PanzoomOptions**: *[PanOptions](../interfaces/_types_.panoptions.md) & [ZoomOptions](../interfaces/_types_.zoomoptions.md) & object*
 
-*Defined in [types.ts:37](https://github.com/timmywil/panzoom/blob/2260b94/src/types.ts#L37)*
+*Defined in [types.ts:37](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L37)*
