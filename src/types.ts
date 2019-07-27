@@ -11,11 +11,6 @@ export interface PanOptions {
   relative?: boolean
   /** The cursor style to set on the panzoom element */
   cursor?: string
-  /**
-   * Set relevant Panzoom internal values without
-   * actually updating the transform
-   */
-  skipUpdate?: boolean
 }
 
 export interface ZoomOptions {
@@ -27,39 +22,42 @@ export interface ZoomOptions {
   maxScale?: number
   /** The step affects the rate of zooming with a mouse wheel, pinching, or range element */
   step?: number
+}
+
+export interface MiscOptions {
+  /** Whether to animate transitions */
+  animate?: boolean
+  /** Duration of the transition (ms) */
+  duration?: number
+  /** CSS Easing used for transitions */
+  easing?: string
+  /**
+   * Override the transform setter
+   * This is exposed mostly so the user could
+   * set other parts of a transform
+   * aside from scale and translate.
+   *
+   * ```js
+   * // This example always sets a rotation
+   * // when setting the scale and translation
+   * Panzoom(elem, {
+   *   setTransform: (elem, { scale, x, y }) => {
+   *     setStyle(elem, 'transform', `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`)
+   *   }
+   * })
+   * ```
+   */
+  setTransform?: typeof setTransform
   /**
    * Set relevant Panzoom internal values without
    * actually updating the transform
    */
   skipUpdate?: boolean
+  /** Pass through any options like data */
+  [key: string]: any
 }
 
-export type PanzoomOptions = PanOptions &
-  ZoomOptions & {
-    /** CSS Easing used for transitions */
-    easing?: string
-    /** Whether to animate transitions by default */
-    animate?: boolean
-    /**
-     * Override the transform setter
-     * This is exposed mostly so the user could
-     * set other parts of a transform
-     * aside from scale and translate.
-     *
-     * ```js
-     * // This example always sets a rotation
-     * // when setting the scale and translation
-     * Panzoom(elem, {
-     *   setTransform: (elem, { scale, x, y }) => {
-     *     setStyle(elem, 'transform', `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`)
-     *   }
-     * })
-     * ```
-     */
-    setTransform?: typeof setTransform
-    /** Pass through any options like data */
-    [key: string]: any
-  }
+export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
 
 export interface PanzoomObject {
   /** Get the current x/y translation */

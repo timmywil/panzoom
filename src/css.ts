@@ -1,3 +1,5 @@
+import { PanzoomOptions } from './types'
+
 /**
  * Proper prefixing for cross-browser compatibility
  */
@@ -8,6 +10,9 @@ function getPrefixedName(name: string) {
   if (prefixCache[name]) {
     return prefixCache[name]
   }
+  if (name in divStyle) {
+    return (prefixCache[name] = name)
+  }
   const capName = name[0].toUpperCase() + name.slice(1)
   let i = prefixes.length
   while (i--) {
@@ -16,7 +21,6 @@ function getPrefixedName(name: string) {
       return (prefixCache[name] = prefixedName)
     }
   }
-  return (prefixCache[name] = name)
 }
 
 /**
@@ -53,11 +57,29 @@ export function setTransformOrigin(elem: HTMLElement | SVGElement) {
 }
 
 /**
+ * Constructs the transition from panzoom options
+ * and takes care of prefixing the transition and transform
+ */
+export function setTransition(elem: HTMLElement | SVGElement, options: PanzoomOptions) {
+  const transition = getPrefixedName('transition')
+  const transform = getPrefixedName('transform')
+  setStyle(elem, transition, `${transform} ${options.duration}ms ${options.easing}`)
+}
+
+/**
  * Set the transform using the proper prefix
  */
 export function setTransform(
   elem: HTMLElement | SVGElement,
-  { x, y, scale }: { x: number; y: number; scale: number }
+  { x, y, scale }: { x: number; y: number; scale: number },
+  options: PanzoomOptions = {}
 ) {
+  if (typeof options.animate === 'boolean') {
+    if (options.animate) {
+      setTransition(elem, options)
+    } else {
+      setStyle(elem, 'transition', 'none')
+    }
+  }
   setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
 }

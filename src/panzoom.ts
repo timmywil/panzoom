@@ -9,7 +9,7 @@
 
 import { getPadding, setStyle, setTransform, setTransformOrigin } from './css'
 import isAttached from './isAttached'
-import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
+import { MiscOptions, PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
@@ -18,6 +18,7 @@ const defaultOptions: PanzoomOptions = {
   disableZoom: false,
   disableXAxis: false,
   disableYAxis: false,
+  duration: 200,
   easing: 'ease-in-out',
   maxScale: 4,
   minScale: 0.125,
@@ -65,7 +66,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   let scale = 1
   let isPanning = false
 
-  function pan(toX: number | string, toY: number | string, panOptions?: PanOptions) {
+  function pan(toX: number | string, toY: number | string, panOptions?: PanOptions & MiscOptions) {
     const opts = { ...options, ...panOptions }
     if (opts.disablePan) {
       return
@@ -83,11 +84,11 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     }
 
     if (!opts.skipUpdate) {
-      opts.setTransform(elem, { x, y, scale })
+      opts.setTransform(elem, { x, y, scale }, opts)
     }
   }
 
-  function zoom(toScale: number, zoomOptions?: ZoomOptions) {
+  function zoom(toScale: number, zoomOptions?: ZoomOptions & MiscOptions) {
     const opts = { ...options, ...zoomOptions }
     if (opts.disableZoom) {
       return
@@ -97,16 +98,16 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     scale = Math.min(Math.max(opts.minScale, toScale), opts.maxScale)
 
     if (!opts.skipUpdate) {
-      opts.setTransform(elem, { x, y, scale })
+      opts.setTransform(elem, { x, y, scale }, opts)
     }
   }
 
-  function zoomIn(zoomOptions?: ZoomOptions) {
+  function zoomIn(zoomOptions?: ZoomOptions & MiscOptions) {
     const opts = { animate: true, ...zoomOptions }
     zoom(scale * Math.exp(options.step), opts)
   }
 
-  function zoomOut(zoomOptions?: ZoomOptions) {
+  function zoomOut(zoomOptions?: ZoomOptions & MiscOptions) {
     const opts = { animate: true, ...zoomOptions }
     zoom(scale * Math.exp(-options.step), opts)
   }
@@ -153,14 +154,14 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     const toY = (focalY / scale - focalY / startScale + y * scale) / scale
     pan(toX, toY, { relative: false, skipUpdate: true })
 
-    options.setTransform(elem, { x, y, scale })
+    options.setTransform(elem, { x, y, scale }, { ...options, animate: false })
   }
 
   function reset(resetOptions?: PanzoomOptions) {
-    const opts = { animate: true, ...resetOptions, skipUpdate: true }
+    const opts = { ...options, animate: true, ...resetOptions, skipUpdate: true }
     zoom(1, opts)
     pan(0, 0, opts)
-    options.setTransform(elem, { x, y, scale })
+    options.setTransform(elem, { x, y, scale }, opts)
   }
 
   function startMove(startEvent: PointerEvent) {
@@ -177,7 +178,9 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     const startPageY = startEvent.pageY
 
     function move(event: PointerEvent) {
-      pan(origX + (event.pageX - startPageX) / scale, origY + (event.pageY - startPageY) / scale)
+      pan(origX + (event.pageX - startPageX) / scale, origY + (event.pageY - startPageY) / scale, {
+        animate: false
+      })
     }
 
     function cancel(event: PointerEvent) {
