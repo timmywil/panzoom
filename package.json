@@ -1,5 +1,5 @@
 {
-  "name": "@panzoom/core",
+  "name": "@panzoom/panzoom",
   "version": "4.0.0-pre",
   "description": "Pan and zoom elements anywhere using native transformations",
   "main": "dist/panzoom.js",
