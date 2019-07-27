@@ -21,9 +21,7 @@ export default function SVG() {
   return (
     <Demo title="SVG support: move all the things!" code={code}>
       <div className="buttons">
-        <button onClick={() => panzooms.forEach((panzoom) => panzoom.reset({ animate: false }))}>
-          Reset
-        </button>
+        <button onClick={() => panzooms.forEach((panzoom) => panzoom.reset())}>Reset</button>
       </div>
       <div className="panzoom-parent">
         <svg className="panzoom" x="0px" y="0px" width="900" height="900" viewBox="0 0 900 900">

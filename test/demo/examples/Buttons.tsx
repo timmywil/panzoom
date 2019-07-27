@@ -6,7 +6,7 @@ import Demo from '../Demo'
 const code = (
   <Code>
     {`\
-const panzoom = Panzoom(elem)
+const panzoom = Panzoom(elem, { step: 0.3 })
 zoomInButton.addEventListener('click', panzoom.zoomIn)
 zoomOutButton.addEventListener('click', panzoom.zoomOut)
 resetButton.addEventListener('click', panzoom.reset)
@@ -16,13 +16,13 @@ rangeInput.addEventListener('input', (event) => {
   </Code>
 )
 
-export default function Focal() {
+export default function Buttons() {
   const elem = useRef<HTMLDivElement>(null)
   const range = useRef<HTMLInputElement>(null)
   const panzoomRef = useRef<Panzoom>(null)
   let panzoom = panzoomRef.current
   useEffect(() => {
-    panzoom = panzoomRef.current = Panzoom(elem.current)
+    panzoom = panzoomRef.current = Panzoom(elem.current, { step: 0.3 })
   }, [])
   return (
     <Demo title="Panning and zooming" code={code}>
@@ -42,7 +42,13 @@ export default function Focal() {
           }}>
           Zoom out
         </button>
-        <button onClick={() => panzoom.reset()}>Reset</button>
+        <button
+          onClick={() => {
+            panzoom.reset()
+            range.current.value = panzoom.getScale()
+          }}>
+          Reset
+        </button>
         <input
           ref={range}
           onInput={(event) => {

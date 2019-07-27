@@ -1,6 +1,20 @@
 import { strict as assert, throws } from 'assert'
 import Panzoom from '../../src/panzoom'
 
+function assertStyleMatches(elem: HTMLElement | SVGElement, name: string, value: string) {
+  const capName = name[0].toUpperCase() + name.slice(1)
+  const style: any = elem.style
+  if (style[name]) {
+    assert.ok(style[name].includes(value))
+  } else if (style[`webkit${capName}`]) {
+    assert.ok(style[`webkit${capName}`].includes(value))
+  } else if (style[`moz${capName}`]) {
+    assert.ok(style[`moz${capName}`].includes(value))
+  } else if (style[`ms${capName}`]) {
+    assert.ok(style[`ms${capName}`].includes(value))
+  }
+}
+
 describe('Panzoom', () => {
   it('exists', () => {
     assert(Panzoom, 'Panzoom exists')
@@ -29,5 +43,14 @@ describe('Panzoom', () => {
     assert(panzoom.zoom)
     assert(panzoom.zoomWithWheel)
     assert(panzoom.options)
+    assertStyleMatches(div, 'transformOrigin', '50% 50%')
+    document.body.removeChild(div)
+  })
+  it('sets the expected transform-origin on SVG', () => {
+    const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+    document.body.appendChild(elem)
+    Panzoom(elem)
+    assertStyleMatches(elem, 'transformOrigin', '0px 0px')
+    document.body.removeChild(elem)
   })
 })

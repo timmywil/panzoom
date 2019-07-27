@@ -6,13 +6,15 @@
  * Released under the MIT license
  * https://github.com/timmywil/panzoom/blob/master/MIT-License.txt
  */
-
-import { getPadding, setStyle, setTransform, setTransformOrigin } from './css'
+import { getPadding, setStyle, setTransform } from './css'
 import isAttached from './isAttached'
-import { MiscOptions, PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
+import isSVGElement from './isSVGElement'
+import './polyfills'
+import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
+  clickableClass: 'clickable',
   cursor: 'move',
   disablePan: false,
   disableZoom: false,
@@ -43,6 +45,8 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     ...options
   }
 
+  const isSVG = isSVGElement(elem)
+  // SVG has pointer events, but TypeScript doesn't know that
   const htmlElem = elem as HTMLElement
 
   function setOptions(opts: PanzoomOptions = {}) {
@@ -55,7 +59,14 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
 
   // Set some default styles on the panzoom element
   elem.style.cursor = options.cursor
-  setTransformOrigin(elem)
+  // The default for HTML is '50% 50%'
+  // The default for SVG is '0 0'
+  // SVG can't be changed in IE
+  setStyle(
+    elem,
+    'transformOrigin',
+    typeof options.origin === 'string' ? options.origin : isSVG ? '0 0' : '50% 50%'
+  )
 
   // Set overflow on the parent
   const parent = elem.parentElement
@@ -66,50 +77,80 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   let scale = 1
   let isPanning = false
 
-  function pan(toX: number | string, toY: number | string, panOptions?: PanOptions & MiscOptions) {
+  function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
     const opts = { ...options, ...panOptions }
+    const result = { x, y, opts }
     if (opts.disablePan) {
-      return
+      return result
     }
-
     toX = parseFloat(toX as string)
     toY = parseFloat(toY as string)
 
     if (!opts.disableXAxis) {
-      x = (opts.relative ? x : 0) + toX
+      result.x = (opts.relative ? x : 0) + toX
     }
 
     if (!opts.disableYAxis) {
-      y = (opts.relative ? y : 0) + toY
+      result.y = (opts.relative ? y : 0) + toY
     }
-
-    if (!opts.skipUpdate) {
-      opts.setTransform(elem, { x, y, scale }, opts)
-    }
+    return result
   }
 
-  function zoom(toScale: number, zoomOptions?: ZoomOptions & MiscOptions) {
+  function constrainScale(toScale: number, zoomOptions?: ZoomOptions) {
     const opts = { ...options, ...zoomOptions }
+    const result = { scale, opts }
+    if (opts.disableZoom) {
+      return result
+    }
+    result.scale = Math.min(Math.max(opts.minScale, toScale), opts.maxScale)
+    return result
+  }
+
+  function pan(toX: number | string, toY: number | string, panOptions?: PanOptions) {
+    const result = constrainXY(toX, toY, panOptions)
+    const opts = result.opts
+
+    x = result.x
+    y = result.y
+
+    opts.setTransform(elem, { x, y, scale }, opts)
+  }
+
+  function zoom(toScale: number, zoomOptions?: ZoomOptions) {
+    const result = constrainScale(toScale, zoomOptions)
+    const opts = result.opts
     if (opts.disableZoom) {
       return
     }
+    toScale = result.scale
 
-    // Restrict scale
-    scale = Math.min(Math.max(opts.minScale, toScale), opts.maxScale)
-
-    if (!opts.skipUpdate) {
-      opts.setTransform(elem, { x, y, scale }, opts)
+    if (opts.focal) {
+      // The difference between the point after the scale and the point before the scale
+      // plus the current translation after the scale
+      // neutralized to no scale (as the transform scale will apply to the translation)
+      const focal = opts.focal
+      const toX = (focal.x / toScale - focal.x / scale + x * toScale) / toScale
+      const toY = (focal.y / toScale - focal.y / scale + y * toScale) / toScale
+      const panResult = constrainXY(toX, toY, { relative: false })
+      x = panResult.x
+      y = panResult.y
     }
+
+    scale = toScale
+    opts.setTransform(elem, { x, y, scale }, opts)
   }
 
-  function zoomIn(zoomOptions?: ZoomOptions & MiscOptions) {
-    const opts = { animate: true, ...zoomOptions }
-    zoom(scale * Math.exp(options.step), opts)
+  function zoomInOut(isIn: boolean, zoomOptions?: ZoomOptions) {
+    const opts = { ...options, animate: true, ...zoomOptions }
+    zoom(scale * Math.exp((isIn ? 1 : -1) * opts.step), opts)
   }
 
-  function zoomOut(zoomOptions?: ZoomOptions & MiscOptions) {
-    const opts = { animate: true, ...zoomOptions }
-    zoom(scale * Math.exp(-options.step), opts)
+  function zoomIn(zoomOptions?: ZoomOptions) {
+    zoomInOut(true, zoomOptions)
+  }
+
+  function zoomOut(zoomOptions?: ZoomOptions) {
+    zoomInOut(false, zoomOptions)
   }
 
   function zoomWithWheel(event: WheelEvent) {
@@ -120,52 +161,59 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     // Normalize to deltaX in case shift modifier is used on Mac
     const delta = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY
     const wheel = delta < 0 ? 1 : -1
-    const startScale = scale
+    const toScale = constrainScale(scale * Math.exp(wheel * options.step)).scale
 
-    // scale becomes the new scale in the subsequent lines
-    zoom(startScale * Math.exp(wheel * options.step), { skipUpdate: true })
-
+    // Get the position of point over the element before the scale
+    const rect = elem.getBoundingClientRect()
     const parentRect = parent.getBoundingClientRect()
     const padding = getPadding(parent)
-    const rect = elem.getBoundingClientRect()
+    let clientX = event.clientX - parentRect.left - padding.left
+    let clientY = event.clientY - parentRect.top - padding.top
 
-    const newWidth = (rect.width / startScale) * scale
-    const newHeight = (rect.height / startScale) * scale
+    // Adjust the clientX because HTML elements
+    // have a transform-origin of 50% 50%
+    if (!isSVG) {
+      clientX -= rect.width / scale / 2
+      clientY -= rect.height / scale / 2
+    }
+
+    // The new width after the scale
+    const newWidth = (rect.width / scale) * toScale
+    const newHeight = (rect.height / scale) * toScale
 
     // Convert the mouse point from it's position over the
     // panzoom element before the scale to the position
-    // over element after the scale
+    // over element after the scale.
     // Parent padding affects the element position,
     // so pretend the area inside the padding is all
-    // we care about
-    const focalX =
-      ((event.clientX - parentRect.left - padding.left) /
-        (parentRect.width - padding.left - padding.right)) *
-      newWidth
-    const focalY =
-      ((event.clientY - parentRect.top - padding.top) /
-        (parentRect.height - padding.top - padding.bottom)) *
-      newHeight
+    // we care about.
+    const focal = {
+      x: (clientX / (parentRect.width - padding.left - padding.right)) * newWidth,
+      y: (clientY / (parentRect.height - padding.top - padding.bottom)) * newHeight
+    }
 
-    // The difference between the point after the scale and the point before the scale
-    // plus the current translation after the scale
-    // neutralized to no scale (as the transform scale will apply to the translation)
-    const toX = (focalX / scale - focalX / startScale + x * scale) / scale
-    const toY = (focalY / scale - focalY / startScale + y * scale) / scale
-    pan(toX, toY, { relative: false, skipUpdate: true })
-
-    options.setTransform(elem, { x, y, scale }, { ...options, animate: false })
+    zoom(toScale, { focal, animate: false })
   }
 
   function reset(resetOptions?: PanzoomOptions) {
-    const opts = { ...options, animate: true, ...resetOptions, skipUpdate: true }
-    zoom(1, opts)
-    pan(0, 0, opts)
-    options.setTransform(elem, { x, y, scale }, opts)
+    const panResult = constrainXY(0, 0, resetOptions)
+    x = panResult.x
+    y = panResult.y
+    scale = constrainScale(1, resetOptions).scale
+    options.setTransform(
+      elem,
+      { x, y, scale },
+      {
+        ...options,
+        animate: true,
+        ...resetOptions
+      }
+    )
   }
 
   function startMove(startEvent: PointerEvent) {
-    if (isPanning) {
+    const target = startEvent.target as Element
+    if (isPanning || (target && target.classList.contains(options.clickableClass))) {
       return
     }
     isPanning = true

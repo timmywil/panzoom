@@ -1,36 +1,31 @@
 import { setStyle, setTransform } from './css'
 
-export interface PanOptions {
-  /** Disable panning functionality. Note: disablePan also disables focal point zooming */
-  disablePan?: boolean
-  /** Pan only on the Y axis */
-  disableXAxis?: boolean
-  /** Pan only on the X axis */
-  disableYAxis?: boolean
-  /** When passing x and y values to .pan(), treat the values as relative to their current values */
-  relative?: boolean
-  /** The cursor style to set on the panzoom element */
-  cursor?: string
-}
-
-export interface ZoomOptions {
-  /** Disable zooming functionality */
-  disableZoom?: boolean
-  /** The minimum scale when zooming */
-  minScale?: number
-  /** The maximum scale when zooming */
-  maxScale?: number
-  /** The step affects the rate of zooming with a mouse wheel, pinching, or range element */
-  step?: number
-}
-
-export interface MiscOptions {
+interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean
+  /**
+   * Add this class to any element within the panzoom element
+   * that you want to be clickable and not initiate the drag
+   */
+  clickableClass?: string
   /** Duration of the transition (ms) */
   duration?: number
   /** CSS Easing used for transitions */
   easing?: string
+  /**
+   * **Change this at your own risk.**
+   * The `transform-origin` is the origin from which transforms are applied.
+   * Default: `'50% 50%'` for HTML and `'0 0'` for SVG.
+   * The defaults are set because changing the `transform-origin` on
+   * SVG elements doesn't work in IE.
+   *
+   * Changing this should work with most things, but
+   * it will break focal point zooming, which assumes the
+   * defaults are set to do the more complicated calculations.
+   *
+   * And again, changing this for SVG in IE doesn't work at all.
+   */
+  origin?: string
   /**
    * Override the transform setter
    * This is exposed mostly so the user could
@@ -48,16 +43,42 @@ export interface MiscOptions {
    * ```
    */
   setTransform?: typeof setTransform
-  /**
-   * Set relevant Panzoom internal values without
-   * actually updating the transform
-   */
-  skipUpdate?: boolean
   /** Pass through any options like data */
   [key: string]: any
 }
 
-export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
+export type PanOptions = MiscOptions & {
+  /** Disable panning functionality. Note: disablePan also disables focal point zooming */
+  disablePan?: boolean
+  /** Pan only on the Y axis */
+  disableXAxis?: boolean
+  /** Pan only on the X axis */
+  disableYAxis?: boolean
+  /** When passing x and y values to .pan(), treat the values as relative to their current values */
+  relative?: boolean
+  /** The cursor style to set on the panzoom element */
+  cursor?: string
+}
+
+export type ZoomOptions = MiscOptions & {
+  /** Disable zooming functionality */
+  disableZoom?: boolean
+  /**
+   * Zoom to the given point on the panzoom element.
+   * This point is expected to be relative to
+   * the panzoom element's dimensions and is unrelated
+   * to the parent dimensions.
+   */
+  focal?: { x: number; y: number }
+  /** The minimum scale when zooming */
+  minScale?: number
+  /** The maximum scale when zooming */
+  maxScale?: number
+  /** The step affects the rate of zooming with a mouse wheel, pinching, or range element */
+  step?: number
+}
+
+export type PanzoomOptions = PanOptions & ZoomOptions
 
 export interface PanzoomObject {
   /** Get the current x/y translation */

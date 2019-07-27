@@ -48,15 +48,6 @@ export function setStyle(elem: HTMLElement | SVGElement, name: string, value: st
 }
 
 /**
- * Sets the default transform-origin for both HTML and SVG to 0 0
- * SVG transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+,
- * so we default to 0 0 for everything.
- */
-export function setTransformOrigin(elem: HTMLElement | SVGElement) {
-  setStyle(elem, 'transformOrigin', '0 0')
-}
-
-/**
  * Constructs the transition from panzoom options
  * and takes care of prefixing the transition and transform
  */
@@ -81,5 +72,7 @@ export function setTransform(
       setStyle(elem, 'transition', 'none')
     }
   }
-  setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
+  requestAnimationFrame(() => {
+    setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
+  })
 }
