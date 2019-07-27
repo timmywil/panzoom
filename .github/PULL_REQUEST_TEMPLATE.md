@@ -2,6 +2,7 @@
 
 Please review the [guidelines for contributing](CONTRIBUTING.md) to this repository.
 
+- [ ] I am requesting to **pull a topic/feature/bugfix branch** (right side). In other words, not *master*.
 - [ ] I have run `yarn test` against my changes and tests pass.
 - [ ] I have added tests to prove my fix is affective or my feature works. This can be done in the form of unit tests in `test/unit/` or a new or altered demo on `test/demo/`.
 - [ ] I have added or edited necessary documentation in the README.md, or no docs changes are needed.
