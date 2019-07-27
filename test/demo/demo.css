@@ -3,6 +3,7 @@
 }
 body {
   margin: 0;
+  background: #222222;
 }
 .container {
   display: flex;
@@ -12,8 +13,22 @@ body {
   color: #333666;
 }
 .main-header {
+  color: white;
   padding: 0 20px 10px;
   border-bottom: 1px solid #eeeeee;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.github-link svg path {
+  transition: fill 0.2s ease-in-out;
+}
+.github-link:hover svg path {
+  fill: #dadada;
+}
+.github-link:active svg path {
+  fill: #888888;
 }
 .demo {
   width: 100%;
@@ -22,6 +37,7 @@ body {
   background-color: #f5fcff;
   padding: 0 20px 20px;
   margin-bottom: 30px;
+  border-radius: 5px;
 }
 pre {
   border-radius: 5px;
