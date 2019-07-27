@@ -78,6 +78,14 @@ export interface PanzoomObject {
    */
   pan: (x: number | string, y: number | string, panOptions?: PanOptions) => void
   /**
+   * Zoom in using the predetermined increment set in options
+   */
+  zoomIn: (zoomOptions?: ZoomOptions) => void
+  /**
+   * Zoom out using the predetermined increment set in options
+   */
+  zoomOut: (zoomOptions?: ZoomOptions) => void
+  /**
    * Zoom the Panzoom element to the given scale
    *
    * ```js

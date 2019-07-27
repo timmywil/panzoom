@@ -12,7 +12,7 @@ body {
   color: #333666;
 }
 .main-header {
-  padding: 0 5px 10px;
+  padding: 0 20px 10px;
   border-bottom: 1px solid #eeeeee;
 }
 .demo {
@@ -20,7 +20,7 @@ body {
   display: flex;
   flex-direction: column;
   background-color: #f5fcff;
-  padding: 20px;
+  padding: 0 20px 20px;
   margin-bottom: 30px;
 }
 pre {
@@ -28,10 +28,14 @@ pre {
   margin: 0 0 20px !important;
 }
 .live-example {
+  background-image: linear-gradient(50deg, rgb(25, 189, 158), rgb(16, 138, 178));
+}
+.panzoom-parent {
   position: relative;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
-  padding: 30px;
-  border: 2px solid black;
+  box-shadow: inset 0 0 5px rgba(223, 212, 212, 0.5);
+  margin: 30px;
+  padding: 20px;
+  border: 3px solid black;
   border-radius: 5px;
 }
 .panzoom {
@@ -40,9 +44,11 @@ pre {
 .panzoom img {
   display: block;
   margin: 0 auto;
-  border: 1px solid;
+  padding: 20px;
+  border: 2px solid;
+  border-radius: 3px;
 }
-.dot {
+/* .dot {
   position: absolute;
   top: calc(50% - 2px);
   left: calc(50% - 2px - 100px);
@@ -50,4 +56,20 @@ pre {
   height: 4px;
   background-color: red;
   border-radius: 50%;
+} */
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #99cccc;
+  margin-bottom: 20px;
+}
+.buttons > * {
+  margin-right: 10px;
+}
+label {
+  font-weight: 600;
+  display: inline-block;
 }

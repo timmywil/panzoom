@@ -26,6 +26,16 @@ export function getCSSNum(style: CSSStyleDeclaration, name: string) {
   return parseFloat(style[getPrefixedName(name) as any]) || 0
 }
 
+export function getPadding(elem: HTMLElement | SVGElement) {
+  const style = window.getComputedStyle(elem)
+  return {
+    left: getCSSNum(style, 'paddingLeft'),
+    right: getCSSNum(style, 'paddingRight'),
+    top: getCSSNum(style, 'paddingTop'),
+    bottom: getCSSNum(style, 'paddingBottom')
+  }
+}
+
 /**
  * Set a style using the properly prefixed name
  */
@@ -49,6 +59,5 @@ export function setTransform(
   elem: HTMLElement | SVGElement,
   { x, y, scale }: { x: number; y: number; scale: number }
 ) {
-  console.log(`x: ${x}, y: ${y}, scale: ${scale}`)
   setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
 }
