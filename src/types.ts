@@ -119,7 +119,7 @@ export interface PanzoomObject {
   /** Change options for the Panzoom instance */
   setOptions: (options?: PanzoomOptions) => void
   /** Reset the pan and zoom to 0 */
-  reset: () => void
+  reset: (options?: PanzoomOptions) => void
   /** A convenience method for setting prefixed styles on the Panzoom element */
   setStyle: typeof setStyle
 }

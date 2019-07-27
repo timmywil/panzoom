@@ -102,11 +102,13 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   function zoomIn(zoomOptions?: ZoomOptions) {
-    zoom(scale * Math.exp(options.step), zoomOptions)
+    const opts = { animate: true, ...zoomOptions }
+    zoom(scale * Math.exp(options.step), opts)
   }
 
   function zoomOut(zoomOptions?: ZoomOptions) {
-    zoom(scale * Math.exp(-options.step), zoomOptions)
+    const opts = { animate: true, ...zoomOptions }
+    zoom(scale * Math.exp(-options.step), opts)
   }
 
   function zoomWithWheel(event: WheelEvent) {
@@ -154,9 +156,10 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     options.setTransform(elem, { x, y, scale })
   }
 
-  function reset() {
-    zoom(1, { skipUpdate: true })
-    pan(0, 0, { skipUpdate: true })
+  function reset(resetOptions?: PanzoomOptions) {
+    const opts = { animate: true, ...resetOptions, skipUpdate: true }
+    zoom(1, opts)
+    pan(0, 0, opts)
     options.setTransform(elem, { x, y, scale })
   }
 

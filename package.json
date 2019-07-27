@@ -1,7 +1,7 @@
 {
   "name": "@panzoom/core",
   "version": "4.0.0-pre",
-  "description": "Pan and zoom elements using CSS transforms",
+  "description": "Pan and zoom elements anywhere using native transformations",
   "main": "dist/panzoom.js",
   "scripts": {
     "build": "yarn clean && rollup --config && yarn minify && yarn docs",

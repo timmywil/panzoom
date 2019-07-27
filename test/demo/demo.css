@@ -14,8 +14,7 @@ body {
 }
 .main-header {
   color: white;
-  padding: 0 20px 10px;
-  border-bottom: 1px solid #eeeeee;
+  padding: 0 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

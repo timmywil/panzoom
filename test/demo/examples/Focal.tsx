@@ -21,8 +21,10 @@ parent.addEventListener('wheel', function(event) {
 
 export default function Focal() {
   const elem = useRef<HTMLDivElement>(null)
+  const panzoomRef = useRef<Panzoom>(null)
+  let panzoom = panzoomRef.current
   useEffect(() => {
-    const panzoom = Panzoom(elem.current)
+    panzoom = panzoomRef.current = Panzoom(elem.current)
     const parent = elem.current.parentElement
     parent.addEventListener('wheel', function(event) {
       if (!event.shiftKey) {
@@ -33,6 +35,9 @@ export default function Focal() {
   }, [])
   return (
     <Demo title="Panning and focal-point zooming (shift + mousewheel)" code={code}>
+      <div className="buttons">
+        <button onClick={() => panzoom.reset()}>Reset</button>
+      </div>
       <div className="panzoom-parent">
         <div className="panzoom" ref={elem}>
           <img width="400" height="400" src="/test/demo/target.png" />
