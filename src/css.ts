@@ -30,13 +30,39 @@ export function getCSSNum(style: CSSStyleDeclaration, name: string) {
   return parseFloat(style[getPrefixedName(name) as any]) || 0
 }
 
-export function getPadding(elem: HTMLElement | SVGElement) {
-  const style = window.getComputedStyle(elem)
+export function getPadding(elem: HTMLElement | SVGElement, style?: CSSStyleDeclaration) {
+  if (!style) {
+    style = window.getComputedStyle(elem)
+  }
   return {
     left: getCSSNum(style, 'paddingLeft'),
     right: getCSSNum(style, 'paddingRight'),
     top: getCSSNum(style, 'paddingTop'),
     bottom: getCSSNum(style, 'paddingBottom')
+  }
+}
+
+export function getBorder(elem: HTMLElement | SVGElement, style?: CSSStyleDeclaration) {
+  if (!style) {
+    style = window.getComputedStyle(elem)
+  }
+  return {
+    left: getCSSNum(style, 'borderLeft'),
+    right: getCSSNum(style, 'borderRight'),
+    top: getCSSNum(style, 'borderTop'),
+    bottom: getCSSNum(style, 'borderBottom')
+  }
+}
+
+export function getMargin(elem: HTMLElement | SVGElement, style?: CSSStyleDeclaration) {
+  if (!style) {
+    style = window.getComputedStyle(elem)
+  }
+  return {
+    left: getCSSNum(style, 'marginLeft'),
+    right: getCSSNum(style, 'marginRight'),
+    top: getCSSNum(style, 'marginTop'),
+    bottom: getCSSNum(style, 'marginBottom')
   }
 }
 

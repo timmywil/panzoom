@@ -6,7 +6,7 @@
  * Released under the MIT license
  * https://github.com/timmywil/panzoom/blob/master/MIT-License.txt
  */
-import { getPadding, setStyle, setTransform } from './css'
+import { getBorder, getMargin, getPadding, setStyle, setTransform } from './css'
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
 import './polyfills'
@@ -165,31 +165,53 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
 
     // Get the position of point over the element before the scale
     const rect = elem.getBoundingClientRect()
+    const margin = getMargin(elem)
     const parentRect = parent.getBoundingClientRect()
-    const padding = getPadding(parent)
-    let clientX = event.clientX - parentRect.left - padding.left
-    let clientY = event.clientY - parentRect.top - padding.top
+    const parentPadding = getPadding(parent)
+    const parentBorder = getBorder(parent)
 
-    // Adjust the clientX because HTML elements
-    // have a transform-origin of 50% 50%
+    // Instead of thinking of operating on the panzoom element,
+    // think of operating on the area inside the panzoom
+    // element's parent
+    // Subtract padding and border
+    const effectiveArea = {
+      width:
+        parentRect.width -
+        parentPadding.left -
+        parentPadding.right -
+        parentBorder.left -
+        parentBorder.right,
+      height:
+        parentRect.height -
+        parentPadding.top -
+        parentPadding.bottom -
+        parentBorder.top -
+        parentBorder.bottom
+    }
+
+    // Adjust the clientX/clientY to ignore the area
+    // outside the effective area
+    let clientX =
+      event.clientX - parentRect.left - parentPadding.left - parentBorder.left - margin.left
+    let clientY = event.clientY - parentRect.top - parentPadding.top - parentBorder.top - margin.top
+
+    // Adjust the clientX/clientY for HTML elements,
+    // because they have a transform-origin of 50% 50%
     if (!isSVG) {
       clientX -= rect.width / scale / 2
       clientY -= rect.height / scale / 2
     }
 
     // The new width after the scale
-    const newWidth = (rect.width / scale) * toScale
-    const newHeight = (rect.height / scale) * toScale
+    const newWidth = effectiveArea.width * toScale
+    const newHeight = effectiveArea.height * toScale
 
     // Convert the mouse point from it's position over the
-    // panzoom element before the scale to the position
+    // effective area before the scale to the position
     // over element after the scale.
-    // Parent padding affects the element position,
-    // so pretend the area inside the padding is all
-    // we care about.
     const focal = {
-      x: (clientX / (parentRect.width - padding.left - padding.right)) * newWidth,
-      y: (clientY / (parentRect.height - padding.top - padding.bottom)) * newHeight
+      x: (clientX / effectiveArea.width) * newWidth,
+      y: (clientY / effectiveArea.height) * newHeight
     }
 
     zoom(toScale, { focal, animate: false })
@@ -219,7 +241,8 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     isPanning = true
     startEvent.preventDefault()
     startEvent.stopPropagation()
-    elem.setPointerCapture(startEvent.pointerId)
+    const pointerId = startEvent.pointerId
+    elem.setPointerCapture(pointerId)
     const origX = x
     const origY = y
     const startPageX = startEvent.pageX
@@ -231,17 +254,19 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
       })
     }
 
-    function cancel(event: PointerEvent) {
+    function cancel() {
       isPanning = false
       htmlElem.removeEventListener('pointermove', move)
       htmlElem.removeEventListener('pointerup', cancel)
       htmlElem.removeEventListener('pointercancel', cancel)
-      htmlElem.releasePointerCapture(event.pointerId)
+      document.removeEventListener('mouseup', cancel)
+      htmlElem.releasePointerCapture(pointerId)
     }
 
     htmlElem.addEventListener('pointermove', move, { passive: true })
     htmlElem.addEventListener('pointerup', cancel, { passive: true })
     htmlElem.addEventListener('pointercancel', cancel, { passive: true })
+    document.addEventListener('mouseup', cancel, { passive: true })
   }
 
   if (!options.disablePan) {

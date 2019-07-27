@@ -58,9 +58,8 @@ pre {
 }
 .panzoom img {
   display: block;
-  margin: 0 auto;
   padding: 20px;
-  border-radius: 3px;
+  margin: 0 auto;
 }
 /* .dot {
   position: absolute;

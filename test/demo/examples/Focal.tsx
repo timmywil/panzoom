@@ -38,8 +38,8 @@ export default function Focal() {
       <div className="buttons">
         <button onClick={() => panzoom.reset()}>Reset</button>
       </div>
-      <div className="panzoom-parent">
-        <div className="panzoom" ref={elem}>
+      <div className="panzoom-parent" style={{ borderWidth: '10px' }}>
+        <div className="panzoom" ref={elem} style={{ width: '400px', margin: '0 auto' }}>
           <img width="400" height="400" src="/test/demo/target.png" />
         </div>
       </div>

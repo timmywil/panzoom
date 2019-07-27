@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './demo.css'
-import Buttons from './examples/Buttons'
 import Focal from './examples/Focal'
+import Standard from './examples/Standard'
 import SVG from './examples/SVG'
 
 function Demos() {
@@ -19,9 +19,9 @@ function Demos() {
           </svg>
         </a>
       </h1>
+      <Standard />
       <Focal />
       <SVG />
-      <Buttons />
     </div>
   )
 }
