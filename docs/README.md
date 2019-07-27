@@ -1,4 +1,4 @@
-> **[panzoom](README.md)**
+> **[@panzoom/core](README.md)**
 
 [Globals](globals.md) /
 
@@ -11,15 +11,11 @@
 **[Examples](https://timmywil.com/panzoom/test/demo/)**
 
 Panzoom is a small library to add panning and zooming functionality to an element.
-Rather than setting width and height, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
+Rather than using absolute positioning or setting width and height, Panzoom uses CSS transforms to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 
-panzoom.min.js (12.5kb/4.6kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+panzoom.min.js, included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
 For common support questions, see [the FAQ](https://github.com/timmywil/panzoom#faq) at the bottom.
-
-## Dependencies
-
-Panzoom used to rely on jQuery, but is now a standalone library. However, it can still be used as a jQuery plugin.
 
 ## Browser support
 
@@ -27,11 +23,9 @@ Here is a list of [currently supported browsers](https://browserl.ist/?q=%3E0.25
 
 ## Mobile support
 
-Panzoom includes support for touch gestures and even supports **pinch gestures** for zooming. It is perfectly suited for both mobile and desktop browsers.
+iOS, Android, and Windows Mobile are supported.
 
-iOS and Android are supported.
-
-**Pointer**, **touch**, and **mouse** events are supported.
+Panzoom includes support for touch gestures and even supports **pinch gestures** for zooming. It is perfectly suited for both mobile and desktop browsers. It uses [pointer events](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events) by default wherever supported.
 
 ## SVG support
 
@@ -39,19 +33,16 @@ Panzoom supports panning and zooming SVG elements directly, in browsers that sup
 
 In IE11, CSS animations/transitions do not work on SVG elements, at least for the transform style. They do work in other browsers.
 
-One could implement transitions manually in those browsers by overriding the `setTransform()` method and integrating a tweening library for javascript animations (such as [tween.js](http://www.createjs.com/#!/TweenJS)).
-
-**Compatibility note:** _There is a [known issue with Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=530985) and using the `focal` option. Firefox does not correctly maintain the dimensions of SVG parent elements, which throws off offsets. If using the `focal` option with SVG, the workaround is to set the correct offset on the Panzoom instance manually using `Panzoom.prototype.parentOffset` ([example](http://jsfiddle.net/timmywil/Vu8nA/))._
+One could implement transitions manually in those browsers using the `setTransform` option and integrating a tweening library for javascript animations (such as [tween.js](https://www.createjs.com/#!/TweenJS)).
 
 ## Loading Panzoom
 
-Panzoom can be included with your scripts at the end of the body,
-but Panzoom supports AMD for javascript module love.
+Panzoom uses (UMD)[https://github.com/umdjs/umd] and can be loaded a lot of ways.
 
-With script tags:
+With ES6 imports:
 
-```html
-<script src="/js/panzoom.js"></script>
+```js
+import Panzoom from 'panzoom'
 ```
 
 With AMD loader in an anonymous module:
@@ -60,6 +51,12 @@ With AMD loader in an anonymous module:
 define(['panzoom'], function(Panzoom) {
   Panzoom('.panzoom')
 })
+```
+
+With script tags:
+
+```html
+<script src="/js/panzoom.js"></script>
 ```
 
 ## Initialization
@@ -72,7 +69,7 @@ const panzoom = Panzoom('.panzoom', {
 
 ## FAQ
 
-1\. How do I make it so that I never see the background behind the Panzoom element? [example](http://codepen.io/timmywil/pen/qjvBF)
+1\. How do I make it so that I never see the background behind the Panzoom element? [example](https://codepen.io/timmywil/pen/qjvBF)
 
 - This can be done with the `contain` option. Set `contain` to `"invert"` or `"auto"` and make sure the Panzoom element is the same size or larger than its parent.
 
@@ -83,7 +80,7 @@ $('.panzoom-elements').panzoom({
 })
 ```
 
-2\. How do I make links work if they're within a Panzoom element? [example](http://codepen.io/timmywil/pen/bFiqy)
+2\. How do I make links work if they're within a Panzoom element? [example](https://codepen.io/timmywil/pen/bFiqy)
 
 - Event propagation is stopped for `mousedown` and `touchstart` events in order to allow for Panzoom elements within Panzoom elements. To fix the links, bind an event handler that prevents the event from reaching the Panzoom handler:
 
@@ -93,22 +90,10 @@ $('.panzoom a').on('mousedown touchstart', function(e) {
 })
 ```
 
-3\. What is `transform-origin` and why is it added to the panzoom element?
+3\. What is `transform-origin` and why is it set to `'0 0'` on the panzoom element?
 
-- The `transform-origin` is the origin from which transforms are applied. Panzoom ensures the defaults are set to what it expects to calculate focal points and containment. The defaults are needed because certain browsers (_IE_) don't support changing them for certain elements.
-- HTML elements default to '50% 50%'.
-- SVG elements default to '0 0'.
+- The `transform-origin` is the origin from which transforms are applied. The default for SVG is already `'0 0'`. Panzoom normalizes HTML to the same default, which makes working with both much simpler. The SVG default was chosen over the HTML one because changing the `transform-origin` on SVG elements doesn't work in IE. Anything that can be done with a `transform-origin` of `'50% 50%'` can be done with `'0 0'`; the transform values just need adjusting.
 
-4\. How do I prevent zooming beyond the image's original size?
+4\. I am using Panzoom with an `<object>` tag. It zooms but does not pan. [example](https://codepen.io/timmywil/pen/qNpykA)
 
-- The `maxScale` option can be set using the image's `naturalWidth` divided by the `clientWidth`:
-
-```js
-$('#large-image').panzoom({
-  maxScale: elem.naturalWidth / elem.clientWidth
-})
-```
-
-5\. I am using Panzoom with an `<object>` tag. It zooms but does not pan. [example](http://codepen.io/timmywil/pen/qNpykA)
-
-Object elements can eat up events, making it so they never reach Panzoom. To fix this, disable pointer events on the object tag and call Panzoom using a wrapper.
+Object elements can eat up events, making it so they never reach Panzoom. To fix this, disable pointer events (`pointer-events: none`) on the `<object>` tag and call Panzoom using a wrapper.

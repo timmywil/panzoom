@@ -1,4 +1,4 @@
-> **[panzoom](../README.md)**
+> **[@panzoom/core](../README.md)**
 
 [Globals](../globals.md) / ["types"](../modules/_types_.md) / [PanzoomObject](_types_.panzoomobject.md) /
 
@@ -20,6 +20,8 @@
 * [setOptions](_types_.panzoomobject.md#setoptions)
 * [setStyle](_types_.panzoomobject.md#setstyle)
 * [zoom](_types_.panzoomobject.md#zoom)
+* [zoomIn](_types_.panzoomobject.md#zoomin)
+* [zoomOut](_types_.panzoomobject.md#zoomout)
 * [zoomWithWheel](_types_.panzoomobject.md#zoomwithwheel)
 
 ## Properties
@@ -28,7 +30,7 @@
 
 • **getPan**: *function*
 
-*Defined in [types.ts:66](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L66)*
+*Defined in [types.ts:66](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L66)*
 
 Get the current x/y translation
 
@@ -46,7 +48,7 @@ ___
 
 • **getScale**: *function*
 
-*Defined in [types.ts:68](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L68)*
+*Defined in [types.ts:68](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L68)*
 
 Get the current scale
 
@@ -60,7 +62,7 @@ ___
 
 • **options**: *[PanzoomOptions](../modules/_types_.md#panzoomoptions)*
 
-*Defined in [types.ts:110](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L110)*
+*Defined in [types.ts:118](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L118)*
 
 The contructed options for this Panzoom instance
 
@@ -70,7 +72,7 @@ ___
 
 • **pan**: *function*
 
-*Defined in [types.ts:79](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L79)*
+*Defined in [types.ts:79](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L79)*
 
 Pan the Panzoom element to the given x and y coordinates
 
@@ -99,7 +101,7 @@ ___
 
 • **reset**: *function*
 
-*Defined in [types.ts:114](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L114)*
+*Defined in [types.ts:122](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L122)*
 
 Reset the pan and zoom to 0
 
@@ -113,7 +115,7 @@ ___
 
 • **setOptions**: *function*
 
-*Defined in [types.ts:112](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L112)*
+*Defined in [types.ts:120](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L120)*
 
 Change options for the Panzoom instance
 
@@ -133,7 +135,7 @@ ___
 
 • **setStyle**: *[setStyle](../modules/_css_.md#setstyle)*
 
-*Defined in [types.ts:116](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L116)*
+*Defined in [types.ts:124](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L124)*
 
 A convenience method for setting prefixed styles on the Panzoom element
 
@@ -143,7 +145,7 @@ ___
 
 • **zoom**: *function*
 
-*Defined in [types.ts:88](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L88)*
+*Defined in [types.ts:96](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L96)*
 
 Zoom the Panzoom element to the given scale
 
@@ -165,11 +167,51 @@ Name | Type |
 
 ___
 
+###  zoomIn
+
+• **zoomIn**: *function*
+
+*Defined in [types.ts:83](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L83)*
+
+Zoom in using the predetermined increment set in options
+
+#### Type declaration:
+
+▸ (`zoomOptions?`: [ZoomOptions](_types_.zoomoptions.md)): *void*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`zoomOptions?` | [ZoomOptions](_types_.zoomoptions.md) |
+
+___
+
+###  zoomOut
+
+• **zoomOut**: *function*
+
+*Defined in [types.ts:87](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L87)*
+
+Zoom out using the predetermined increment set in options
+
+#### Type declaration:
+
+▸ (`zoomOptions?`: [ZoomOptions](_types_.zoomoptions.md)): *void*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`zoomOptions?` | [ZoomOptions](_types_.zoomoptions.md) |
+
+___
+
 ###  zoomWithWheel
 
 • **zoomWithWheel**: *function*
 
-*Defined in [types.ts:108](https://github.com/timmywil/panzoom/blob/37fd043/src/types.ts#L108)*
+*Defined in [types.ts:116](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L116)*
 
 Zoom the Panzoom element to a focal point using the given WheelEvent
 
