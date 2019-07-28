@@ -48,6 +48,19 @@ interface MiscOptions {
 }
 
 export type PanOptions = MiscOptions & {
+  /**
+   * Contain the panzoom element either
+   * inside or outside the parent.
+   * Inside: The panzoom element is smaller
+   *   than its parent and cannot be panned
+   *   to the outside.
+   * Outside: The panzoom element is larger
+   *   than its parent and cannot be panned
+   *   so that any empty space is shown.
+   */
+  contain?: 'inside' | 'outside'
+  /** The cursor style to set on the panzoom element */
+  cursor?: string
   /** Disable panning functionality. Note: disablePan also disables focal point zooming */
   disablePan?: boolean
   /** Pan only on the Y axis */
@@ -56,8 +69,6 @@ export type PanOptions = MiscOptions & {
   disableYAxis?: boolean
   /** When passing x and y values to .pan(), treat the values as relative to their current values */
   relative?: boolean
-  /** The cursor style to set on the panzoom element */
-  cursor?: string
 }
 
 export type ZoomOptions = MiscOptions & {

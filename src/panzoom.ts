@@ -93,6 +93,41 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     if (!opts.disableYAxis) {
       result.y = (opts.relative ? y : 0) + toY
     }
+
+    if (opts.contain === 'inside') {
+      const rect = elem.getBoundingClientRect()
+      const style = window.getComputedStyle(elem)
+      const margin = getMargin(elem, style)
+      const border = getBorder(elem, style)
+      const parentStyle = window.getComputedStyle(parent)
+      const parentPadding = getPadding(parent, parentStyle)
+      const parentBorder = getBorder(parent, parentStyle)
+      const parentRect = parent.getBoundingClientRect()
+      result.x = Math.max(
+        -margin.left - parentPadding.left,
+        Math.min(
+          parentRect.width -
+            rect.width / scale -
+            parentPadding.left -
+            margin.left -
+            parentBorder.left -
+            border.left,
+          result.x
+        )
+      )
+      result.y = Math.max(
+        -margin.top - parentPadding.top,
+        Math.min(
+          parentRect.height -
+            rect.height / scale -
+            parentPadding.top -
+            margin.top -
+            parentBorder.top -
+            border.left,
+          result.y
+        )
+      )
+    }
     return result
   }
 
@@ -167,8 +202,9 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     const rect = elem.getBoundingClientRect()
     const margin = getMargin(elem)
     const parentRect = parent.getBoundingClientRect()
-    const parentPadding = getPadding(parent)
-    const parentBorder = getBorder(parent)
+    const parentStyle = window.getComputedStyle(parent)
+    const parentPadding = getPadding(parent, parentStyle)
+    const parentBorder = getBorder(parent, parentStyle)
 
     // Instead of thinking of operating on the panzoom element,
     // think of operating on the area inside the panzoom

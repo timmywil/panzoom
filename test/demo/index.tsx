@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './demo.css'
+import ContainInside from './examples/ContainInside'
 import Focal from './examples/Focal'
 import Standard from './examples/Standard'
 import SVG from './examples/SVG'
@@ -22,6 +23,7 @@ function Demos() {
       <Standard />
       <Focal />
       <SVG />
+      <ContainInside />
     </div>
   )
 }
