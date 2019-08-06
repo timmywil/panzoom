@@ -6,6 +6,19 @@
 
 **[Examples](https://timmywil.com/panzoom/test/demo/)**
 
+**This rewrite is a work in progress**
+
+Remaining items:
+
+[ ] Pinch zooming
+[ ] IE11 testing
+[ ] Pointer event fallback
+[ ] Clean up docs presentation
+[ ] jQuery plugin wrapper
+[ ] React plugin wrapper
+
+---
+
 Panzoom is a small library to add panning and zooming functionality to an element.
 Rather than using absolute positioning or setting width and height, Panzoom uses CSS transforms to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 
@@ -25,11 +38,11 @@ Panzoom includes support for touch gestures and even supports **pinch gestures**
 
 ## SVG support
 
-Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
+Panzoom supports panning and zooming SVG elements directly.
 
 In IE11, CSS animations/transitions do not work on SVG elements, at least for the transform style. They do work in other browsers.
 
-One could implement transitions manually in those browsers using the `setTransform` option and integrating a tweening library for javascript animations (such as [tween.js](https://www.createjs.com/#!/TweenJS)).
+One could implement transitions manually in IE11 using the `setTransform` option and integrating a tweening library for javascript animations (such as [tween.js](https://www.createjs.com/#!/TweenJS)).
 
 ## Loading Panzoom
 
