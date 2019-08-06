@@ -1,8 +1,8 @@
-> **[@panzoom/core](README.md)**
+> **[@panzoom/panzoom](README.md)**
 
 [Globals](globals.md) /
 
-# @panzoom/core
+# @panzoom/panzoom
 
 ## Index
 

@@ -33,7 +33,7 @@ One could implement transitions manually in those browsers using the `setTransfo
 
 ## Loading Panzoom
 
-Panzoom uses (UMD)[https://github.com/umdjs/umd] and can be loaded a lot of ways.
+Panzoom uses [UMD](https://github.com/umdjs/umd) and can be loaded a lot of ways.
 
 With ES6 imports:
 

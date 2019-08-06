@@ -1,4 +1,4 @@
-> **[@panzoom/core](README.md)**
+> **[@panzoom/panzoom](README.md)**
 
 [Globals](globals.md) /
 
@@ -37,7 +37,7 @@ One could implement transitions manually in those browsers using the `setTransfo
 
 ## Loading Panzoom
 
-Panzoom uses (UMD)[https://github.com/umdjs/umd] and can be loaded a lot of ways.
+Panzoom uses [UMD](https://github.com/umdjs/umd) and can be loaded a lot of ways.
 
 With ES6 imports:
 
@@ -69,31 +69,16 @@ const panzoom = Panzoom('.panzoom', {
 
 ## FAQ
 
-1\. How do I make it so that I never see the background behind the Panzoom element? [example](https://codepen.io/timmywil/pen/qjvBF)
+1\. What is `transform-origin` and why is it added to the panzoom element?
 
-- This can be done with the `contain` option. Set `contain` to `"invert"` or `"auto"` and make sure the Panzoom element is the same size or larger than its parent.
+- The `transform-origin` is the origin from which transforms are applied. Panzoom ensures the defaults are set to what it expects to calculate focal point zooming.
+- HTML elements default to '50% 50%'.
+- SVG elements default to '0 0'.
 
-```js
-$('.panzoom-elements').panzoom({
-  contain: 'invert',
-  minScale: 1
-})
-```
-
-2\. How do I make links work if they're within a Panzoom element? [example](https://codepen.io/timmywil/pen/bFiqy)
-
-- Event propagation is stopped for `mousedown` and `touchstart` events in order to allow for Panzoom elements within Panzoom elements. To fix the links, bind an event handler that prevents the event from reaching the Panzoom handler:
-
-```js
-$('.panzoom a').on('mousedown touchstart', function(e) {
-  e.stopImmediatePropagation()
-})
-```
-
-3\. What is `transform-origin` and why is it set to `'0 0'` on the panzoom element?
-
-- The `transform-origin` is the origin from which transforms are applied. The default for SVG is already `'0 0'`. Panzoom normalizes HTML to the same default, which makes working with both much simpler. The SVG default was chosen over the HTML one because changing the `transform-origin` on SVG elements doesn't work in IE. Anything that can be done with a `transform-origin` of `'50% 50%'` can be done with `'0 0'`; the transform values just need adjusting.
-
-4\. I am using Panzoom with an `<object>` tag. It zooms but does not pan. [example](https://codepen.io/timmywil/pen/qNpykA)
+2\. I am using Panzoom with an `<object>` tag. It zooms but does not pan. [example](https://codepen.io/timmywil/pen/qNpykA)
 
 Object elements can eat up events, making it so they never reach Panzoom. To fix this, disable pointer events (`pointer-events: none`) on the `<object>` tag and call Panzoom using a wrapper.
+
+3\. My links aren't working! How do I enable an anchor within a panzoom element?
+
+Add class `options.clickable` (default is `"clickable"`) to whatever element you want to be clickable. This will add a listener that calls `event.stopImmediatePropagation()` to prevent the event from reaching panzoom. You could also do this yourself.

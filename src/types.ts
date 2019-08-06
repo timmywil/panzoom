@@ -43,6 +43,10 @@ interface MiscOptions {
    * ```
    */
   setTransform?: typeof setTransform
+  /** Values used to set the beginning transform */
+  startX?: number /* Default: 0 */
+  startY?: number /* Default: 0 */
+  startScale?: number /* Default: 1 */
   /** Pass through any options like data */
   [key: string]: any
 }
@@ -148,7 +152,7 @@ export interface PanzoomObject {
   options: PanzoomOptions
   /** Change options for the Panzoom instance */
   setOptions: (options?: PanzoomOptions) => void
-  /** Reset the pan and zoom to 0 */
+  /** Reset the pan and zoom to startX, startY, and startScale */
   reset: (options?: PanzoomOptions) => void
   /** A convenience method for setting prefixed styles on the Panzoom element */
   setStyle: typeof setStyle

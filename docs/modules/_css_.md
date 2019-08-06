@@ -1,4 +1,4 @@
-> **[@panzoom/core](../README.md)**
+> **[@panzoom/panzoom](../README.md)**
 
 [Globals](../globals.md) / ["css"](_css_.md) /
 
@@ -14,12 +14,14 @@
 
 ### Functions
 
+* [getBorder](_css_.md#getborder)
 * [getCSSNum](_css_.md#getcssnum)
+* [getMargin](_css_.md#getmargin)
 * [getPadding](_css_.md#getpadding)
 * [getPrefixedName](_css_.md#getprefixedname)
 * [setStyle](_css_.md#setstyle)
 * [setTransform](_css_.md#settransform)
-* [setTransformOrigin](_css_.md#settransformorigin)
+* [setTransition](_css_.md#settransition)
 
 ## Variables
 
@@ -27,7 +29,7 @@
 
 • **divStyle**: *`CSSStyleDeclaration`* =  document.createElement('div').style
 
-*Defined in [css.ts:4](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L4)*
+*Defined in [css.ts:6](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L6)*
 
 Proper prefixing for cross-browser compatibility
 
@@ -37,7 +39,7 @@ ___
 
 • **prefixCache**: *object*
 
-*Defined in [css.ts:6](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L6)*
+*Defined in [css.ts:8](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L8)*
 
 #### Type declaration:
 
@@ -49,15 +51,40 @@ ___
 
 • **prefixes**: *string[]* =  ['webkit', 'moz', 'ms']
 
-*Defined in [css.ts:5](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L5)*
+*Defined in [css.ts:7](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L7)*
 
 ## Functions
+
+###  getBorder
+
+▸ **getBorder**(`elem`: `HTMLElement` | `SVGElement`, `style?`: `CSSStyleDeclaration`): *object*
+
+*Defined in [css.ts:45](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L45)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`elem` | `HTMLElement` \| `SVGElement` |
+`style?` | `CSSStyleDeclaration` |
+
+**Returns:** *object*
+
+* **bottom**: *number* =  getCSSNum(style, 'borderBottom')
+
+* **left**: *number* =  getCSSNum(style, 'borderLeft')
+
+* **right**: *number* =  getCSSNum(style, 'borderRight')
+
+* **top**: *number* =  getCSSNum(style, 'borderTop')
+
+___
 
 ###  getCSSNum
 
 ▸ **getCSSNum**(`style`: `CSSStyleDeclaration`, `name`: string): *number*
 
-*Defined in [css.ts:25](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L25)*
+*Defined in [css.ts:29](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L29)*
 
 Gets a style value expected to be a number
 
@@ -72,17 +99,43 @@ Name | Type |
 
 ___
 
-###  getPadding
+###  getMargin
 
-▸ **getPadding**(`elem`: `HTMLElement` | `SVGElement`): *object*
+▸ **getMargin**(`elem`: `HTMLElement` | `SVGElement`, `style?`: `CSSStyleDeclaration`): *object*
 
-*Defined in [css.ts:29](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L29)*
+*Defined in [css.ts:57](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L57)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `elem` | `HTMLElement` \| `SVGElement` |
+`style?` | `CSSStyleDeclaration` |
+
+**Returns:** *object*
+
+* **bottom**: *number* =  getCSSNum(style, 'marginBottom')
+
+* **left**: *number* =  getCSSNum(style, 'marginLeft')
+
+* **right**: *number* =  getCSSNum(style, 'marginRight')
+
+* **top**: *number* =  getCSSNum(style, 'marginTop')
+
+___
+
+###  getPadding
+
+▸ **getPadding**(`elem`: `HTMLElement` | `SVGElement`, `style?`: `CSSStyleDeclaration`): *object*
+
+*Defined in [css.ts:33](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L33)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`elem` | `HTMLElement` \| `SVGElement` |
+`style?` | `CSSStyleDeclaration` |
 
 **Returns:** *object*
 
@@ -100,7 +153,7 @@ ___
 
 ▸ **getPrefixedName**(`name`: string): *string*
 
-*Defined in [css.ts:7](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L7)*
+*Defined in [css.ts:9](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L9)*
 
 **Parameters:**
 
@@ -116,7 +169,7 @@ ___
 
 ▸ **setStyle**(`elem`: `HTMLElement` | `SVGElement`, `name`: string, `value`: string): *void*
 
-*Defined in [css.ts:42](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L42)*
+*Defined in [css.ts:72](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L72)*
 
 Set a style using the properly prefixed name
 
@@ -134,9 +187,9 @@ ___
 
 ###  setTransform
 
-▸ **setTransform**(`elem`: `HTMLElement` | `SVGElement`, `__namedParameters`: object): *void*
+▸ **setTransform**(`elem`: `HTMLElement` | `SVGElement`, `__namedParameters`: object, `options`: [PanzoomOptions](_types_.md#panzoomoptions)): *void*
 
-*Defined in [css.ts:58](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L58)*
+*Defined in [css.ts:89](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L89)*
 
 Set the transform using the proper prefix
 
@@ -152,24 +205,26 @@ Name | Type |
 `x` | number |
 `y` | number |
 
+▪`Default value`  **options**: *[PanzoomOptions](_types_.md#panzoomoptions)*=  {}
+
 **Returns:** *void*
 
 ___
 
-###  setTransformOrigin
+###  setTransition
 
-▸ **setTransformOrigin**(`elem`: `HTMLElement` | `SVGElement`): *void*
+▸ **setTransition**(`elem`: `HTMLElement` | `SVGElement`, `options`: [PanzoomOptions](_types_.md#panzoomoptions)): *void*
 
-*Defined in [css.ts:51](https://github.com/timmywil/panzoom/blob/54eb41a/src/css.ts#L51)*
+*Defined in [css.ts:80](https://github.com/timmywil/panzoom/blob/a7078e8/src/css.ts#L80)*
 
-Sets the default transform-origin for both HTML and SVG to 0 0
-SVG transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+,
-so we default to 0 0 for everything.
+Constructs the transition from panzoom options
+and takes care of prefixing the transition and transform
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `elem` | `HTMLElement` \| `SVGElement` |
+`options` | [PanzoomOptions](_types_.md#panzoomoptions) |
 
 **Returns:** *void*

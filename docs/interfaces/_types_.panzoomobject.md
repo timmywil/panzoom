@@ -1,4 +1,4 @@
-> **[@panzoom/core](../README.md)**
+> **[@panzoom/panzoom](../README.md)**
 
 [Globals](../globals.md) / ["types"](../modules/_types_.md) / [PanzoomObject](_types_.panzoomobject.md) /
 
@@ -30,7 +30,7 @@
 
 • **getPan**: *function*
 
-*Defined in [types.ts:66](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L66)*
+*Defined in [types.ts:100](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L100)*
 
 Get the current x/y translation
 
@@ -48,7 +48,7 @@ ___
 
 • **getScale**: *function*
 
-*Defined in [types.ts:68](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L68)*
+*Defined in [types.ts:102](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L102)*
 
 Get the current scale
 
@@ -62,7 +62,7 @@ ___
 
 • **options**: *[PanzoomOptions](../modules/_types_.md#panzoomoptions)*
 
-*Defined in [types.ts:118](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L118)*
+*Defined in [types.ts:152](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L152)*
 
 The contructed options for this Panzoom instance
 
@@ -72,7 +72,7 @@ ___
 
 • **pan**: *function*
 
-*Defined in [types.ts:79](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L79)*
+*Defined in [types.ts:113](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L113)*
 
 Pan the Panzoom element to the given x and y coordinates
 
@@ -85,7 +85,7 @@ panzoom.pan(10, 10, { relative: true })
 
 #### Type declaration:
 
-▸ (`x`: number | string, `y`: number | string, `panOptions?`: [PanOptions](_types_.panoptions.md)): *void*
+▸ (`x`: number | string, `y`: number | string, `panOptions?`: [PanOptions](../modules/_types_.md#panoptions)): *void*
 
 **Parameters:**
 
@@ -93,7 +93,7 @@ Name | Type |
 ------ | ------ |
 `x` | number \| string |
 `y` | number \| string |
-`panOptions?` | [PanOptions](_types_.panoptions.md) |
+`panOptions?` | [PanOptions](../modules/_types_.md#panoptions) |
 
 ___
 
@@ -101,13 +101,19 @@ ___
 
 • **reset**: *function*
 
-*Defined in [types.ts:122](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L122)*
+*Defined in [types.ts:156](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L156)*
 
-Reset the pan and zoom to 0
+Reset the pan and zoom to startX, startY, and startScale
 
 #### Type declaration:
 
-▸ (): *void*
+▸ (`options?`: [PanzoomOptions](../modules/_types_.md#panzoomoptions)): *void*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`options?` | [PanzoomOptions](../modules/_types_.md#panzoomoptions) |
 
 ___
 
@@ -115,7 +121,7 @@ ___
 
 • **setOptions**: *function*
 
-*Defined in [types.ts:120](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L120)*
+*Defined in [types.ts:154](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L154)*
 
 Change options for the Panzoom instance
 
@@ -135,7 +141,7 @@ ___
 
 • **setStyle**: *[setStyle](../modules/_css_.md#setstyle)*
 
-*Defined in [types.ts:124](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L124)*
+*Defined in [types.ts:158](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L158)*
 
 A convenience method for setting prefixed styles on the Panzoom element
 
@@ -145,7 +151,7 @@ ___
 
 • **zoom**: *function*
 
-*Defined in [types.ts:96](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L96)*
+*Defined in [types.ts:130](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L130)*
 
 Zoom the Panzoom element to the given scale
 
@@ -156,14 +162,14 @@ panzoom.zoom(2.2, { animate: true })
 
 #### Type declaration:
 
-▸ (`scale`: number, `zoomOptions?`: [ZoomOptions](_types_.zoomoptions.md)): *void*
+▸ (`scale`: number, `zoomOptions?`: [ZoomOptions](../modules/_types_.md#zoomoptions)): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `scale` | number |
-`zoomOptions?` | [ZoomOptions](_types_.zoomoptions.md) |
+`zoomOptions?` | [ZoomOptions](../modules/_types_.md#zoomoptions) |
 
 ___
 
@@ -171,19 +177,19 @@ ___
 
 • **zoomIn**: *function*
 
-*Defined in [types.ts:83](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L83)*
+*Defined in [types.ts:117](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L117)*
 
 Zoom in using the predetermined increment set in options
 
 #### Type declaration:
 
-▸ (`zoomOptions?`: [ZoomOptions](_types_.zoomoptions.md)): *void*
+▸ (`zoomOptions?`: [ZoomOptions](../modules/_types_.md#zoomoptions)): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`zoomOptions?` | [ZoomOptions](_types_.zoomoptions.md) |
+`zoomOptions?` | [ZoomOptions](../modules/_types_.md#zoomoptions) |
 
 ___
 
@@ -191,19 +197,19 @@ ___
 
 • **zoomOut**: *function*
 
-*Defined in [types.ts:87](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L87)*
+*Defined in [types.ts:121](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L121)*
 
 Zoom out using the predetermined increment set in options
 
 #### Type declaration:
 
-▸ (`zoomOptions?`: [ZoomOptions](_types_.zoomoptions.md)): *void*
+▸ (`zoomOptions?`: [ZoomOptions](../modules/_types_.md#zoomoptions)): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`zoomOptions?` | [ZoomOptions](_types_.zoomoptions.md) |
+`zoomOptions?` | [ZoomOptions](../modules/_types_.md#zoomoptions) |
 
 ___
 
@@ -211,7 +217,7 @@ ___
 
 • **zoomWithWheel**: *function*
 
-*Defined in [types.ts:116](https://github.com/timmywil/panzoom/blob/54eb41a/src/types.ts#L116)*
+*Defined in [types.ts:150](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L150)*
 
 Zoom the Panzoom element to a focal point using the given WheelEvent
 

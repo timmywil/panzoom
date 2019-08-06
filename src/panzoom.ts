@@ -26,6 +26,9 @@ const defaultOptions: PanzoomOptions = {
   minScale: 0.125,
   relative: false,
   setTransform,
+  startX: 0,
+  startY: 0,
+  startScale: 1,
   step: 0.1
 }
 
@@ -57,6 +60,10 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     }
   }
 
+  // Set overflow on the parent
+  const parent = elem.parentElement
+  parent.style.overflow = 'hidden'
+
   // Set some default styles on the panzoom element
   elem.style.cursor = options.cursor
   // The default for HTML is '50% 50%'
@@ -68,14 +75,52 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     typeof options.origin === 'string' ? options.origin : isSVG ? '0 0' : '50% 50%'
   )
 
-  // Set overflow on the parent
-  const parent = elem.parentElement
-  parent.style.overflow = 'hidden'
-
   let x = 0
   let y = 0
   let scale = 1
   let isPanning = false
+  zoom(options.startScale, { animate: false })
+  // Wait for scale to update
+  // for accurate dimensions
+  // to constrain initial values
+  setTimeout(() => {
+    pan(options.startX, options.startY, { animate: false })
+  })
+
+  /**
+   * Dimensions used in containment and focal point zooming
+   */
+  function getDimensions() {
+    const style = window.getComputedStyle(elem)
+    const parentStyle = window.getComputedStyle(parent)
+    const rectElem = elem.getBoundingClientRect()
+    const rectParent = parent.getBoundingClientRect()
+
+    return {
+      elem: {
+        style,
+        width: rectElem.width,
+        height: rectElem.height,
+        top: rectElem.top,
+        bottom: rectElem.bottom,
+        left: rectElem.left,
+        right: rectElem.right,
+        margin: getMargin(elem, style),
+        border: getBorder(elem, style)
+      },
+      parent: {
+        style: parentStyle,
+        width: rectParent.width,
+        height: rectParent.height,
+        top: rectParent.top,
+        bottom: rectParent.bottom,
+        left: rectParent.left,
+        right: rectParent.right,
+        padding: getPadding(parent, parentStyle),
+        border: getBorder(parent, parentStyle)
+      }
+    }
+  }
 
   function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
     const opts = { ...options, ...panOptions }
@@ -95,37 +140,52 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     }
 
     if (opts.contain === 'inside') {
-      const rect = elem.getBoundingClientRect()
-      const style = window.getComputedStyle(elem)
-      const margin = getMargin(elem, style)
-      const border = getBorder(elem, style)
-      const parentStyle = window.getComputedStyle(parent)
-      const parentPadding = getPadding(parent, parentStyle)
-      const parentBorder = getBorder(parent, parentStyle)
-      const parentRect = parent.getBoundingClientRect()
+      const dims = getDimensions()
       result.x = Math.max(
-        -margin.left - parentPadding.left,
+        -dims.elem.margin.left - dims.parent.padding.left,
         Math.min(
-          parentRect.width -
-            rect.width / scale -
-            parentPadding.left -
-            margin.left -
-            parentBorder.left -
-            border.left,
+          dims.parent.width -
+            dims.elem.width / scale -
+            dims.parent.padding.left -
+            dims.elem.margin.left -
+            dims.parent.border.left -
+            dims.parent.border.right,
           result.x
         )
       )
       result.y = Math.max(
-        -margin.top - parentPadding.top,
+        -dims.elem.margin.top - dims.parent.padding.top,
         Math.min(
-          parentRect.height -
-            rect.height / scale -
-            parentPadding.top -
-            margin.top -
-            parentBorder.top -
-            border.left,
+          dims.parent.height -
+            dims.elem.height / scale -
+            dims.parent.padding.top -
+            dims.elem.margin.top -
+            dims.parent.border.top -
+            dims.parent.border.bottom,
           result.y
         )
+      )
+    } else if (opts.contain === 'outside') {
+      const dims = getDimensions()
+      const diffHorizontal = (dims.elem.width - dims.elem.width / scale) / 2
+      const diffVertical = (dims.elem.height - dims.elem.height / scale) / 2
+      result.x = Math.max(
+        Math.min(result.x, (diffHorizontal - dims.parent.padding.left) / scale),
+        (-(dims.elem.width - dims.parent.width) -
+          dims.parent.padding.left -
+          dims.parent.border.left -
+          dims.parent.border.right +
+          diffHorizontal) /
+          scale
+      )
+      result.y = Math.max(
+        Math.min(result.y, (diffVertical - dims.parent.padding.top) / scale),
+        (-(dims.elem.height - dims.parent.height) -
+          dims.parent.padding.top -
+          dims.parent.border.top -
+          dims.parent.border.bottom +
+          diffVertical) /
+          scale
       )
     }
     return result
@@ -198,13 +258,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     const wheel = delta < 0 ? 1 : -1
     const toScale = constrainScale(scale * Math.exp(wheel * options.step)).scale
 
-    // Get the position of point over the element before the scale
-    const rect = elem.getBoundingClientRect()
-    const margin = getMargin(elem)
-    const parentRect = parent.getBoundingClientRect()
-    const parentStyle = window.getComputedStyle(parent)
-    const parentPadding = getPadding(parent, parentStyle)
-    const parentBorder = getBorder(parent, parentStyle)
+    const dims = getDimensions()
 
     // Instead of thinking of operating on the panzoom element,
     // think of operating on the area inside the panzoom
@@ -212,30 +266,39 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     // Subtract padding and border
     const effectiveArea = {
       width:
-        parentRect.width -
-        parentPadding.left -
-        parentPadding.right -
-        parentBorder.left -
-        parentBorder.right,
+        dims.parent.width -
+        dims.parent.padding.left -
+        dims.parent.padding.right -
+        dims.parent.border.left -
+        dims.parent.border.right,
       height:
-        parentRect.height -
-        parentPadding.top -
-        parentPadding.bottom -
-        parentBorder.top -
-        parentBorder.bottom
+        dims.parent.height -
+        dims.parent.padding.top -
+        dims.parent.padding.bottom -
+        dims.parent.border.top -
+        dims.parent.border.bottom
     }
 
     // Adjust the clientX/clientY to ignore the area
     // outside the effective area
     let clientX =
-      event.clientX - parentRect.left - parentPadding.left - parentBorder.left - margin.left
-    let clientY = event.clientY - parentRect.top - parentPadding.top - parentBorder.top - margin.top
+      event.clientX -
+      dims.parent.left -
+      dims.parent.padding.left -
+      dims.parent.border.left -
+      dims.elem.margin.left
+    let clientY =
+      event.clientY -
+      dims.parent.top -
+      dims.parent.padding.top -
+      dims.parent.border.top -
+      dims.elem.margin.top
 
     // Adjust the clientX/clientY for HTML elements,
     // because they have a transform-origin of 50% 50%
     if (!isSVG) {
-      clientX -= rect.width / scale / 2
-      clientY -= rect.height / scale / 2
+      clientX -= dims.elem.width / scale / 2
+      clientY -= dims.elem.height / scale / 2
     }
 
     // The new width after the scale
@@ -254,19 +317,12 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   function reset(resetOptions?: PanzoomOptions) {
-    const panResult = constrainXY(0, 0, resetOptions)
+    const opts = { ...options, animate: true, ...resetOptions }
+    const panResult = constrainXY(opts.startX, opts.startY, opts)
     x = panResult.x
     y = panResult.y
-    scale = constrainScale(1, resetOptions).scale
-    options.setTransform(
-      elem,
-      { x, y, scale },
-      {
-        ...options,
-        animate: true,
-        ...resetOptions
-      }
-    )
+    scale = constrainScale(opts.startScale, opts).scale
+    options.setTransform(elem, { x, y, scale }, opts)
   }
 
   function startMove(startEvent: PointerEvent) {
