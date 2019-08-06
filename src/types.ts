@@ -73,6 +73,8 @@ export type PanOptions = MiscOptions & {
   disableYAxis?: boolean
   /** When passing x and y values to .pan(), treat the values as relative to their current values */
   relative?: boolean
+  /** Disable panning while the scale is equal to the starting value */
+  panOnlyWhenZoomed?: boolean
 }
 
 export type ZoomOptions = MiscOptions & {

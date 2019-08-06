@@ -125,7 +125,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
     const opts = { ...options, ...panOptions }
     const result = { x, y, opts }
-    if (opts.disablePan) {
+    if (opts.disablePan || (opts.panOnlyWhenZoomed && scale === options.startScale)) {
       return result
     }
     toX = parseFloat(toX as string)
