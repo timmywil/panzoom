@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import './demo.css'
 import ContainInside from './examples/ContainInside'
 import ContainOutside from './examples/ContainOutside'
+import DisabledYAxis from './examples/DisabledYAxis'
 import Focal from './examples/Focal'
 import Standard from './examples/Standard'
 import SVG from './examples/SVG'
@@ -26,6 +27,7 @@ function Demos() {
       <SVG />
       <ContainInside />
       <ContainOutside />
+      <DisabledYAxis />
     </div>
   )
 }
