@@ -10,12 +10,12 @@
 
 Remaining items:
 
-[ ] Pinch zooming
-[ ] IE11 testing
-[ ] Pointer event fallback
-[ ] Clean up docs presentation
-[ ] jQuery plugin wrapper
-[ ] React plugin wrapper
+- Pinch zooming
+- IE11 testing
+- Pointer event fallback
+- Clean up docs presentation
+- jQuery plugin wrapper
+- React plugin wrapper
 
 ---
 
