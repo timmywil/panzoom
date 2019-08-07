@@ -53,4 +53,12 @@ describe('Panzoom', () => {
     assertStyleMatches(elem, 'transformOrigin', '0px 0px')
     document.body.removeChild(elem)
   })
+  it('changes the cursor with the cursor option', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const panzoom = Panzoom(div)
+    panzoom.setOptions({ cursor: 'default' })
+    assert.equal(div.style.cursor, 'default', 'Cursor style changes when setting the cursor option')
+    document.body.removeChild(div)
+  })
 })

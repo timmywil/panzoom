@@ -59,6 +59,10 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
         options[key] = opts[key]
       }
     }
+    // Handle option side-effects
+    if (opts.hasOwnProperty('cursor')) {
+      elem.style.cursor = opts.cursor
+  }
   }
 
   // Set overflow on the parent
