@@ -23,7 +23,7 @@ export default function SVG() {
       <div className="buttons">
         <button onClick={() => panzooms.forEach((panzoom) => panzoom.reset())}>Reset</button>
       </div>
-      <div className="panzoom-parent">
+      <div className="panzoom-parent" style={{ overflow: 'hidden', padding: 0 }}>
         <svg className="panzoom" x="0px" y="0px" width="900" height="900" viewBox="0 0 900 900">
           <path id="path482" fill="none" d="M184.013,144.428" />
           <path

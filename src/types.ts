@@ -141,6 +141,7 @@ export interface PanzoomObject {
    * but this method assumes the desired behavior is zooming.
    *
    * This is a convenience function that may not handle all use cases.
+   * Other cases should handroll solutions using the `zoom` method's focal option.
    *
    * ```js
    * elem.parentElement.addEventListener('wheel', function(event) {

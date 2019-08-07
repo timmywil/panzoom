@@ -82,6 +82,27 @@ pre {
 .buttons > * {
   margin-right: 10px;
 }
+.buttons button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 18px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+  transition: background-color 0.2s ease-in-out;
+}
+.buttons button:hover {
+  background-color: #ddd;
+}
+.buttons button:active {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.9);
+}
 label {
   font-weight: 600;
   display: inline-block;

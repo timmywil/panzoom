@@ -32,4 +32,4 @@ function Demos() {
   )
 }
 
-ReactDOM.render(<Demos />, document.getElementById('container'))
+ReactDOM.render(<Demos />, document.getElementById('fixture'))

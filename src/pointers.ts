@@ -1,0 +1,62 @@
+/**
+ * Utilites for working with multiple pointer events
+ */
+
+function findEventIndex(pointers: PointerEvent[], event: PointerEvent) {
+  let i = pointers.length
+  while (i--) {
+    if (pointers[i].pointerId === event.pointerId) {
+      return i
+    }
+  }
+  return -1
+}
+
+export function addEvent(pointers: PointerEvent[], event: PointerEvent) {
+  if (findEventIndex(pointers, event) === -1) {
+    pointers.push(event)
+  }
+}
+
+export function removeEvent(pointers: PointerEvent[], event: PointerEvent) {
+  const i = findEventIndex(pointers, event)
+  if (i > -1) {
+    pointers.splice(i, 1)
+  }
+}
+
+/**
+ * Calculates a center point between
+ * the given pointer events, for panning
+ * with multiple pointers.
+ */
+export function getCenter(pointers: PointerEvent[]) {
+  // Copy to avoid changing by reference
+  pointers = pointers.slice(0)
+  let event1: Pick<PointerEvent, 'clientX' | 'clientY'> = pointers.pop()
+  let event2: PointerEvent
+  while ((event2 = pointers.pop())) {
+    event1 = {
+      clientX: (event2.clientX - event1.clientX) / 2 + event1.clientX,
+      clientY: (event2.clientY - event1.clientY) / 2 + event1.clientY
+    }
+  }
+  return event1
+}
+
+/**
+ * Calculates the distance between two points
+ * for pinch zooming.
+ * Limits to the first 2
+ */
+export function getDistance(pointers: PointerEvent[]) {
+  if (pointers.length < 2) {
+    return 0
+  }
+  const event1 = pointers[0]
+  const event2 = pointers[1]
+  return Math.sqrt(
+    Math.pow(Math.abs(event2.clientX - event1.clientX), 2) +
+      Math.pow(Math.abs(event2.clientY - event1.clientY), 2)
+  )
+}

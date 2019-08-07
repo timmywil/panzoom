@@ -9,6 +9,7 @@
 import { getBorder, getMargin, getPadding, setStyle, setTransform } from './css'
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
+import { addEvent, removeEvent } from './pointers'
 import './polyfills'
 import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
@@ -63,9 +64,14 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   // Set overflow on the parent
   const parent = elem.parentElement
   parent.style.overflow = 'hidden'
+  parent.style.userSelect = 'none'
+  // This is important for mobile to
+  // prevent scrolling while panning
+  parent.style.touchAction = 'none'
 
   // Set some default styles on the panzoom element
   elem.style.cursor = options.cursor
+  elem.style.userSelect = 'none'
   // The default for HTML is '50% 50%'
   // The default for SVG is '0 0'
   // SVG can't be changed in IE
@@ -197,7 +203,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     if (opts.disableZoom) {
       return result
     }
-    result.scale = Math.min(Math.max(opts.minScale, toScale), opts.maxScale)
+    result.scale = Math.min(Math.max(toScale, opts.minScale), opts.maxScale)
     return result
   }
 
@@ -248,16 +254,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     zoomInOut(false, zoomOptions)
   }
 
-  function zoomWithWheel(event: WheelEvent) {
-    // Need to prevent the default here
-    // or it conflicts with regular page scroll
-    event.preventDefault()
-
-    // Normalize to deltaX in case shift modifier is used on Mac
-    const delta = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY
-    const wheel = delta < 0 ? 1 : -1
-    const toScale = constrainScale(scale * Math.exp(wheel * options.step)).scale
-
+  function zoomToMousePoint(toScale: number, point: { clientX: number; clientY: number }) {
     const dims = getDimensions()
 
     // Instead of thinking of operating on the panzoom element,
@@ -282,13 +279,13 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     // Adjust the clientX/clientY to ignore the area
     // outside the effective area
     let clientX =
-      event.clientX -
+      point.clientX -
       dims.parent.left -
       dims.parent.padding.left -
       dims.parent.border.left -
       dims.elem.margin.left
     let clientY =
-      event.clientY -
+      point.clientY -
       dims.parent.top -
       dims.parent.padding.top -
       dims.parent.border.top -
@@ -301,19 +298,28 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
       clientY -= dims.elem.height / scale / 2
     }
 
-    // The new width after the scale
-    const newWidth = effectiveArea.width * toScale
-    const newHeight = effectiveArea.height * toScale
-
     // Convert the mouse point from it's position over the
     // effective area before the scale to the position
-    // over element after the scale.
+    // over the effective area after the scale.
     const focal = {
-      x: (clientX / effectiveArea.width) * newWidth,
-      y: (clientY / effectiveArea.height) * newHeight
+      x: (clientX / effectiveArea.width) * (effectiveArea.width * toScale),
+      y: (clientY / effectiveArea.height) * (effectiveArea.height * toScale)
     }
 
     zoom(toScale, { focal, animate: false })
+  }
+
+  function zoomWithWheel(event: WheelEvent) {
+    // Need to prevent the default here
+    // or it conflicts with regular page scroll
+    event.preventDefault()
+
+    // Normalize to deltaX in case shift modifier is used on Mac
+    const delta = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY
+    const wheel = delta < 0 ? 1 : -1
+    const toScale = constrainScale(scale * Math.exp(wheel * options.step)).scale
+
+    zoomToMousePoint(toScale, event)
   }
 
   function reset(resetOptions?: PanzoomOptions) {
@@ -325,44 +331,68 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     options.setTransform(elem, { x, y, scale }, opts)
   }
 
-  function startMove(startEvent: PointerEvent) {
-    const target = startEvent.target as Element
-    if (isPanning || (target && target.classList.contains(options.clickableClass))) {
+  let origX: number
+  let origY: number
+  let startX: number
+  let startY: number
+  const pointers: PointerEvent[] = []
+
+  function handleDown(event: PointerEvent) {
+    addEvent(pointers, event)
+    if (event.pointerId) {
+      elem.setPointerCapture(event.pointerId)
+    }
+    if (
+      isPanning ||
+      (event.target && (event.target as Element).classList.contains(options.clickableClass))
+    ) {
       return
     }
     isPanning = true
-    startEvent.preventDefault()
-    startEvent.stopPropagation()
-    const pointerId = startEvent.pointerId
-    elem.setPointerCapture(pointerId)
-    const origX = x
-    const origY = y
-    const startPageX = startEvent.pageX
-    const startPageY = startEvent.pageY
+    event.preventDefault()
+    event.stopPropagation()
+    origX = x
+    origY = y
+    startX = event.clientX
+    startY = event.clientY
+  }
 
-    function move(event: PointerEvent) {
-      pan(origX + (event.pageX - startPageX) / scale, origY + (event.pageY - startPageY) / scale, {
-        animate: false
-      })
+  function move(event: PointerEvent) {
+    // console.log(elem, event.type, event.pointerId)
+    if (
+      !isPanning ||
+      origX === undefined ||
+      origY === undefined ||
+      startX === undefined ||
+      startY === undefined
+    ) {
+      return
     }
+    pan(origX + (event.clientX - startX) / scale, origY + (event.clientY - startY) / scale, {
+      animate: false
+    })
+  }
 
-    function cancel() {
-      isPanning = false
-      htmlElem.removeEventListener('pointermove', move)
-      htmlElem.removeEventListener('pointerup', cancel)
-      htmlElem.removeEventListener('pointercancel', cancel)
-      document.removeEventListener('mouseup', cancel)
-      htmlElem.releasePointerCapture(pointerId)
+  function handleUp(event: PointerEvent) {
+    removeEvent(pointers, event)
+    if (event.pointerId) {
+      elem.releasePointerCapture(event.pointerId)
     }
-
-    htmlElem.addEventListener('pointermove', move, { passive: true })
-    htmlElem.addEventListener('pointerup', cancel, { passive: true })
-    htmlElem.addEventListener('pointercancel', cancel, { passive: true })
-    document.addEventListener('mouseup', cancel, { passive: true })
+    // If there are still pointers active,
+    // don't stop panning
+    if (pointers.length > 0) {
+      return
+    }
+    isPanning = false
+    origX = origY = startX = startY = undefined
   }
 
   if (!options.disablePan) {
-    htmlElem.addEventListener('pointerdown', startMove)
+    htmlElem.addEventListener('pointerdown', handleDown)
+    htmlElem.addEventListener('pointermove', move, { passive: true })
+    htmlElem.addEventListener('pointerup', handleUp, { passive: true })
+    htmlElem.addEventListener('pointerleave', handleUp, { passive: true })
+    htmlElem.addEventListener('pointercancel', handleUp, { passive: true })
   }
 
   return {
