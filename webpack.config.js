@@ -23,7 +23,7 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: __dirname,
+    contentBase: __dirname + '/demo',
     hot: true,
     open: false
   },

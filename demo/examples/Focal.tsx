@@ -43,7 +43,7 @@ export default function Focal() {
           className="panzoom"
           ref={elem}
           style={{ width: '400px', height: '400px', margin: '0 auto' }}>
-          <img style={{ width: '100%', height: '100%' }} src="/demo/target.png" />
+          <img style={{ width: '100%', height: '100%' }} src="target.png" />
         </div>
       </div>
     </Demo>
