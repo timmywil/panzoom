@@ -11,7 +11,7 @@
     "lint": "concurrently \"yarn type-check\" \"yarn tslint\" \"yarn prettier\"",
     "lint:fix": "concurrently \"yarn type-check\" \"yarn tslint --fix\" \"precise-commits\"",
     "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && yarn sizeup",
-    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"test/demo.html\"",
+    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\"",
     "release": "semantic-release",
     "sizeup": "echo \"gzipped size: \" && gzip-size dist/panzoom.min.js",
     "start": "webpack-dev-server",
