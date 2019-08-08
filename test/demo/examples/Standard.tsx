@@ -6,7 +6,7 @@ import Demo from '../Demo'
 const code = (
   <Code>
     {`\
-const panzoom = Panzoom(elem, { step: 0.3 })
+const panzoom = Panzoom(elem)
 zoomInButton.addEventListener('click', panzoom.zoomIn)
 zoomOutButton.addEventListener('click', panzoom.zoomOut)
 resetButton.addEventListener('click', panzoom.reset)
@@ -22,7 +22,7 @@ export default function Buttons() {
   const panzoomRef = useRef<Panzoom>(null)
   let panzoom = panzoomRef.current
   useEffect(() => {
-    panzoom = panzoomRef.current = Panzoom(elem.current, { step: 0.3 })
+    panzoom = panzoomRef.current = Panzoom(elem.current)
   }, [])
   return (
     <Demo title="Panning and zooming" code={code}>

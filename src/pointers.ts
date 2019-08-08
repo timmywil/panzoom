@@ -13,9 +13,12 @@ function findEventIndex(pointers: PointerEvent[], event: PointerEvent) {
 }
 
 export function addEvent(pointers: PointerEvent[], event: PointerEvent) {
-  if (findEventIndex(pointers, event) === -1) {
-    pointers.push(event)
+  const i = findEventIndex(pointers, event)
+  // Update if already present
+  if (i > -1) {
+    pointers.splice(i, 1)
   }
+  pointers.push(event)
 }
 
 export function removeEvent(pointers: PointerEvent[], event: PointerEvent) {
@@ -30,7 +33,7 @@ export function removeEvent(pointers: PointerEvent[], event: PointerEvent) {
  * the given pointer events, for panning
  * with multiple pointers.
  */
-export function getCenter(pointers: PointerEvent[]) {
+export function getMiddle(pointers: PointerEvent[]) {
   // Copy to avoid changing by reference
   pointers = pointers.slice(0)
   let event1: Pick<PointerEvent, 'clientX' | 'clientY'> = pointers.pop()

@@ -9,7 +9,7 @@
 import { getBorder, getMargin, getPadding, setStyle, setTransform } from './css'
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
-import { addEvent, removeEvent } from './pointers'
+import { addEvent, getDistance, getMiddle, removeEvent } from './pointers'
 import './polyfills'
 import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
@@ -30,7 +30,7 @@ const defaultOptions: PanzoomOptions = {
   startX: 0,
   startY: 0,
   startScale: 1,
-  step: 0.1
+  step: 0.3
 }
 
 function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): PanzoomObject {
@@ -62,7 +62,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     // Handle option side-effects
     if (opts.hasOwnProperty('cursor')) {
       elem.style.cursor = opts.cursor
-  }
+    }
   }
 
   // Set overflow on the parent
@@ -76,6 +76,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   // Set some default styles on the panzoom element
   elem.style.cursor = options.cursor
   elem.style.userSelect = 'none'
+  elem.style.touchAction = 'none'
   // The default for HTML is '50% 50%'
   // The default for SVG is '0 0'
   // SVG can't be changed in IE
@@ -218,7 +219,9 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     x = result.x
     y = result.y
 
-    opts.setTransform(elem, { x, y, scale }, opts)
+    const values = { x, y, scale }
+    opts.setTransform(elem, values, opts)
+    return values
   }
 
   function zoom(toScale: number, zoomOptions?: ZoomOptions) {
@@ -242,7 +245,9 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     }
 
     scale = toScale
-    opts.setTransform(elem, { x, y, scale }, opts)
+    const values = { x, y, scale }
+    opts.setTransform(elem, values, opts)
+    return values
   }
 
   function zoomInOut(isIn: boolean, zoomOptions?: ZoomOptions) {
@@ -258,7 +263,11 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     zoomInOut(false, zoomOptions)
   }
 
-  function zoomToMousePoint(toScale: number, point: { clientX: number; clientY: number }) {
+  function zoomToMousePoint(
+    toScale: number,
+    point: { clientX: number; clientY: number },
+    zoomOptions?: ZoomOptions
+  ) {
     const dims = getDimensions()
 
     // Instead of thinking of operating on the panzoom element,
@@ -310,20 +319,22 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
       y: (clientY / effectiveArea.height) * (effectiveArea.height * toScale)
     }
 
-    zoom(toScale, { focal, animate: false })
+    return zoom(toScale, { ...zoomOptions, focal, animate: false })
   }
 
-  function zoomWithWheel(event: WheelEvent) {
+  function zoomWithWheel(event: WheelEvent, zoomOptions?: ZoomOptions) {
     // Need to prevent the default here
     // or it conflicts with regular page scroll
     event.preventDefault()
 
+    const opts = { ...options, ...zoomOptions }
+
     // Normalize to deltaX in case shift modifier is used on Mac
     const delta = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY
     const wheel = delta < 0 ? 1 : -1
-    const toScale = constrainScale(scale * Math.exp(wheel * options.step)).scale
+    const toScale = constrainScale(scale * Math.exp((wheel * opts.step) / 3), opts).scale
 
-    zoomToMousePoint(toScale, event)
+    zoomToMousePoint(toScale, event, opts)
   }
 
   function reset(resetOptions?: PanzoomOptions) {
@@ -339,6 +350,8 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   let origY: number
   let startX: number
   let startY: number
+  let startScale: number
+  let startDistance: number
   const pointers: PointerEvent[] = []
 
   function handleDown(event: PointerEvent) {
@@ -346,10 +359,8 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     if (event.pointerId) {
       elem.setPointerCapture(event.pointerId)
     }
-    if (
-      isPanning ||
-      (event.target && (event.target as Element).classList.contains(options.clickableClass))
-    ) {
+    // Don't handle this event if the target is a clickable
+    if (event.target && (event.target as Element).classList.contains(options.clickableClass)) {
       return
     }
     isPanning = true
@@ -357,8 +368,14 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     event.stopPropagation()
     origX = x
     origY = y
-    startX = event.clientX
-    startY = event.clientY
+
+    // This works whether there are multiple
+    // pointers or not
+    const point = getMiddle(pointers)
+    startX = point.clientX
+    startY = point.clientY
+    startScale = scale
+    startDistance = getDistance(pointers)
   }
 
   function move(event: PointerEvent) {
@@ -372,20 +389,27 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     ) {
       return
     }
-    pan(origX + (event.clientX - startX) / scale, origY + (event.clientY - startY) / scale, {
+    addEvent(pointers, event)
+    const current = getMiddle(pointers)
+    if (pointers.length > 1) {
+      // Use the distance between the first 2 pointers
+      // to determine the current scale
+      const diff = getDistance(pointers) - startDistance
+      const toScale = constrainScale((diff * options.step) / 80 + startScale).scale
+      zoomToMousePoint(toScale, current)
+    }
+
+    pan(origX + (current.clientX - startX) / scale, origY + (current.clientY - startY) / scale, {
       animate: false
     })
   }
 
   function handleUp(event: PointerEvent) {
+    // Note: don't remove all pointers
+    // Can restart without having to reinitiate all of them
     removeEvent(pointers, event)
     if (event.pointerId) {
       elem.releasePointerCapture(event.pointerId)
-    }
-    // If there are still pointers active,
-    // don't stop panning
-    if (pointers.length > 0) {
-      return
     }
     isPanning = false
     origX = origY = startX = startY = undefined
