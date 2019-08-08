@@ -17,7 +17,7 @@ export default function ContainInside() {
           className="panzoom"
           ref={elem}
           style={{ width: '400px', border: '2px dotted', margin: '0 auto' }}>
-          <img style={{ width: '100%', height: '100%' }} src="/demo/awesome_tiger.svg" />
+          <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
         </div>
       </div>
     </Demo>

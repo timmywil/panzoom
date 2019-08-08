@@ -64,7 +64,7 @@ export default function Buttons() {
       </div>
       <div className="panzoom-parent">
         <div className="panzoom" ref={elem}>
-          <img width="450" height="450" src="/demo/awesome_tiger.svg" />
+          <img width="450" height="450" src="awesome_tiger.svg" />
         </div>
       </div>
     </Demo>
