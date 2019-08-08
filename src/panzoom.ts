@@ -11,6 +11,7 @@ import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
 import { addEvent, getDistance, getMiddle, removeEvent } from './pointers'
 import './polyfills'
+import shallowClone from './shallowClone'
 import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
 const defaultOptions: PanzoomOptions = {
@@ -252,18 +253,18 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
 
   function zoomInOut(isIn: boolean, zoomOptions?: ZoomOptions) {
     const opts = { ...options, animate: true, ...zoomOptions }
-    zoom(scale * Math.exp((isIn ? 1 : -1) * opts.step), opts)
+    return zoom(scale * Math.exp((isIn ? 1 : -1) * opts.step), opts)
   }
 
   function zoomIn(zoomOptions?: ZoomOptions) {
-    zoomInOut(true, zoomOptions)
+    return zoomInOut(true, zoomOptions)
   }
 
   function zoomOut(zoomOptions?: ZoomOptions) {
-    zoomInOut(false, zoomOptions)
+    return zoomInOut(false, zoomOptions)
   }
 
-  function zoomToMousePoint(
+  function zoomToPoint(
     toScale: number,
     point: { clientX: number; clientY: number },
     zoomOptions?: ZoomOptions
@@ -334,7 +335,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     const wheel = delta < 0 ? 1 : -1
     const toScale = constrainScale(scale * Math.exp((wheel * opts.step) / 3), opts).scale
 
-    zoomToMousePoint(toScale, event, opts)
+    return zoomToPoint(toScale, event, opts)
   }
 
   function reset(resetOptions?: PanzoomOptions) {
@@ -343,7 +344,9 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     x = panResult.x
     y = panResult.y
     scale = constrainScale(opts.startScale, opts).scale
-    options.setTransform(elem, { x, y, scale }, opts)
+    const values = { x, y, scale }
+    options.setTransform(elem, values, opts)
+    return values
   }
 
   let origX: number
@@ -396,7 +399,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
       // to determine the current scale
       const diff = getDistance(pointers) - startDistance
       const toScale = constrainScale((diff * options.step) / 80 + startScale).scale
-      zoomToMousePoint(toScale, current)
+      zoomToPoint(toScale, current)
     }
 
     pan(origX + (current.clientX - startX) / scale, origY + (current.clientY - startY) / scale, {
@@ -426,7 +429,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   return {
     getPan: () => ({ x, y }),
     getScale: () => scale,
-    options,
+    getOptions: () => shallowClone(options),
     pan,
     reset,
     setOptions,
@@ -434,6 +437,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     zoom,
     zoomIn,
     zoomOut,
+    zoomToPoint,
     zoomWithWheel
   }
 }

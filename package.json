@@ -5,9 +5,9 @@
   "main": "dist/panzoom.js",
   "scripts": {
     "build": "yarn clean && rollup --config && yarn minify && yarn docs",
-    "clean": "rm -rf dist/ docs/",
+    "clean": "rm -rf dist/",
     "commit": "git-cz",
-    "docs": "yarn typedoc --exclude \"test/**/*\" --out docs --theme markdown",
+    "docs": "yarn typedoc --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --theme markdown src/panzoom.ts",
     "lint": "concurrently \"yarn type-check\" \"yarn tslint\" \"yarn prettier\"",
     "lint:fix": "concurrently \"yarn type-check\" \"yarn tslint --fix\" \"precise-commits\"",
     "minify": "uglifyjs --compress --mangle --output dist/panzoom.min.js -- dist/panzoom.js && yarn sizeup",

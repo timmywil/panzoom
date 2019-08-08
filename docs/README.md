@@ -12,14 +12,7 @@
 
 **This rewrite is a work in progress**
 
-Remaining items:
-
-- Pinch zooming
-- IE11 testing
-- Pointer event fallback
-- Clean up docs presentation
-- jQuery plugin wrapper
-- React plugin wrapper
+Have a look at the [GitHub project](https://github.com/timmywil/panzoom/projects/1) to follow along on the status of this rewrite.
 
 ---
 

@@ -42,7 +42,7 @@ describe('Panzoom', () => {
     assert(panzoom.pan)
     assert(panzoom.zoom)
     assert(panzoom.zoomWithWheel)
-    assert(panzoom.options)
+    assert(panzoom.getOptions())
     assertStyleMatches(div, 'transformOrigin', '50% 50%')
     document.body.removeChild(div)
   })

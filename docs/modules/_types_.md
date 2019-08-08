@@ -8,6 +8,7 @@
 
 ### Interfaces
 
+* [CurrentValues](../interfaces/_types_.currentvalues.md)
 * [MiscOptions](../interfaces/_types_.miscoptions.md)
 * [PanzoomObject](../interfaces/_types_.panzoomobject.md)
 
@@ -23,7 +24,7 @@
 
 Ƭ **PanOptions**: *[MiscOptions](../interfaces/_types_.miscoptions.md) & object*
 
-*Defined in [types.ts:54](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L54)*
+*Defined in [types.ts:54](https://github.com/timmywil/panzoom/blob/308448a/src/types.ts#L54)*
 
 ___
 
@@ -31,7 +32,7 @@ ___
 
 Ƭ **PanzoomOptions**: *[PanOptions](_types_.md#panoptions) & [ZoomOptions](_types_.md#zoomoptions)*
 
-*Defined in [types.ts:98](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L98)*
+*Defined in [types.ts:99](https://github.com/timmywil/panzoom/blob/308448a/src/types.ts#L99)*
 
 ___
 
@@ -39,4 +40,4 @@ ___
 
 Ƭ **ZoomOptions**: *[MiscOptions](../interfaces/_types_.miscoptions.md) & object*
 
-*Defined in [types.ts:80](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L80)*
+*Defined in [types.ts:81](https://github.com/timmywil/panzoom/blob/308448a/src/types.ts#L81)*

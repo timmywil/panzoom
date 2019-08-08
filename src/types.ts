@@ -19,7 +19,7 @@ interface MiscOptions {
    * The defaults are set because changing the `transform-origin` on
    * SVG elements doesn't work in IE.
    *
-   * Changing this should work with most things, but
+   * Changing this should work with many things, but
    * it will break focal point zooming, which assumes the
    * defaults are set to do the more complicated calculations.
    *
@@ -60,7 +60,8 @@ export type PanOptions = MiscOptions & {
    *   to the outside.
    * Outside: The panzoom element is larger
    *   than its parent and cannot be panned
-   *   so that any empty space is shown.
+   *   to the inside. In other words, no
+   *   empty space around the element will be shown.
    */
   contain?: 'inside' | 'outside'
   /** The cursor style to set on the panzoom element */
@@ -97,11 +98,19 @@ export type ZoomOptions = MiscOptions & {
 
 export type PanzoomOptions = PanOptions & ZoomOptions
 
+interface CurrentValues {
+  x: number
+  y: number
+  scale: number
+}
+
 export interface PanzoomObject {
   /** Get the current x/y translation */
   getPan: () => { x: number; y: number }
   /** Get the current scale */
   getScale: () => number
+  /** Returns a copy of the current options object */
+  getOptions: () => PanzoomOptions
   /**
    * Pan the Panzoom element to the given x and y coordinates
    *
@@ -112,15 +121,13 @@ export interface PanzoomObject {
    * panzoom.pan(10, 10, { relative: true })
    * ```
    */
-  pan: (x: number | string, y: number | string, panOptions?: PanOptions) => void
-  /**
-   * Zoom in using the predetermined increment set in options
-   */
-  zoomIn: (zoomOptions?: ZoomOptions) => void
-  /**
-   * Zoom out using the predetermined increment set in options
-   */
-  zoomOut: (zoomOptions?: ZoomOptions) => void
+  pan: (x: number | string, y: number | string, panOptions?: PanOptions) => CurrentValues
+  /** Reset the pan and zoom to startX, startY, and startScale */
+  reset: (options?: PanzoomOptions) => CurrentValues
+  /** Change options for the Panzoom instance */
+  setOptions: (options?: PanzoomOptions) => void
+  /** A convenience method for setting prefixed styles on the Panzoom element */
+  setStyle: typeof setStyle
   /**
    * Zoom the Panzoom element to the given scale
    *
@@ -129,7 +136,26 @@ export interface PanzoomObject {
    * panzoom.zoom(2.2, { animate: true })
    * ```
    */
-  zoom: (scale: number, zoomOptions?: ZoomOptions) => void
+  zoom: (scale: number, zoomOptions?: ZoomOptions) => CurrentValues
+  /**
+   * Zoom in using the predetermined increment set in options
+   */
+  zoomIn: (zoomOptions?: ZoomOptions) => CurrentValues
+  /**
+   * Zoom out using the predetermined increment set in options
+   */
+  zoomOut: (zoomOptions?: ZoomOptions) => CurrentValues
+  /**
+   * Zoom the Panzoom element to a focal point using
+   * the given pointer/touch/mouse event or constructed point.
+   * The clientX/clientY values should be calculated
+   * the same way as a pointer event on the Panzoom element.
+   */
+  zoomToPoint: (
+    scale: number,
+    point: { clientX: number; clientY: number },
+    zoomOptions?: ZoomOptions
+  ) => CurrentValues
   /**
    * Zoom the Panzoom element to a focal point using the given WheelEvent
    *
@@ -141,22 +167,18 @@ export interface PanzoomObject {
    * but this method assumes the desired behavior is zooming.
    *
    * This is a convenience function that may not handle all use cases.
-   * Other cases should handroll solutions using the `zoom` method's focal option.
+   * Other cases should handroll solutions using the `zoomToPoint`
+   * method or the `zoom` method's focal option.
    *
    * ```js
+   * // Bind to mousewheel
+   * elem.parentElement.addEventListener('wheel', panzoom.zoomUsingWheel)
+   * // Bind to shift+mousewheel
    * elem.parentElement.addEventListener('wheel', function(event) {
    *   if (!event.shiftKey) return
    *   panzoom.zoomUsingWheel(event)
    * })
    * ```
    */
-  zoomWithWheel: (event: WheelEvent) => void
-  /** The contructed options for this Panzoom instance */
-  options: PanzoomOptions
-  /** Change options for the Panzoom instance */
-  setOptions: (options?: PanzoomOptions) => void
-  /** Reset the pan and zoom to startX, startY, and startScale */
-  reset: (options?: PanzoomOptions) => void
-  /** A convenience method for setting prefixed styles on the Panzoom element */
-  setStyle: typeof setStyle
+  zoomWithWheel: (event: WheelEvent, zoomOptions?: ZoomOptions) => CurrentValues
 }
