@@ -5,6 +5,7 @@
  * Copyright Timmy Willison and other contributors
  * Released under the MIT license
  * https://github.com/timmywil/panzoom/blob/master/MIT-License.txt
+ *
  */
 import { getBorder, getMargin, getPadding, setStyle, setTransform } from './css'
 import isAttached from './isAttached'
@@ -13,7 +14,6 @@ import { addEvent, getDistance, getMiddle, removeEvent } from './pointers'
 import './polyfills'
 import shallowClone from './shallowClone'
 import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
-
 const defaultOptions: PanzoomOptions = {
   animate: false,
   clickableClass: 'clickable',
@@ -445,3 +445,4 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
 Panzoom.defaultOptions = defaultOptions
 
 export default Panzoom
+export { PanOptions, ZoomOptions }

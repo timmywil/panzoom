@@ -51,7 +51,7 @@ interface MiscOptions {
   [key: string]: any
 }
 
-export type PanOptions = MiscOptions & {
+interface PanOptions {
   /**
    * Contain the panzoom element either
    * inside or outside the parent.
@@ -78,7 +78,7 @@ export type PanOptions = MiscOptions & {
   panOnlyWhenZoomed?: boolean
 }
 
-export type ZoomOptions = MiscOptions & {
+interface ZoomOptions {
   /** Disable zooming functionality */
   disableZoom?: boolean
   /**
@@ -96,7 +96,11 @@ export type ZoomOptions = MiscOptions & {
   step?: number
 }
 
-export type PanzoomOptions = PanOptions & ZoomOptions
+type PanOnlyOptions = MiscOptions & PanOptions
+export { PanOnlyOptions as PanOptions }
+type ZoomOnlyOptions = MiscOptions & ZoomOptions
+export { ZoomOnlyOptions as ZoomOptions }
+export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
 
 interface CurrentValues {
   x: number

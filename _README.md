@@ -1,12 +1,6 @@
-> **[@panzoom/panzoom](README.md)**
-
-[Globals](globals.md) /
-
 # Panzoom
 
 [![Build Status](https://travis-ci.org/timmywil/panzoom.png?branch=master)](https://travis-ci.org/timmywil/panzoom)
-
-**[Documentation](./docs/)**
 
 **[Examples](https://timmywil.com/panzoom/test/demo/)**
 
