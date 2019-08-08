@@ -7,3 +7,4 @@ coverage/**
 docs/**
 *.d.ts
 dist/**
+demo/demo/**
