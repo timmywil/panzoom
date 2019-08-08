@@ -30,31 +30,36 @@ const constructor = redoLinks(read('../docs/modules/_panzoom_.md'))
   .replace('### ▪ **defaultOptions**: *object*\n\n', '')
 data += '\n\n### Default export\n\n' + constructor
 
+const rProperties = /[\w\W]+##\s*Properties/
+const rOptional = /`Optional` /g
 const panzoomOptions =
   '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
   redoLinks(read('../docs/interfaces/_types_.miscoptions.md'))
     // Remove unwanted text
-    .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `MiscOptions`\n') +
+    .replace(rOptional, '')
+    .replace(rProperties, '\n\n---\n\n## `MiscOptions`\n') +
   redoLinks(read('../docs/interfaces/_types_.panoptions.md'))
     // Remove unwanted text
-    .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `PanOptions`\n\nIncludes `MiscOptions`\n\n') +
+    .replace(rOptional, '')
+    .replace(rProperties, '\n\n---\n\n## `PanOptions`\n\nIncludes `MiscOptions`\n\n') +
   redoLinks(read('../docs/interfaces/_types_.zoomoptions.md'))
     // Remove unwanted text
-    .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')
+    .replace(rOptional, '')
+    .replace(rProperties, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')
 data += panzoomOptions
 
 const panzoomObject =
   '\n\n---\n\n## `PanzoomObject`\n\nThese methods are available after initializing Panzoom\n\n' +
   redoLinks(read('../docs/interfaces/_types_.panzoomobject.md'))
     // Remove unwanted text
-    .replace(/[\w\W]+##\s*Properties/, '')
+    .replace(rProperties, '')
     // Type declaration refers to the signature
     .replace(/Type declaration:/g, 'Signature with return type:')
 data += panzoomObject
 
 const currentValues = read('../docs/interfaces/_types_.currentvalues.md')
   // Remove unwanted text
-  .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `CurrentValues`\n')
+  .replace(rProperties, '\n\n---\n\n## `CurrentValues`\n')
 data += currentValues
 
 // Write a pretty version
