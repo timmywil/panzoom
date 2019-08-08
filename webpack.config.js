@@ -1,4 +1,3 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 
@@ -29,10 +28,9 @@ module.exports = {
     open: false
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: 'Panzoom',
-      template: 'demo/index.html'
+      template: 'demo/_index.html'
     }),
     new webpack.HotModuleReplacementPlugin()
   ]
