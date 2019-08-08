@@ -54,7 +54,6 @@
     "@types/prismjs": "^1.16.0",
     "@types/react": "^16.8.25",
     "@types/react-dom": "^16.8.5",
-    "clean-webpack-plugin": "^3.0.0",
     "commitizen": "^4.0.3",
     "commitlint": "^8.1.0",
     "concat-md": "^0.3.0",
