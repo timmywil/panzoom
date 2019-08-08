@@ -11,7 +11,7 @@ export default function ContainOutside() {
     Panzoom(elem.current, { contain: 'outside', startScale: 1.5 })
   }, [])
   return (
-    <Demo title="Containment within a parent" code={code}>
+    <Demo title="Containment within the parent" code={code}>
       <div className="panzoom-parent" style={{ height: '900px' }}>
         <div
           className="panzoom"

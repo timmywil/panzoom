@@ -27,7 +27,7 @@ interface MiscOptions {
    */
   origin?: string
   /**
-   * Override the transform setter
+   * Override the transform setter.
    * This is exposed mostly so the user could
    * set other parts of a transform
    * aside from scale and translate.
@@ -92,7 +92,7 @@ interface ZoomOptions {
   minScale?: number
   /** The maximum scale when zooming */
   maxScale?: number
-  /** The step affects the rate of zooming with a mouse wheel, pinching, or range element */
+  /** The step affects zoom calculation when zooming with a mouse wheel, when pinch zooming, or when using zoomIn/zoomOut */
   step?: number
 }
 
@@ -146,13 +146,13 @@ export interface PanzoomObject {
    */
   zoom: (scale: number, zoomOptions?: ZoomOptions) => CurrentValues
   /**
-   * Zoom in using the predetermined increment set in options
+   * Zoom in using the predetermined increment set in options.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
    */
   zoomIn: (zoomOptions?: ZoomOptions) => CurrentValues
   /**
-   * Zoom out using the predetermined increment set in options
+   * Zoom out using the predetermined increment set in options.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
    */

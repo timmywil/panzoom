@@ -16,40 +16,41 @@ function redoLinks(data) {
       // Remove links that aren't links to source
       .replace(/\[([^:]+)\]\(.*?\)/g, '$1')
       .replace(/PanzoomOptions/g, '[PanzoomOptions](#PanzoomOptions)')
+      .replace(/PanOptions/g, '[PanOptions](#PanOptions)')
+      .replace(/ZoomOptions/g, '[ZoomOptions](#ZoomOptions)')
       .replace(/PanzoomObject/g, '[PanzoomObject](#PanzoomObject)')
       .replace(/CurrentValues/g, '[CurrentValues](#CurrentValues)')
   )
 }
 
-const constructor = read('../docs/modules/_panzoom_.md')
+const constructor = redoLinks(read('../docs/modules/_panzoom_.md'))
   // Remove unwanted text
   .replace(/[\w\W]+###\s*Panzoom/, '')
   .replace('## Object literals\n\n', '')
   .replace('### ▪ **defaultOptions**: *object*\n\n', '')
-data += '\n\n### Default export\n\n' + redoLinks(constructor)
+data += '\n\n### Default export\n\n' + constructor
 
 const panzoomOptions =
-  read('../docs/interfaces/_types_.miscoptions.md')
+  '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
+  redoLinks(read('../docs/interfaces/_types_.miscoptions.md'))
     // Remove unwanted text
     .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `MiscOptions`\n') +
-  read('../docs/interfaces/_types_.panoptions.md')
+  redoLinks(read('../docs/interfaces/_types_.panoptions.md'))
     // Remove unwanted text
     .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `PanOptions`\n\nIncludes `MiscOptions`\n\n') +
-  read('../docs/interfaces/_types_.zoomoptions.md')
+  redoLinks(read('../docs/interfaces/_types_.zoomoptions.md'))
     // Remove unwanted text
     .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')
-data +=
-  '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
-  redoLinks(panzoomOptions)
+data += panzoomOptions
 
-const panzoomObject = read('../docs/interfaces/_types_.panzoomobject.md')
-  // Remove unwanted text
-  .replace(/[\w\W]+##\s*Properties/, '')
-  // Type declaration refers to the signature
-  .replace(/Type declaration:/g, 'Signature with return type:')
-data +=
+const panzoomObject =
   '\n\n---\n\n## `PanzoomObject`\n\nThese methods are available after initializing Panzoom\n\n' +
-  redoLinks(panzoomObject)
+  redoLinks(read('../docs/interfaces/_types_.panzoomobject.md'))
+    // Remove unwanted text
+    .replace(/[\w\W]+##\s*Properties/, '')
+    // Type declaration refers to the signature
+    .replace(/Type declaration:/g, 'Signature with return type:')
+data += panzoomObject
 
 const currentValues = read('../docs/interfaces/_types_.currentvalues.md')
   // Remove unwanted text
