@@ -29,24 +29,21 @@ const constructor = read('../docs/modules/_panzoom_.md')
 data += '\n\n### Default export\n\n' + redoLinks(constructor)
 
 const panzoomOptions =
-  '\n\n## <a name="PanzoomOptions">`PanzoomOptions` includes `MiscOptions`, `PanOptions`, and `ZoomOptions`</a>\n' +
+  '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
   read('../docs/interfaces/_types_.miscoptions.md')
     // Remove unwanted text
     .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `MiscOptions`\n') +
   read('../docs/interfaces/_types_.panoptions.md')
     // Remove unwanted text
-    .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `PanOptions` (includes `MiscOptions`)\n') +
+    .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `PanOptions`\n\nIncludes `MiscOptions`\n\n') +
   read('../docs/interfaces/_types_.zoomoptions.md')
     // Remove unwanted text
-    .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `ZoomOptions` (includes `MiscOptions`)\n')
+    .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')
 data += redoLinks(panzoomOptions)
 
 const panzoomObject = read('../docs/interfaces/_types_.panzoomobject.md')
   // Remove unwanted text
-  .replace(
-    /[\w\W]+##\s*Properties/,
-    '\n\n---\n\n## <a name="PanzoomObject">`PanzoomObject` includes the following methods:</a>\n'
-  )
+  .replace(/[\w\W]+##\s*Properties/, '\n\n---\n\n## `PanzoomObject`\n')
   // Type declaration refers to the signature
   .replace(/Type declaration:/g, 'Signature with return type:')
 data += redoLinks(panzoomObject)
