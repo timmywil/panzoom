@@ -411,4 +411,3 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
 Panzoom.defaultOptions = defaultOptions
 
 export default Panzoom
-export { PanOptions, ZoomOptions }
