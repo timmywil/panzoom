@@ -1,6 +1,6 @@
 # Panzoom
 
-[![Build Status](https://travis-ci.org/timmywil/panzoom.png?branch=master)](https://travis-ci.org/timmywil/panzoom)
+[![Build Status](https://travis-ci.org/timmywil/panzoom.png?branch=master)](https://travis-ci.org/timmywil/panzoom) [![Greenkeeper badge](https://badges.greenkeeper.io/timmywil/panzoom.svg)](https://greenkeeper.io/)
 
 **[Examples](https://timmywil.com/panzoom/demo/)**
 
