@@ -15,7 +15,7 @@ Rather than using absolute positioning or setting width and height, Panzoom uses
 
 panzoom.min.js, included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
 
-For common support questions, see [the FAQ](https://github.com/timmywil/panzoom#faq) at the bottom.
+For common support questions, see [the FAQ](https://github.com/timmywil/panzoom#faq).
 
 ## Browser support
 
@@ -35,7 +35,19 @@ In IE11, CSS animations/transitions do not work on SVG elements, at least for th
 
 One could implement transitions manually in IE11 using the `setTransform` option and integrating a tweening library for javascript animations (such as [tween.js](https://www.createjs.com/#!/TweenJS)).
 
-## Loading Panzoom
+## Installing
+
+With npm:
+
+```bash
+$ npm install --save @panzoom/panzoom
+```
+
+With yarn:
+
+```bash
+$ yarn add @panzoom/panzoom
+```
 
 Panzoom uses [UMD](https://github.com/umdjs/umd) and can be loaded a lot of ways.
 
@@ -45,7 +57,13 @@ With ES6 imports:
 import Panzoom from 'panzoom'
 ```
 
-With AMD loader in an anonymous module:
+With commonjs or browserify:
+
+```
+const Panzoom = require('panzoom')
+```
+
+With an AMD loader in an anonymous module:
 
 ```js
 define(['panzoom'], function(Panzoom) {
@@ -53,18 +71,22 @@ define(['panzoom'], function(Panzoom) {
 })
 ```
 
-With script tags:
+With a script tag:
 
 ```html
 <script src="/js/panzoom.js"></script>
 ```
 
-## Initialization
+## Usage
 
 ```js
-const panzoom = Panzoom('.panzoom', {
+const elem = document.getElementById('panzoom-element')
+const panzoom = Panzoom(elem, {
   maxScale: 5
 })
+panzoom.pan(10, 10)
+panzoom.zoom(2, { animate: true })
+elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
 ```
 
 ## FAQ
