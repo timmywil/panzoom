@@ -7,7 +7,7 @@
     "build": "yarn clean && rollup --config && yarn minify && yarn docs",
     "clean": "rm -rf dist/",
     "commit": "git-cz",
-    "docs": "typedoc --theme markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme _README.md src/panzoom.ts && concat-md --decrease-title-levels docs | sed -e 's/External\\ modules*:* *//g' | sed -e 's/\"panzoom\"//g' | sed -e 's/\"types\"//g' | sed -e 's/* [](#modules_[a-z]*_md)//g' | sed -e 's/Index//g' | sed -e 's/\\@panzoom\\/panzoom//g' > README.md",
+    "docs": "typedoc --theme markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
     "lint": "concurrently \"yarn type-check\" \"yarn tslint\" \"yarn prettier\"",
     "lint:fix": "concurrently \"yarn type-check\" \"yarn tslint --fix\" \"precise-commits\"",
     "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && yarn sizeup",
@@ -23,7 +23,6 @@
   },
   "files": [
     "MIT-License.txt",
-    "docs",
     "src",
     "dist",
     "README.md"

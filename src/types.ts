@@ -113,7 +113,7 @@ export interface PanzoomObject {
   getPan: () => { x: number; y: number }
   /** Get the current scale */
   getScale: () => number
-  /** Returns a copy of the current options object */
+  /** Returns a _copy_ of the current options object */
   getOptions: () => PanzoomOptions
   /**
    * Pan the Panzoom element to the given x and y coordinates
@@ -126,8 +126,12 @@ export interface PanzoomObject {
    * ```
    */
   pan: (x: number | string, y: number | string, panOptions?: PanOptions) => CurrentValues
-  /** Reset the pan and zoom to startX, startY, and startScale */
-  reset: (options?: PanzoomOptions) => CurrentValues
+  /**
+   * Reset the pan and zoom to startX, startY, and startScale.
+   * Animates by default, ignoring the global option.
+   * Pass `{ animate: false }` to override.
+   */
+  reset: (resetOptions?: PanzoomOptions) => CurrentValues
   /** Change options for the Panzoom instance */
   setOptions: (options?: PanzoomOptions) => void
   /** A convenience method for setting prefixed styles on the Panzoom element */
@@ -143,10 +147,14 @@ export interface PanzoomObject {
   zoom: (scale: number, zoomOptions?: ZoomOptions) => CurrentValues
   /**
    * Zoom in using the predetermined increment set in options
+   * Animates by default, ignoring the global option.
+   * Pass `{ animate: false }` to override.
    */
   zoomIn: (zoomOptions?: ZoomOptions) => CurrentValues
   /**
    * Zoom out using the predetermined increment set in options
+   * Animates by default, ignoring the global option.
+   * Pass `{ animate: false }` to override.
    */
   zoomOut: (zoomOptions?: ZoomOptions) => CurrentValues
   /**
