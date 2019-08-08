@@ -7,6 +7,9 @@ module.exports = {
   entry: {
     'demo/index': './demo/index.tsx'
   },
+  output: {
+    path: __dirname + '/demo'
+  },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json']
   },
