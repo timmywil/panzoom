@@ -7,13 +7,14 @@
  * https://github.com/timmywil/panzoom/blob/master/MIT-License.txt
  *
  */
-import { getBorder, getMargin, getPadding, setStyle, setTransform } from './css'
+import { getDimensions, setStyle, setTransform } from './css'
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
 import { addEvent, getDistance, getMiddle, removeEvent } from './pointers'
 import './polyfills'
 import shallowClone from './shallowClone'
 import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
+
 const defaultOptions: PanzoomOptions = {
   animate: false,
   clickableClass: 'clickable',
@@ -99,41 +100,6 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     pan(options.startX, options.startY, { animate: false })
   })
 
-  /**
-   * Dimensions used in containment and focal point zooming
-   */
-  function getDimensions() {
-    const style = window.getComputedStyle(elem)
-    const parentStyle = window.getComputedStyle(parent)
-    const rectElem = elem.getBoundingClientRect()
-    const rectParent = parent.getBoundingClientRect()
-
-    return {
-      elem: {
-        style,
-        width: rectElem.width,
-        height: rectElem.height,
-        top: rectElem.top,
-        bottom: rectElem.bottom,
-        left: rectElem.left,
-        right: rectElem.right,
-        margin: getMargin(elem, style),
-        border: getBorder(elem, style)
-      },
-      parent: {
-        style: parentStyle,
-        width: rectParent.width,
-        height: rectParent.height,
-        top: rectParent.top,
-        bottom: rectParent.bottom,
-        left: rectParent.left,
-        right: rectParent.right,
-        padding: getPadding(parent, parentStyle),
-        border: getBorder(parent, parentStyle)
-      }
-    }
-  }
-
   function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
     const opts = { ...options, ...panOptions }
     const result = { x, y, opts }
@@ -152,7 +118,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     }
 
     if (opts.contain === 'inside') {
-      const dims = getDimensions()
+      const dims = getDimensions(elem)
       result.x = Math.max(
         -dims.elem.margin.left - dims.parent.padding.left,
         Math.min(
@@ -178,7 +144,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
         )
       )
     } else if (opts.contain === 'outside') {
-      const dims = getDimensions()
+      const dims = getDimensions(elem)
       const diffHorizontal = (dims.elem.width - dims.elem.width / scale) / 2
       const diffVertical = (dims.elem.height - dims.elem.height / scale) / 2
       result.x = Math.max(
@@ -269,7 +235,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     point: { clientX: number; clientY: number },
     zoomOptions?: ZoomOptions
   ) {
-    const dims = getDimensions()
+    const dims = getDimensions(elem)
 
     // Instead of thinking of operating on the panzoom element,
     // think of operating on the area inside the panzoom

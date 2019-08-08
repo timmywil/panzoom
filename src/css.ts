@@ -102,3 +102,39 @@ export function setTransform(
     setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
   })
 }
+
+/**
+ * Dimensions used in containment and focal point zooming
+ */
+export function getDimensions(elem: HTMLElement | SVGElement) {
+  const parent = elem.parentElement
+  const style = window.getComputedStyle(elem)
+  const parentStyle = window.getComputedStyle(parent)
+  const rectElem = elem.getBoundingClientRect()
+  const rectParent = parent.getBoundingClientRect()
+
+  return {
+    elem: {
+      style,
+      width: rectElem.width,
+      height: rectElem.height,
+      top: rectElem.top,
+      bottom: rectElem.bottom,
+      left: rectElem.left,
+      right: rectElem.right,
+      margin: getMargin(elem, style),
+      border: getBorder(elem, style)
+    },
+    parent: {
+      style: parentStyle,
+      width: rectParent.width,
+      height: rectParent.height,
+      top: rectParent.top,
+      bottom: rectParent.bottom,
+      left: rectParent.left,
+      right: rectParent.right,
+      padding: getPadding(parent, parentStyle),
+      border: getBorder(parent, parentStyle)
+    }
+  }
+}

@@ -57,4 +57,4 @@ const currentValues = read('../docs/interfaces/_types_.currentvalues.md')
 data += currentValues
 
 // Write a pretty version
-write('../README.md', prettier.format(data, { parser: 'markdown' }))
+write('../README.md', prettier.format(data, { parser: 'markdown', semi: false, singleQuote: true }))
