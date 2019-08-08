@@ -97,14 +97,14 @@ elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
 - HTML elements default to '50% 50%'.
 - SVG elements default to '0 0'.
 
-2\. I am using Panzoom with an `<object>` tag. It zooms but does not pan. [example](https://codepen.io/timmywil/pen/qNpykA)
+2\. I am using Panzoom with an `<object>` tag and it's not working. What's wrong?
 
 Object elements can eat up events, making it so they never reach Panzoom. To fix this, disable pointer events (`pointer-events: none`) on the `<object>` tag and call Panzoom using a wrapper.
 
 3\. My links aren't working! How do I enable an anchor within a panzoom element?
 
 Add class `options.clickableClass` (default is `"clickable"`) to whatever element you want to be clickable. Panzoom will check for this class before handling the event.
-You can also call `event.stopImmediatePropagation()` in an event handler on the clickable element.
+Alternatively, call `event.stopImmediatePropagation()` in an event handler on the clickable element.
 
 ---
 
