@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/timmywil/panzoom.png?branch=master)](https://travis-ci.org/timmywil/panzoom) [![Greenkeeper badge](https://badges.greenkeeper.io/timmywil/panzoom.svg)](https://greenkeeper.io/)
 
-**[Examples](https://timmywil.com/panzoom/test/demo/)**
+**[Examples](https://timmywil.com/panzoom/demo/)**
 
 **This rewrite is a work in progress**
 
@@ -294,11 +294,7 @@ aside from scale and translate.
 // when setting the scale and translation
 Panzoom(elem, {
   setTransform: (elem, { scale, x, y }) => {
-    setStyle(
-      elem,
-      'transform',
-      `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`
-    )
+    setStyle(elem, 'transform', `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`)
   }
 })
 ```

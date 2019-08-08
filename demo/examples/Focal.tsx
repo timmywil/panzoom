@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import Panzoom from '../../../src/panzoom'
+import Panzoom from '../../src/panzoom'
 import Code from '../Code'
 import Demo from '../Demo'
 
@@ -43,7 +43,7 @@ export default function Focal() {
           className="panzoom"
           ref={elem}
           style={{ width: '400px', height: '400px', margin: '0 auto' }}>
-          <img style={{ width: '100%', height: '100%' }} src="/test/demo/target.png" />
+          <img style={{ width: '100%', height: '100%' }} src="/demo/target.png" />
         </div>
       </div>
     </Demo>

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Panzoom from '../../../src/panzoom'
+import React, { useEffect, useRef } from 'react'
+import Panzoom from '../../src/panzoom'
 import Code from '../Code'
 import Demo from '../Demo'
 
@@ -64,7 +64,7 @@ export default function Buttons() {
       </div>
       <div className="panzoom-parent">
         <div className="panzoom" ref={elem}>
-          <img width="450" height="450" src="/test/demo/awesome_tiger.svg" />
+          <img width="450" height="450" src="/demo/awesome_tiger.svg" />
         </div>
       </div>
     </Demo>
