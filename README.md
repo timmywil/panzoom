@@ -1,554 +1,774 @@
-# jQuery Panzoom
+# Panzoom
 
-[![Build Status](https://travis-ci.org/timmywil/jquery.panzoom.png?branch=master)](https://travis-ci.org/timmywil/jquery.panzoom)
+[![Build Status](https://travis-ci.org/timmywil/panzoom.png?branch=master)](https://travis-ci.org/timmywil/panzoom)
 
-Panzoom is a progressive plugin to create panning and zooming functionality for an element.
-Rather than setting width and height on an image tag, Panzoom uses CSS transforms and matrix functions to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
+**[Examples](https://timmywil.com/panzoom/test/demo/)**
 
-jquery.panzoom.min.js (12.5kb/4.6kb gzip), included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+**This rewrite is a work in progress**
 
-For common support questions, see [the FAQ](https://github.com/timmywil/jquery.panzoom#faq) at the bottom.
+Have a look at the [GitHub project](https://github.com/timmywil/panzoom/projects/1) to follow along on the status of this rewrite.
 
-## Dependencies
+---
 
-jquery.panzoom prefers jQuery 3.0.0+, but works with jQuery 1.9.0+ and jQuery 2.0.0+. jquery.panzoom supports IE9+.
+Panzoom is a small library to add panning and zooming functionality to an element.
+Rather than using absolute positioning or setting width and height, Panzoom uses CSS transforms to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
+
+panzoom.min.js, included in this repo, is compressed with [uglifyjs](https://github.com/mishoo/UglifyJS).
+
+For common support questions, see [the FAQ](https://github.com/timmywil/panzoom#faq) at the bottom.
+
+## Browser support
+
+Here is a list of [currently supported browsers](https://browserl.ist/?q=%3E0.25%25%2C+not+op_mini+all).
 
 ## Mobile support
 
-Panzoom includes support for touch gestures and even supports __pinch gestures__ for zooming.
-It is perfectly suited for both mobile and desktop browsers.
-You'll be amazed at how well this performs on your mobile device.
+iOS, Android, and Windows Mobile are supported.
 
-iOS and Android are supported.
-
-**Pointer (IE 10+)**, **touch**, and **mouse** events are supported.
+Panzoom includes support for touch gestures and even supports **pinch gestures** for zooming. It is perfectly suited for both mobile and desktop browsers. It uses [pointer events](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events) by default wherever supported.
 
 ## SVG support
 
-Panzoom supports panning and zooming SVG elements directly, in browsers that support SVG.
+Panzoom supports panning and zooming SVG elements directly.
 
-In IE9-11 and Edge 13-14+, CSS animations/transitions do not work on SVG elements, at least for the transform style. They do work in other browsers.
+In IE11, CSS animations/transitions do not work on SVG elements, at least for the transform style. They do work in other browsers.
 
-One could implement transitions manually in those browsers by overriding the `setTransform()` method and integrating a tweening library for javascript animations (such as [tween.js](http://www.createjs.com/#!/TweenJS)).
-
-**Compatibility note:** *There is a [known issue with Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=530985) and using the `focal` option. Firefox does not correctly maintain the dimensions of SVG parent elements, which throws off offsets. If using the `focal` option with SVG, the workaround is to set the correct offset on the Panzoom instance manually using `Panzoom.prototype.parentOffset` ([example](http://jsfiddle.net/timmywil/Vu8nA/)).*
+One could implement transitions manually in IE11 using the `setTransform` option and integrating a tweening library for javascript animations (such as [tween.js](https://www.createjs.com/#!/TweenJS)).
 
 ## Loading Panzoom
-Panzoom can be included with your scripts at the end of the body,
-but Panzoom supports AMD for javascript module love.
 
-With script tags:
+Panzoom uses [UMD](https://github.com/umdjs/umd) and can be loaded a lot of ways.
 
-```html
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="/js/plugins/jquery.panzoom.js"></script>
+With ES6 imports:
+
+```js
+import Panzoom from 'panzoom'
 ```
 
 With AMD loader in an anonymous module:
 
 ```js
-define([ "jquery", "plugins/jquery.panzoom" ], function( $ ) {
-  $(document).ready(function() {
-    $(".panzoom-elements").panzoom();
-  });
-});
+define(['panzoom'], function(Panzoom) {
+  Panzoom('.panzoom')
+})
+```
+
+With script tags:
+
+```html
+<script src="/js/panzoom.js"></script>
 ```
 
 ## Initialization
 
 ```js
-$(".panzoom-elements").panzoom();
-
-// Pass options
-$("a.panzoom-elements").panzoom({
-  minScale: 0,
-  $zoomRange: $("input[type='range']")
-});
+const panzoom = Panzoom('.panzoom', {
+  maxScale: 5
+})
 ```
-
-## Options
-
-All options can be overridden by passing an object literal like any other plugin,<br>
-or with the `"option"` method.<br>
-
-Check out the demos of the [contain](http://timmywil.github.io/jquery.panzoom/demo/#contain) and [inverted containment](http://timmywil.github.io/jquery.panzoom/demo/#inverted-contain) options.
-
-```js
-Panzoom.defaults = {
-  // Should always be non-empty
-  // Used to bind jQuery events without collisions
-  // A guid is not added here as different instantiations/versions of Panzoom
-  // on the same element is not supported.
-  eventNamespace: ".panzoom",
-
-  // Whether or not to transition the scale
-  transition: true,
-
-  // Default cursor style for the element
-  cursor: "move",
-
-  // There may be some use cases for zooming without panning or vice versa
-  // NOTE: disablePan also disables focal point zooming
-  disablePan: false,
-  disableZoom: false,
-
-  // Pan only on the X or Y axes
-  disableXAxis: false,
-  disableYAxis: false,
-
-  // Set whether you'd like to pan on left (1), middle (2), or right click (3)
-  which: 1,
-
-  // The increment at which to zoom
-  // adds/subtracts to the scale each time zoomIn/Out is called
-  increment: 0.3,
-
-  // Turns on exponential zooming
-  // If false, zooming will be incremented linearly
-  exponential: true,
-
-  // Pan only when the scale is greater than minScale
-  panOnlyWhenZoomed: false,
-
-  // min and max zoom scales
-  minScale: 0.4,
-  maxScale: 5,
-
-  // The default step for the range input
-  // Precendence: default < HTML attribute < option setting
-  rangeStep: 0.05,
-
-  // Animation duration (ms)
-  duration: 200,
-  // CSS easing used for scale transition
-  easing: "ease-in-out",
-
-  // Indicate that the element should be contained within its parent when panning
-  // Note: this does not affect zooming outside of the parent
-  // Set this value to 'invert' to only allow panning outside of the parent element (the opposite of the normal use of contain)
-  // 'invert' is useful for a large Panzoom element where you don't want to show anything behind it
-  contain: false,
-
-  // Transform value to which to always reset (string)
-  // Defaults to the original transform on the element when Panzoom is initialized
-  startTransform: undefined,
-
-  // This optional jQuery collection can be set to specify all of the elements
-  // on which the transform should always be set.
-  // It should have at least one element.
-  // This is mainly used for delegating the pan and zoom transform settings
-  // to another element or multiple elements.
-  // The default is the Panzoom element wrapped in jQuery
-  // See the [demo](http://timmywil.github.io/jquery.panzoom/demo/#set) for an example.
-  // Note: only one Panzoom element will still handle events for a Panzoom instance.
-  // Use multiple Panzoom instances for that use case.
-  $set: $elem,
-
-  // Zoom buttons/links collection (you can also bind these yourself - e.g. `$button.on("click", function( e ) { e.preventDefault(); $elem.panzoom("zoom"); });` )
-  $zoomIn: $(),
-  $zoomOut: $(),
-  // Range input on which to bind zooming functionality
-  $zoomRange: $(),
-  // Reset buttons/links collection on which to bind the reset method
-  $reset: $(),
-  // For convenience, these options will be bound to Panzoom events
-  // These can all be bound normally on the Panzoom element
-  // e.g. `$elem.on("panzoomend", function( e, panzoom ) { console.log( panzoom.getMatrix() ); });`
-  onStart: undefined,
-  onChange: undefined,
-  onZoom: undefined,
-  onPan: undefined,
-  onEnd: undefined,
-  onReset: undefined
-};
-```
-
-## Methods
-
-Methods can be called in the same way as a widget from the jQuery UI widget factory. Pass a method name when calling `panzoom()`. Strings are interpreted as method names.
-
-### `option()`
-
-```js
-// One at a time
-// Sets the scale increment option
-$elem.panzoom("option", "increment", 0.4);
-
-// Several options at once
-$elem.panzoom("option", {
-  increment: 0.4,
-  minScale: 0.1,
-  maxScale: 2,
-  duration: 500,
-  $reset: $("a.reset-panzoom, button.reset-panzoom")
-});
-```
-
-Any option can be changed. See the defaults above for a list.
-
-### `reset( [options] )`
-
-__Arguments__
-
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to setMatrix.
-  2. `options.silent` _{Boolean}_: Silence the reset event (as well as the change event as the same options are passed to setMatrix)
-
-```js
-$elem.panzoom("reset");
-$elem.panzoom("reset", false);
-$elem.panzoom("reset", {
-  animate: false,
-  contain: false
-});
-```
-
-Reset the transform matrix to its original value. All panning and zooming is reset.
-
-### `resetZoom( [options] )`
-
-__Arguments__
-
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to zoom.
-
-```js
-$elem.panzoom("resetZoom");
-$elem.panzoom("resetZoom", false);
-$elem.panzoom("resetZoom", {
-  animate: false,
-  silent: true
-});
-```
-
-Reset the scale to its original value (resets both scale values in the matrix to their original values).
-
-### `resetPan( [options] )`
-
-__Arguments__
-
-  1. `options` _{Object|Boolean}_: If a boolean is passed, animate the reset (default: true). If an options object is passed, pass that along to pan.
-
-```js
-$elem.panzoom("resetPan");
-$elem.panzoom("resetPan", false);
-$elem.panzoom("resetPan", {
-  animate: false,
-  silent: true
-});
-```
-
-Reset the pan to its original value.
-
-### `pan( x, y[, options] )`
-
-__Arguments__
-
-  1. `x` _{Number}_: The translation X value to set
-  2. `y` _{Number}_: The translation Y value to set
-  3. `options` _{Object}_: These options are also passed along to [setMatrix](#setmatrix-matrix-options-).
-
-    1. `options.matrix` _{Array}_: The matrix being manipulated (If this is not passed, the matrix will be calculated on every call to pan, which could be a performance bottleneck if this is bound to a move event)
-    2. `options.silent` _{Boolean}_: Silence the pan event. Note that this will also silence the setMatrix change event.
-    3. `options.relative` _{Boolean}_: Make the x and y values relative to the existing matrix.<br/>
-      e.g. `$elem.panzoom("pan", 10, -10, { relative: true });`<br/>
-      `// => Moves the element 10 pixels right and 10 pixels up from its current position`
-
-### `zoom( [scale[, opts]] )`
-
-__Arguments__
-
-  1. `scale` _{Number|Boolean}_: The exact scale to which to zoom or a boolean indicating to transition a zoom out
-  2. `opts` _{Object}_: All global options can be overwritten by this options object. For example, override the default increment.
-
-    1. `opts.noSetRange` _{Boolean}_: Specify that the method should not set the $zoomRange value (as is the case when $zoomRange is calling zoom on change)
-    2. `opts.animate` _{Boolean}_: Whether to animate the zoom (defaults to true if scale is not a number, false otherwise)
-    3. `opts.focal` _{jQuery.Event|Object}_: Specify a focal point under which to freeze the zooming element.<br/>
-      Should either be a jQuery event or an object containing clientX/clientY to specify the point's position relative to the parent.<br/>
-      For an example of focal point zooming, use the mousewheel or pinch to zoom on the [demo](http://timmywil.github.io/jquery.panzoom/demo/#focal).
-    4. `opts.silent` _{Boolean}_: Silence the zoom event
-    5. `opts.dValue` _{Number}_: Think of a transform matrix as four values a, b, c, d<br/>
-      where a/d are the horizontal/vertical scale values and b/c are the skew values<br/>
-      (5 and 6 of matrix array are the tx/ty transform values).<br/>
-      Normally, the scale is set to both the a and d values of the matrix.<br/>
-      This option allows you to specify a different d value for the zoom.<br/>
-      For instance, to flip vertically, you could set -1 as the dValue.
-
-```js
-// Transition a zoom in based on the scale increment, min and max values
-$elem.panzoom("zoom");
-
-// Transition a zoom out
-$elem.panzoom("zoom", true);
-
-// Set the scale immediately without a transition
-// and silence the zoom event
-$elem.panzoom("zoom", 1.2, { silent: true });
-```
-
-Transition a zoom in based on the scale increment, min and max values, and animation duration and easing. This method handles both zooming in and zooming out.<br>
-If the method is passed a number, `zoom()` will immediately set that scale without transitioning. This is mostly useful for the range input and pinch gestures.<br>
-If the method is passed a boolean, true will indicate to perform a zoom-out based on the increment specified in options. If false (or omitted), a zoom-in will be performed.
-
-### `resetDimensions()`
-
-```js
-// Indicate to Panzoom that the dimensions of the parent and/or the element have changed.
-$elem.panzoom("resetDimensions");
-```
-
-Panzoom caches the dimensions of the Panzoom element and its parent to cater to quick move events.
-Whenever these dimensions change, it is necessary to call `resetDimensions()`.
-However, as of version 3.1.0, this is no longer required.
-
-### `disable()`
-
-```js
-$elem.panzoom("disable");
-```
-
-Quickly disable Panzoom on the element.
-
-### `enable()`
-
-```js
-$elem.panzoom("enable");
-```
-
-Re-enable Panzoom on the element (re-binds all events).
-
-### `isDisabled()`
-
-```js
-$elem.panzoom("isDisabled");
-// => true
-```
-
-Returns a boolean indicating whether the current Panzoom instance is disabled.
-
-### `isPanning()`
-
-Returns a boolean indicating whether the element is currently panning.
-
-### `destroy()`
-
-```js
-$elem.panzoom("destroy");
-```
-
-### `instance()`
-
-```js
-var panzoom = $elem.panzoom("instance");
-```
-
-Retrieves the Panzoom instance(s) from the set. If there are multiple elements in the set, you will get an array of instances. If there is only one, you will get that instance of Panzoom.
-
-Unbinds all events and removes all data, including the Panzoom instance on the element.
-
-## Internal
-
-These methods are _basically_ private, but could be useful under certain circumstances.
-
-### `getTransform()`
-
-Returns the string transform value used by Panzoom for the element.
-
-__Note__: The transform attribute is used for SVG. Otherwise, the appropriately prefixed transform style property is used.
-
-### `setTransform()`
-
-Set a string transform value on the Panzoom element (or the $set if using the $set option).
-
-__Note__: The transform attribute is used for SVG. Otherwise, the appropriately prefixed transform style property is used.
-
-### `getMatrix( [transform] )`
-
-Retrieve an array of values for the specified transform or for the current transform on the Panzoom element.
-
-```js
-$elem.panzoom("getMatrix");
-// => [1, 0, 0, 1, 0, 0]
-```
-
-### `setMatrix( matrix[, options] )`
-
-__Arguments__
-
-  1. `matrix` _{Array}_: Matrix to set
-  2. `options` _{Object}_
-
-    1. `options.animate` _{Boolean}_: If true, a transition will be set to animate the transform change
-    2. `options.contain` _{Boolean}_: Override the global contain option
-    3. `options.range` _{Boolean}_: If true, $zoomRange's value will be updated.
-    4. `options.silent` _{Boolean}_: If true, the change event will not be triggered
-
-
-```js
-// Flip the element upside down
-$elem.panzoom("setMatrix", [ 1, 0, 0, -1, 0, 0 ]);
-```
-
-Sets the transform matrix of the Panzoom element. It accepts the matrix as an array.
-
-_Note_: `setMatrix()` does not chain. It returns the newly-set matrix as an _Array_.
-
-### `transition( [off] )`
-
-```js
-$elem.panzoom("transition");
-// Turn off transition
-$elem.panzoom("transition", true);
-// Note: this is different than...
-$elem.panzoom("option", "transition", true);
-// ... which sets the `transition` option, indicating whether transitioning is allowed at all.
-// If the transition option is false, `$elem.panzoom("transition")` will only ever set transition to "none".
-```
-
-Applies the transition to the element. If `off` is true, it removes the transition.
-
-## Static properties
-
-Static properties are there for convenience, but are **subject to change in future versions**.
-
-### `Panzoom.rmatrix`
-Type: *RegExp*
-
-This is a copy of the regex used by Panzoom to parse tranformation matrices.
-
-## Events
-
-### `"panzoomstart"`
-
-__Arguments Received__
-
-  1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The Panzoom instance
-  3. `event` _(jQuery.Event)_: The starting mousedown or touchstart event
-  4. `touches` _(TouchList)_: The touches list if present
-
-Fired when the user starts a move or pinch zoom gesture on mobile.
-
-### `"panzoomchange"`
-
-__Arguments Received__
-
-  1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The Panzoom instance
-  3. `transform` _(Array)_: The transform matrix set during the change as an array of values
-
-Fired whenever the matrix is changed by `setMatrix()` (whether internally or externally).
-
-_Try not to put to much in this event as it could slow down dragging._
-
-__Note__: This event can be silenced when setMatrix is called directly.
-
-### `"panzoomzoom"`
-
-__Arguments Received__
-
-  1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The Panzoom instance
-  3. `scale` _(Number)_: The zoom scale set by the plugin
-  4. `opts` _(Object)_: Same options passed to zoom
-
-Fired whenever the zoom is changed by this plugin.
-
-__Note__: This event can be silenced when zoom is called directly.
-
-### `"panzoompan"`
-
-__Arguments Received__
-
-  1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The Panzoom instance
-  3. `x` _(Number)_: The resulting translateX value set on the matrix (accounting for the relative option)
-  4. `y` _(Number)_: The resulting translateY value set on the matrix
-
-Fired whenever the pan is changed by this plugin.
-
-_Try not to put to much in this event as it could slow down dragging._
-
-### `"panzoomend"`
-
-__Arguments Received__
-
-  1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The Panzoom instance
-  3. `matrix` _(Array)_: The final transform matrix
-  4. `changed` _(Boolean)_: Whether the matrix changed during the Panzoom event
-
-This event is fired when the user finishes a move or finishes a pinch zoom gesture on mobile. All properties from the original click or touch event that ended the Panzoom transaction are passed through, including the event target (`e.target`).
-
-*Note*: When binding to this event, you can tell the difference between a click (or tap) and a move by checking `changed`:
-
-```js
-$panzoom.on('panzoomend', function(e, panzoom, matrix, changed) {
-  if (changed) {
-    // deal with drags or touch moves
-  } else {
-    // deal with clicks or taps
-  }
-});
-```
-
-### `"panzoomreset"`
-
-__Arguments Received__
-
-  1. `e` _(jQuery.Event)_: jQuery event object
-  2. `panzoom` _(Panzoom)_: The Panzoom instance
-  3. `matrix` _(Array)_: The original matrix
-
-Fired whenever reset is called.
-
-## Testing
-
-Tests can be run by opening [test/index.html](http://timmywil.github.io/jquery.panzoom/test/) in a browser or by using [`grunt`](http://gruntjs.com/) and [phantomjs](http://phantomjs.org/).
-
-Tests are written with [mocha](http://visionmedia.github.com/mocha/) and [chai for bdd-style assertions](http://chaijs.com/api/bdd/).
-
-See [CONTRIBUTING.md](https://github.com/timmywil/jquery.panzoom/blob/master/CONTRIBUTING.md) for more info.
-
 
 ## FAQ
 
-1\. How do I make it so that I never see the background behind the Panzoom element? [example](http://codepen.io/timmywil/pen/qjvBF)
+1\. What is `transform-origin` and why is it added to the panzoom element?
 
-  - This can be done with the `contain` option. Set `contain` to `"invert"` or `"automatic"` and make sure the Panzoom element is the same size or larger than its parent.
+- The `transform-origin` is the origin from which transforms are applied. Panzoom ensures the defaults are set to what it expects to calculate focal point zooming.
+- HTML elements default to '50% 50%'.
+- SVG elements default to '0 0'.
+
+2\. I am using Panzoom with an `<object>` tag. It zooms but does not pan. [example](https://codepen.io/timmywil/pen/qNpykA)
+
+Object elements can eat up events, making it so they never reach Panzoom. To fix this, disable pointer events (`pointer-events: none`) on the `<object>` tag and call Panzoom using a wrapper.
+
+3\. My links aren't working! How do I enable an anchor within a panzoom element?
+
+Add class `options.clickableClass` (default is `"clickable"`) to whatever element you want to be clickable. Panzoom will check for this class before handling the event.
+You can also call `event.stopImmediatePropagation()` in an event handler on the clickable element.
+
+---
+
+## Documentation
+
+### Default export
+
+▸ **Panzoom**(`elem`: `HTMLElement` | `SVGElement`, `options?`: [PanzoomOptions](#PanzoomOptions)): _[PanzoomObject](#PanzoomObject)_
+
+_Defined in [panzoom.ts:38](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L38)_
+
+**Parameters:**
+
+| Name       | Type                              |
+| ---------- | --------------------------------- |
+| `elem`     | `HTMLElement` \| `SVGElement`     |
+| `options?` | [PanzoomOptions](#PanzoomOptions) |
+
+**Returns:** _[PanzoomObject](#PanzoomObject)_
+
+### `Const` defaultOptions
+
+_Defined in [panzoom.ts:18](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L18)_
+
+### animate
+
+• **animate**: _false_ = false
+
+_Defined in [panzoom.ts:19](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L19)_
+
+### clickableClass
+
+• **clickableClass**: _string_ = "clickable"
+
+_Defined in [panzoom.ts:20](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L20)_
+
+### cursor
+
+• **cursor**: _string_ = "move"
+
+_Defined in [panzoom.ts:21](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L21)_
+
+### disablePan
+
+• **disablePan**: _false_ = false
+
+_Defined in [panzoom.ts:22](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L22)_
+
+### disableXAxis
+
+• **disableXAxis**: _false_ = false
+
+_Defined in [panzoom.ts:24](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L24)_
+
+### disableYAxis
+
+• **disableYAxis**: _false_ = false
+
+_Defined in [panzoom.ts:25](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L25)_
+
+### disableZoom
+
+• **disableZoom**: _false_ = false
+
+_Defined in [panzoom.ts:23](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L23)_
+
+### duration
+
+• **duration**: _number_ = 200
+
+_Defined in [panzoom.ts:26](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L26)_
+
+### easing
+
+• **easing**: _string_ = "ease-in-out"
+
+_Defined in [panzoom.ts:27](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L27)_
+
+### maxScale
+
+• **maxScale**: _number_ = 4
+
+_Defined in [panzoom.ts:28](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L28)_
+
+### minScale
+
+• **minScale**: _number_ = 0.125
+
+_Defined in [panzoom.ts:29](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L29)_
+
+### relative
+
+• **relative**: _false_ = false
+
+_Defined in [panzoom.ts:30](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L30)_
+
+### setTransform
+
+• **setTransform**: _`setTransform`_
+
+_Defined in [panzoom.ts:31](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L31)_
+
+### startScale
+
+• **startScale**: _number_ = 1
+
+_Defined in [panzoom.ts:34](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L34)_
+
+### startX
+
+• **startX**: _number_ = 0
+
+_Defined in [panzoom.ts:32](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L32)_
+
+### startY
+
+• **startY**: _number_ = 0
+
+_Defined in [panzoom.ts:33](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L33)_
+
+### step
+
+• **step**: _number_ = 0.3
+
+_Defined in [panzoom.ts:35](https://github.com/timmywil/panzoom/blob/213f0df/src/panzoom.ts#L35)_
+
+## `PanzoomOptions`
+
+Includes `MiscOptions`, `PanOptions`, and `ZoomOptions`
+
+---
+
+## `MiscOptions`
+
+### `Optional` animate
+
+• **animate**? : _boolean_
+
+_Defined in [types.ts:5](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L5)_
+
+Whether to animate transitions
+
+---
+
+### `Optional` clickableClass
+
+• **clickableClass**? : _string_
+
+_Defined in [types.ts:10](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L10)_
+
+Add this class to any element within the panzoom element
+that you want to be clickable and not initiate the drag
+
+---
+
+### `Optional` duration
+
+• **duration**? : _number_
+
+_Defined in [types.ts:12](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L12)_
+
+Duration of the transition (ms)
+
+---
+
+### `Optional` easing
+
+• **easing**? : _string_
+
+_Defined in [types.ts:14](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L14)_
+
+CSS Easing used for transitions
+
+---
+
+### `Optional` origin
+
+• **origin**? : _string_
+
+_Defined in [types.ts:28](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L28)_
+
+**Change this at your own risk.**
+The `transform-origin` is the origin from which transforms are applied.
+Default: `'50% 50%'` for HTML and `'0 0'` for SVG.
+The defaults are set because changing the `transform-origin` on
+SVG elements doesn't work in IE.
+
+Changing this should work with many things, but
+it will break focal point zooming, which assumes the
+defaults are set to do the more complicated calculations.
+
+And again, changing this for SVG in IE doesn't work at all.
+
+---
+
+### `Optional` setTransform
+
+• **setTransform**? : _`setTransform`_
+
+_Defined in [types.ts:45](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L45)_
+
+Override the transform setter
+This is exposed mostly so the user could
+set other parts of a transform
+aside from scale and translate.
 
 ```js
-  $('.panzoom-elements').panzoom({
-    contain: 'invert',
-    minScale: 1
-  });
+// This example always sets a rotation
+// when setting the scale and translation
+Panzoom(elem, {
+  setTransform: (elem, { scale, x, y }) => {
+    setStyle(
+      elem,
+      'transform',
+      `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`
+    )
+  }
+})
 ```
 
-2\. How do I make links work if they're within a Panzoom element? [example](http://codepen.io/timmywil/pen/bFiqy)
+---
 
-  - Event propagation is stopped for `mousedown` and `touchstart` events in order to allow for Panzoom elements within Panzoom elements. To fix the links, bind an event handler that prevents the event from reaching the Panzoom handler:
+### `Optional` startScale
+
+• **startScale**? : _number_
+
+_Defined in [types.ts:49](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L49)_
+
+---
+
+### `Optional` startX
+
+• **startX**? : _number_
+
+_Defined in [types.ts:47](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L47)_
+
+Values used to set the beginning transform
+
+---
+
+### `Optional` startY
+
+• **startY**? : _number_
+
+_Defined in [types.ts:48](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L48)_
+
+---
+
+## `PanOptions`
+
+Includes `MiscOptions`
+
+### `Optional` contain
+
+• **contain**? : _"inside" | "outside"_
+
+_Defined in [types.ts:66](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L66)_
+
+Contain the panzoom element either
+inside or outside the parent.
+Inside: The panzoom element is smaller
+than its parent and cannot be panned
+to the outside.
+Outside: The panzoom element is larger
+than its parent and cannot be panned
+to the inside. In other words, no
+empty space around the element will be shown.
+
+---
+
+### `Optional` cursor
+
+• **cursor**? : _string_
+
+_Defined in [types.ts:68](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L68)_
+
+The cursor style to set on the panzoom element
+
+---
+
+### `Optional` disablePan
+
+• **disablePan**? : _boolean_
+
+_Defined in [types.ts:70](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L70)_
+
+Disable panning functionality. Note: disablePan also disables focal point zooming
+
+---
+
+### `Optional` disableXAxis
+
+• **disableXAxis**? : _boolean_
+
+_Defined in [types.ts:72](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L72)_
+
+Pan only on the Y axis
+
+---
+
+### `Optional` disableYAxis
+
+• **disableYAxis**? : _boolean_
+
+_Defined in [types.ts:74](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L74)_
+
+Pan only on the X axis
+
+---
+
+### `Optional` panOnlyWhenZoomed
+
+• **panOnlyWhenZoomed**? : _boolean_
+
+_Defined in [types.ts:78](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L78)_
+
+Disable panning while the scale is equal to the starting value
+
+---
+
+### `Optional` relative
+
+• **relative**? : _boolean_
+
+_Defined in [types.ts:76](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L76)_
+
+When passing x and y values to .pan(), treat the values as relative to their current values
+
+---
+
+## `ZoomOptions`
+
+Includes `MiscOptions`
+
+### `Optional` disableZoom
+
+• **disableZoom**? : _boolean_
+
+_Defined in [types.ts:83](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L83)_
+
+Disable zooming functionality
+
+---
+
+### `Optional` focal
+
+• **focal**? : _object_
+
+_Defined in [types.ts:90](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L90)_
+
+Zoom to the given point on the panzoom element.
+This point is expected to be relative to
+the panzoom element's dimensions and is unrelated
+to the parent dimensions.
+
+#### Type declaration:
+
+- **x**: _number_
+
+- **y**: _number_
+
+---
+
+### `Optional` maxScale
+
+• **maxScale**? : _number_
+
+_Defined in [types.ts:94](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L94)_
+
+The maximum scale when zooming
+
+---
+
+### `Optional` minScale
+
+• **minScale**? : _number_
+
+_Defined in [types.ts:92](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L92)_
+
+The minimum scale when zooming
+
+---
+
+### `Optional` step
+
+• **step**? : _number_
+
+_Defined in [types.ts:96](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L96)_
+
+The step affects the rate of zooming with a mouse wheel, pinching, or range element
+
+---
+
+## `PanzoomObject`
+
+These methods are available after initializing Panzoom
+
+### getOptions
+
+• **getOptions**: _function_
+
+_Defined in [types.ts:117](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L117)_
+
+Returns a _copy_ of the current options object
+
+#### Signature with return type:
+
+▸ (): _[PanzoomOptions](#PanzoomOptions)_
+
+---
+
+### getPan
+
+• **getPan**: _function_
+
+_Defined in [types.ts:113](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L113)_
+
+Get the current x/y translation
+
+#### Signature with return type:
+
+▸ (): _object_
+
+- **x**: _number_
+
+- **y**: _number_
+
+---
+
+### getScale
+
+• **getScale**: _function_
+
+_Defined in [types.ts:115](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L115)_
+
+Get the current scale
+
+#### Signature with return type:
+
+▸ (): _number_
+
+---
+
+### pan
+
+• **pan**: _function_
+
+_Defined in [types.ts:128](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L128)_
+
+Pan the Panzoom element to the given x and y coordinates
 
 ```js
-$('.panzoom a').on('mousedown touchstart', function( e ) {
-  e.stopImmediatePropagation();
-});
+// Translates the element to 50px, 100px
+panzoom.pan(50, 100)
+// Pans the element right 10px and down 10px from its current position
+panzoom.pan(10, 10, { relative: true })
 ```
 
-3\. What is `transform-origin` and why is it added to the panzoom element?
+#### Signature with return type:
 
-  - The `transform-origin` is the origin from which transforms are applied. Panzoom ensures the defaults are set to what it expects to calculate focal points and containment.
-  - HTML elements default to '50% 50%'.
-  - SVG elements default to '0 0'.
+▸ (`x`: number | string, `y`: number | string, `panOptions?`: PanOptions): _[CurrentValues](#CurrentValues)_
 
-4\. How do I prevent zooming beyond the image's original size?
+**Parameters:**
 
- - The `maxScale` option can be set using the image's `naturalWidth` divided by the `clientWidth`:
+| Name          | Type             |
+| ------------- | ---------------- |
+| `x`           | number \| string |
+| `y`           | number \| string |
+| `panOptions?` | PanOptions       |
+
+---
+
+### reset
+
+• **reset**: _function_
+
+_Defined in [types.ts:134](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L134)_
+
+Reset the pan and zoom to startX, startY, and startScale.
+Animates by default, ignoring the global option.
+Pass `{ animate: false }` to override.
+
+#### Signature with return type:
+
+▸ (`resetOptions?`: [PanzoomOptions](#PanzoomOptions)): _[CurrentValues](#CurrentValues)_
+
+**Parameters:**
+
+| Name            | Type                              |
+| --------------- | --------------------------------- |
+| `resetOptions?` | [PanzoomOptions](#PanzoomOptions) |
+
+---
+
+### setOptions
+
+• **setOptions**: _function_
+
+_Defined in [types.ts:136](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L136)_
+
+Change options for the Panzoom instance
+
+#### Signature with return type:
+
+▸ (`options?`: [PanzoomOptions](#PanzoomOptions)): _void_
+
+**Parameters:**
+
+| Name       | Type                              |
+| ---------- | --------------------------------- |
+| `options?` | [PanzoomOptions](#PanzoomOptions) |
+
+---
+
+### setStyle
+
+• **setStyle**: _`setStyle`_
+
+_Defined in [types.ts:138](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L138)_
+
+A convenience method for setting prefixed styles on the Panzoom element
+
+---
+
+### zoom
+
+• **zoom**: _function_
+
+_Defined in [types.ts:147](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L147)_
+
+Zoom the Panzoom element to the given scale
 
 ```js
-$('#large-image').panzoom({
-    maxScale: elem.naturalWidth / elem.clientWidth
-});
+panzoom.zoom(2.2)
+panzoom.zoom(2.2, { animate: true })
 ```
 
-5\. I am using Panzoom with an `<object>` tag. It zooms but does not pan. [example](http://codepen.io/timmywil/pen/qNpykA)
+#### Signature with return type:
 
-Object elements can eat up events, making it so they never reach Panzoom. To fix this, disable pointer events on the object tag and call Panzoom using a wrapper.
+▸ (`scale`: number, `zoomOptions?`: ZoomOptions): _[CurrentValues](#CurrentValues)_
 
+**Parameters:**
+
+| Name           | Type        |
+| -------------- | ----------- |
+| `scale`        | number      |
+| `zoomOptions?` | ZoomOptions |
+
+---
+
+### zoomIn
+
+• **zoomIn**: _function_
+
+_Defined in [types.ts:153](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L153)_
+
+Zoom in using the predetermined increment set in options
+Animates by default, ignoring the global option.
+Pass `{ animate: false }` to override.
+
+#### Signature with return type:
+
+▸ (`zoomOptions?`: ZoomOptions): _[CurrentValues](#CurrentValues)_
+
+**Parameters:**
+
+| Name           | Type        |
+| -------------- | ----------- |
+| `zoomOptions?` | ZoomOptions |
+
+---
+
+### zoomOut
+
+• **zoomOut**: _function_
+
+_Defined in [types.ts:159](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L159)_
+
+Zoom out using the predetermined increment set in options
+Animates by default, ignoring the global option.
+Pass `{ animate: false }` to override.
+
+#### Signature with return type:
+
+▸ (`zoomOptions?`: ZoomOptions): _[CurrentValues](#CurrentValues)_
+
+**Parameters:**
+
+| Name           | Type        |
+| -------------- | ----------- |
+| `zoomOptions?` | ZoomOptions |
+
+---
+
+### zoomToPoint
+
+• **zoomToPoint**: _function_
+
+_Defined in [types.ts:166](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L166)_
+
+Zoom the Panzoom element to a focal point using
+the given pointer/touch/mouse event or constructed point.
+The clientX/clientY values should be calculated
+the same way as a pointer event on the Panzoom element.
+
+#### Signature with return type:
+
+▸ (`scale`: number, `point`: object, `zoomOptions?`: ZoomOptions): _[CurrentValues](#CurrentValues)_
+
+**Parameters:**
+
+▪ **scale**: _number_
+
+▪ **point**: _object_
+
+| Name      | Type   |
+| --------- | ------ |
+| `clientX` | number |
+| `clientY` | number |
+
+▪`Optional` **zoomOptions**: _ZoomOptions_
+
+---
+
+### zoomWithWheel
+
+• **zoomWithWheel**: _function_
+
+_Defined in [types.ts:195](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L195)_
+
+Zoom the Panzoom element to a focal point using the given WheelEvent
+
+`disablePan` will prevent the focal point adjustment and will only zoom.
+
+`zoomWithWheel` normally uses `deltaY` to determine the scale,
+but will fall back to `deltaX` in case the shift modifier is used with
+the wheel event. On a mac, that usually translates to horizontal scrolling,
+but this method assumes the desired behavior is zooming.
+
+This is a convenience function that may not handle all use cases.
+Other cases should handroll solutions using the `zoomToPoint`
+method or the `zoom` method's focal option.
+
+```js
+// Bind to mousewheel
+elem.parentElement.addEventListener('wheel', panzoom.zoomUsingWheel)
+// Bind to shift+mousewheel
+elem.parentElement.addEventListener('wheel', function(event) {
+  if (!event.shiftKey) return
+  panzoom.zoomUsingWheel(event)
+})
+```
+
+#### Signature with return type:
+
+▸ (`event`: `WheelEvent`, `zoomOptions?`: ZoomOptions): _[CurrentValues](#CurrentValues)_
+
+**Parameters:**
+
+| Name           | Type         |
+| -------------- | ------------ |
+| `event`        | `WheelEvent` |
+| `zoomOptions?` | ZoomOptions  |
+
+---
+
+## `CurrentValues`
+
+### scale
+
+• **scale**: _number_
+
+_Defined in [types.ts:108](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L108)_
+
+---
+
+### x
+
+• **x**: _number_
+
+_Defined in [types.ts:106](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L106)_
+
+---
+
+### y
+
+• **y**: _number_
+
+_Defined in [types.ts:107](https://github.com/timmywil/panzoom/blob/213f0df/src/types.ts#L107)_

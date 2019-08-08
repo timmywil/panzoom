@@ -1,0 +1,109 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #222222;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #333666;
+}
+.main-header {
+  color: white;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.github-link svg path {
+  transition: fill 0.2s ease-in-out;
+}
+.github-link:hover svg path {
+  fill: #dadada;
+}
+.github-link:active svg path {
+  fill: #888888;
+}
+.demo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5fcff;
+  padding: 0 20px 20px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+}
+pre {
+  border-radius: 5px;
+  margin: 0 0 20px !important;
+}
+.live-example {
+  background-image: linear-gradient(50deg, rgb(25, 189, 158), rgb(16, 138, 178));
+}
+.panzoom-parent {
+  position: relative;
+  box-shadow: inset 0 0 5px rgba(223, 212, 212, 0.5);
+  margin: 30px;
+  padding: 80px;
+  border: 20px solid black;
+  border-radius: 5px;
+}
+.panzoom {
+  position: relative;
+}
+.panzoom img {
+  display: block;
+  padding: 20px;
+  margin: 0 auto;
+}
+/* .dot {
+  position: absolute;
+  top: calc(50% - 2px);
+  left: calc(50% - 2px - 100px);
+  width: 4px;
+  height: 4px;
+  background-color: red;
+  border-radius: 50%;
+} */
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #99cccc;
+  margin-bottom: 20px;
+}
+.buttons > * {
+  margin-right: 10px;
+}
+.buttons button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 18px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+  transition: background-color 0.2s ease-in-out;
+}
+.buttons button:hover {
+  background-color: #ddd;
+}
+.buttons button:active {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.9);
+}
+label {
+  font-weight: 600;
+  display: inline-block;
+}

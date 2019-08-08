@@ -1,15 +1,12 @@
 language: node_js
 node_js:
-- '0.10'
-- '4'
-- '6'
-before_install:
-- npm install grunt-cli -g
+  - "10"
+  - "12"
 deploy:
   provider: npm
-  email: timmywillisn@gmail.com
+  email: 4timmywil@gmail.com
   api_key:
     secure: XVk0fkP4r2FDGTqLpJ0y98upGFGlmqtpHKyHcXkzmcncMRCq0lZv6lVS7TuUf6BVYgD9o3NVQpVh20NM9wtK9sRpLbdIZlk0FR2Dgqh4fdb/5+lLu4l0c5C5LFUeRfXyNbS9iecnTx8/elbJbxEy+Eb9Aa6iPTEpknSv5d1iGcE=
   on:
     tags: true
-    repo: timmywil/jquery.panzoom
+    repo: timmywil/panzoom

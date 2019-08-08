@@ -1,4 +1,8 @@
 node_modules
-dist/.sizecache.json
-bower_components
+package-lock.json
 *.log
+.rpt2_cache/
+*.d.ts
+dist/
+coverage/
+docs/

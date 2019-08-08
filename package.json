@@ -1,15 +1,33 @@
 {
-  "name": "jquery.panzoom",
-  "version": "3.2.2",
-  "description": "A jQuery plugin to pan and/or zoom elements using CSS3",
-  "main": "dist/jquery.panzoom.js",
+  "name": "@panzoom/panzoom",
+  "version": "4.0.0-pre",
+  "description": "Pan and zoom elements anywhere using native transformations",
+  "main": "dist/panzoom.js",
+  "scripts": {
+    "build": "yarn clean && rollup --config && yarn minify",
+    "clean": "rm -rf dist/",
+    "commit": "git-cz",
+    "docs": "typedoc --theme markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
+    "lint": "concurrently \"yarn type-check\" \"yarn tslint\" \"yarn prettier\"",
+    "lint:fix": "concurrently \"yarn type-check\" \"yarn tslint --fix\" \"precise-commits\"",
+    "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && yarn sizeup",
+    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"test/demo.html\"",
+    "release": "semantic-release",
+    "sizeup": "echo \"gzipped size: \" && gzip-size dist/panzoom.min.js",
+    "start": "webpack-dev-server",
+    "test": "yarn lint && yarn test:unit",
+    "test:unit": "karma start",
+    "test:watch": "karma start --singleRun=false --autoWatch",
+    "tslint": "tslint -p tsconfig.json -c tslint.json",
+    "type-check": "tsc -p tsconfig.json --noEmit"
+  },
   "files": [
     "MIT-License.txt",
-    "dist/jquery.panzoom.js",
-    "dist/jquery.panzoom.min.js"
+    "src",
+    "dist",
+    "README.md"
   ],
   "keywords": [
-    "jquery",
     "panzoom",
     "pan",
     "zoom",
@@ -17,27 +35,108 @@
     "dragging",
     "drag"
   ],
-  "repository": "timmywil/jquery.panzoom",
+  "repository": "timmywil/panzoom",
   "license": "MIT",
   "author": {
     "name": "Timmy Willison",
-    "email": "timmywillisn@gmail.com"
+    "email": "4timmywil@gmail.com"
   },
+  "dependencies": {},
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-bowercopy": "^1.2.4",
-    "grunt-compare-size": "^0.4.2",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-uglify": "^1.0.1",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-jsonlint": "^1.1.0",
-    "grunt-mocha": "^1.0.2",
-    "gzip-js": "~0.3.2",
-    "load-grunt-tasks": "^3.5.0",
-    "lodash": "^4.13.1"
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/prompt": "^8.1.0",
+    "@semantic-release/exec": "^3.3.5",
+    "@semantic-release/git": "^7.0.16",
+    "@types/mocha": "^5.2.7",
+    "@types/prismjs": "^1.16.0",
+    "@types/react": "^16.8.25",
+    "@types/react-dom": "^16.8.5",
+    "clean-webpack-plugin": "^3.0.0",
+    "commitizen": "^4.0.3",
+    "commitlint": "^8.1.0",
+    "concat-md": "^0.3.0",
+    "concurrently": "^4.1.1",
+    "css-loader": "^3.2.0",
+    "gzip-size-cli": "^3.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "husky": "^3.0.2",
+    "karma": "^4.2.0",
+    "karma-chrome-launcher": "^3.0.0",
+    "karma-mocha": "^1.3.0",
+    "karma-typescript": "^4.1.1",
+    "mocha": "^6.2.0",
+    "precise-commits": "^1.0.2",
+    "prettier": "^1.18.2",
+    "prismjs": "^1.17.1",
+    "puppeteer": "^1.19.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "rollup": "^1.19.4",
+    "rollup-plugin-typescript2": "^0.22.1",
+    "semantic-release": "^15.13.19",
+    "style-loader": "^1.0.0",
+    "ts-loader": "^6.0.4",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typedoc": "^0.15.0",
+    "typedoc-plugin-markdown": "^2.1.1",
+    "typescript": "^3.5.3",
+    "uglify-js": "^3.6.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.7.2"
   },
-  "scripts": {
-    "test": "grunt test",
-    "build": "grunt dev"
+  "resolutions": {
+    "lodash": "^4.17.15",
+    "marked": "^0.7.0"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "semi": false,
+    "singleQuote": true,
+    "jsxBracketSameLine": true,
+    "arrowParens": "always"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@commitlint/prompt"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint:fix",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "release": {
+    "branch": "master",
+    "ci": false,
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "yarn build"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "docs",
+            "dist",
+            "panzoom.d.ts",
+            "package.json"
+          ]
+        }
+      ],
+      "@semantic-release/github"
+    ],
+    "tagFormat": "${version}"
   }
 }
