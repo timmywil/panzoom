@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import Panzoom from '../../../src/panzoom'
+import Panzoom from '../../src/panzoom'
 import Code from '../Code'
 import Demo from '../Demo'
 

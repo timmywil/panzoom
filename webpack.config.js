@@ -6,7 +6,7 @@ module.exports = {
   mode: 'development',
   devtool: 'eval-source-map',
   entry: {
-    'test/demo/index': './test/demo/index.tsx'
+    'demo/index': './demo/index.tsx'
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json']
@@ -32,7 +32,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: 'Panzoom',
-      template: 'test/demo/index.html'
+      template: 'demo/index.html'
     }),
     new webpack.HotModuleReplacementPlugin()
   ]
