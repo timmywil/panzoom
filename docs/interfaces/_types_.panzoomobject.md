@@ -30,7 +30,7 @@
 
 • **getPan**: *function*
 
-*Defined in [types.ts:100](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L100)*
+*Defined in [types.ts:102](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L102)*
 
 Get the current x/y translation
 
@@ -48,7 +48,7 @@ ___
 
 • **getScale**: *function*
 
-*Defined in [types.ts:102](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L102)*
+*Defined in [types.ts:104](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L104)*
 
 Get the current scale
 
@@ -62,7 +62,7 @@ ___
 
 • **options**: *[PanzoomOptions](../modules/_types_.md#panzoomoptions)*
 
-*Defined in [types.ts:152](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L152)*
+*Defined in [types.ts:155](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L155)*
 
 The contructed options for this Panzoom instance
 
@@ -72,7 +72,7 @@ ___
 
 • **pan**: *function*
 
-*Defined in [types.ts:113](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L113)*
+*Defined in [types.ts:115](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L115)*
 
 Pan the Panzoom element to the given x and y coordinates
 
@@ -101,7 +101,7 @@ ___
 
 • **reset**: *function*
 
-*Defined in [types.ts:156](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L156)*
+*Defined in [types.ts:159](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L159)*
 
 Reset the pan and zoom to startX, startY, and startScale
 
@@ -121,7 +121,7 @@ ___
 
 • **setOptions**: *function*
 
-*Defined in [types.ts:154](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L154)*
+*Defined in [types.ts:157](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L157)*
 
 Change options for the Panzoom instance
 
@@ -141,7 +141,7 @@ ___
 
 • **setStyle**: *[setStyle](../modules/_css_.md#setstyle)*
 
-*Defined in [types.ts:158](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L158)*
+*Defined in [types.ts:161](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L161)*
 
 A convenience method for setting prefixed styles on the Panzoom element
 
@@ -151,7 +151,7 @@ ___
 
 • **zoom**: *function*
 
-*Defined in [types.ts:130](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L130)*
+*Defined in [types.ts:132](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L132)*
 
 Zoom the Panzoom element to the given scale
 
@@ -177,7 +177,7 @@ ___
 
 • **zoomIn**: *function*
 
-*Defined in [types.ts:117](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L117)*
+*Defined in [types.ts:119](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L119)*
 
 Zoom in using the predetermined increment set in options
 
@@ -197,7 +197,7 @@ ___
 
 • **zoomOut**: *function*
 
-*Defined in [types.ts:121](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L121)*
+*Defined in [types.ts:123](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L123)*
 
 Zoom out using the predetermined increment set in options
 
@@ -217,7 +217,7 @@ ___
 
 • **zoomWithWheel**: *function*
 
-*Defined in [types.ts:150](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L150)*
+*Defined in [types.ts:153](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L153)*
 
 Zoom the Panzoom element to a focal point using the given WheelEvent
 
@@ -229,6 +229,7 @@ the wheel event. On a mac, that usually translates to horizontal scrolling,
 but this method assumes the desired behavior is zooming.
 
 This is a convenience function that may not handle all use cases.
+Other cases should handroll solutions using the `zoom` method's focal option.
 
 ```js
 elem.parentElement.addEventListener('wheel', function(event) {

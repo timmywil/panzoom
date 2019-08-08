@@ -20,7 +20,7 @@
 
 • **rsvg**: *`RegExp`* =  /^http:[\w\.\/]+svg$/
 
-*Defined in [isSVGElement.ts:5](https://github.com/timmywil/panzoom/blob/a7078e8/src/isSVGElement.ts#L5)*
+*Defined in [isSVGElement.ts:5](https://github.com/timmywil/panzoom/blob/65a9a10/src/isSVGElement.ts#L5)*
 
 Determine if an element is SVG by checking the namespace
 Exception: the <svg> element itself should be treated like HTML
@@ -31,7 +31,7 @@ Exception: the <svg> element itself should be treated like HTML
 
 ▸ **isSVGElement**(`elem`: `HTMLElement` | `SVGElement`): *boolean*
 
-*Defined in [isSVGElement.ts:6](https://github.com/timmywil/panzoom/blob/a7078e8/src/isSVGElement.ts#L6)*
+*Defined in [isSVGElement.ts:6](https://github.com/timmywil/panzoom/blob/65a9a10/src/isSVGElement.ts#L6)*
 
 **Parameters:**
 

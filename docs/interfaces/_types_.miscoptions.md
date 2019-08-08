@@ -34,7 +34,7 @@ Pass through any options like data
 
 • **animate**? : *boolean*
 
-*Defined in [types.ts:5](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L5)*
+*Defined in [types.ts:5](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L5)*
 
 Whether to animate transitions
 
@@ -44,7 +44,7 @@ ___
 
 • **clickableClass**? : *string*
 
-*Defined in [types.ts:10](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L10)*
+*Defined in [types.ts:10](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L10)*
 
 Add this class to any element within the panzoom element
 that you want to be clickable and not initiate the drag
@@ -55,7 +55,7 @@ ___
 
 • **duration**? : *number*
 
-*Defined in [types.ts:12](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L12)*
+*Defined in [types.ts:12](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L12)*
 
 Duration of the transition (ms)
 
@@ -65,7 +65,7 @@ ___
 
 • **easing**? : *string*
 
-*Defined in [types.ts:14](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L14)*
+*Defined in [types.ts:14](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L14)*
 
 CSS Easing used for transitions
 
@@ -75,7 +75,7 @@ ___
 
 • **origin**? : *string*
 
-*Defined in [types.ts:28](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L28)*
+*Defined in [types.ts:28](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L28)*
 
 **Change this at your own risk.**
 The `transform-origin` is the origin from which transforms are applied.
@@ -95,7 +95,7 @@ ___
 
 • **setTransform**? : *[setTransform](../modules/_css_.md#settransform)*
 
-*Defined in [types.ts:45](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L45)*
+*Defined in [types.ts:45](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L45)*
 
 Override the transform setter
 This is exposed mostly so the user could
@@ -118,7 +118,7 @@ ___
 
 • **startScale**? : *number*
 
-*Defined in [types.ts:49](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L49)*
+*Defined in [types.ts:49](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L49)*
 
 ___
 
@@ -126,7 +126,7 @@ ___
 
 • **startX**? : *number*
 
-*Defined in [types.ts:47](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L47)*
+*Defined in [types.ts:47](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L47)*
 
 Values used to set the beginning transform
 
@@ -136,4 +136,4 @@ ___
 
 • **startY**? : *number*
 
-*Defined in [types.ts:48](https://github.com/timmywil/panzoom/blob/a7078e8/src/types.ts#L48)*
+*Defined in [types.ts:48](https://github.com/timmywil/panzoom/blob/65a9a10/src/types.ts#L48)*
