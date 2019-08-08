@@ -47,7 +47,9 @@ const panzoomObject = read('../docs/interfaces/_types_.panzoomobject.md')
   .replace(/[\w\W]+##\s*Properties/, '')
   // Type declaration refers to the signature
   .replace(/Type declaration:/g, 'Signature with return type:')
-data += '\n\n---\n\n## `PanzoomObject`\n' + redoLinks(panzoomObject)
+data +=
+  '\n\n---\n\n## `PanzoomObject`\n\nThese methods are available after initializing Panzoom\n\n' +
+  redoLinks(panzoomObject)
 
 const currentValues = read('../docs/interfaces/_types_.currentvalues.md')
   // Remove unwanted text
