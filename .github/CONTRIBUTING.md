@@ -31,8 +31,7 @@ worry about regenerating the built files or docs.
 
 Before running the unit tests you’ll need to install, `yarn` or `npm i`,
 [development dependencies](https://docs.npmjs.com/files/package.json#devdependencies).
-Run unit tests from the command-line via `yarn test` or `npm test`, or open `test/index.html` &
-`test/demo.html` in a web browser.
+Run unit tests from the command-line via `yarn test` or `npm test`.
 
 ## Coding Guidelines
 
