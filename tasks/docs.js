@@ -15,9 +15,9 @@ function redoLinks(data) {
     data
       // Remove links that aren't links to source
       .replace(/\[([^:]+)\]\(.*?\)/g, '$1')
-      .replace(/PanzoomOptions/, '[PanzoomOptions](#PanzoomOptions)')
-      .replace(/PanzoomObject/, '[PanzoomObject](#PanzoomObject)')
-      .replace(/CurrentValues/, '[CurrentValues](#CurrentValues)')
+      .replace(/PanzoomOptions/g, '[PanzoomOptions](#PanzoomOptions)')
+      .replace(/PanzoomObject/g, '[PanzoomObject](#PanzoomObject)')
+      .replace(/CurrentValues/g, '[CurrentValues](#CurrentValues)')
   )
 }
 
