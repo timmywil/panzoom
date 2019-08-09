@@ -85,7 +85,7 @@ const panzoom = Panzoom(elem, {
 panzoom.pan(10, 10)
 panzoom.zoom(2, { animate: true })
 
-// Panning and pinch zooming are bound automatically.
+// Panning and pinch zooming are bound automatically (unless disablePan is true).
 // There are several available methods for zooming
 // that can be bound on button clicks or mousewheel.
 button.addEventListener('click', panzoom.zoomIn)
