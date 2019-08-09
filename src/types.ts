@@ -133,6 +133,11 @@ export interface PanzoomObject {
    * Reset the pan and zoom to startX, startY, and startScale.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
+   *
+   * ```js
+   * panzoom.reset()
+   * panzoom.reset({ animate: false })
+   * ```
    */
   reset: (resetOptions?: PanzoomOptions) => CurrentValues
   /** Change options for the Panzoom instance */
@@ -152,12 +157,22 @@ export interface PanzoomObject {
    * Zoom in using the predetermined increment set in options.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
+   *
+   * ```js
+   * panzoom.zoomIn()
+   * panzoom.zoomIn({ animate: false })
+   * ```
    */
   zoomIn: (zoomOptions?: ZoomOptions) => CurrentValues
   /**
    * Zoom out using the predetermined increment set in options.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
+   *
+   * ```js
+   * panzoom.zoomOut()
+   * panzoom.zoomOut({ animate: false })
+   * ```
    */
   zoomOut: (zoomOptions?: ZoomOptions) => CurrentValues
   /**
@@ -165,6 +180,10 @@ export interface PanzoomObject {
    * the given pointer/touch/mouse event or constructed point.
    * The clientX/clientY values should be calculated
    * the same way as a pointer event on the Panzoom element.
+   *
+   * ```js
+   * panzoom.zoomToPoint(1.2, pointerEvent)
+   * ```
    */
   zoomToPoint: (
     scale: number,
@@ -187,11 +206,11 @@ export interface PanzoomObject {
    *
    * ```js
    * // Bind to mousewheel
-   * elem.parentElement.addEventListener('wheel', panzoom.zoomUsingWheel)
+   * elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
    * // Bind to shift+mousewheel
    * elem.parentElement.addEventListener('wheel', function(event) {
    *   if (!event.shiftKey) return
-   *   panzoom.zoomUsingWheel(event)
+   *   panzoom.zoomWithWheel(event)
    * })
    * ```
    */
