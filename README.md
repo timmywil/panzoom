@@ -84,6 +84,11 @@ const panzoom = Panzoom(elem, {
 })
 panzoom.pan(10, 10)
 panzoom.zoom(2, { animate: true })
+
+// Panning and pinch zooming are bound automatically.
+// There are several available methods for zooming
+// that can be bound on button clicks or mousewheel.
+button.addEventListener('click', panzoom.zoomIn)
 elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
 ```
 
@@ -207,11 +212,7 @@ Default is defined in src/css.ts.
 // when setting the scale and translation
 Panzoom(elem, {
   setTransform: (elem, { scale, x, y }) => {
-    setStyle(
-      elem,
-      'transform',
-      `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`
-    )
+    setStyle(elem, 'transform', `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`)
   }
 })
 ```
