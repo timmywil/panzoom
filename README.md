@@ -52,19 +52,19 @@ Panzoom uses [UMD](https://github.com/umdjs/umd) and can be loaded a lot of ways
 With ES6 imports:
 
 ```js
-import Panzoom from 'panzoom'
+import Panzoom from '@panzoom/panzoom'
 ```
 
 With commonjs or browserify:
 
 ```
-const Panzoom = require('panzoom')
+const Panzoom = require('@panzoom/panzoom')
 ```
 
 With an AMD loader in an anonymous module:
 
 ```js
-define(['panzoom'], function(Panzoom) {
+define(['@panzoom/panzoom'], function(Panzoom) {
   Panzoom('.panzoom')
 })
 ```
