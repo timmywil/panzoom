@@ -44,6 +44,8 @@ interface MiscOptions {
    * ```
    */
   setTransform?: typeof setTransform
+  /** Silence all events */
+  silent?: boolean
   /** X Value used to set the beginning transform */
   startX?: number
   /** Y Value used to set the beginning transform */
@@ -105,7 +107,7 @@ type ZoomOnlyOptions = MiscOptions & ZoomOptions
 export { ZoomOnlyOptions as ZoomOptions }
 export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
 
-interface CurrentValues {
+export interface CurrentValues {
   x: number
   y: number
   scale: number

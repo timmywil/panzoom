@@ -32,7 +32,7 @@ updated unit tests in the `test` directory or an updated/added demo in the `demo
 
 ### Do not edit below the "Documentation" header in the README
 
-Edit the comments and type declarations in the `src/` folder.
+Edit the comments and type declarations in the `src/` folder, or the markdown files in the `tasks/` folder.
 
 The documentation is auto-generated using a combination of [typedoc](https://typedoc.org/) and a hand-rolled script (`tasks/docs.js`). First, typedoc generates markdown from the TypeScript files into the `docs/` folder, which is ignored by git, and then `tasks/docs.js` concatenates those files and cleans them up for presentation in the README.
 

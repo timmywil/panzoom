@@ -101,6 +101,22 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     pan(options.startX, options.startY, { animate: false })
   })
 
+  function trigger(eventName: string, detail: any, opts: PanzoomOptions) {
+    if (opts.silent) {
+      return
+    }
+    const event = new CustomEvent(eventName, { detail })
+    elem.dispatchEvent(event)
+  }
+
+  function setTransformWithEvent(eventName: string, opts: PanzoomOptions) {
+    const value = { x, y, scale }
+    opts.setTransform(elem, value, opts)
+    trigger(eventName, value, opts)
+    trigger('panzoomchange', value, opts)
+    return value
+  }
+
   function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
     const opts = { ...options, ...panOptions }
     const result = { x, y, opts }
@@ -187,9 +203,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     x = result.x
     y = result.y
 
-    const values = { x, y, scale }
-    opts.setTransform(elem, values, opts)
-    return values
+    return setTransformWithEvent('panzoompan', opts)
   }
 
   function zoom(toScale: number, zoomOptions?: ZoomOptions) {
@@ -213,9 +227,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     }
 
     scale = toScale
-    const values = { x, y, scale }
-    opts.setTransform(elem, values, opts)
-    return values
+    return setTransformWithEvent('panzoomzoom', opts)
   }
 
   function zoomInOut(isIn: boolean, zoomOptions?: ZoomOptions) {
@@ -311,27 +323,25 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     x = panResult.x
     y = panResult.y
     scale = constrainScale(opts.startScale, opts).scale
-    const values = { x, y, scale }
-    opts.setTransform(elem, values, opts)
-    return values
+    return setTransformWithEvent('panzoomreset', opts)
   }
 
   let origX: number
   let origY: number
-  let startX: number
-  let startY: number
+  let startClientX: number
+  let startClientY: number
   let startScale: number
   let startDistance: number
   const pointers: PointerEvent[] = []
 
   function handleDown(event: PointerEvent) {
-    addEvent(pointers, event)
-    if (event.pointerId) {
-      elem.setPointerCapture(event.pointerId)
-    }
     // Don't handle this event if the target is a clickable
     if (event.target && (event.target as Element).classList.contains(options.clickableClass)) {
       return
+    }
+    addEvent(pointers, event)
+    if (event.pointerId) {
+      elem.setPointerCapture(event.pointerId)
     }
     isPanning = true
     event.preventDefault()
@@ -339,11 +349,13 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     origX = x
     origY = y
 
+    trigger('panzoomstart', { x, y, scale }, options)
+
     // This works whether there are multiple
     // pointers or not
     const point = getMiddle(pointers)
-    startX = point.clientX
-    startY = point.clientY
+    startClientX = point.clientX
+    startClientY = point.clientY
     startScale = scale
     startDistance = getDistance(pointers)
   }
@@ -354,8 +366,8 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
       !isPanning ||
       origX === undefined ||
       origY === undefined ||
-      startX === undefined ||
-      startY === undefined
+      startClientX === undefined ||
+      startClientY === undefined
     ) {
       return
     }
@@ -369,12 +381,20 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
       zoomToPoint(toScale, current)
     }
 
-    pan(origX + (current.clientX - startX) / scale, origY + (current.clientY - startY) / scale, {
-      animate: false
-    })
+    pan(
+      origX + (current.clientX - startClientX) / scale,
+      origY + (current.clientY - startClientY) / scale,
+      {
+        animate: false
+      }
+    )
   }
 
   function handleUp(event: PointerEvent) {
+    // Only call panzoomend once
+    if (pointers.length === 1) {
+      trigger('panzoomend', { x, y, scale }, options)
+    }
     // Note: don't remove all pointers
     // Can restart without having to reinitiate all of them
     removeEvent(pointers, event)
@@ -382,7 +402,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
       elem.releasePointerCapture(event.pointerId)
     }
     isPanning = false
-    origX = origY = startX = startY = undefined
+    origX = origY = startClientX = startClientY = undefined
   }
 
   if (!options.disablePan) {
