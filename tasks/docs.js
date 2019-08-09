@@ -23,12 +23,18 @@ function redoLinks(data) {
   )
 }
 
-const constructor = redoLinks(read('../docs/modules/_panzoom_.md'))
+const [constructor, defaultOptions] = redoLinks(read('../docs/modules/_panzoom_.md'))
   // Remove unwanted text
   .replace(/[\w\W]+###\s*Panzoom/, '')
   .replace('## Object literals\n\n', '')
   .replace('### ▪ **defaultOptions**: *object*\n\n', '')
-data += '\n\n### Default export\n\n' + constructor
+  .split('### `Const` defaultOptions')
+data += constructor
+const parsedDefaults = {}
+defaultOptions.replace(/\*\*(\w+)\*\*: \*\w+\* = (["\w-\.]+)/g, function(all, key, value) {
+  parsedDefaults[key] = value
+  return all
+})
 
 const rProperties = /[\w\W]+##\s*Properties/
 const rOptional = /`Optional` /g
@@ -47,6 +53,10 @@ const panzoomOptions =
     .replace(rOptional, '')
     .replace(rProperties, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')
 data += panzoomOptions
+  // Add in default values to option descriptions
+  .replace(/\*\*(\w+)\*\*\??\s*: \*\w+\*/g, function(all, key) {
+    return parsedDefaults[key] ? `${all} (Default: **${parsedDefaults[key]}**)` : all
+  })
 
 const panzoomObject =
   '\n\n---\n\n## `PanzoomObject`\n\nThese methods are available after initializing Panzoom\n\n' +
@@ -56,6 +66,8 @@ const panzoomObject =
     // Type declaration refers to the signature
     .replace(/Type declaration:/g, 'Signature with return type:')
 data += panzoomObject
+  // Add parens to method names
+  .replace(/([^#])\#\#\#\s*(\w+)/g, '$1### $2()')
 
 const currentValues = read('../docs/interfaces/_types_.currentvalues.md')
   // Remove unwanted text

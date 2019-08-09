@@ -27,6 +27,7 @@ const defaultOptions: PanzoomOptions = {
   easing: 'ease-in-out',
   maxScale: 4,
   minScale: 0.125,
+  panOnlyWhenZoomed: false,
   relative: false,
   setTransform,
   startX: 0,

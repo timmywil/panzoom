@@ -31,6 +31,7 @@ interface MiscOptions {
    * This is exposed mostly so the user could
    * set other parts of a transform
    * aside from scale and translate.
+   * Default is defined in src/css.ts.
    *
    * ```js
    * // This example always sets a rotation
@@ -43,10 +44,12 @@ interface MiscOptions {
    * ```
    */
   setTransform?: typeof setTransform
-  /** Values used to set the beginning transform */
-  startX?: number /* Default: 0 */
-  startY?: number /* Default: 0 */
-  startScale?: number /* Default: 1 */
+  /** X Value used to set the beginning transform */
+  startX?: number
+  /** Y Value used to set the beginning transform */
+  startY?: number
+  /** Scale used to set the beginning transform */
+  startScale?: number
   /** Pass through any options like data */
   [key: string]: any
 }
