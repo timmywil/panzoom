@@ -19,19 +19,20 @@ the expected behavior & use case, where they’ll remain closed until sufficient
 [e.g. :+1: reactions](https://help.github.com/articles/about-discussions-in-issues-and-pull-requests/),
 has been [shown by the community](https://github.com/timmywil/panzoom/issues?q=label%3A%22votes+needed%22+sort%3Areactions-%2B1-desc).
 Before submitting a request, please search for similar ones in the
-[closed issues](https://github.com/timmywil/panzoom/issues?q=is%3Aissue+is%3Aclosed+label%3Aenhancement).
+[closed issues](https://github.com/timmywil/panzoom/issues?q=is%3Aissue+is%3Aclosed+label%3Afeature).
 
-I got this convention from [lodash](https://github.com/lodash/lodash). It helps keep the issues list as empty as possible.
+I got this convention from [lodash](https://github.com/lodash/lodash). It helps keep the open issues list uncluttered.
 
 ## Pull Requests
 
-For additions or bug fixes you should only need to modify `panzoom.ts`. Include
+For additions or bug fixes you should only need to modify files in `src/`. Include
 updated unit tests in the `test` directory as part of your pull request. Don’t
 worry about regenerating the built files or docs.
 
-Before running the unit tests you’ll need to install, `yarn` or `npm i`,
-[development dependencies](https://docs.npmjs.com/files/package.json#devdependencies).
-Run unit tests from the command-line via `yarn test` or `npm test`.
+Before running the unit tests you’ll need to install
+[development dependencies](https://docs.npmjs.com/files/package.json#devdependencies) via `yarn` or `npm i`.
+
+Run the unit tests from the command-line via `yarn test` or `npm test`, or use the `test:watch` script during development.
 
 ## Coding Guidelines
 
@@ -110,7 +111,7 @@ First run `yarn start`, then run VS Code Debug with the following config to enab
   "request": "launch",
   "name": "Launch Chrome",
   "url": "http://localhost:8080",
-  "webRoot": "${workspaceRoot}",
+  "webRoot": "${workspaceFolder}",
   "sourceMaps": true
 }
 ```
