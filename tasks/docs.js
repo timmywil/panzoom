@@ -1,5 +1,6 @@
 const fs = require('fs')
 const prettier = require('prettier')
+const pkg = require('../package.json')
 function read(filename) {
   return fs.readFileSync(`${__dirname}/${filename}`, { encoding: 'utf8' })
 }
@@ -72,7 +73,10 @@ data += panzoomObject
 const currentValues = read('../docs/interfaces/_types_.currentvalues.md')
   // Remove unwanted text
   .replace(rProperties, '\n\n---\n\n## `CurrentValues`\n')
-data += currentValues
+data += currentValues + '\n'
+
+const events = read('./EVENTS.md')
+data += events
 
 // Write a pretty version
-write('../README.md', prettier.format(data, { parser: 'markdown', semi: false, singleQuote: true }))
+write('../README.md', prettier.format(data, { ...pkg.prettier, parser: 'markdown' }))
