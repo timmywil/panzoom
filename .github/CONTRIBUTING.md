@@ -26,13 +26,37 @@ I got this convention from [lodash](https://github.com/lodash/lodash). It helps 
 ## Pull Requests
 
 For additions or bug fixes you should only need to modify files in `src/`. Include
-updated unit tests in the `test` directory as part of your pull request. Don’t
-worry about regenerating the built files or docs.
+updated unit tests in the `test` directory or an updated/added demo in the `demo` directory as part of your pull request. Don’t worry about regenerating the built files.
 
-Before running the unit tests you’ll need to install
-[development dependencies](https://docs.npmjs.com/files/package.json#devdependencies) via `yarn` or `npm i`.
+## Editing documentation
 
-Run the unit tests from the command-line via `yarn test` or `npm test`, or use the `test:watch` script during development.
+### Do not edit below the "Documentation" header in the README
+
+Edit the comments and type declarations in the `src/` folder.
+
+The documentation is auto-generated using a combination of [typedoc](https://typedoc.org/) and a hand-rolled script (`tasks/docs.js`). First, typedoc generates markdown from the TypeScript files into the `docs/` folder, which is ignored by git, and then `tasks/docs.js` concatenates those files and cleans them up for presentation in the README.
+
+## Testing
+
+Tests are written with [mocha](https://mochajs.org/) and [Node's official assert module](https://nodejs.org/api/assert.html#assert_assert).
+
+Here are the npm scripts that run tests:
+
+```bash
+$ yarn test # Lints and runs the unit tests
+$ yarn test:unit # Runs the unit tests
+$ yarn test:watch # Watches files and runs the unit tests on file save
+```
+
+## Building
+
+The `dist/` folder is ignored on master and included in releases. To build, first make sure dependencies are installed (`yarn` or `npm i`) and run the following:
+
+```bash
+$ yarn build # or npm run build
+```
+
+This is usually unnecessary as `yarn start` will rebuild automatically as you change files.
 
 ## Coding Guidelines
 
@@ -87,18 +111,6 @@ Run the following after staging files:
 
 ```bash
 $ yarn commit
-```
-
-## Testing
-
-Tests are written with [mocha](https://mochajs.org/) and [Node's official assert module](https://nodejs.org/api/assert.html#assert_assert).
-
-Here are the npm scripts that run tests:
-
-```bash
-$ yarn test # Lints and runs the unit tests
-$ yarn test:unit # Runs the unit tests
-$ yarn test:watch # Watches files and runs the unit tests on file save
 ```
 
 ## Debugging in VS Code
