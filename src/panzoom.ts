@@ -8,9 +8,10 @@
  *
  */
 import { getDimensions, setStyle, setTransform } from './css'
+import { onPointer } from './events'
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
-import { addEvent, getDistance, getMiddle, removeEvent } from './pointers'
+import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
 import './polyfills'
 import shallowClone from './shallowClone'
 import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
@@ -53,8 +54,6 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   const isSVG = isSVGElement(elem)
-  // SVG has pointer events, but TypeScript doesn't know that
-  const htmlElem = elem as HTMLElement
 
   function setOptions(opts: PanzoomOptions = {}) {
     for (const key in opts) {
@@ -339,10 +338,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     if (event.target && (event.target as Element).classList.contains(options.clickableClass)) {
       return
     }
-    addEvent(pointers, event)
-    if (event.pointerId) {
-      elem.setPointerCapture(event.pointerId)
-    }
+    addPointer(pointers, event)
     isPanning = true
     event.preventDefault()
     event.stopPropagation()
@@ -361,7 +357,6 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   function move(event: PointerEvent) {
-    // console.log(elem, event.type, event.pointerId)
     if (
       !isPanning ||
       origX === undefined ||
@@ -371,7 +366,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     ) {
       return
     }
-    addEvent(pointers, event)
+    addPointer(pointers, event)
     const current = getMiddle(pointers)
     if (pointers.length > 1) {
       // Use the distance between the first 2 pointers
@@ -391,26 +386,24 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   function handleUp(event: PointerEvent) {
+    if (!isPanning) {
+      return
+    }
     // Only call panzoomend once
     if (pointers.length === 1) {
       trigger('panzoomend', { x, y, scale }, options)
     }
     // Note: don't remove all pointers
     // Can restart without having to reinitiate all of them
-    removeEvent(pointers, event)
-    if (event.pointerId) {
-      elem.releasePointerCapture(event.pointerId)
-    }
+    removePointer(pointers, event)
     isPanning = false
     origX = origY = startClientX = startClientY = undefined
   }
 
   if (!options.disablePan) {
-    htmlElem.addEventListener('pointerdown', handleDown)
-    htmlElem.addEventListener('pointermove', move, { passive: true })
-    htmlElem.addEventListener('pointerup', handleUp, { passive: true })
-    htmlElem.addEventListener('pointerleave', handleUp, { passive: true })
-    htmlElem.addEventListener('pointercancel', handleUp, { passive: true })
+    onPointer('down', elem, handleDown)
+    onPointer('move', document, move, { passive: true })
+    onPointer('up', document, handleUp, { passive: true })
   }
 
   return {
