@@ -8,9 +8,10 @@
  *
  */
 import { getDimensions, setStyle, setTransform } from './css'
+import { onPointer } from './events'
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
-import { addEvent, getDistance, getMiddle, removeEvent } from './pointers'
+import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
 import './polyfills'
 import shallowClone from './shallowClone'
 import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
@@ -27,6 +28,7 @@ const defaultOptions: PanzoomOptions = {
   easing: 'ease-in-out',
   maxScale: 4,
   minScale: 0.125,
+  panOnlyWhenZoomed: false,
   relative: false,
   setTransform,
   startX: 0,
@@ -52,8 +54,6 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   const isSVG = isSVGElement(elem)
-  // SVG has pointer events, but TypeScript doesn't know that
-  const htmlElem = elem as HTMLElement
 
   function setOptions(opts: PanzoomOptions = {}) {
     for (const key in opts) {
@@ -99,6 +99,22 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   setTimeout(() => {
     pan(options.startX, options.startY, { animate: false })
   })
+
+  function trigger(eventName: string, detail: any, opts: PanzoomOptions) {
+    if (opts.silent) {
+      return
+    }
+    const event = new CustomEvent(eventName, { detail })
+    elem.dispatchEvent(event)
+  }
+
+  function setTransformWithEvent(eventName: string, opts: PanzoomOptions) {
+    const value = { x, y, scale }
+    opts.setTransform(elem, value, opts)
+    trigger(eventName, value, opts)
+    trigger('panzoomchange', value, opts)
+    return value
+  }
 
   function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
     const opts = { ...options, ...panOptions }
@@ -186,9 +202,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     x = result.x
     y = result.y
 
-    const values = { x, y, scale }
-    opts.setTransform(elem, values, opts)
-    return values
+    return setTransformWithEvent('panzoompan', opts)
   }
 
   function zoom(toScale: number, zoomOptions?: ZoomOptions) {
@@ -212,9 +226,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     }
 
     scale = toScale
-    const values = { x, y, scale }
-    opts.setTransform(elem, values, opts)
-    return values
+    return setTransformWithEvent('panzoomzoom', opts)
   }
 
   function zoomInOut(isIn: boolean, zoomOptions?: ZoomOptions) {
@@ -310,55 +322,51 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     x = panResult.x
     y = panResult.y
     scale = constrainScale(opts.startScale, opts).scale
-    const values = { x, y, scale }
-    opts.setTransform(elem, values, opts)
-    return values
+    return setTransformWithEvent('panzoomreset', opts)
   }
 
   let origX: number
   let origY: number
-  let startX: number
-  let startY: number
+  let startClientX: number
+  let startClientY: number
   let startScale: number
   let startDistance: number
   const pointers: PointerEvent[] = []
 
   function handleDown(event: PointerEvent) {
-    addEvent(pointers, event)
-    if (event.pointerId) {
-      elem.setPointerCapture(event.pointerId)
-    }
     // Don't handle this event if the target is a clickable
     if (event.target && (event.target as Element).classList.contains(options.clickableClass)) {
       return
     }
+    addPointer(pointers, event)
     isPanning = true
     event.preventDefault()
     event.stopPropagation()
     origX = x
     origY = y
 
+    trigger('panzoomstart', { x, y, scale }, options)
+
     // This works whether there are multiple
     // pointers or not
     const point = getMiddle(pointers)
-    startX = point.clientX
-    startY = point.clientY
+    startClientX = point.clientX
+    startClientY = point.clientY
     startScale = scale
     startDistance = getDistance(pointers)
   }
 
   function move(event: PointerEvent) {
-    // console.log(elem, event.type, event.pointerId)
     if (
       !isPanning ||
       origX === undefined ||
       origY === undefined ||
-      startX === undefined ||
-      startY === undefined
+      startClientX === undefined ||
+      startClientY === undefined
     ) {
       return
     }
-    addEvent(pointers, event)
+    addPointer(pointers, event)
     const current = getMiddle(pointers)
     if (pointers.length > 1) {
       // Use the distance between the first 2 pointers
@@ -368,28 +376,34 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
       zoomToPoint(toScale, current)
     }
 
-    pan(origX + (current.clientX - startX) / scale, origY + (current.clientY - startY) / scale, {
-      animate: false
-    })
+    pan(
+      origX + (current.clientX - startClientX) / scale,
+      origY + (current.clientY - startClientY) / scale,
+      {
+        animate: false
+      }
+    )
   }
 
   function handleUp(event: PointerEvent) {
+    if (!isPanning) {
+      return
+    }
+    // Only call panzoomend once
+    if (pointers.length === 1) {
+      trigger('panzoomend', { x, y, scale }, options)
+    }
     // Note: don't remove all pointers
     // Can restart without having to reinitiate all of them
-    removeEvent(pointers, event)
-    if (event.pointerId) {
-      elem.releasePointerCapture(event.pointerId)
-    }
+    removePointer(pointers, event)
     isPanning = false
-    origX = origY = startX = startY = undefined
+    origX = origY = startClientX = startClientY = undefined
   }
 
   if (!options.disablePan) {
-    htmlElem.addEventListener('pointerdown', handleDown)
-    htmlElem.addEventListener('pointermove', move, { passive: true })
-    htmlElem.addEventListener('pointerup', handleUp, { passive: true })
-    htmlElem.addEventListener('pointerleave', handleUp, { passive: true })
-    htmlElem.addEventListener('pointercancel', handleUp, { passive: true })
+    onPointer('down', elem, handleDown)
+    onPointer('move', document, move, { passive: true })
+    onPointer('up', document, handleUp, { passive: true })
   }
 
   return {

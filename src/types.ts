@@ -27,10 +27,11 @@ interface MiscOptions {
    */
   origin?: string
   /**
-   * Override the transform setter
+   * Override the transform setter.
    * This is exposed mostly so the user could
    * set other parts of a transform
    * aside from scale and translate.
+   * Default is defined in src/css.ts.
    *
    * ```js
    * // This example always sets a rotation
@@ -43,10 +44,14 @@ interface MiscOptions {
    * ```
    */
   setTransform?: typeof setTransform
-  /** Values used to set the beginning transform */
-  startX?: number /* Default: 0 */
-  startY?: number /* Default: 0 */
-  startScale?: number /* Default: 1 */
+  /** Silence all events */
+  silent?: boolean
+  /** X Value used to set the beginning transform */
+  startX?: number
+  /** Y Value used to set the beginning transform */
+  startY?: number
+  /** Scale used to set the beginning transform */
+  startScale?: number
   /** Pass through any options like data */
   [key: string]: any
 }
@@ -92,7 +97,7 @@ interface ZoomOptions {
   minScale?: number
   /** The maximum scale when zooming */
   maxScale?: number
-  /** The step affects the rate of zooming with a mouse wheel, pinching, or range element */
+  /** The step affects zoom calculation when zooming with a mouse wheel, when pinch zooming, or when using zoomIn/zoomOut */
   step?: number
 }
 
@@ -102,7 +107,7 @@ type ZoomOnlyOptions = MiscOptions & ZoomOptions
 export { ZoomOnlyOptions as ZoomOptions }
 export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
 
-interface CurrentValues {
+export interface CurrentValues {
   x: number
   y: number
   scale: number
@@ -130,6 +135,11 @@ export interface PanzoomObject {
    * Reset the pan and zoom to startX, startY, and startScale.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
+   *
+   * ```js
+   * panzoom.reset()
+   * panzoom.reset({ animate: false })
+   * ```
    */
   reset: (resetOptions?: PanzoomOptions) => CurrentValues
   /** Change options for the Panzoom instance */
@@ -146,15 +156,25 @@ export interface PanzoomObject {
    */
   zoom: (scale: number, zoomOptions?: ZoomOptions) => CurrentValues
   /**
-   * Zoom in using the predetermined increment set in options
+   * Zoom in using the predetermined increment set in options.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
+   *
+   * ```js
+   * panzoom.zoomIn()
+   * panzoom.zoomIn({ animate: false })
+   * ```
    */
   zoomIn: (zoomOptions?: ZoomOptions) => CurrentValues
   /**
-   * Zoom out using the predetermined increment set in options
+   * Zoom out using the predetermined increment set in options.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
+   *
+   * ```js
+   * panzoom.zoomOut()
+   * panzoom.zoomOut({ animate: false })
+   * ```
    */
   zoomOut: (zoomOptions?: ZoomOptions) => CurrentValues
   /**
@@ -162,6 +182,10 @@ export interface PanzoomObject {
    * the given pointer/touch/mouse event or constructed point.
    * The clientX/clientY values should be calculated
    * the same way as a pointer event on the Panzoom element.
+   *
+   * ```js
+   * panzoom.zoomToPoint(1.2, pointerEvent)
+   * ```
    */
   zoomToPoint: (
     scale: number,
@@ -184,11 +208,11 @@ export interface PanzoomObject {
    *
    * ```js
    * // Bind to mousewheel
-   * elem.parentElement.addEventListener('wheel', panzoom.zoomUsingWheel)
+   * elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
    * // Bind to shift+mousewheel
    * elem.parentElement.addEventListener('wheel', function(event) {
    *   if (!event.shiftKey) return
-   *   panzoom.zoomUsingWheel(event)
+   *   panzoom.zoomWithWheel(event)
    * })
    * ```
    */

@@ -1,4 +1,4 @@
-import { PanzoomOptions } from './types'
+import { CurrentValues, PanzoomOptions } from './types'
 
 /**
  * Proper prefixing for cross-browser compatibility
@@ -88,7 +88,7 @@ export function setTransition(elem: HTMLElement | SVGElement, options: PanzoomOp
  */
 export function setTransform(
   elem: HTMLElement | SVGElement,
-  { x, y, scale }: { x: number; y: number; scale: number },
+  { x, y, scale }: CurrentValues,
   options: PanzoomOptions = {}
 ) {
   if (typeof options.animate === 'boolean') {
