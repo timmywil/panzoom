@@ -181,7 +181,7 @@ export interface PanzoomObject {
    * Zoom the Panzoom element to a focal point using
    * the given pointer/touch/mouse event or constructed point.
    * The clientX/clientY values should be calculated
-   * the same way as a pointer event on the Panzoom element.
+   * the same way as a `pointermove` event on the Panzoom element's parent.
    *
    * ```js
    * panzoom.zoomToPoint(1.2, pointerEvent)
