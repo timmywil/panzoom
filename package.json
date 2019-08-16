@@ -5,6 +5,7 @@
   "main": "dist/panzoom.js",
   "scripts": {
     "build": "yarn clean && rollup --config && yarn minify",
+    "build-demo": "yarn webpack --mode production",
     "clean": "rm -rf dist/",
     "commit": "git-cz",
     "docs": "typedoc --theme markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
