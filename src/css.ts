@@ -26,43 +26,23 @@ function getPrefixedName(name: string) {
 /**
  * Gets a style value expected to be a number
  */
-export function getCSSNum(style: CSSStyleDeclaration, name: string) {
+export function getCSSNum(name: string, style: CSSStyleDeclaration) {
   return parseFloat(style[getPrefixedName(name) as any]) || 0
 }
 
-export function getPadding(elem: HTMLElement | SVGElement, style?: CSSStyleDeclaration) {
-  if (!style) {
-    style = window.getComputedStyle(elem)
-  }
+function getBoxStyle(
+  elem: HTMLElement | SVGElement,
+  name: string,
+  style: CSSStyleDeclaration = window.getComputedStyle(elem)
+) {
+  // Support: FF 68+
+  // Firefox requires specificity for border
+  const suffix = name === 'border' ? 'Width' : ''
   return {
-    left: getCSSNum(style, 'paddingLeft'),
-    right: getCSSNum(style, 'paddingRight'),
-    top: getCSSNum(style, 'paddingTop'),
-    bottom: getCSSNum(style, 'paddingBottom')
-  }
-}
-
-export function getBorder(elem: HTMLElement | SVGElement, style?: CSSStyleDeclaration) {
-  if (!style) {
-    style = window.getComputedStyle(elem)
-  }
-  return {
-    left: getCSSNum(style, 'borderLeft'),
-    right: getCSSNum(style, 'borderRight'),
-    top: getCSSNum(style, 'borderTop'),
-    bottom: getCSSNum(style, 'borderBottom')
-  }
-}
-
-export function getMargin(elem: HTMLElement | SVGElement, style?: CSSStyleDeclaration) {
-  if (!style) {
-    style = window.getComputedStyle(elem)
-  }
-  return {
-    left: getCSSNum(style, 'marginLeft'),
-    right: getCSSNum(style, 'marginRight'),
-    top: getCSSNum(style, 'marginTop'),
-    bottom: getCSSNum(style, 'marginBottom')
+    left: getCSSNum(`${name}Left${suffix}`, style),
+    right: getCSSNum(`${name}Right${suffix}`, style),
+    top: getCSSNum(`${name}Top${suffix}`, style),
+    bottom: getCSSNum(`${name}Bottom${suffix}`, style)
   }
 }
 
@@ -122,8 +102,8 @@ export function getDimensions(elem: HTMLElement | SVGElement) {
       bottom: rectElem.bottom,
       left: rectElem.left,
       right: rectElem.right,
-      margin: getMargin(elem, style),
-      border: getBorder(elem, style)
+      margin: getBoxStyle(elem, 'margin', style),
+      border: getBoxStyle(elem, 'border', style)
     },
     parent: {
       style: parentStyle,
@@ -133,8 +113,8 @@ export function getDimensions(elem: HTMLElement | SVGElement) {
       bottom: rectParent.bottom,
       left: rectParent.left,
       right: rectParent.right,
-      padding: getPadding(parent, parentStyle),
-      border: getBorder(parent, parentStyle)
+      padding: getBoxStyle(parent, 'padding', parentStyle),
+      border: getBoxStyle(parent, 'border', parentStyle)
     }
   }
 }
