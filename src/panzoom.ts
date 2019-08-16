@@ -14,7 +14,7 @@ import isSVGElement from './isSVGElement'
 import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
 import './polyfills'
 import shallowClone from './shallowClone'
-import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
+import { PanOptions, PanzoomEvent, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
@@ -100,7 +100,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     pan(options.startX, options.startY, { animate: false })
   })
 
-  function trigger(eventName: string, detail: any, opts: PanzoomOptions) {
+  function trigger(eventName: PanzoomEvent, detail: any, opts: PanzoomOptions) {
     if (opts.silent) {
       return
     }
@@ -108,7 +108,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     elem.dispatchEvent(event)
   }
 
-  function setTransformWithEvent(eventName: string, opts: PanzoomOptions) {
+  function setTransformWithEvent(eventName: PanzoomEvent, opts: PanzoomOptions) {
     const value = { x, y, scale }
     opts.setTransform(elem, value, opts)
     trigger(eventName, value, opts)

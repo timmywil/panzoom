@@ -1,5 +1,13 @@
 import { setStyle, setTransform } from './css'
 
+export type PanzoomEvent =
+  | 'panzoomstart'
+  | 'panzoomchange'
+  | 'panzoompan'
+  | 'panzoomzoom'
+  | 'panzoomreset'
+  | 'panzoomend'
+
 interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean
