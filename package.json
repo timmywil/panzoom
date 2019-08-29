@@ -73,7 +73,7 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "rollup": "^1.19.4",
-    "rollup-plugin-typescript2": "^0.23.0",
+    "rollup-plugin-typescript2": "^0.24.0",
     "semantic-release": "^15.13.21",
     "style-loader": "^1.0.0",
     "ts-loader": "^6.0.4",
