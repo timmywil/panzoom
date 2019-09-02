@@ -387,7 +387,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
 
   function handleUp(event: PointerEvent) {
     if (!isPanning) {
-      return
+      return removePointer(pointers, event)
     }
     // Only call panzoomend once
     if (pointers.length === 1) {
