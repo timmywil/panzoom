@@ -386,6 +386,10 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   function handleUp(event: PointerEvent) {
+    // Note: don't remove all pointers
+    // Can restart without having to reinitiate all of them
+    // Remove the pointer regardless of the isPanning state
+    removePointer(pointers, event)
     if (!isPanning) {
       return
     }
@@ -393,9 +397,6 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     if (pointers.length === 1) {
       trigger('panzoomend', { x, y, scale }, options)
     }
-    // Note: don't remove all pointers
-    // Can restart without having to reinitiate all of them
-    removePointer(pointers, event)
     isPanning = false
     origX = origY = startClientX = startClientY = undefined
   }
