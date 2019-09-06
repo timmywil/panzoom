@@ -8,7 +8,7 @@
  *
  */
 import { getDimensions, setStyle, setTransform } from './css'
-import { onPointer } from './events'
+import { destroyPointer, onPointer } from './events'
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
 import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
@@ -407,7 +407,14 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     onPointer('up', document, handleUp, { passive: true })
   }
 
+  function destroy() {
+    destroyPointer('down', elem, handleDown)
+    destroyPointer('move', document, move)
+    destroyPointer('up', document, handleUp)
+  }
+
   return {
+    destroy,
     getPan: () => ({ x, y }),
     getScale: () => scale,
     getOptions: () => shallowClone(options),

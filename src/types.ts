@@ -122,6 +122,8 @@ export interface CurrentValues {
 }
 
 export interface PanzoomObject {
+  /** Remove all event listeners bind to the the Panzoom element */
+  destroy: () => void
   /** Get the current x/y translation */
   getPan: () => { x: number; y: number }
   /** Get the current scale */
