@@ -8,17 +8,16 @@
  *
  */
 import { getDimensions, setStyle, setTransform } from './css'
-import { onPointer } from './events'
+import { destroyPointer, onPointer } from './events'
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
 import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
 import './polyfills'
 import shallowClone from './shallowClone'
-import { PanOptions, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
+import { PanOptions, PanzoomEvent, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
-  clickableClass: 'clickable',
   cursor: 'move',
   disablePan: false,
   disableZoom: false,
@@ -26,6 +25,8 @@ const defaultOptions: PanzoomOptions = {
   disableYAxis: false,
   duration: 200,
   easing: 'ease-in-out',
+  exclude: [],
+  excludeClass: 'panzoom-exclude',
   maxScale: 4,
   minScale: 0.125,
   panOnlyWhenZoomed: false,
@@ -100,7 +101,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     pan(options.startX, options.startY, { animate: false })
   })
 
-  function trigger(eventName: string, detail: any, opts: PanzoomOptions) {
+  function trigger(eventName: PanzoomEvent, detail: any, opts: PanzoomOptions) {
     if (opts.silent) {
       return
     }
@@ -108,7 +109,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     elem.dispatchEvent(event)
   }
 
-  function setTransformWithEvent(eventName: string, opts: PanzoomOptions) {
+  function setTransformWithEvent(eventName: PanzoomEvent, opts: PanzoomOptions) {
     const value = { x, y, scale }
     opts.setTransform(elem, value, opts)
     trigger(eventName, value, opts)
@@ -334,8 +335,12 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   const pointers: PointerEvent[] = []
 
   function handleDown(event: PointerEvent) {
-    // Don't handle this event if the target is a clickable
-    if (event.target && (event.target as Element).classList.contains(options.clickableClass)) {
+    // Don't handle this event if the target is excluded
+    if (
+      event.target &&
+      ((event.target as Element).classList.contains(options.excludeClass) ||
+        options.exclude.indexOf(event.target as Element) > -1)
+    ) {
       return
     }
     addPointer(pointers, event)
@@ -386,6 +391,10 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   }
 
   function handleUp(event: PointerEvent) {
+    // Note: don't remove all pointers
+    // Can restart without having to reinitiate all of them
+    // Remove the pointer regardless of the isPanning state
+    removePointer(pointers, event)
     if (!isPanning) {
       return
     }
@@ -393,9 +402,6 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     if (pointers.length === 1) {
       trigger('panzoomend', { x, y, scale }, options)
     }
-    // Note: don't remove all pointers
-    // Can restart without having to reinitiate all of them
-    removePointer(pointers, event)
     isPanning = false
     origX = origY = startClientX = startClientY = undefined
   }
@@ -406,7 +412,14 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     onPointer('up', document, handleUp, { passive: true })
   }
 
+  function destroy() {
+    destroyPointer('down', elem, handleDown)
+    destroyPointer('move', document, move)
+    destroyPointer('up', document, handleUp)
+  }
+
   return {
+    destroy,
     getPan: () => ({ x, y }),
     getScale: () => scale,
     getOptions: () => shallowClone(options),

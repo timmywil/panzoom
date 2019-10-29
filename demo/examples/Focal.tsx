@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import Panzoom from '../../src/panzoom'
+import { PanzoomObject } from '../../src/types'
 import Code from '../Code'
 import Demo from '../Demo'
 
@@ -21,7 +22,7 @@ parent.addEventListener('wheel', function(event) {
 
 export default function Focal() {
   const elem = useRef<HTMLDivElement>(null)
-  const panzoomRef = useRef<Panzoom>(null)
+  const panzoomRef = useRef<PanzoomObject>(null)
   let panzoom = panzoomRef.current
   useEffect(() => {
     panzoom = panzoomRef.current = Panzoom(elem.current)

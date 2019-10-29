@@ -1,13 +1,28 @@
 import { setStyle, setTransform } from './css'
 
+export type PanzoomEvent =
+  | 'panzoomstart'
+  | 'panzoomchange'
+  | 'panzoompan'
+  | 'panzoomzoom'
+  | 'panzoomreset'
+  | 'panzoomend'
+
 interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean
   /**
-   * Add this class to any element within the panzoom element
-   * that you want to be clickable and not initiate the drag
+   * Add elements to this array that should be excluded
+   * from Panzoom handling.
+   * e.g. links and buttons that should not propagate the click event.
    */
-  clickableClass?: string
+  exclude?: Element[]
+  /**
+   * Add this class to any element within the Panzoom element
+   * that you want to exclude from Panzoom handling.
+   * e.g. links and buttons that should not propagate the click event.
+   */
+  excludeClass?: string
   /** Duration of the transition (ms) */
   duration?: number
   /** CSS Easing used for transitions */
@@ -114,6 +129,8 @@ export interface CurrentValues {
 }
 
 export interface PanzoomObject {
+  /** Remove all event listeners bind to the the Panzoom element */
+  destroy: () => void
   /** Get the current x/y translation */
   getPan: () => { x: number; y: number }
   /** Get the current scale */
@@ -181,7 +198,7 @@ export interface PanzoomObject {
    * Zoom the Panzoom element to a focal point using
    * the given pointer/touch/mouse event or constructed point.
    * The clientX/clientY values should be calculated
-   * the same way as a pointer event on the Panzoom element.
+   * the same way as a `pointermove` event on the Panzoom element's parent.
    *
    * ```js
    * panzoom.zoomToPoint(1.2, pointerEvent)

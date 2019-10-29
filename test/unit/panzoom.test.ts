@@ -46,6 +46,27 @@ describe('Panzoom', () => {
     assertStyleMatches(div, 'transformOrigin', '50% 50%')
     document.body.removeChild(div)
   })
+  it('removes the events when using the destroy method', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const events: any = {}
+    const addEvent = Element.prototype.addEventListener
+    const removeEvent = Element.prototype.removeEventListener
+    Element.prototype.addEventListener = function(event: any, fn: any, options: any) {
+      events[event] = fn
+      addEvent.call(this, event, fn, options)
+    }
+    Element.prototype.removeEventListener = function(event: any, fn: any, options: any) {
+      delete events[event]
+      removeEvent.call(this, event, fn, options)
+    }
+    const panzoom = Panzoom(div)
+    assert(Object.keys(events).length > 0)
+    panzoom.destroy()
+    assert(Object.keys(events).length === 0)
+    Element.prototype.addEventListener = addEvent
+    Element.prototype.removeEventListener = removeEvent
+  })
   it('sets the expected transform-origin on SVG', () => {
     const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
     document.body.appendChild(elem)

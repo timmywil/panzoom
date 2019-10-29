@@ -31,3 +31,15 @@ export function onPointer(
     >(name as any, handler, eventOpts)
   })
 }
+
+export function destroyPointer(
+  event: 'down' | 'move' | 'up',
+  elem: HTMLElement | SVGElement | Document,
+  handler: (event: PointerEvent) => void
+) {
+  events[event].split(' ').forEach((name) => {
+    ;(elem as HTMLElement).removeEventListener<
+      'pointerdown' | 'pointermove' | 'pointerup' | 'pointerleave' | 'pointercancel'
+    >(name as any, handler)
+  })
+}

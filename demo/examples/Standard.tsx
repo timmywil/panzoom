@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import Panzoom from '../../src/panzoom'
+import { PanzoomObject } from '../../src/types'
 import Code from '../Code'
 import Demo from '../Demo'
 
@@ -19,7 +20,7 @@ rangeInput.addEventListener('input', (event) => {
 export default function Buttons() {
   const elem = useRef<HTMLDivElement>(null)
   const range = useRef<HTMLInputElement>(null)
-  const panzoomRef = useRef<Panzoom>(null)
+  const panzoomRef = useRef<PanzoomObject>(null)
   let panzoom = panzoomRef.current
   useEffect(() => {
     panzoom = panzoomRef.current = Panzoom(elem.current)
@@ -31,21 +32,21 @@ export default function Buttons() {
         <button
           onClick={() => {
             panzoom.zoomIn()
-            range.current.value = panzoom.getScale()
+            range.current.value = panzoom.getScale() + ''
           }}>
           Zoom in
         </button>
         <button
           onClick={() => {
             panzoom.zoomOut()
-            range.current.value = panzoom.getScale()
+            range.current.value = panzoom.getScale() + ''
           }}>
           Zoom out
         </button>
         <button
           onClick={() => {
             panzoom.reset()
-            range.current.value = panzoom.getScale()
+            range.current.value = panzoom.getScale() + ''
           }}>
           Reset
         </button>

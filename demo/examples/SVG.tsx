@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import Panzoom from '../../src/panzoom'
+import { PanzoomObject } from '../../src/types'
 import Code from '../Code'
 import Demo from '../Demo'
 
@@ -9,7 +10,7 @@ paths.forEach(Panzoom)`}</Code>
 )
 
 export default function SVG() {
-  const panzoomsRef = useRef<Panzoom[]>(null)
+  const panzoomsRef = useRef<PanzoomObject[]>(null)
   let panzooms = panzoomsRef.current
   useEffect(() => {
     const paths: NodeListOf<SVGPathElement> = document.querySelectorAll('svg.panzoom path')
