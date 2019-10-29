@@ -106,8 +106,8 @@ Object elements can eat up events, making it so they never reach Panzoom. To fix
 
 3\. My links aren't working! How do I enable an anchor within a panzoom element?
 
-Add class `options.clickableClass` (default is `"clickable"`) to whatever element you want to be clickable. Panzoom will check for this class before handling the event.
-Alternatively, call `event.stopImmediatePropagation()` in an event handler on the clickable element.
+Add class `options.excludeClass` (default is `"panzoom-exclude"`) to whatever element you want to be clickable. Panzoom will check for this class before handling the event.
+Alternatively, add a reference to the element to the `exclude` option, or call `event.stopImmediatePropagation()` in an event handler on the clickable element.
 
 ---
 

@@ -9,7 +9,12 @@ interface Props {
 export default function Demo({ title, code, children }: Props) {
   return (
     <div className="demo">
-      <h2>{title}</h2>
+      <a
+        id={title}
+        href={`/#${encodeURIComponent(title)}`}
+        style={{ textDecoration: 'none', color: 'black' }}>
+        <h2>{title}</h2>
+      </a>
       {code}
       <div className="live-example">{children}</div>
     </div>

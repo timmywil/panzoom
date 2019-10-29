@@ -12,10 +12,17 @@ interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean
   /**
-   * Add this class to any element within the panzoom element
-   * that you want to be clickable and not initiate the drag
+   * Add elements to this array that should be excluded
+   * from Panzoom handling.
+   * e.g. links and buttons that should not propagate the click event.
    */
-  clickableClass?: string
+  exclude?: Element[]
+  /**
+   * Add this class to any element within the Panzoom element
+   * that you want to exclude from Panzoom handling.
+   * e.g. links and buttons that should not propagate the click event.
+   */
+  excludeClass?: string
   /** Duration of the transition (ms) */
   duration?: number
   /** CSS Easing used for transitions */

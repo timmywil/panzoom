@@ -4,6 +4,7 @@ import './demo.css'
 import ContainInside from './examples/ContainInside'
 import ContainOutside from './examples/ContainOutside'
 import DisabledYAxis from './examples/DisabledYAxis'
+import Exclude from './examples/Exclude'
 import Focal from './examples/Focal'
 import Standard from './examples/Standard'
 import SVG from './examples/SVG'
@@ -25,6 +26,7 @@ function Demos() {
       <Standard />
       <Focal />
       <SVG />
+      <Exclude />
       <ContainInside />
       <ContainOutside />
       <DisabledYAxis />

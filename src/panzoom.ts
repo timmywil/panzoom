@@ -18,7 +18,6 @@ import { PanOptions, PanzoomEvent, PanzoomObject, PanzoomOptions, ZoomOptions } 
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
-  clickableClass: 'clickable',
   cursor: 'move',
   disablePan: false,
   disableZoom: false,
@@ -26,6 +25,8 @@ const defaultOptions: PanzoomOptions = {
   disableYAxis: false,
   duration: 200,
   easing: 'ease-in-out',
+  exclude: [],
+  excludeClass: 'panzoom-exclude',
   maxScale: 4,
   minScale: 0.125,
   panOnlyWhenZoomed: false,
@@ -334,8 +335,12 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   const pointers: PointerEvent[] = []
 
   function handleDown(event: PointerEvent) {
-    // Don't handle this event if the target is a clickable
-    if (event.target && (event.target as Element).classList.contains(options.clickableClass)) {
+    // Don't handle this event if the target is excluded
+    if (
+      event.target &&
+      ((event.target as Element).classList.contains(options.excludeClass) ||
+        options.exclude.indexOf(event.target as Element) > -1)
+    ) {
       return
     }
     addPointer(pointers, event)
