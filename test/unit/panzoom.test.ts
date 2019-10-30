@@ -82,4 +82,52 @@ describe('Panzoom', () => {
     assert.equal(div.style.cursor, 'default', 'Cursor style changes when setting the cursor option')
     document.body.removeChild(div)
   })
+  describe('force option', () => {
+    it('ignores disablePan', () => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div)
+      panzoom.setOptions({
+        disablePan: true
+      })
+      panzoom.pan(1, 1)
+      let pan = panzoom.getPan()
+      assert.equal(pan.x, 0)
+      assert.equal(pan.y, 0)
+      panzoom.pan(1, 1, { force: true })
+      pan = panzoom.getPan()
+      assert.equal(pan.x, 1)
+      assert.equal(pan.y, 1)
+    })
+    it('ignores disableZoom', () => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div)
+      panzoom.setOptions({
+        disableZoom: true
+      })
+      panzoom.zoom(2)
+      let scale = panzoom.getScale()
+      assert.equal(scale, 1)
+      panzoom.zoom(2, { force: true })
+      scale = panzoom.getScale()
+      assert.equal(scale, 2)
+    })
+    it('ignores panOnlyWhenZoomed', () => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div)
+      panzoom.setOptions({
+        panOnlyWhenZoomed: true
+      })
+      panzoom.pan(1, 1)
+      let pan = panzoom.getPan()
+      assert.equal(pan.x, 0)
+      assert.equal(pan.y, 0)
+      panzoom.pan(1, 1, { force: true })
+      pan = panzoom.getPan()
+      assert.equal(pan.x, 1)
+      assert.equal(pan.y, 1)
+    })
+  })
 })

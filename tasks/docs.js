@@ -45,11 +45,11 @@ const panzoomOptions =
     // Remove unwanted text
     .replace(rOptional, '')
     .replace(rProperties, '\n\n---\n\n## `MiscOptions`\n') +
-  redoLinks(read('../docs/interfaces/_types_.panoptions.md'))
+  redoLinks(read('../docs/interfaces/_types_.panspecificoptions.md'))
     // Remove unwanted text
     .replace(rOptional, '')
     .replace(rProperties, '\n\n---\n\n## `PanOptions`\n\nIncludes `MiscOptions`\n\n') +
-  redoLinks(read('../docs/interfaces/_types_.zoomoptions.md'))
+  redoLinks(read('../docs/interfaces/_types_.zoomspecificoptions.md'))
     // Remove unwanted text
     .replace(rOptional, '')
     .replace(rProperties, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')

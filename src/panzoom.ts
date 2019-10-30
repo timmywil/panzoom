@@ -120,7 +120,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
     const opts = { ...options, ...panOptions }
     const result = { x, y, opts }
-    if (opts.disablePan || (opts.panOnlyWhenZoomed && scale === opts.startScale)) {
+    if (!opts.force && (opts.disablePan || (opts.panOnlyWhenZoomed && scale === opts.startScale))) {
       return result
     }
     toX = parseFloat(toX as string)
@@ -189,7 +189,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   function constrainScale(toScale: number, zoomOptions?: ZoomOptions) {
     const opts = { ...options, ...zoomOptions }
     const result = { scale, opts }
-    if (opts.disableZoom) {
+    if (!opts.force && opts.disableZoom) {
       return result
     }
     result.scale = Math.min(Math.max(toScale, opts.minScale), opts.maxScale)
@@ -209,7 +209,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
   function zoom(toScale: number, zoomOptions?: ZoomOptions) {
     const result = constrainScale(toScale, zoomOptions)
     const opts = result.opts
-    if (opts.disableZoom) {
+    if (!opts.force && opts.disableZoom) {
       return
     }
     toScale = result.scale
