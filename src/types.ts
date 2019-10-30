@@ -11,6 +11,10 @@ export type PanzoomEvent =
 interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean
+  /** Duration of the transition (ms) */
+  duration?: number
+  /** CSS Easing used for transitions */
+  easing?: string
   /**
    * Add elements to this array that should be excluded
    * from Panzoom handling.
@@ -23,10 +27,12 @@ interface MiscOptions {
    * e.g. links and buttons that should not propagate the click event.
    */
   excludeClass?: string
-  /** Duration of the transition (ms) */
-  duration?: number
-  /** CSS Easing used for transitions */
-  easing?: string
+  /**
+   * `force` should be used sparingly to temporarily
+   * override and ignore options such as disablePan,
+   * disableZoom, and panOnlyWhenZoomed.
+   */
+  force?: boolean
   /**
    * **Change this at your own risk.**
    * The `transform-origin` is the origin from which transforms are applied.
@@ -71,7 +77,7 @@ interface MiscOptions {
   [key: string]: any
 }
 
-interface PanOptions {
+interface PanSpecificOptions {
   /**
    * Contain the panzoom element either
    * inside or outside the parent.
@@ -98,7 +104,7 @@ interface PanOptions {
   panOnlyWhenZoomed?: boolean
 }
 
-interface ZoomOptions {
+interface ZoomSpecificOptions {
   /** Disable zooming functionality */
   disableZoom?: boolean
   /**
@@ -116,10 +122,8 @@ interface ZoomOptions {
   step?: number
 }
 
-type PanOnlyOptions = MiscOptions & PanOptions
-export { PanOnlyOptions as PanOptions }
-type ZoomOnlyOptions = MiscOptions & ZoomOptions
-export { ZoomOnlyOptions as ZoomOptions }
+export type PanOptions = MiscOptions & PanSpecificOptions
+export type ZoomOptions = MiscOptions & ZoomSpecificOptions
 export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
 
 export interface CurrentValues {
