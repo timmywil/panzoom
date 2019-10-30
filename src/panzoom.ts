@@ -429,7 +429,7 @@ function Panzoom(
     pan,
     reset,
     setOptions,
-    setStyle,
+    setStyle: (name: string, value: string) => setStyle(elem, name, value),
     zoom,
     zoomIn,
     zoomOut,
