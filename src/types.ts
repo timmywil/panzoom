@@ -31,6 +31,16 @@ interface MiscOptions {
    * `force` should be used sparingly to temporarily
    * override and ignore options such as disablePan,
    * disableZoom, and panOnlyWhenZoomed.
+   * This option cannot be passed to the
+   * Panzoom constructor or setOptions (to avoid
+   * setting this option globally).
+   *
+   * ```js
+   * // Overrides disablePan and panOnlyWhenZoomed
+   * panzoom.pan(50, 100, { force: true })
+   * // Overrides disableZoom
+   * panzoom.zoom(1, { force: true })
+   * ```
    */
   force?: boolean
   /**
@@ -57,9 +67,9 @@ interface MiscOptions {
    * ```js
    * // This example always sets a rotation
    * // when setting the scale and translation
-   * Panzoom(elem, {
+   * const panzoom = Panzoom(elem, {
    *   setTransform: (elem, { scale, x, y }) => {
-   *     setStyle(elem, 'transform', `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`)
+   *     panzoom.setStyle('transform', `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`)
    *   }
    * })
    * ```
@@ -166,7 +176,7 @@ export interface PanzoomObject {
   /** Change options for the Panzoom instance */
   setOptions: (options?: PanzoomOptions) => void
   /** A convenience method for setting prefixed styles on the Panzoom element */
-  setStyle: typeof setStyle
+  setStyle: (name: string, value: string) => void
   /**
    * Zoom the Panzoom element to the given scale
    *

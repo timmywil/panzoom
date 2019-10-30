@@ -38,7 +38,10 @@ const defaultOptions: PanzoomOptions = {
   step: 0.3
 }
 
-function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): PanzoomObject {
+function Panzoom(
+  elem: HTMLElement | SVGElement,
+  options?: Omit<PanzoomOptions, 'force'>
+): PanzoomObject {
   if (!elem) {
     throw new Error('Panzoom requires an element as an argument')
   }
@@ -56,7 +59,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
 
   const isSVG = isSVGElement(elem)
 
-  function setOptions(opts: PanzoomOptions = {}) {
+  function setOptions(opts: Omit<PanzoomOptions, 'force'> = {}) {
     for (const key in opts) {
       if (opts.hasOwnProperty(key)) {
         options[key] = opts[key]
@@ -426,7 +429,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomOptions): Panz
     pan,
     reset,
     setOptions,
-    setStyle,
+    setStyle: (name: string, value: string) => setStyle(elem, name, value),
     zoom,
     zoomIn,
     zoomOut,
