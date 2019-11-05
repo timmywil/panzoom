@@ -27,6 +27,10 @@ const defaultOptions: PanzoomOptions = {
   easing: 'ease-in-out',
   exclude: [],
   excludeClass: 'panzoom-exclude',
+  handleStartEvent: (e: Event) => {
+    e.preventDefault()
+    e.stopPropagation()
+  },
   maxScale: 4,
   minScale: 0.125,
   panOnlyWhenZoomed: false,
@@ -348,8 +352,7 @@ function Panzoom(
     }
     addPointer(pointers, event)
     isPanning = true
-    event.preventDefault()
-    event.stopPropagation()
+    options.handleStartEvent(event)
     origX = x
     origY = y
 
