@@ -44,6 +44,30 @@ interface MiscOptions {
    */
   force?: boolean
   /**
+   * On the first pointer event, when panning starts,
+   * the default Panzoom behavior is to call
+   * `event.preventDefault()` and `event.stopPropagation()`
+   * on that event. The former is almost certainly a necesity,
+   * the latter enables Panzoom elements within Panzoom elements.
+   *
+   * But there are some cases where the default is
+   * not the desired behavior. Set this option to override that behavior.
+   *
+   * ```js
+   * // Only call preventDefault()
+   * Panzoom(elem, {
+   *   handleStartEvent: (event) => {
+   *     event.preventDefault()
+   *   }
+   * })
+   * // Do nothing (this probably breaks things on mobile tho)
+   * Panzoom(elem, {
+   *   handleStartEvent: () => {}
+   * })
+   * ```
+   */
+  handleStartEvent?: (event: Event) => void
+  /**
    * **Change this at your own risk.**
    * The `transform-origin` is the origin from which transforms are applied.
    * Default: `'50% 50%'` for HTML and `'0 0'` for SVG.
