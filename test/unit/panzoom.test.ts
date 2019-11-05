@@ -98,6 +98,7 @@ describe('Panzoom', () => {
       pan = panzoom.getPan()
       assert.equal(pan.x, 1)
       assert.equal(pan.y, 1)
+      document.body.removeChild(div)
     })
     it('ignores disableZoom', () => {
       const div = document.createElement('div')
@@ -112,6 +113,7 @@ describe('Panzoom', () => {
       panzoom.zoom(2, { force: true })
       scale = panzoom.getScale()
       assert.equal(scale, 2)
+      document.body.removeChild(div)
     })
     it('ignores panOnlyWhenZoomed', () => {
       const div = document.createElement('div')
@@ -128,6 +130,22 @@ describe('Panzoom', () => {
       pan = panzoom.getPan()
       assert.equal(pan.x, 1)
       assert.equal(pan.y, 1)
+      document.body.removeChild(div)
+    })
+  })
+  it('calls the handleStartEvent option', () => {
+    return new Promise((resolve) => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      Panzoom(div, {
+        handleStartEvent: (event: Event) => {
+          event.preventDefault()
+          assert.ok('handleStartEvent called')
+          resolve()
+        }
+      })
+      div.dispatchEvent(new PointerEvent('pointerdown'))
+      document.body.removeChild(div)
     })
   })
 })
