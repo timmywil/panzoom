@@ -351,6 +351,7 @@ function Panzoom(
       return
     }
     addPointer(pointers, event)
+    elem.setPointerCapture(event.pointerId)
     isPanning = true
     options.handleStartEvent(event)
     origX = x
@@ -401,6 +402,7 @@ function Panzoom(
     // Can restart without having to reinitiate all of them
     // Remove the pointer regardless of the isPanning state
     removePointer(pointers, event)
+    elem.releasePointerCapture(event.pointerId)
     if (!isPanning) {
       return
     }
@@ -414,14 +416,14 @@ function Panzoom(
 
   if (!options.disablePan) {
     onPointer('down', elem, handleDown)
-    onPointer('move', document, move, { passive: true })
-    onPointer('up', document, handleUp, { passive: true })
+    onPointer('move', elem, move, { passive: true })
+    onPointer('up', elem, handleUp, { passive: true })
   }
 
   function destroy() {
     destroyPointer('down', elem, handleDown)
-    destroyPointer('move', document, move)
-    destroyPointer('up', document, handleUp)
+    destroyPointer('move', elem, move)
+    destroyPointer('up', elem, handleUp)
   }
 
   return {
