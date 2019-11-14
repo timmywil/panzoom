@@ -75,6 +75,13 @@ function Panzoom(
     if (opts.hasOwnProperty('cursor')) {
       elem.style.cursor = opts.cursor
     }
+    if (
+      opts.hasOwnProperty('minScale') ||
+      opts.hasOwnProperty('maxScale') ||
+      opts.hasOwnProperty('contain')
+    ) {
+      setMinMax()
+    }
   }
 
   // Set overflow on the parent
@@ -107,6 +114,7 @@ function Panzoom(
   // for accurate dimensions
   // to constrain initial values
   setTimeout(() => {
+    setMinMax()
     pan(options.startX, options.startY, { animate: false })
   })
 
@@ -125,6 +133,23 @@ function Panzoom(
     trigger(eventName, value, opts)
     trigger('panzoomchange', value, opts)
     return value
+  }
+
+  function setMinMax() {
+    if (options.contain) {
+      const dims = getDimensions(elem)
+      const parentWidth = dims.parent.width - dims.parent.border.left - dims.parent.border.right
+      const parentHeight = dims.parent.height - dims.parent.border.top - dims.parent.border.bottom
+      const elemWidth = dims.elem.width / scale
+      const elemHeight = dims.elem.height / scale
+      const elemScaledWidth = parentWidth / elemWidth
+      const elemScaledHeight = parentHeight / elemHeight
+      if (options.contain === 'inside') {
+        options.maxScale = Math.min(elemScaledWidth, elemScaledHeight)
+      } else if (options.contain === 'outside') {
+        options.minScale = Math.max(elemScaledWidth, elemScaledHeight)
+      }
+    }
   }
 
   function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
@@ -235,8 +260,12 @@ function Panzoom(
       x = panResult.x
       y = panResult.y
     }
-
     scale = toScale
+    if (!opts.focal) {
+      const panResult = constrainXY(x, y, { relative: false })
+      x = panResult.x
+      y = panResult.y
+    }
     return setTransformWithEvent('panzoomzoom', opts)
   }
 

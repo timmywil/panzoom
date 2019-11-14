@@ -1,17 +1,43 @@
 import React, { useEffect, useRef } from 'react'
-import Panzoom from '../../src/panzoom'
+
 import Code from '../Code'
 import Demo from '../Demo'
+import Panzoom from '../../src/panzoom'
+import { PanzoomObject } from '../../src/types'
 
 const code = <Code>{`Panzoom(elem, { contain: 'outside', startScale: 1.5 })`}</Code>
 
 export default function ContainOutside() {
   const elem = useRef<HTMLDivElement>(null)
+  let panzoom: PanzoomObject
   useEffect(() => {
-    Panzoom(elem.current, { contain: 'outside', startScale: 1.5 })
+    setTimeout(() => {
+      panzoom = Panzoom(elem.current, { contain: 'outside', startScale: 1.5 })
+    }, 1000)
   }, [])
   return (
     <Demo title="Containment within the parent" code={code}>
+      <div className="buttons">
+        <label>Try me: </label>
+        <button
+          onClick={() => {
+            panzoom.zoomIn()
+          }}>
+          Zoom in
+        </button>
+        <button
+          onClick={() => {
+            panzoom.zoomOut()
+          }}>
+          Zoom out
+        </button>
+        <button
+          onClick={() => {
+            panzoom.reset()
+          }}>
+          Reset
+        </button>
+      </div>
       <div className="panzoom-parent" style={{ height: '900px' }}>
         <div
           className="panzoom"
