@@ -85,6 +85,19 @@ describe('Panzoom', () => {
     assert.equal(div.style.cursor, 'default', 'Cursor style changes when setting the cursor option')
     document.body.removeChild(div)
   })
+  describe('contain option', () => {
+    it(': outside sets the pan on the zoom to maintain containment', () => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div, { contain: 'outside' })
+      panzoom.zoom(2)
+      panzoom.pan(100, 100)
+      panzoom.zoom(1)
+      const pan = panzoom.getPan()
+      assert.equal(pan.x, 0)
+      assert.equal(pan.y, 0)
+    })
+  })
   describe('force option', () => {
     it('ignores disablePan', () => {
       const div = document.createElement('div')
