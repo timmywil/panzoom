@@ -7,14 +7,16 @@
  * https://github.com/timmywil/panzoom/blob/master/MIT-License.txt
  *
  */
-import { getDimensions, setStyle, setTransform } from './css'
+import './polyfills'
+
+import { PanOptions, PanzoomEvent, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
+import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
 import { destroyPointer, onPointer } from './events'
+import { getDimensions, setStyle, setTransform } from './css'
+
 import isAttached from './isAttached'
 import isSVGElement from './isSVGElement'
-import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
-import './polyfills'
 import shallowClone from './shallowClone'
-import { PanOptions, PanzoomEvent, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
@@ -108,6 +110,7 @@ function Panzoom(
     pan(options.startX, options.startY, { animate: false })
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function trigger(eventName: PanzoomEvent, detail: any, opts: PanzoomOptions) {
     if (opts.silent) {
       return

@@ -1,7 +1,8 @@
 import React, { CSSProperties, useEffect, useRef } from 'react'
-import Panzoom from '../../src/panzoom'
+
 import Code from '../Code'
 import Demo from '../Demo'
+import Panzoom from '../../src/panzoom'
 
 const code = (
   <Code>{`\
@@ -56,7 +57,12 @@ export default function Exclude() {
             margin: '0 auto'
           }}>
           <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
-          <a style={anchorStyle} target="_blank" id="link" href="https://timmywil.com/panzoom/">
+          <a
+            style={anchorStyle}
+            target="_blank"
+            rel="noopener noreferrer"
+            id="link"
+            href="https://timmywil.com/panzoom/">
             This link will handle the click
           </a>
           <a style={lastAnchorStyle}>This one will pass through the event.</a>
@@ -66,8 +72,8 @@ export default function Exclude() {
               width: '200px',
               margin: '0 auto',
               padding: 20,
-              backgroundColor: '#DD3333',
-              color: 'white'
+              backgroundColor: '#33DDDD',
+              color: 'black'
             }}>
             This is a Panzoom element within another Panzoom element. This works by default.
           </div>

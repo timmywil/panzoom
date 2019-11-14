@@ -1,9 +1,10 @@
 import { strict as assert, throws } from 'assert'
+
 import Panzoom from '../../src/panzoom'
 
 function assertStyleMatches(elem: HTMLElement | SVGElement, name: string, value: string) {
   const capName = name[0].toUpperCase() + name.slice(1)
-  const style: any = elem.style
+  const style: any = elem.style // eslint-disable-line
   if (style[name]) {
     assert.ok(style[name].includes(value))
   } else if (style[`webkit${capName}`]) {
@@ -21,12 +22,12 @@ describe('Panzoom', () => {
   })
   it('checks the element exists before creating the instance', () => {
     throws(() => {
-      Panzoom(undefined as any) // tslint:disable-line
+      Panzoom(undefined as any) // eslint-disable-line
     })
   })
   it('checks the element has the right nodeType', () => {
     throws(() => {
-      Panzoom(document as any)
+      Panzoom(document as any) // eslint-disable-line
     })
   })
   it('checks the element is attached', () => {
@@ -49,13 +50,15 @@ describe('Panzoom', () => {
   it('removes the events when using the destroy method', () => {
     const div = document.createElement('div')
     document.body.appendChild(div)
-    const events: any = {}
+    const events: any = {} // eslint-disable-line
     const addEvent = Element.prototype.addEventListener
     const removeEvent = Element.prototype.removeEventListener
+    // eslint-disable-next-line
     Element.prototype.addEventListener = function(event: any, fn: any, options: any) {
       events[event] = fn
       addEvent.call(this, event, fn, options)
     }
+    // eslint-disable-next-line
     Element.prototype.removeEventListener = function(event: any, fn: any, options: any) {
       delete events[event]
       removeEvent.call(this, event, fn, options)
