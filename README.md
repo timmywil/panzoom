@@ -10,7 +10,7 @@ Have a look at the [GitHub project](https://github.com/timmywil/panzoom/projects
 
 ---
 
-Panzoom is a small library (~3kb gzipped) to add panning and zooming functionality to an element.
+Panzoom is a small library (~3.5kb gzipped) to add panning and zooming functionality to an element.
 Rather than using absolute positioning or setting width and height, Panzoom uses CSS transforms to take advantage of hardware/GPU acceleration in the browser, which means the element can be _anything_: an image, a video, an iframe, a canvas, text, WHATEVER.
 
 For common support questions, see [the FAQ](https://github.com/timmywil/panzoom#faq).
