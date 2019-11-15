@@ -248,24 +248,21 @@ function Panzoom(
       return
     }
     toScale = result.scale
+    let toX = x
+    let toY = y
 
     if (opts.focal) {
       // The difference between the point after the scale and the point before the scale
       // plus the current translation after the scale
       // neutralized to no scale (as the transform scale will apply to the translation)
       const focal = opts.focal
-      const toX = (focal.x / toScale - focal.x / scale + x * toScale) / toScale
-      const toY = (focal.y / toScale - focal.y / scale + y * toScale) / toScale
-      const panResult = constrainXY(toX, toY, { relative: false })
-      x = panResult.x
-      y = panResult.y
+      toX = (focal.x / toScale - focal.x / scale + x * toScale) / toScale
+      toY = (focal.y / toScale - focal.y / scale + y * toScale) / toScale
     }
     scale = toScale
-    if (!opts.focal) {
-      const panResult = constrainXY(x, y, { relative: false })
-      x = panResult.x
-      y = panResult.y
-    }
+    const panResult = constrainXY(toX, toY, { relative: false })
+    x = panResult.x
+    y = panResult.y
     return setTransformWithEvent('panzoomzoom', opts)
   }
 
