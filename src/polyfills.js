@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 // Support: IE11 only
 if (window.NodeList && !NodeList.prototype.forEach) {
   NodeList.prototype.forEach = Array.prototype.forEach
@@ -7,7 +8,7 @@ if (window.NodeList && !NodeList.prototype.forEach) {
 if (typeof window.CustomEvent !== 'function') {
   window.CustomEvent = function CustomEvent(event, params) {
     params = params || { bubbles: false, cancelable: false, detail: null }
-    const evt = document.createEvent('CustomEvent')
+    var evt = document.createEvent('CustomEvent')
     evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
     return evt
   }
