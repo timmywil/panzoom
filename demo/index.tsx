@@ -1,13 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
 import './demo.css'
+import './global-panzoom'
+
 import ContainInside from './examples/ContainInside'
 import ContainOutside from './examples/ContainOutside'
 import DisabledYAxis from './examples/DisabledYAxis'
 import Exclude from './examples/Exclude'
 import Focal from './examples/Focal'
-import Standard from './examples/Standard'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import SVG from './examples/SVG'
+import Standard from './examples/Standard'
 
 function Demos() {
   return (

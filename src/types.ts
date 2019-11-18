@@ -126,7 +126,11 @@ interface PanSpecificOptions {
   contain?: 'inside' | 'outside'
   /** The cursor style to set on the panzoom element */
   cursor?: string
-  /** Disable panning functionality. Note: disablePan also disables focal point zooming */
+  /**
+   * Disable panning functionality.
+   * Note: disablePan does not affect focal point zooming or the constrain option.
+   *   The element will still pan accordingly.
+   */
   disablePan?: boolean
   /** Pan only on the Y axis */
   disableXAxis?: boolean
