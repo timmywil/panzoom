@@ -16,6 +16,12 @@ function assertStyleMatches(elem: HTMLElement | SVGElement, name: string, value:
   }
 }
 
+function skipFrame() {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 16)
+  })
+}
+
 describe('Panzoom', () => {
   it('exists', () => {
     assert(Panzoom, 'Panzoom exists')
@@ -86,7 +92,7 @@ describe('Panzoom', () => {
     document.body.removeChild(div)
   })
   describe('contain option', () => {
-    it(': outside sets the pan on the zoom to maintain containment', (done) => {
+    it(': outside sets the pan on the zoom to maintain containment', async () => {
       const parent = document.createElement('div')
       const div = document.createElement('div')
       parent.style.width = div.style.width = '100px'
@@ -94,24 +100,22 @@ describe('Panzoom', () => {
       parent.appendChild(div)
       document.body.appendChild(parent)
       const panzoom = Panzoom(div, { contain: 'outside' })
+      await skipFrame()
       panzoom.zoom(2)
       // Zoom needs to paint first
-      setTimeout(() => {
-        panzoom.pan(100, 100)
-        // Should constrain to 25, 25
-        let pan = panzoom.getPan()
-        assert.equal(pan.x, 25)
-        assert.equal(pan.y, 25)
-        panzoom.zoom(1)
-        // Zoom needs to paint first
-        setTimeout(() => {
-          // Should constrain back to 0 0
-          pan = panzoom.getPan()
-          assert.equal(pan.x, 0)
-          assert.equal(pan.y, 0)
-          done()
-        })
-      })
+      await skipFrame()
+      panzoom.pan(100, 100)
+      // Should constrain to 25, 25
+      let pan = panzoom.getPan()
+      assert.equal(pan.x, 25)
+      assert.equal(pan.y, 25)
+      panzoom.zoom(1)
+      await skipFrame()
+      // Should constrain back to 0 0
+      pan = panzoom.getPan()
+      assert.equal(pan.x, 0)
+      assert.equal(pan.y, 0)
+      document.body.removeChild(parent)
     })
   })
   describe('force option', () => {
