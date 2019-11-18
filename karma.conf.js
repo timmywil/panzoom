@@ -13,6 +13,11 @@ module.exports = function(config) {
         module: 'commonjs'
       }
     },
+    client: {
+      mocha: {
+        opts: 'test/mocha.opts'
+      }
+    },
     reporters: ['progress', 'karma-typescript'],
     port: 9876,
     colors: true,
