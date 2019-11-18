@@ -50,6 +50,7 @@ function getBoxStyle(
  * Set a style using the properly prefixed name
  */
 export function setStyle(elem: HTMLElement | SVGElement, name: string, value: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   elem.style[getPrefixedName(name) as any] = value
 }
 
