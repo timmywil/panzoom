@@ -5,7 +5,8 @@ module.exports = {
   mode: 'development',
   devtool: 'eval-source-map',
   entry: {
-    'demo/index.html': './demo/index.tsx'
+    'demo/index.html': './demo/index.tsx',
+    panzoom: './demo/global-panzoom.ts'
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.json']

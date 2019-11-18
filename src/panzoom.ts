@@ -152,7 +152,12 @@ function Panzoom(
     }
   }
 
-  function constrainXY(toX: number | string, toY: number | string, panOptions?: PanOptions) {
+  function constrainXY(
+    toX: number | string,
+    toY: number | string,
+    toScale: number,
+    panOptions?: PanOptions
+  ) {
     const opts = { ...options, ...panOptions }
     const result = { x, y, opts }
     if (!opts.force && (opts.disablePan || (opts.panOnlyWhenZoomed && scale === opts.startScale))) {
@@ -175,7 +180,7 @@ function Panzoom(
         -dims.elem.margin.left - dims.parent.padding.left,
         Math.min(
           dims.parent.width -
-            dims.elem.width / scale -
+            dims.elem.width / toScale -
             dims.parent.padding.left -
             dims.elem.margin.left -
             dims.parent.border.left -
@@ -187,7 +192,7 @@ function Panzoom(
         -dims.elem.margin.top - dims.parent.padding.top,
         Math.min(
           dims.parent.height -
-            dims.elem.height / scale -
+            dims.elem.height / toScale -
             dims.parent.padding.top -
             dims.elem.margin.top -
             dims.parent.border.top -
@@ -197,26 +202,30 @@ function Panzoom(
       )
     } else if (opts.contain === 'outside') {
       const dims = getDimensions(elem)
-      const diffHorizontal = (dims.elem.width - dims.elem.width / scale) / 2
-      const diffVertical = (dims.elem.height - dims.elem.height / scale) / 2
-      result.x = Math.max(
-        Math.min(result.x, (diffHorizontal - dims.parent.padding.left) / scale),
-        (-(dims.elem.width - dims.parent.width) -
+      const realWidth = dims.elem.width / scale
+      const realHeight = dims.elem.height / scale
+      const scaledWidth = realWidth * toScale
+      const scaledHeight = realHeight * toScale
+      const diffHorizontal = (scaledWidth - realWidth) / 2
+      const diffVertical = (scaledHeight - realHeight) / 2
+      const minX =
+        (-(scaledWidth - dims.parent.width) -
           dims.parent.padding.left -
           dims.parent.border.left -
           dims.parent.border.right +
           diffHorizontal) /
-          scale
-      )
-      result.y = Math.max(
-        Math.min(result.y, (diffVertical - dims.parent.padding.top) / scale),
-        (-(dims.elem.height - dims.parent.height) -
+        toScale
+      const maxX = (diffHorizontal - dims.parent.padding.left) / toScale
+      result.x = Math.max(Math.min(result.x, maxX), minX)
+      const minY =
+        (-(scaledHeight - dims.parent.height) -
           dims.parent.padding.top -
           dims.parent.border.top -
           dims.parent.border.bottom +
           diffVertical) /
-          scale
-      )
+        toScale
+      const maxY = (diffVertical - dims.parent.padding.top) / toScale
+      result.y = Math.max(Math.min(result.y, maxY), minY)
     }
     return result
   }
@@ -232,7 +241,7 @@ function Panzoom(
   }
 
   function pan(toX: number | string, toY: number | string, panOptions?: PanOptions) {
-    const result = constrainXY(toX, toY, panOptions)
+    const result = constrainXY(toX, toY, scale, panOptions)
     const opts = result.opts
 
     x = result.x
@@ -259,10 +268,10 @@ function Panzoom(
       toX = (focal.x / toScale - focal.x / scale + x * toScale) / toScale
       toY = (focal.y / toScale - focal.y / scale + y * toScale) / toScale
     }
-    scale = toScale
-    const panResult = constrainXY(toX, toY, { relative: false })
+    const panResult = constrainXY(toX, toY, toScale, { relative: false, force: true })
     x = panResult.x
     y = panResult.y
+    scale = toScale
     return setTransformWithEvent('panzoomzoom', opts)
   }
 
@@ -355,10 +364,10 @@ function Panzoom(
 
   function reset(resetOptions?: PanzoomOptions) {
     const opts = { ...options, animate: true, ...resetOptions }
-    const panResult = constrainXY(opts.startX, opts.startY, opts)
+    scale = constrainScale(opts.startScale, opts).scale
+    const panResult = constrainXY(opts.startX, opts.startY, scale, opts)
     x = panResult.x
     y = panResult.y
-    scale = constrainScale(opts.startScale, opts).scale
     return setTransformWithEvent('panzoomreset', opts)
   }
 
