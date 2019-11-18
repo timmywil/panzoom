@@ -6,3 +6,4 @@ package-lock.json
 dist/
 coverage/
 docs/
+demo/panzoom.js
