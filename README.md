@@ -4,7 +4,7 @@
 
 **[Examples](https://timmywil.com/panzoom/demo/)**
 
-**This rewrite is a work in progress**
+**This rewrite is a work in progress and not yet published to npm**
 
 Have a look at the [GitHub project](https://github.com/timmywil/panzoom/projects/1) to follow along on the status of this rewrite.
 
@@ -108,6 +108,29 @@ Object elements can eat up events, making it so they never reach Panzoom. To fix
 
 Add class `options.excludeClass` (default is `"panzoom-exclude"`) to whatever element you want to be clickable. Panzoom will check for this class before handling the event.
 Alternatively, add a reference to the element to the `exclude` option, or call `event.stopImmediatePropagation()` in an event handler on the clickable element.
+
+## A note on the async nature of Panzoom
+
+In some cases, setting one thing and then setting another synchronously will not work as intended.
+
+For instance, the following usually works fine.
+
+```js
+const panzoom = Panzoom(elem)
+panzoom.zoom(2)
+panzoom.pan(100, 100)
+```
+
+However, you might find that the things start breaking when the `contain` option is set.
+
+This is due to the fact that in order for Panzoom to retrieve proper dimensions, the scale needs to be painted.
+
+If you find that things aren't looking quite right, try the following instead...
+
+```js
+panzoom.zoom(2)
+setTimeout(() => panzoom.pan(100, 100))
+```
 
 ---
 

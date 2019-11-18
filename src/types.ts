@@ -1,4 +1,4 @@
-import { setStyle, setTransform } from './css'
+import { setTransform } from './css'
 
 export type PanzoomEvent =
   | 'panzoomstart'
