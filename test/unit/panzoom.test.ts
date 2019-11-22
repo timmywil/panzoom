@@ -71,10 +71,19 @@ describe('Panzoom', () => {
     }
     const panzoom = Panzoom(div)
     assert(Object.keys(events).length > 0)
+    const endListener = () => {
+      console.log('panzoomend called')
+      assert.ok('panzoomend called on pan')
+    }
+    div.addEventListener('panzoomend', endListener)
+    div.dispatchEvent(new PointerEvent('pointerdown'))
+    document.dispatchEvent(new PointerEvent('pointerup'))
     panzoom.destroy()
+    div.removeEventListener('panzoomend', endListener)
     assert(Object.keys(events).length === 0)
     Element.prototype.addEventListener = addEvent
     Element.prototype.removeEventListener = removeEvent
+    document.body.removeChild(div)
   })
   it('sets the expected transform-origin on SVG', () => {
     const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
@@ -89,6 +98,18 @@ describe('Panzoom', () => {
     const panzoom = Panzoom(div)
     panzoom.setOptions({ cursor: 'default' })
     assert.equal(div.style.cursor, 'default', 'Cursor style changes when setting the cursor option')
+    document.body.removeChild(div)
+  })
+  it("changes the parent's overflow with the overflow option", () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const panzoom = Panzoom(div)
+    panzoom.setOptions({ overflow: 'visible' })
+    assert.equal(
+      div.parentElement.style.overflow,
+      'visible',
+      'Overflow style changes when setting the overflow option'
+    )
     document.body.removeChild(div)
   })
   describe('contain option', () => {
