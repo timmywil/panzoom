@@ -35,6 +35,7 @@ const defaultOptions: PanzoomOptions = {
   },
   maxScale: 4,
   minScale: 0.125,
+  overflow: 'hidden',
   panOnlyWhenZoomed: false,
   relative: false,
   setTransform,
@@ -65,28 +66,9 @@ function Panzoom(
 
   const isSVG = isSVGElement(elem)
 
-  function setOptions(opts: Omit<PanzoomOptions, 'force'> = {}) {
-    for (const key in opts) {
-      if (opts.hasOwnProperty(key)) {
-        options[key] = opts[key]
-      }
-    }
-    // Handle option side-effects
-    if (opts.hasOwnProperty('cursor')) {
-      elem.style.cursor = opts.cursor
-    }
-    if (
-      opts.hasOwnProperty('minScale') ||
-      opts.hasOwnProperty('maxScale') ||
-      opts.hasOwnProperty('contain')
-    ) {
-      setMinMax()
-    }
-  }
-
   // Set overflow on the parent
   const parent = elem.parentElement
-  parent.style.overflow = 'hidden'
+  parent.style.overflow = options.overflow
   parent.style.userSelect = 'none'
   // This is important for mobile to
   // prevent scrolling while panning
@@ -104,6 +86,28 @@ function Panzoom(
     'transformOrigin',
     typeof options.origin === 'string' ? options.origin : isSVG ? '0 0' : '50% 50%'
   )
+
+  function setOptions(opts: Omit<PanzoomOptions, 'force'> = {}) {
+    for (const key in opts) {
+      if (opts.hasOwnProperty(key)) {
+        options[key] = opts[key]
+      }
+    }
+    // Handle option side-effects
+    if (opts.hasOwnProperty('cursor')) {
+      elem.style.cursor = opts.cursor
+    }
+    if (opts.hasOwnProperty('overflow')) {
+      parent.style.overflow = opts.overflow
+    }
+    if (
+      opts.hasOwnProperty('minScale') ||
+      opts.hasOwnProperty('maxScale') ||
+      opts.hasOwnProperty('contain')
+    ) {
+      setMinMax()
+    }
+  }
 
   let x = 0
   let y = 0

@@ -81,6 +81,8 @@ interface MiscOptions {
    * And again, changing this for SVG in IE doesn't work at all.
    */
   origin?: string
+  /** The overflow CSS value for the parent. Defaults to 'hidden' */
+  overflow?: string
   /**
    * Override the transform setter.
    * This is exposed mostly so the user could

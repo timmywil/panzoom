@@ -100,6 +100,18 @@ describe('Panzoom', () => {
     assert.equal(div.style.cursor, 'default', 'Cursor style changes when setting the cursor option')
     document.body.removeChild(div)
   })
+  it("changes the parent's overflow with the overflow option", () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const panzoom = Panzoom(div)
+    panzoom.setOptions({ overflow: 'visible' })
+    assert.equal(
+      div.parentElement.style.overflow,
+      'visible',
+      'Overflow style changes when setting the overflow option'
+    )
+    document.body.removeChild(div)
+  })
   describe('contain option', () => {
     it(': outside sets the pan on the zoom to maintain containment', async () => {
       const parent = document.createElement('div')
