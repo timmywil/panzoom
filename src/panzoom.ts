@@ -435,16 +435,17 @@ function Panzoom(
   }
 
   function handleUp(event: PointerEvent) {
+    // Don't call panzoomend when panning with 2 touches
+    // until both touches end
+    if (pointers.length === 1) {
+      trigger('panzoomend', { x, y, scale }, options)
+    }
     // Note: don't remove all pointers
     // Can restart without having to reinitiate all of them
     // Remove the pointer regardless of the isPanning state
     removePointer(pointers, event)
     if (!isPanning) {
       return
-    }
-    // Only call panzoomend once
-    if (pointers.length === 1) {
-      trigger('panzoomend', { x, y, scale }, options)
     }
     isPanning = false
     origX = origY = startClientX = startClientY = undefined

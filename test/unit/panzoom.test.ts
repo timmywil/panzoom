@@ -71,10 +71,19 @@ describe('Panzoom', () => {
     }
     const panzoom = Panzoom(div)
     assert(Object.keys(events).length > 0)
+    const endListener = () => {
+      console.log('panzoomend called')
+      assert.ok('panzoomend called on pan')
+    }
+    div.addEventListener('panzoomend', endListener)
+    div.dispatchEvent(new PointerEvent('pointerdown'))
+    document.dispatchEvent(new PointerEvent('pointerup'))
     panzoom.destroy()
+    div.removeEventListener('panzoomend', endListener)
     assert(Object.keys(events).length === 0)
     Element.prototype.addEventListener = addEvent
     Element.prototype.removeEventListener = removeEvent
+    document.body.removeChild(div)
   })
   it('sets the expected transform-origin on SVG', () => {
     const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
