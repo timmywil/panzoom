@@ -6,6 +6,7 @@ describe('isAttached', () => {
     const div = document.createElement('div')
     document.body.appendChild(div)
     assert(isAttached(div))
+    document.body.removeChild(div)
   })
   it('determines if a detached element is attached', () => {
     const div = document.createElement('div')

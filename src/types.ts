@@ -18,12 +18,14 @@ interface MiscOptions {
   /**
    * Add elements to this array that should be excluded
    * from Panzoom handling.
+   * Ancestors of event targets are also checked.
    * e.g. links and buttons that should not propagate the click event.
    */
   exclude?: Element[]
   /**
    * Add this class to any element within the Panzoom element
-   * that you want to exclude from Panzoom handling.
+   * that you want to exclude from Panzoom handling. That
+   * element's children will also be excluded.
    * e.g. links and buttons that should not propagate the click event.
    */
   excludeClass?: string
