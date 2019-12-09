@@ -93,8 +93,9 @@
     "webpack-dev-server": "^3.8.0"
   },
   "resolutions": {
-    "lodash": "^4.17.15",
-    "marked": "^0.7.0"
+    "lodash": ">=4.17.15",
+    "marked": ">=0.7.0",
+    "serialize-javascript": ">=2.1.1"
   },
   "prettier": {
     "printWidth": 100,

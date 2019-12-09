@@ -15,6 +15,7 @@ import { destroyPointer, onPointer } from './events'
 import { getDimensions, setStyle, setTransform } from './css'
 
 import isAttached from './isAttached'
+import isExcluded from './isExcluded'
 import isSVGElement from './isSVGElement'
 import shallowClone from './shallowClone'
 
@@ -385,11 +386,7 @@ function Panzoom(
 
   function handleDown(event: PointerEvent) {
     // Don't handle this event if the target is excluded
-    if (
-      event.target &&
-      ((event.target as Element).classList.contains(options.excludeClass) ||
-        options.exclude.indexOf(event.target as Element) > -1)
-    ) {
+    if (isExcluded(event.target as Element, options)) {
       return
     }
     addPointer(pointers, event)
