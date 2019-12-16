@@ -1,6 +1,6 @@
 {
   "name": "@panzoom/panzoom",
-  "version": "4.0.0-pre",
+  "version": "4.0.0",
   "description": "Pan and zoom elements anywhere using native transformations",
   "main": "dist/panzoom.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "lint:fix": "concurrently --raw \"yarn type-check\" \"lint-staged\"",
     "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && yarn sizeup",
     "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\"",
-    "release": "semantic-release",
+    "release": "HUSKY_SKIP_HOOKS=1 semantic-release",
     "sizeup": "echo \"gzipped size: \" && gzip-size dist/panzoom.min.js",
     "start": "webpack-dev-server",
     "test": "yarn lint && yarn test:unit",
@@ -26,6 +26,7 @@
     "MIT-License.txt",
     "src",
     "dist",
+    "docs",
     "README.md"
   ],
   "keywords": [
@@ -42,7 +43,9 @@
     "name": "Timmy Willison",
     "email": "4timmywil@gmail.com"
   },
-  "dependencies": {},
+  "dependencies": {
+    "marked": ">=0.7.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
@@ -122,6 +125,9 @@
       "git add"
     ]
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "release": {
     "branch": "master",
     "ci": false,
@@ -132,16 +138,16 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "yarn build"
+          "prepareCmd": "yarn docs && yarn build"
         }
       ],
       [
         "@semantic-release/git",
         {
           "assets": [
-            "docs",
             "dist",
-            "panzoom.d.ts",
+            "docs",
+            "README.md",
             "package.json"
           ]
         }
