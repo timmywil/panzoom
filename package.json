@@ -14,7 +14,7 @@
     "lint:fix": "concurrently --raw \"yarn type-check\" \"lint-staged\"",
     "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && yarn sizeup",
     "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\"",
-    "release": "semantic-release",
+    "release": "HUSKY_SKIP_HOOKS=1 semantic-release",
     "sizeup": "echo \"gzipped size: \" && gzip-size dist/panzoom.min.js",
     "start": "webpack-dev-server",
     "test": "yarn lint && yarn test:unit",
