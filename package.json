@@ -125,10 +125,12 @@
       "git add"
     ]
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "release": {
     "branch": "master",
     "ci": false,
-    "npmPublish": false,
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
