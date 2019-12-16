@@ -26,6 +26,7 @@
     "MIT-License.txt",
     "src",
     "dist",
+    "docs",
     "README.md"
   ],
   "keywords": [
@@ -134,16 +135,15 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "yarn build"
+          "prepareCmd": "yarn docs && yarn build"
         }
       ],
       [
         "@semantic-release/git",
         {
           "assets": [
-            "docs",
             "dist",
-            "panzoom.d.ts",
+            "docs",
             "package.json"
           ]
         }
