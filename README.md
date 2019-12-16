@@ -4,10 +4,6 @@
 
 **[Examples](https://timmywil.com/panzoom/demo/)**
 
-**This rewrite is a work in progress and not yet published to npm**
-
-Have a look at the [GitHub project](https://github.com/timmywil/panzoom/projects/1) to follow along on the status of this rewrite.
-
 ---
 
 Panzoom is a small library (~3.5kb gzipped) to add panning and zooming functionality to an element.
