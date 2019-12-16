@@ -42,7 +42,9 @@
     "name": "Timmy Willison",
     "email": "4timmywil@gmail.com"
   },
-  "dependencies": {},
+  "dependencies": {
+    "marked": ">=0.7.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
