@@ -146,7 +146,6 @@
         {
           "assets": [
             "dist",
-            "docs",
             "README.md",
             "package.json"
           ]
