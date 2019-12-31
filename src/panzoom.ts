@@ -368,7 +368,7 @@ function Panzoom(
   }
 
   function reset(resetOptions?: PanzoomOptions) {
-    const opts = { ...options, animate: true, ...resetOptions }
+    const opts = { ...options, animate: true, force: true, ...resetOptions }
     scale = constrainScale(opts.startScale, opts).scale
     const panResult = constrainXY(opts.startX, opts.startY, scale, opts)
     x = panResult.x
