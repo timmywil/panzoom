@@ -52,7 +52,7 @@
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/prompt": "^8.1.0",
-    "@semantic-release/exec": "^3.3.6",
+    "@semantic-release/exec": "^4.0.0",
     "@semantic-release/git": "^7.0.16",
     "@types/mocha": "^5.2.7",
     "@types/prismjs": "^1.16.0",
