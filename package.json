@@ -87,7 +87,7 @@
     "semantic-release": "^16.0.0",
     "style-loader": "^1.0.0",
     "ts-loader": "^6.0.4",
-    "typedoc": "^0.15.0",
+    "typedoc": "^0.16.0",
     "typedoc-plugin-markdown": "^2.1.1",
     "typescript": "^3.5.3",
     "uglify-js": "^3.6.0",
