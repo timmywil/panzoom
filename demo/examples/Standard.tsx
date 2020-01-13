@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Panzoom from '../../src/panzoom'
 import { PanzoomObject } from '../../src/types'
 import Code from '../Code'
@@ -22,6 +22,7 @@ export default function Buttons() {
   const range = useRef<HTMLInputElement>(null)
   const panzoomRef = useRef<PanzoomObject>(null)
   let panzoom = panzoomRef.current
+  const [panEnabled, setPanEnabled] = useState(true)
   useEffect(() => {
     panzoom = panzoomRef.current = Panzoom(elem.current)
   }, [])
@@ -62,6 +63,20 @@ export default function Buttons() {
           step="0.1"
           defaultValue="1"
         />
+        <div>
+          <input
+            type="checkbox"
+            id="disable-pan"
+            checked={panEnabled}
+            onChange={(e) => {
+              setPanEnabled(e.target.checked)
+              panzoom.setOptions({
+                disablePan: !e.target.checked
+              })
+            }}
+          />
+          <label htmlFor="disable-pan">Enable panning</label>
+        </div>
       </div>
       <div className="panzoom-parent">
         <div className="panzoom" ref={elem}>
