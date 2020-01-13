@@ -198,6 +198,8 @@ export interface PanzoomObject {
    * Reset the pan and zoom to startX, startY, and startScale.
    * Animates by default, ignoring the global option.
    * Pass `{ animate: false }` to override.
+   * Reset ignores the `disablePan`, `disableZoom`, and `panOnlyWhenZoomed` options.
+   * Pass `{ force: false }` to override.
    *
    * ```js
    * panzoom.reset()

@@ -108,6 +108,13 @@ function Panzoom(
     ) {
       setMinMax()
     }
+    if (opts.hasOwnProperty('disablePan')) {
+      if (opts.disablePan) {
+        destroy()
+      } else {
+        bind()
+      }
+    }
   }
 
   let x = 0
@@ -368,7 +375,7 @@ function Panzoom(
   }
 
   function reset(resetOptions?: PanzoomOptions) {
-    const opts = { ...options, animate: true, ...resetOptions }
+    const opts = { ...options, animate: true, force: true, ...resetOptions }
     scale = constrainScale(opts.startScale, opts).scale
     const panResult = constrainXY(opts.startX, opts.startY, scale, opts)
     x = panResult.x
@@ -452,7 +459,7 @@ function Panzoom(
     origX = origY = startClientX = startClientY = undefined
   }
 
-  if (!options.disablePan) {
+  function bind() {
     onPointer('down', elem, handleDown)
     onPointer('move', document, move, { passive: true })
     onPointer('up', document, handleUp, { passive: true })
@@ -462,6 +469,10 @@ function Panzoom(
     destroyPointer('down', elem, handleDown)
     destroyPointer('move', document, move)
     destroyPointer('up', document, handleUp)
+  }
+
+  if (!options.disablePan) {
+    bind()
   }
 
   return {
