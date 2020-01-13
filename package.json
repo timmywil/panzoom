@@ -8,7 +8,7 @@
     "build-demo": "yarn webpack --mode production",
     "clean": "rm -rf dist/",
     "commit": "git-cz",
-    "docs": "typedoc --theme markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
+    "docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
     "eslint": "eslint .",
     "lint": "concurrently --raw \"yarn type-check\" \"yarn eslint\" \"yarn prettier\"",
     "lint:fix": "concurrently --raw \"yarn type-check\" \"lint-staged\"",
