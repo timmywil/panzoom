@@ -145,7 +145,6 @@
         "@semantic-release/git",
         {
           "assets": [
-            "dist",
             "README.md",
             "package.json"
           ]
