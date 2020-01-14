@@ -17,4 +17,4 @@
 
 ### Steps to reproduce
 
-<!-- Describe how to reproduce this issue. Please provide a working demo; you can use [this template](https://jsbin.com/mofeli/edit?html,js,output) as a base. -->
+<!-- Describe how to reproduce this issue. Please provide a working demo; you can use [this template](https://jsbin.com/dibofogini/1/edit?html,js,output) as a base. -->
