@@ -12,7 +12,7 @@ import './polyfills'
 import { PanOptions, PanzoomEvent, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
 import { destroyPointer, onPointer } from './events'
-import { getDimensions, setStyle, setTransform } from './css'
+import { getDimensions, setStyle, setTransform, setTransition } from './css'
 
 import isAttached from './isAttached'
 import isExcluded from './isExcluded'
@@ -141,7 +141,16 @@ function Panzoom(
 
   function setTransformWithEvent(eventName: PanzoomEvent, opts: PanzoomOptions) {
     const value = { x, y, scale }
-    opts.setTransform(elem, value, opts)
+    requestAnimationFrame(() => {
+      if (typeof opts.animate === 'boolean') {
+        if (opts.animate) {
+          setTransition(elem, opts)
+        } else {
+          setStyle(elem, 'transition', 'none')
+        }
+      }
+      opts.setTransform(elem, value, opts)
+    })
     trigger(eventName, value, opts)
     trigger('panzoomchange', value, opts)
     return value

@@ -59,9 +59,8 @@ export function setStyle(elem: HTMLElement | SVGElement, name: string, value: st
  * and takes care of prefixing the transition and transform
  */
 export function setTransition(elem: HTMLElement | SVGElement, options: PanzoomOptions) {
-  const transition = getPrefixedName('transition')
   const transform = getPrefixedName('transform')
-  setStyle(elem, transition, `${transform} ${options.duration}ms ${options.easing}`)
+  setStyle(elem, 'transition', `${transform} ${options.duration}ms ${options.easing}`)
 }
 
 /**
@@ -70,18 +69,9 @@ export function setTransition(elem: HTMLElement | SVGElement, options: PanzoomOp
 export function setTransform(
   elem: HTMLElement | SVGElement,
   { x, y, scale }: CurrentValues,
-  options: PanzoomOptions = {}
+  _?: PanzoomOptions
 ) {
-  if (typeof options.animate === 'boolean') {
-    if (options.animate) {
-      setTransition(elem, options)
-    } else {
-      setStyle(elem, 'transition', 'none')
-    }
-  }
-  requestAnimationFrame(() => {
-    setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
-  })
+  setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
 }
 
 /**
