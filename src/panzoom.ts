@@ -365,7 +365,7 @@ function Panzoom(
       y: (clientY / effectiveArea.height) * (effectiveArea.height * toScale)
     }
 
-    return zoom(toScale, { ...zoomOptions, focal, animate: false })
+    return zoom(toScale, { animate: false, ...zoomOptions, focal })
   }
 
   function zoomWithWheel(event: WheelEvent, zoomOptions?: ZoomOptions) {
