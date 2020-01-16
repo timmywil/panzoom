@@ -10,6 +10,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import SVG from './examples/SVG'
 import Standard from './examples/Standard'
+import Rotate from './examples/Rotate'
 
 function Demos() {
   return (
@@ -32,6 +33,7 @@ function Demos() {
       <ContainInside />
       <ContainOutside />
       <DisabledYAxis />
+      <Rotate />
     </div>
   )
 }
