@@ -5,7 +5,7 @@ import Demo from '../Demo'
 
 const code = <Code>{`Panzoom(elem, { disableYAxis: true })`}</Code>
 
-export default function ContainInside() {
+export default function DisabledYAxis() {
   const elem = useRef<HTMLDivElement>(null)
   useEffect(() => {
     Panzoom(elem.current, { disableYAxis: true })

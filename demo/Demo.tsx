@@ -2,11 +2,12 @@ import React from 'react'
 
 interface Props {
   title: string
+  subtitle?: string
   code: React.ReactNode
   children: React.ReactNode
 }
 
-export default function Demo({ title, code, children }: Props) {
+export default function Demo({ title, subtitle, code, children }: Props) {
   return (
     <div className="demo">
       <a
@@ -16,6 +17,7 @@ export default function Demo({ title, code, children }: Props) {
         <h2>{title}</h2>
       </a>
       {code}
+      {subtitle && <p>{subtitle}</p>}
       <div className="live-example">{children}</div>
     </div>
   )

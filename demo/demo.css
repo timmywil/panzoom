@@ -38,6 +38,10 @@ body {
   margin-bottom: 30px;
   border-radius: 5px;
 }
+.demo p {
+  margin: 0 0 1em;
+  font-size: 18px;
+}
 pre {
   border-radius: 5px;
   margin: 0 0 20px !important;

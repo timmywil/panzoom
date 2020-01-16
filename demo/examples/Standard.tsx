@@ -17,7 +17,7 @@ rangeInput.addEventListener('input', (event) => {
   </Code>
 )
 
-export default function Buttons() {
+export default function Standard() {
   const elem = useRef<HTMLDivElement>(null)
   const range = useRef<HTMLInputElement>(null)
   const panzoomRef = useRef<PanzoomObject>(null)
