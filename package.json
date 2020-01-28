@@ -3,6 +3,7 @@
   "version": "4.0.2",
   "description": "Pan and zoom elements anywhere using native transformations",
   "main": "dist/panzoom.js",
+  "types": "dist/src/panzoom.d.ts",
   "scripts": {
     "build": "yarn clean && rollup --config && yarn minify",
     "build-demo": "yarn webpack --mode production",
