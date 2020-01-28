@@ -172,6 +172,7 @@ export interface CurrentValues {
   x: number
   y: number
   scale: number
+  isSVG?: boolean
 }
 
 export interface PanzoomObject {
