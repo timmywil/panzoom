@@ -43,6 +43,7 @@ const defaultOptions: PanzoomOptions = {
     e.stopPropagation()
   },
   maxScale: 4,
+  minDistance: 0,
   minScale: 0.125,
   overflow: 'hidden',
   panOnlyWhenZoomed: false,
@@ -128,6 +129,7 @@ function Panzoom(
   let x = 0
   let y = 0
   let scale = 1
+  let isWatching = false
   let isPanning = false
   zoom(options.startScale, { animate: false })
   // Wait for scale to update
@@ -427,12 +429,10 @@ function Panzoom(
       return
     }
     addPointer(pointers, event)
-    isPanning = true
+    isWatching = true
     options.handleStartEvent(event)
     origX = x
     origY = y
-
-    trigger('panzoomstart', { x, y, scale, isSVG, originalEvent: event }, options)
 
     // This works whether there are multiple
     // pointers or not
@@ -445,7 +445,7 @@ function Panzoom(
 
   function move(event: PointerEvent) {
     if (
-      !isPanning ||
+      !isWatching ||
       origX === undefined ||
       origY === undefined ||
       startClientX === undefined ||
@@ -455,22 +455,37 @@ function Panzoom(
     }
     addPointer(pointers, event)
     const current = getMiddle(pointers)
+    let scaleDiff = 0
     if (pointers.length > 1) {
       // Use the distance between the first 2 pointers
       // to determine the current scale
-      const diff = getDistance(pointers) - startDistance
-      const toScale = constrainScale((diff * options.step) / 80 + startScale).scale
-      zoomToPoint(toScale, current)
+      scaleDiff = getDistance(pointers) - startDistance
     }
 
-    pan(
-      origX + (current.clientX - startClientX) / scale,
-      origY + (current.clientY - startClientY) / scale,
-      {
-        animate: false
-      },
-      event
-    )
+    if (!isPanning) {
+      // have we moved far enough to trigger panning/zooming
+      const panDiff = Math.hypot(current.clientX - startClientX, current.clientY - startClientY)
+      if (Math.abs(scaleDiff) > options.minDistance || panDiff > options.minDistance) {
+        trigger('panzoomstart', { x: origX, y: origY, scale: startScale, isSVG, originalEvent: event }, options)
+        isPanning = true
+      }
+    }
+
+    if (isPanning) {
+      if (pointers.length > 1) {
+        const toScale = constrainScale((scaleDiff * options.step) / 80 + startScale).scale
+        zoomToPoint(toScale, current)
+      }
+
+      pan(
+        origX + (current.clientX - startClientX) / scale,
+        origY + (current.clientY - startClientY) / scale,
+        {
+          animate: false
+        },
+        event
+      )
+    }
   }
 
   function handleUp(event: PointerEvent) {
@@ -483,9 +498,10 @@ function Panzoom(
     // Can restart without having to reinitiate all of them
     // Remove the pointer regardless of the isPanning state
     removePointer(pointers, event)
-    if (!isPanning) {
+    if (!isWatching) {
       return
     }
+    isWatching = false
     isPanning = false
     origX = origY = startClientX = startClientY = undefined
   }
