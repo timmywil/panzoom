@@ -44,7 +44,8 @@
     "email": "4timmywil@gmail.com"
   },
   "dependencies": {
-    "marked": ">=0.7.0"
+    "marked": ">=0.7.0",
+    "serialize-javascript": ">=2.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
