@@ -56,6 +56,9 @@ export default function Standard() {
           onInput={(event) => {
             panzoom.zoom((event.target as HTMLInputElement).valueAsNumber)
           }}
+          onChange={(event) => {
+            panzoom.zoom((event.target as HTMLInputElement).valueAsNumber)
+          }}
           className="range-input"
           type="range"
           min="0.1"

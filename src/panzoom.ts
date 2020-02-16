@@ -68,7 +68,7 @@ function Panzoom(
   const isSVG = isSVGElement(elem)
 
   // Set overflow on the parent
-  const parent = elem.parentElement
+  const parent = elem.parentNode as HTMLElement | SVGElement
   parent.style.overflow = options.overflow
   parent.style.userSelect = 'none'
   // This is important for mobile to
@@ -140,7 +140,7 @@ function Panzoom(
   }
 
   function setTransformWithEvent(eventName: PanzoomEvent, opts: PanzoomOptions) {
-    const value = { x, y, scale }
+    const value = { x, y, scale, isSVG }
     requestAnimationFrame(() => {
       if (typeof opts.animate === 'boolean') {
         if (opts.animate) {

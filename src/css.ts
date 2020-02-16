@@ -1,5 +1,7 @@
 import { CurrentValues, PanzoomOptions } from './types'
 
+const isIE = !!(document as any).documentMode
+
 /**
  * Proper prefixing for cross-browser compatibility
  */
@@ -68,17 +70,21 @@ export function setTransition(elem: HTMLElement | SVGElement, options: PanzoomOp
  */
 export function setTransform(
   elem: HTMLElement | SVGElement,
-  { x, y, scale }: CurrentValues,
+  { x, y, scale, isSVG }: CurrentValues,
   _?: PanzoomOptions
 ) {
   setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
+  if (isSVG && isIE) {
+    const matrixValue = window.getComputedStyle(elem).getPropertyValue('transform')
+    elem.setAttribute('transform', matrixValue)
+  }
 }
 
 /**
  * Dimensions used in containment and focal point zooming
  */
 export function getDimensions(elem: HTMLElement | SVGElement) {
-  const parent = elem.parentElement
+  const parent = elem.parentNode as HTMLElement | SVGElement
   const style = window.getComputedStyle(elem)
   const parentStyle = window.getComputedStyle(parent)
   const rectElem = elem.getBoundingClientRect()
