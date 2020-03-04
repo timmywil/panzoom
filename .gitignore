@@ -1,5 +1,5 @@
 node_modules
-package-lock.json
+yarn.lock
 *.log
 .rpt2_cache/
 *.d.ts

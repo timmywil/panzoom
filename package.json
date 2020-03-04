@@ -5,20 +5,21 @@
   "main": "dist/panzoom.js",
   "types": "dist/src/panzoom.d.ts",
   "scripts": {
-    "build": "yarn clean && rollup --config && yarn minify",
-    "build-demo": "yarn webpack --mode production",
+    "build": "npm run clean && rollup --config && npm run minify",
+    "build-demo": "npm run webpack --mode production",
     "clean": "rm -rf dist/",
     "commit": "git-cz",
     "docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
     "eslint": "eslint .",
-    "lint": "concurrently --raw \"yarn type-check\" \"yarn eslint\" \"yarn prettier\"",
-    "lint:fix": "concurrently --raw \"yarn type-check\" \"lint-staged\"",
-    "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && yarn sizeup",
+    "lint": "concurrently --raw \"npm run type-check\" \"npm run eslint\" \"npm run prettier\"",
+    "lint:fix": "concurrently --raw \"npm run type-check\" \"lint-staged\"",
+    "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && npm run sizeup",
     "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\"",
+    "preinstall": "npx npm-force-resolutions",
     "release": "cross-env HUSKY_SKIP_HOOKS=1 semantic-release",
     "sizeup": "echo \"gzipped size: \" && gzip-size dist/panzoom.min.js",
     "start": "webpack-dev-server",
-    "test": "yarn lint && yarn test:unit",
+    "test": "npm run lint && npm run test:unit",
     "test:unit": "karma start",
     "test:watch": "karma start --singleRun=false --autoWatch",
     "type-check": "tsc -p tsconfig.json --noEmit"
@@ -79,6 +80,7 @@
     "karma-typescript": "^4.1.1",
     "lint-staged": "^10.0.3",
     "mocha": "^7.0.0",
+    "npm-force-resolutions": "0.0.3",
     "prettier": "^1.18.2",
     "prismjs": "^1.17.1",
     "puppeteer": "^2.0.0",
@@ -98,9 +100,7 @@
     "webpack-dev-server": "^3.8.0"
   },
   "resolutions": {
-    "lodash": ">=4.17.15",
-    "marked": ">=0.7.0",
-    "serialize-javascript": ">=2.1.1"
+    "lodash": ">=4.17.15"
   },
   "prettier": {
     "printWidth": 100,
@@ -116,7 +116,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint:fix",
+      "pre-commit": "npm run lint:fix",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -138,7 +138,7 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "yarn docs && yarn build"
+          "prepareCmd": "npm run docs && npm run build"
         }
       ],
       [
