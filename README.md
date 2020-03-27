@@ -61,7 +61,8 @@ With an AMD loader in an anonymous module:
 
 ```js
 define(['@panzoom/panzoom'], function (Panzoom) {
-  Panzoom('.panzoom')
+  const elem = document.getElementById('panzoom-element')
+  Panzoom(elem)
 })
 ```
 
