@@ -146,7 +146,8 @@
         {
           "assets": [
             "README.md",
-            "package.json"
+            "package.json",
+            "package-lock.json"
           ]
         }
       ],
