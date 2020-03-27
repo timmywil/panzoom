@@ -1,6 +1,6 @@
 {
   "name": "@panzoom/panzoom",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "Pan and zoom elements anywhere using native transformations",
   "main": "dist/panzoom.js",
   "types": "dist/src/panzoom.d.ts",
