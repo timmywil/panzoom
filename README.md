@@ -60,7 +60,7 @@ const Panzoom = require('@panzoom/panzoom')
 With an AMD loader in an anonymous module:
 
 ```js
-define(['@panzoom/panzoom'], function(Panzoom) {
+define(['@panzoom/panzoom'], function (Panzoom) {
   Panzoom('.panzoom')
 })
 ```
@@ -812,7 +812,7 @@ method or the `zoom` method's focal option.
 // Bind to mousewheel
 elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
 // Bind to shift+mousewheel
-elem.parentElement.addEventListener('wheel', function(event) {
+elem.parentElement.addEventListener('wheel', function (event) {
   if (!event.shiftKey) return
   panzoom.zoomWithWheel(event)
 })

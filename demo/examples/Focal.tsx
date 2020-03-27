@@ -27,7 +27,7 @@ export default function Focal() {
   useEffect(() => {
     panzoom = panzoomRef.current = Panzoom(elem.current)
     const parent = elem.current.parentElement
-    parent.addEventListener('wheel', function(event) {
+    parent.addEventListener('wheel', function (event) {
       if (!event.shiftKey) {
         return
       }

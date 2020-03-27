@@ -60,12 +60,12 @@ describe('Panzoom', () => {
     const addEvent = Element.prototype.addEventListener
     const removeEvent = Element.prototype.removeEventListener
     // eslint-disable-next-line
-    Element.prototype.addEventListener = function(event: any, fn: any, options: any) {
+    Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
       events[event] = fn
       addEvent.call(this, event, fn, options)
     }
     // eslint-disable-next-line
-    Element.prototype.removeEventListener = function(event: any, fn: any, options: any) {
+    Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
       delete events[event]
       removeEvent.call(this, event, fn, options)
     }
