@@ -126,6 +126,7 @@ describe('Panzoom', () => {
       // Zoom needs to paint first
       await skipFrame()
       panzoom.pan(100, 100)
+      await skipFrame()
       // Should constrain to 25, 25
       let pan = panzoom.getPan()
       assert.equal(pan.x, 25)
