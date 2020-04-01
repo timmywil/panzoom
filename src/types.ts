@@ -49,7 +49,7 @@ interface MiscOptions {
    * On the first pointer event, when panning starts,
    * the default Panzoom behavior is to call
    * `event.preventDefault()` and `event.stopPropagation()`
-   * on that event. The former is almost certainly a necesity,
+   * on that event. The former is almost certainly a necessity;
    * the latter enables Panzoom elements within Panzoom elements.
    *
    * But there are some cases where the default is
@@ -126,13 +126,15 @@ interface PanSpecificOptions {
    *   than its parent and cannot be panned
    *   to the inside. In other words, no
    *   empty space around the element will be shown.
+   *
+   * **Note**: the containment pan adjustment is not affected by the `disablePan` option.
    */
   contain?: 'inside' | 'outside'
   /** The cursor style to set on the panzoom element */
   cursor?: string
   /**
    * Disable panning functionality.
-   * Note: disablePan does not affect focal point zooming or the constrain option.
+   * Note: disablePan does not affect focal point zooming or the contain option.
    *   The element will still pan accordingly.
    */
   disablePan?: boolean
@@ -176,7 +178,7 @@ export interface CurrentValues {
 }
 
 export interface PanzoomObject {
-  /** Remove all event listeners bind to the the Panzoom element */
+  /** Remove all event listeners bound to the the Panzoom element */
   destroy: () => void
   /** Get the current x/y translation */
   getPan: () => { x: number; y: number }
@@ -261,16 +263,12 @@ export interface PanzoomObject {
   /**
    * Zoom the Panzoom element to a focal point using the given WheelEvent
    *
-   * `disablePan` will prevent the focal point adjustment and will only zoom.
-   *
-   * `zoomWithWheel` normally uses `deltaY` to determine the scale,
-   * but will fall back to `deltaX` in case the shift modifier is used with
-   * the wheel event. On a mac, that usually translates to horizontal scrolling,
-   * but this method assumes the desired behavior is zooming.
    *
    * This is a convenience function that may not handle all use cases.
    * Other cases should handroll solutions using the `zoomToPoint`
    * method or the `zoom` method's focal option.
+   *
+   * **Note**: the focal point zooming pan adjustment is not affected by the `disablePan` option.
    *
    * ```js
    * // Bind to mousewheel
@@ -278,6 +276,10 @@ export interface PanzoomObject {
    * // Bind to shift+mousewheel
    * elem.parentElement.addEventListener('wheel', function(event) {
    *   if (!event.shiftKey) return
+   *   // Panzoom will automatically use `deltaX` here instead
+   *   // of `deltaY`. On a mac, the shift modifier usually
+   *   // translates to horizontal scrolling, but Panzoom assumes
+   *   // the desired behavior is zooming.
    *   panzoom.zoomWithWheel(event)
    * })
    * ```
