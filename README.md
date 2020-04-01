@@ -53,7 +53,7 @@ import Panzoom from '@panzoom/panzoom'
 
 With commonjs or browserify:
 
-```
+```js
 const Panzoom = require('@panzoom/panzoom')
 ```
 
