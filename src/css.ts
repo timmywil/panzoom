@@ -71,7 +71,7 @@ export function setTransition(elem: HTMLElement | SVGElement, options: PanzoomOp
 export function setTransform(
   elem: HTMLElement | SVGElement,
   { x, y, scale, isSVG }: CurrentValues,
-  _?: PanzoomOptions
+  _options?: PanzoomOptions
 ) {
   setStyle(elem, 'transform', `scale(${scale}) translate(${x}px, ${y}px)`)
   if (isSVG && isIE) {

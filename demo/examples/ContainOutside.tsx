@@ -13,9 +13,6 @@ export default function ContainOutside() {
   useEffect(() => {
     setTimeout(() => {
       panzoom = Panzoom(elem.current, { contain: 'outside', startScale: 1.5 })
-      elem.current.parentNode.addEventListener('wheel', (e) => {
-        panzoom.zoomWithWheel(e as WheelEvent)
-      })
     }, 1000)
   }, [])
   return (

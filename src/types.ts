@@ -11,6 +11,17 @@ export type PanzoomEvent =
 interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean
+  /**
+   * This option treats the Panzoom element's parent
+   * as a canvas. Effectively, Panzoom binds the
+   * down handler to the parent instead of the Panzoom
+   * element, so that pointer events anywhere on the "canvas"
+   * moves its children. See issue #472.
+   *
+   * **Note**: setting this option to `true` also changes
+   * where the `cursor` style is applied (i.e. the parent).
+   */
+  canvas?: boolean
   /** Duration of the transition (ms) */
   duration?: number
   /** CSS Easing used for transitions */

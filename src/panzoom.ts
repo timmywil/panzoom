@@ -21,6 +21,7 @@ import shallowClone from './shallowClone'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
+  canvas: false,
   cursor: 'move',
   disablePan: false,
   disableZoom: false,
@@ -74,9 +75,9 @@ function Panzoom(
   // This is important for mobile to
   // prevent scrolling while panning
   parent.style.touchAction = 'none'
+  // Set the cursor style on the parent if we're in canvas mode
+  ;(options.canvas ? parent : elem).style.cursor = options.cursor
 
-  // Set some default styles on the panzoom element
-  elem.style.cursor = options.cursor
   elem.style.userSelect = 'none'
   elem.style.touchAction = 'none'
   // The default for HTML is '50% 50%'
@@ -469,13 +470,13 @@ function Panzoom(
   }
 
   function bind() {
-    onPointer('down', elem, handleDown)
+    onPointer('down', options.canvas ? parent : elem, handleDown)
     onPointer('move', document, move, { passive: true })
     onPointer('up', document, handleUp, { passive: true })
   }
 
   function destroy() {
-    destroyPointer('down', elem, handleDown)
+    destroyPointer('down', options.canvas ? parent : elem, handleDown)
     destroyPointer('move', document, move)
     destroyPointer('up', document, handleUp)
   }
