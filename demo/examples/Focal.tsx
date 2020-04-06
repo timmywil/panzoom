@@ -7,7 +7,10 @@ import Demo from '../Demo'
 const code = (
   <Code>
     {`\
-const panzoom = Panzoom(elem)
+// This example also showcases the canvas option
+// Pointer events anywhere in the parent move
+// the target.
+const panzoom = Panzoom(elem, { canvas: true })
 const parent = elem.parentElement
 // No function bind needed
 parent.addEventListener('wheel', panzoom.zoomWithWheel)
@@ -25,9 +28,9 @@ export default function Focal() {
   const panzoomRef = useRef<PanzoomObject>(null)
   let panzoom = panzoomRef.current
   useEffect(() => {
-    panzoom = panzoomRef.current = Panzoom(elem.current)
+    panzoom = panzoomRef.current = Panzoom(elem.current, { canvas: true })
     const parent = elem.current.parentElement
-    parent.addEventListener('wheel', function(event) {
+    parent.addEventListener('wheel', function (event) {
       if (!event.shiftKey) {
         return
       }

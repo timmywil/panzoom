@@ -32,7 +32,7 @@ const [constructor, defaultOptions] = redoLinks(read('../docs/modules/_panzoom_.
   .split('### `Const` defaultOptions')
 data += constructor
 const parsedDefaults = {}
-defaultOptions.replace(/\*\*(\w+)\*\*: \*\w+\* = (["\w-\.]+)/g, function(all, key, value) {
+defaultOptions.replace(/\*\*(\w+)\*\*: \*\w+\* = (["\w-\.]+)/g, function (all, key, value) {
   parsedDefaults[key] = value
   return all
 })
@@ -55,7 +55,7 @@ const panzoomOptions =
     .replace(rProperties, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')
 data += panzoomOptions
   // Add in default values to option descriptions
-  .replace(/\*\*(\w+)\*\*\??\s*: \*\w+\*/g, function(all, key) {
+  .replace(/\*\*(\w+)\*\*\??\s*: \*\w+\*/g, function (all, key) {
     return parsedDefaults[key] ? `${all} (Default: **${parsedDefaults[key]}**)` : all
   })
 
