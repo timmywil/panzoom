@@ -6,8 +6,8 @@
   "types": "dist/src/panzoom.d.ts",
   "scripts": {
     "build": "npm run clean && rollup --config && npm run minify",
-    "build-demo": "npm run webpack --mode production",
     "clean": "rm -rf dist/",
+    "demo": "webpack --mode production",
     "docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
     "eslint": "eslint .",
     "format": "prettier --write \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"**/*.md\"",
