@@ -19,6 +19,8 @@ if (typeof (window as any).PointerEvent === 'function') {
   }
 }
 
+export { events as eventNames }
+
 export function onPointer(
   event: 'down' | 'move' | 'up',
   elem: HTMLElement | SVGElement | Document,

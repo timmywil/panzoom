@@ -191,6 +191,12 @@ export interface CurrentValues {
 export interface PanzoomObject {
   /** Remove all event listeners bound to the the Panzoom element */
   destroy: () => void
+  /**
+   * This object exposes the event names used by Panzoom,
+   * depending on the current browser's support for
+   * Pointer or Touch events.
+   */
+  eventNames: { down: string; move: string; up: string }
   /** Get the current x/y translation */
   getPan: () => { x: number; y: number }
   /** Get the current scale */
