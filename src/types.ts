@@ -73,7 +73,8 @@ interface MiscOptions {
    *     event.preventDefault()
    *   }
    * })
-   * // Do nothing (this probably breaks things on mobile tho)
+   * // Do nothing.
+   * // This can change dragging behavior on mobile.
    * Panzoom(elem, {
    *   handleStartEvent: () => {}
    * })
