@@ -11,7 +11,7 @@ import './polyfills'
 
 import { PanOptions, PanzoomEvent, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
 import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
-import { destroyPointer, onPointer } from './events'
+import { destroyPointer, eventNames, onPointer } from './events'
 import { getDimensions, setStyle, setTransform, setTransition } from './css'
 
 import isAttached from './isAttached'
@@ -487,6 +487,7 @@ function Panzoom(
 
   return {
     destroy,
+    eventNames,
     getPan: () => ({ x, y }),
     getScale: () => scale,
     getOptions: () => shallowClone(options),
