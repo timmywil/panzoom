@@ -30,11 +30,6 @@ const anchorStyle: CSSProperties = {
   borderColor: '#dd33aa'
 }
 
-const lastAnchorStyle = {
-  ...anchorStyle,
-  top: ANCHOR_TOP + 50
-}
-
 export default function Exclude() {
   const elem = useRef<HTMLDivElement>(null)
   const elemTwo = useRef<HTMLDivElement>(null)
@@ -59,13 +54,27 @@ export default function Exclude() {
           <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
           <a
             style={anchorStyle}
+            id="link"
             target="_blank"
             rel="noopener noreferrer"
-            id="link"
             href="https://timmywil.com/panzoom/">
-            This link will handle the click
+            This link will not allow dragging.
           </a>
-          <a style={lastAnchorStyle}>This one will pass through the event.</a>
+          <a
+            style={{ ...anchorStyle, top: ANCHOR_TOP + 50 }}
+            className="custom-excluded-class"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://timmywil.com/panzoom/">
+            This link will also not allow dragging.
+          </a>
+          <a
+            style={{ ...anchorStyle, top: ANCHOR_TOP + 100 }}
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://timmywil.com/panzoom/">
+            This one will allow dragging.
+          </a>
           <div
             ref={elemTwo}
             style={{
