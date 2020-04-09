@@ -94,10 +94,6 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   },
-  "resolutions": {
-    "lodash": ">=4.17.15",
-    "minimist": ">=1.2.3"
-  },
   "prettier": {
     "printWidth": 100,
     "semi": false,
