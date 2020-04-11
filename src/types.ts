@@ -158,6 +158,8 @@ interface PanSpecificOptions {
   relative?: boolean
   /** Disable panning while the scale is equal to the starting value */
   panOnlyWhenZoomed?: boolean
+  /** Round transform-translate x and values to whole pixels. (Prevents images getting blurry)  */
+  roundToPixels?: boolean
 }
 
 interface ZoomSpecificOptions {
