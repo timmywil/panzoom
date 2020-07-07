@@ -44,7 +44,8 @@ const defaultOptions: PanzoomOptions = {
   startX: 0,
   startY: 0,
   startScale: 1,
-  step: 0.3
+  step: 0.3,
+  touchAction: 'none'
 }
 
 function Panzoom(
@@ -68,19 +69,21 @@ function Panzoom(
 
   const isSVG = isSVGElement(elem)
 
-  // Set overflow on the parent
   const parent = elem.parentNode as HTMLElement | SVGElement
+
+  // Set parent styles
   parent.style.overflow = options.overflow
   parent.style.userSelect = 'none'
   // This is important for mobile to
   // prevent scrolling while panning
-  parent.style.touchAction = 'none'
+  parent.style.touchAction = options.touchAction
   // Set the cursor style on the parent if we're in canvas mode
   ;(options.canvas ? parent : elem).style.cursor = options.cursor
 
+  // Set element styles
   elem.style.userSelect = 'none'
-  elem.style.touchAction = 'none'
-  // The default for HTML is '50% 50%'
+  elem.style.touchAction = options.touchAction
+  1 // The default for HTML is '50% 50%'
   // The default for SVG is '0 0'
   // SVG can't be changed in IE
   setStyle(
@@ -102,19 +105,16 @@ function Panzoom(
     if (opts.hasOwnProperty('overflow')) {
       parent.style.overflow = opts.overflow
     }
+    if (opts.hasOwnProperty('touchAction')) {
+      parent.style.touchAction = opts.touchAction
+      elem.style.touchAction = opts.touchAction
+    }
     if (
       opts.hasOwnProperty('minScale') ||
       opts.hasOwnProperty('maxScale') ||
       opts.hasOwnProperty('contain')
     ) {
       setMinMax()
-    }
-    if (opts.hasOwnProperty('disablePan')) {
-      if (opts.disablePan) {
-        destroy()
-      } else {
-        bind()
-      }
     }
   }
 
@@ -481,9 +481,7 @@ function Panzoom(
     destroyPointer('up', document, handleUp)
   }
 
-  if (!options.disablePan) {
-    bind()
-  }
+  bind()
 
   return {
     destroy,

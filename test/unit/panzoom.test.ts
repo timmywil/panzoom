@@ -112,6 +112,23 @@ describe('Panzoom', () => {
     )
     document.body.removeChild(div)
   })
+  it("changes the parent's and elemenet's touchAction style with the touchAction option", () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const panzoom = Panzoom(div)
+    panzoom.setOptions({ touchAction: 'auto' })
+    assert.equal(
+      div.style.touchAction,
+      'auto',
+      'touch-action style changes when setting the touchAction option'
+    )
+    assert.equal(
+      div.parentElement.style.touchAction,
+      'auto',
+      'touch-action style changes when setting the touchAction option'
+    )
+    document.body.removeChild(div)
+  })
   describe('contain option', () => {
     it(': outside sets the pan on the zoom to maintain containment', async () => {
       const parent = document.createElement('div')
