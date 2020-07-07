@@ -124,12 +124,12 @@ interface MiscOptions {
   /** Scale used to set the beginning transform */
   startScale?: number
   /**
-   * This the style set for touch-action on both the
+   * This value is used to set touch-action on both the
    * Panzoom element and its parent.
-   * This is needed so that the native scroll on mobile
-   * doesn't interfere with panning or pinch zooming.
+   * It is needed because that the native scroll on mobile
+   * interferes with panning and pinch zooming.
    * Set this to empty string to re-enable scrolling
-   * on mobile, but keep in mind both scrolling and panning
+   * on mobile, but note that both scrolling and panning
    * cannot work at the same time.
    */
   touchAction?: string
