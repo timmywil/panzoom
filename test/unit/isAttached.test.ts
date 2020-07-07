@@ -13,6 +13,6 @@ describe('isAttached', () => {
     assert(!isAttached(div))
   })
   it('does not consider a document attached', () => {
-    assert(!isAttached(document as any))
+    assert(!isAttached(document))
   })
 })
