@@ -1,11 +1,11 @@
 let events: { down: string; move: string; up: string }
-if (typeof (window as any).PointerEvent === 'function') {
+if (typeof window.PointerEvent === 'function') {
   events = {
     down: 'pointerdown',
     move: 'pointermove',
     up: 'pointerup pointerleave pointercancel'
   }
-} else if (typeof (window as any).TouchEvent === 'function') {
+} else if (typeof window.TouchEvent === 'function') {
   events = {
     down: 'touchstart',
     move: 'touchmove',
@@ -21,16 +21,25 @@ if (typeof (window as any).PointerEvent === 'function') {
 
 export { events as eventNames }
 
+type PointerEventName =
+  | 'pointerdown'
+  | 'pointermove'
+  | 'pointerup'
+  | 'pointerleave'
+  | 'pointercancel'
+
 export function onPointer(
   event: 'down' | 'move' | 'up',
   elem: HTMLElement | SVGElement | Document,
   handler: (event: PointerEvent) => void,
-  eventOpts?: any
+  eventOpts?: boolean | AddEventListenerOptions
 ) {
   events[event].split(' ').forEach((name) => {
-    ;(elem as HTMLElement).addEventListener<
-      'pointerdown' | 'pointermove' | 'pointerup' | 'pointerleave' | 'pointercancel'
-    >(name as any, handler, eventOpts)
+    ;(elem as HTMLElement).addEventListener<PointerEventName>(
+      name as PointerEventName,
+      handler,
+      eventOpts
+    )
   })
 }
 
@@ -40,8 +49,6 @@ export function destroyPointer(
   handler: (event: PointerEvent) => void
 ) {
   events[event].split(' ').forEach((name) => {
-    ;(elem as HTMLElement).removeEventListener<
-      'pointerdown' | 'pointermove' | 'pointerup' | 'pointerleave' | 'pointercancel'
-    >(name as any, handler)
+    ;(elem as HTMLElement).removeEventListener<PointerEventName>(name as PointerEventName, handler)
   })
 }
