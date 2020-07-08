@@ -946,11 +946,11 @@ Fired whenever there is a pan, zoom, or reset. Note that direct calls to `option
 
 ### `"panzoomzoom"`
 
-Fired whenever the zoom is changed by any Panzoom `zoom` method, directly or internally.
+Fired whenever the zoom changes.
 
 ### `"panzoompan"`
 
-Fired whenever the zoom is changed by the `pan` method, directly or internally.
+Fired whenever the pan changes. Note that the pan can change as a result of focal point zooming.
 
 ### `"panzoomend"`
 
