@@ -469,21 +469,30 @@ function Panzoom(
     origX = origY = startClientX = startClientY = undefined
   }
 
+  let bound = false
   function bind() {
+    if (bound) {
+      return
+    }
+    bound = true
     onPointer('down', options.canvas ? parent : elem, handleDown)
     onPointer('move', document, move, { passive: true })
     onPointer('up', document, handleUp, { passive: true })
   }
 
   function destroy() {
+    bound = false
     destroyPointer('down', options.canvas ? parent : elem, handleDown)
     destroyPointer('move', document, move)
     destroyPointer('up', document, handleUp)
   }
 
-  bind()
+  if (!options.noBind) {
+    bind()
+  }
 
   return {
+    bind,
     destroy,
     eventNames,
     getPan: () => ({ x, y }),

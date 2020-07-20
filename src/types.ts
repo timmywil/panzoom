@@ -82,6 +82,9 @@ interface MiscOptions {
    */
   handleStartEvent?: (event: Event) => void
   /**
+   * Skip binding the default Panzoom event listeners
+   */
+  /**
    * **Change this at your own risk.**
    * The `transform-origin` is the origin from which transforms are applied.
    * Default: `'50% 50%'` for HTML and `'0 0'` for SVG.
@@ -200,6 +203,13 @@ export interface CurrentValues {
 }
 
 export interface PanzoomObject {
+  /**
+   * Bind the default down, move, and up event listeners to the Panzoom element.
+   * This does not normally need to be called.
+   * It gets called by default when creating a new Panzoom object,
+   * but can be skipped with the `noBind` option.
+   */
+  bind: () => void
   /** Remove all event listeners bound to the the Panzoom element */
   destroy: () => void
   /**
