@@ -84,6 +84,7 @@ interface MiscOptions {
   /**
    * Skip binding the default Panzoom event listeners
    */
+  noBind?: boolean
   /**
    * **Change this at your own risk.**
    * The `transform-origin` is the origin from which transforms are applied.
