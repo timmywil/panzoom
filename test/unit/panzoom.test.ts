@@ -248,4 +248,28 @@ describe('Panzoom', () => {
       document.body.removeChild(div)
     })
   })
+  describe('noBind option', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const events: any = {} // eslint-disable-line
+    const addEvent = Element.prototype.addEventListener
+    const removeEvent = Element.prototype.removeEventListener
+    // eslint-disable-next-line
+    Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
+      events[event] = fn
+      addEvent.call(this, event, fn, options)
+    }
+    // eslint-disable-next-line
+    Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
+      delete events[event]
+      removeEvent.call(this, event, fn, options)
+    }
+    const panzoom = Panzoom(div, { noBind: true })
+    assert(Object.keys(events).length === 0)
+    panzoom.bind()
+    assert(Object.keys(events).length > 0)
+    Element.prototype.addEventListener = addEvent
+    Element.prototype.removeEventListener = removeEvent
+    document.body.removeChild(div)
+  })
 })
