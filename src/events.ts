@@ -1,21 +1,22 @@
-let events: { down: string; move: string; up: string }
-if (typeof window.PointerEvent === 'function') {
-  events = {
-    down: 'pointerdown',
-    move: 'pointermove',
-    up: 'pointerup pointerleave pointercancel'
-  }
-} else if (typeof window.TouchEvent === 'function') {
-  events = {
-    down: 'touchstart',
-    move: 'touchmove',
-    up: 'touchend touchcancel'
-  }
-} else {
-  events = {
-    down: 'mousedown',
-    move: 'mousemove',
-    up: 'mouseup mouseleave'
+let events = {
+  down: 'mousedown',
+  move: 'mousemove',
+  up: 'mouseup mouseleave'
+}
+
+if (typeof window !== 'undefined') {
+  if (typeof window.PointerEvent === 'function') {
+    events = {
+      down: 'pointerdown',
+      move: 'pointermove',
+      up: 'pointerup pointerleave pointercancel'
+    }
+  } else if (typeof window.TouchEvent === 'function') {
+    events = {
+      down: 'touchstart',
+      move: 'touchmove',
+      up: 'touchend touchcancel'
+    }
   }
 }
 
