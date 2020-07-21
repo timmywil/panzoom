@@ -1,17 +1,28 @@
 import { CurrentValues, PanzoomOptions } from './types'
 
-const isIE = !!(document as any).documentMode
+const isIE = typeof document !== 'undefined' && !!(document as any).documentMode
+
+/**
+ * Lazy creation of a CSS style declaration
+ */
+let divStyle: CSSStyleDeclaration
+function createStyle() {
+  if (divStyle) {
+    return divStyle
+  }
+  return (divStyle = document.createElement('div').style)
+}
 
 /**
  * Proper prefixing for cross-browser compatibility
  */
-const divStyle = document.createElement('div').style
 const prefixes = ['webkit', 'moz', 'ms']
 const prefixCache: { [key: string]: string } = {}
 function getPrefixedName(name: string) {
   if (prefixCache[name]) {
     return prefixCache[name]
   }
+  const divStyle = createStyle()
   if (name in divStyle) {
     return (prefixCache[name] = name)
   }
