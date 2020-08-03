@@ -29,7 +29,7 @@ Fired whenever the zoom is changed by any Panzoom `zoom` method, directly or int
 
 ### `"panzoompan"`
 
-Fired whenever the zoom is changed by the `pan` method, directly or internally.
+Fired whenever the pan is changed by the `pan` method, directly or internally.
 
 ### `"panzoomend"`
 
