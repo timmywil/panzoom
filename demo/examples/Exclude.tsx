@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect, useRef } from 'react'
 
 import Code from '../Code'
 import Demo from '../Demo'
-import Panzoom from '../../src/panzoom'
+import Panzoom, { PanzoomObject } from '../../src/panzoom'
 
 const code = (
   <Code>{`\
@@ -33,8 +33,10 @@ const anchorStyle: CSSProperties = {
 export default function Exclude() {
   const elem = useRef<HTMLDivElement>(null)
   const elemTwo = useRef<HTMLDivElement>(null)
+  const panzoomRef = useRef<PanzoomObject>(null)
+  let panzoom = panzoomRef.current
   useEffect(() => {
-    Panzoom(elem.current, {
+    panzoom = panzoomRef.current = Panzoom(elem.current, {
       exclude: [document.getElementById('link')],
       excludeClass: 'custom-excluded-class'
     })
@@ -42,6 +44,11 @@ export default function Exclude() {
   }, [])
   return (
     <Demo title="Exclude elements within the Panzoom element from event handling" code={code}>
+      <div className="buttons">
+        <button onClick={() => panzoom.zoomIn()}>Zoom In</button>
+        <button onClick={() => panzoom.zoomOut()}>Zoom Out</button>
+        <button onClick={() => panzoom.reset()}>Reset</button>
+      </div>
       <div className="panzoom-parent">
         <div
           className="panzoom"
