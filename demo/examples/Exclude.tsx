@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect, useRef } from 'react'
 
 import Code from '../Code'
 import Demo from '../Demo'
-import Panzoom, { PanzoomObject } from '../../src/panzoom'
+import Panzoom from '../../src/panzoom'
 
 const code = (
   <Code>{`\
@@ -32,23 +32,14 @@ const anchorStyle: CSSProperties = {
 
 export default function Exclude() {
   const elem = useRef<HTMLDivElement>(null)
-  const elemTwo = useRef<HTMLDivElement>(null)
-  const panzoomRef = useRef<PanzoomObject>(null)
-  let panzoom = panzoomRef.current
   useEffect(() => {
-    panzoom = panzoomRef.current = Panzoom(elem.current, {
+    Panzoom(elem.current, {
       exclude: [document.getElementById('link')],
       excludeClass: 'custom-excluded-class'
     })
-    Panzoom(elemTwo.current)
   }, [])
   return (
     <Demo title="Exclude elements within the Panzoom element from event handling" code={code}>
-      <div className="buttons">
-        <button onClick={() => panzoom.zoomIn()}>Zoom In</button>
-        <button onClick={() => panzoom.zoomOut()}>Zoom Out</button>
-        <button onClick={() => panzoom.reset()}>Reset</button>
-      </div>
       <div className="panzoom-parent">
         <div
           className="panzoom"
@@ -82,17 +73,6 @@ export default function Exclude() {
             href="https://timmywil.com/panzoom/">
             This one will allow dragging.
           </a>
-          <div
-            ref={elemTwo}
-            style={{
-              width: '200px',
-              margin: '0 auto',
-              padding: 20,
-              backgroundColor: '#33DDDD',
-              color: 'black'
-            }}>
-            This is a Panzoom element within another Panzoom element. This works by default.
-          </div>
         </div>
       </div>
     </Demo>

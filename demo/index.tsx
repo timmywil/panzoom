@@ -11,6 +11,7 @@ import ReactDOM from 'react-dom'
 import SVG from './examples/SVG'
 import Standard from './examples/Standard'
 import Rotate from './examples/Rotate'
+import PanzoomWithinPanzoom from './examples/PanzoomWithinPanzoom'
 
 function Demos() {
   return (
@@ -29,11 +30,12 @@ function Demos() {
       <Standard />
       <Focal />
       <SVG />
-      <Exclude />
       <ContainInside />
       <ContainOutside />
+      <Exclude />
       <DisabledYAxis />
       <Rotate />
+      <PanzoomWithinPanzoom />
     </div>
   )
 }
