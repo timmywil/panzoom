@@ -9,20 +9,18 @@
     "clean": "rm -rf dist/",
     "demo": "webpack --mode production",
     "docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
-    "eslint": "eslint .",
-    "format": "prettier --write \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"**/*.md\"",
-    "lint": "concurrently --raw \"npm run type-check\" \"npm run eslint\" \"npm run prettier\"",
-    "lint:fix": "concurrently --raw \"npm run type-check\" \"lint-staged\"",
+    "format": "eslint . --fix && prettier --write \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"**/*.json\" \"**/*.md\"",
+    "lint": "eslint . && prettier --check \"**/*.md\" \"**/*.json\"",
     "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && npm run sizeup",
-    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\"",
+    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"**/*.json\" \"**/*.md\"",
     "release": "cross-env HUSKY_SKIP_HOOKS=1 semantic-release",
     "sizeup": "echo \"gzipped size: \" && gzip-size dist/panzoom.min.js",
     "start": "webpack-dev-server",
-    "test": "npm run lint && npm run test:unit && npm run test:node",
+    "test": "npm run lint && npm run typescript && npm run test:unit && npm run test:node",
     "test:unit": "karma start",
     "test:node": "npm run build && node test/test-node.js",
     "test:watch": "karma start --singleRun=false --autoWatch",
-    "type-check": "tsc -p tsconfig.json --noEmit"
+    "typescript": "tsc -p tsconfig.json --noEmit"
   },
   "files": [
     "MIT-License.txt",
@@ -73,7 +71,6 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha": "^2.0.1",
     "karma-typescript": "^5.0.3",
-    "lint-staged": "^10.2.11",
     "marked": "^1.1.1",
     "mocha": "^8.1.1",
     "prettier": "^2.0.5",
@@ -102,20 +99,61 @@
     "arrowParens": "always",
     "trailingComma": "none"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint:fix",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "react", "prettier"],
+    "extends": [
+      "plugin:@typescript-eslint/recommended",
+      "plugin:react/recommended",
+      "prettier/@typescript-eslint",
+      "prettier/react"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module",
+      "project": "./tsconfig.json",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "globals": {
+      "ga": "readonly"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "rules": {
+      "prettier/prettier": "error",
+      "@typescript-eslint/explicit-function-return-type": 0,
+      "@typescript-eslint/no-var-requires": 0,
+      "@typescript-eslint/no-use-before-define": 0,
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/explicit-module-boundary-types": 0
     }
   },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "prettier --write",
-      "eslint --fix ."
+  "eslintIgnore": [
+    "node_modules/",
+    "coverage/",
+    "demo/demo/",
+    "demo/panzoom.js",
+    "dist/",
+    "docs/"
+  ],
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "concurrently --raw \"npm run lint\" \"npm run typescript\""
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
     ],
-    "*.md": [
-      "prettier --write"
-    ]
+    "rules": {
+      "header-max-length": [2, "always", 80]
+    }
   },
   "publishConfig": {
     "access": "public"

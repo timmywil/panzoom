@@ -92,7 +92,7 @@ $ npm run lint
 Some things are fixable automatically.
 
 ```bash
-$ npm run lint:fix
+$ npm run format
 ```
 
 This script is run on commit, which means that the commit may need amending if any changes were made as a result of the commit.
