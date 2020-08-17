@@ -21,7 +21,7 @@ has been [shown by the community](https://github.com/timmywil/panzoom/issues?q=l
 Before submitting a request, please search for similar ones in the
 [closed issues](https://github.com/timmywil/panzoom/issues?q=is%3Aissue+is%3Aclosed+label%3Afeature).
 
-I got this convention from [lodash](https://github.com/lodash/lodash). It helps keep the open issues list uncluttered.
+This convention is borrowed from [lodash](https://github.com/lodash/lodash). It helps keep the open issues list uncluttered.
 
 ## Pull Requests
 
