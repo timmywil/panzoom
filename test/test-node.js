@@ -4,4 +4,7 @@
  * This allows loading in SSR, but Panzoom
  * should still only be initialized on the front-end.
  */
-require('../dist/panzoom')
+const assert = require('assert')
+const Panzoom = require('../dist/panzoom')
+
+assert(Panzoom)
