@@ -97,7 +97,11 @@ describe('Panzoom', () => {
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
     panzoom.setOptions({ cursor: 'default' })
-    assert.equal(div.style.cursor, 'default', 'Cursor style changes when setting the cursor option')
+    assert.strictEqual(
+      div.style.cursor,
+      'default',
+      'Cursor style changes when setting the cursor option'
+    )
     document.body.removeChild(div)
   })
   it("changes the parent's overflow with the overflow option", () => {
@@ -105,7 +109,7 @@ describe('Panzoom', () => {
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
     panzoom.setOptions({ overflow: 'visible' })
-    assert.equal(
+    assert.strictEqual(
       div.parentElement.style.overflow,
       'visible',
       'Overflow style changes when setting the overflow option'
@@ -117,12 +121,12 @@ describe('Panzoom', () => {
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
     panzoom.setOptions({ touchAction: 'auto' })
-    assert.equal(
+    assert.strictEqual(
       div.style.touchAction,
       'auto',
       'touch-action style changes when setting the touchAction option'
     )
-    assert.equal(
+    assert.strictEqual(
       div.parentElement.style.touchAction,
       'auto',
       'touch-action style changes when setting the touchAction option'
@@ -146,14 +150,14 @@ describe('Panzoom', () => {
       await skipFrame()
       // Should constrain to 25, 25
       let pan = panzoom.getPan()
-      assert.equal(pan.x, 25)
-      assert.equal(pan.y, 25)
+      assert.strictEqual(pan.x, 25)
+      assert.strictEqual(pan.y, 25)
       panzoom.zoom(1)
       await skipFrame()
       // Should constrain back to 0 0
       pan = panzoom.getPan()
-      assert.equal(pan.x, 0)
-      assert.equal(pan.y, 0)
+      assert.strictEqual(pan.x, 0)
+      assert.strictEqual(pan.y, 0)
       document.body.removeChild(parent)
     })
   })
@@ -165,10 +169,10 @@ describe('Panzoom', () => {
       panzoom.pan(1, 1)
       panzoom.zoom(2)
       let pan = panzoom.getPan()
-      assert.equal(pan.x, 1)
-      assert.equal(pan.y, 1)
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
       let scale = panzoom.getScale()
-      assert.equal(scale, 2)
+      assert.strictEqual(scale, 2)
       panzoom.setOptions({
         disablePan: true,
         disableZoom: true,
@@ -176,10 +180,10 @@ describe('Panzoom', () => {
       })
       panzoom.reset()
       pan = panzoom.getPan()
-      assert.equal(pan.x, 0)
-      assert.equal(pan.y, 0)
+      assert.strictEqual(pan.x, 0)
+      assert.strictEqual(pan.y, 0)
       scale = panzoom.getScale()
-      assert.equal(scale, 1)
+      assert.strictEqual(scale, 1)
     })
   })
   describe('force option', () => {
@@ -192,12 +196,12 @@ describe('Panzoom', () => {
       })
       panzoom.pan(1, 1)
       let pan = panzoom.getPan()
-      assert.equal(pan.x, 0)
-      assert.equal(pan.y, 0)
+      assert.strictEqual(pan.x, 0)
+      assert.strictEqual(pan.y, 0)
       panzoom.pan(1, 1, { force: true })
       pan = panzoom.getPan()
-      assert.equal(pan.x, 1)
-      assert.equal(pan.y, 1)
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
       document.body.removeChild(div)
     })
     it('ignores disableZoom', () => {
@@ -209,10 +213,10 @@ describe('Panzoom', () => {
       })
       panzoom.zoom(2)
       let scale = panzoom.getScale()
-      assert.equal(scale, 1)
+      assert.strictEqual(scale, 1)
       panzoom.zoom(2, { force: true })
       scale = panzoom.getScale()
-      assert.equal(scale, 2)
+      assert.strictEqual(scale, 2)
       document.body.removeChild(div)
     })
     it('ignores panOnlyWhenZoomed', () => {
@@ -224,12 +228,12 @@ describe('Panzoom', () => {
       })
       panzoom.pan(1, 1)
       let pan = panzoom.getPan()
-      assert.equal(pan.x, 0)
-      assert.equal(pan.y, 0)
+      assert.strictEqual(pan.x, 0)
+      assert.strictEqual(pan.y, 0)
       panzoom.pan(1, 1, { force: true })
       pan = panzoom.getPan()
-      assert.equal(pan.x, 1)
-      assert.equal(pan.y, 1)
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
       document.body.removeChild(div)
     })
   })
