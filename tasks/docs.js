@@ -26,36 +26,36 @@ function redoLinks(data) {
 
 const [constructor, defaultOptions] = redoLinks(read('../docs/modules/_panzoom_.md'))
   // Remove unwanted text
-  .replace(/[\w\W]+###\s*Panzoom/, '')
+  .replace(/[^]+###\s*Panzoom/, '')
   .replace('## Object literals\n\n', '')
-  .replace('### ▪ **defaultOptions**: *object*\n\n', '')
-  .split('### `Const` defaultOptions')
+  .split('### defaultOptions')
 data += constructor
-const parsedDefaults = {}
-defaultOptions.replace(/\*\*(\w+)\*\*: \*\w+\* = (["\w-\.]+)/g, function (all, key, value) {
-  parsedDefaults[key] = value
-  return all
-})
 
-const rProperties = /[\w\W]+##\s*Properties/
-const rOptional = /`Optional` /g
+const parsedDefaults = {}
+defaultOptions
+  .replace(/[^]+#### Properties:/, '')
+  .replace(/`(\w+)` \|[^|]+\|\s*([^|]+) |/g, function (all, key, value) {
+    if (key && value) {
+      parsedDefaults[key] = value
+    }
+    return all
+  })
+
+const rProperties = /[^]+##\s*Properties/
 const panzoomOptions =
   '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
   redoLinks(read('../docs/interfaces/_types_.miscoptions.md'))
     // Remove unwanted text
-    .replace(rOptional, '')
     .replace(rProperties, '\n\n---\n\n## `MiscOptions`\n') +
   redoLinks(read('../docs/interfaces/_types_.panspecificoptions.md'))
     // Remove unwanted text
-    .replace(rOptional, '')
     .replace(rProperties, '\n\n---\n\n## `PanOptions`\n\nIncludes `MiscOptions`\n\n') +
   redoLinks(read('../docs/interfaces/_types_.zoomspecificoptions.md'))
     // Remove unwanted text
-    .replace(rOptional, '')
     .replace(rProperties, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')
 data += panzoomOptions
   // Add in default values to option descriptions
-  .replace(/\*\*(\w+)\*\*\??\s*: \*\w+\*/g, function (all, key) {
+  .replace(/(?:`Optional` )?\*\*(\w+)\*\*\s*: [^\n]+/g, function (all, key) {
     return parsedDefaults[key] ? `${all} (Default: **${parsedDefaults[key]}**)` : all
   })
 
