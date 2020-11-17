@@ -8,6 +8,14 @@ export type PanzoomEvent =
   | 'panzoomreset'
   | 'panzoomend'
 
+export interface PanzoomEventDetail {
+  x: number
+  y: number
+  scale: number
+  isSVG: boolean
+  originalEvent: PointerEvent | TouchEvent | MouseEvent
+}
+
 interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean

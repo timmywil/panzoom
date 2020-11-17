@@ -1,6 +1,7 @@
 import { strict as assert, throws } from 'assert'
 
 import Panzoom from '../../src/panzoom'
+import { PanzoomEventDetail } from '../../src/types'
 
 function assertStyleMatches(elem: HTMLElement | SVGElement, name: string, value: string) {
   const capName = name[0].toUpperCase() + name.slice(1)
@@ -53,6 +54,48 @@ describe('Panzoom', () => {
     assertStyleMatches(div, 'transformOrigin', '50% 50%')
     document.body.removeChild(div)
   })
+  it('has expected properties on event detail for panzoom events', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const events: any = {} // eslint-disable-line
+    const addEvent = Element.prototype.addEventListener
+    const removeEvent = Element.prototype.removeEventListener
+    // eslint-disable-next-line
+    Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
+      events[event] = fn
+      addEvent.call(this, event, fn, options)
+    }
+    // eslint-disable-next-line
+    Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
+      delete events[event]
+      removeEvent.call(this, event, fn, options)
+    }
+    Panzoom(div)
+    assert(Object.keys(events).length > 0)
+    function checkEvent(event: CustomEvent<PanzoomEventDetail>) {
+      console.log(`${event.type} called`)
+      assert.ok(event.detail, 'Event detail exists')
+      assert.ok(event.detail.hasOwnProperty('x'), 'Event detail has x value')
+      assert.ok(event.detail.hasOwnProperty('y'), 'Event detail has y value')
+      assert.ok(event.detail.hasOwnProperty('scale'), 'Event detail has scale value')
+      assert.ok(event.detail.hasOwnProperty('isSVG'), 'Event detail has isSVG value')
+      assert.ok(
+        event.detail.hasOwnProperty('originalEvent'),
+        'Event detail has originalEvent value'
+      )
+    }
+    ;(div as any).addEventListener('panzoomstart', checkEvent)
+    ;(div as any).addEventListener('panzoomchange', checkEvent)
+    ;(div as any).addEventListener('panzoompan', checkEvent)
+    ;(div as any).addEventListener('panzoomzoom', checkEvent)
+    ;(div as any).addEventListener('panzoomend', checkEvent)
+    div.dispatchEvent(new PointerEvent('pointerdown'))
+    document.dispatchEvent(new PointerEvent('pointermove', { clientX: 10, clientY: 10 }))
+    document.dispatchEvent(new PointerEvent('pointerup'))
+    Element.prototype.addEventListener = addEvent
+    Element.prototype.removeEventListener = removeEvent
+    document.body.removeChild(div)
+  })
   it('removes the events when using the destroy method', () => {
     const div = document.createElement('div')
     document.body.appendChild(div)
@@ -75,11 +118,11 @@ describe('Panzoom', () => {
       console.log('panzoomend called')
       assert.ok('panzoomend called on pan')
     }
-    div.addEventListener('panzoomend', endListener)
+    ;(div as any).addEventListener('panzoomend', endListener)
     div.dispatchEvent(new PointerEvent('pointerdown'))
     document.dispatchEvent(new PointerEvent('pointerup'))
     panzoom.destroy()
-    div.removeEventListener('panzoomend', endListener)
+    ;(div as any).removeEventListener('panzoomend', endListener)
     assert(Object.keys(events).length === 0)
     Element.prototype.addEventListener = addEvent
     Element.prototype.removeEventListener = removeEvent

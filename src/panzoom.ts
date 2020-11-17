@@ -9,7 +9,14 @@
  */
 import './polyfills'
 
-import { PanOptions, PanzoomEvent, PanzoomObject, PanzoomOptions, ZoomOptions } from './types'
+import {
+  PanOptions,
+  PanzoomEvent,
+  PanzoomEventDetail,
+  PanzoomObject,
+  PanzoomOptions,
+  ZoomOptions
+} from './types'
 import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
 import { destroyPointer, eventNames, onPointer } from './events'
 import { getDimensions, setStyle, setTransform, setTransition } from './css'
@@ -131,8 +138,7 @@ function Panzoom(
     pan(options.startX, options.startY, { animate: false })
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function trigger(eventName: PanzoomEvent, detail: any, opts: PanzoomOptions) {
+  function trigger(eventName: PanzoomEvent, detail: PanzoomEventDetail, opts: PanzoomOptions) {
     if (opts.silent) {
       return
     }
@@ -140,8 +146,12 @@ function Panzoom(
     elem.dispatchEvent(event)
   }
 
-  function setTransformWithEvent(eventName: PanzoomEvent, opts: PanzoomOptions) {
-    const value = { x, y, scale, isSVG }
+  function setTransformWithEvent(
+    eventName: PanzoomEvent,
+    opts: PanzoomOptions,
+    originalEvent?: PanzoomEventDetail['originalEvent']
+  ) {
+    const value = { x, y, scale, isSVG, originalEvent }
     requestAnimationFrame(() => {
       if (typeof opts.animate === 'boolean') {
         if (opts.animate) {
@@ -262,17 +272,26 @@ function Panzoom(
     return result
   }
 
-  function pan(toX: number | string, toY: number | string, panOptions?: PanOptions) {
+  function pan(
+    toX: number | string,
+    toY: number | string,
+    panOptions?: PanOptions,
+    originalEvent?: PanzoomEventDetail['originalEvent']
+  ) {
     const result = constrainXY(toX, toY, scale, panOptions)
     const opts = result.opts
 
     x = result.x
     y = result.y
 
-    return setTransformWithEvent('panzoompan', opts)
+    return setTransformWithEvent('panzoompan', opts, originalEvent)
   }
 
-  function zoom(toScale: number, zoomOptions?: ZoomOptions) {
+  function zoom(
+    toScale: number,
+    zoomOptions?: ZoomOptions,
+    originalEvent?: PanzoomEventDetail['originalEvent']
+  ) {
     const result = constrainScale(toScale, zoomOptions)
     const opts = result.opts
     if (!opts.force && opts.disableZoom) {
@@ -294,7 +313,7 @@ function Panzoom(
     x = panResult.x
     y = panResult.y
     scale = toScale
-    return setTransformWithEvent('panzoomzoom', opts)
+    return setTransformWithEvent('panzoomzoom', opts, originalEvent)
   }
 
   function zoomInOut(isIn: boolean, zoomOptions?: ZoomOptions) {
@@ -313,7 +332,8 @@ function Panzoom(
   function zoomToPoint(
     toScale: number,
     point: { clientX: number; clientY: number },
-    zoomOptions?: ZoomOptions
+    zoomOptions?: ZoomOptions,
+    originalEvent?: PanzoomEventDetail['originalEvent']
   ) {
     const dims = getDimensions(elem)
 
@@ -366,7 +386,7 @@ function Panzoom(
       y: (clientY / effectiveArea.height) * (effectiveArea.height * toScale)
     }
 
-    return zoom(toScale, { animate: false, ...zoomOptions, focal })
+    return zoom(toScale, { animate: false, ...zoomOptions, focal }, originalEvent)
   }
 
   function zoomWithWheel(event: WheelEvent, zoomOptions?: ZoomOptions) {
@@ -412,7 +432,7 @@ function Panzoom(
     origX = x
     origY = y
 
-    trigger('panzoomstart', { x, y, scale }, options)
+    trigger('panzoomstart', { x, y, scale, isSVG, originalEvent: event }, options)
 
     // This works whether there are multiple
     // pointers or not
@@ -448,7 +468,8 @@ function Panzoom(
       origY + (current.clientY - startClientY) / scale,
       {
         animate: false
-      }
+      },
+      event
     )
   }
 
@@ -456,7 +477,7 @@ function Panzoom(
     // Don't call panzoomend when panning with 2 touches
     // until both touches end
     if (pointers.length === 1) {
-      trigger('panzoomend', { x, y, scale }, options)
+      trigger('panzoomend', { x, y, scale, isSVG, originalEvent: event }, options)
     }
     // Note: don't remove all pointers
     // Can restart without having to reinitiate all of them
