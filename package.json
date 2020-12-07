@@ -168,7 +168,7 @@
   },
   "release-it": {
     "hooks": {
-      "after:bump": "npm run docs && git add README.md"
+      "after:bump": "npm run docs && git add README.md && git add dist/panzoom.* dist/src/ -f"
     },
     "git": {
       "commitMessage": "chore: release ${version}",
