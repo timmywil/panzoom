@@ -288,7 +288,7 @@ describe('Panzoom', () => {
         handleStartEvent: (event: Event) => {
           event.preventDefault()
           assert.ok('handleStartEvent called')
-          resolve()
+          resolve(null)
         }
       })
       div.dispatchEvent(new PointerEvent('pointerdown'))
