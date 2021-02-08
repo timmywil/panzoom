@@ -72,7 +72,7 @@
     "karma-firefox-launcher": "^2.1.0",
     "karma-mocha": "^2.0.1",
     "karma-typescript": "^5.2.0",
-    "marked": "^1.2.7",
+    "marked": "^2.0.0",
     "mocha": "^8.2.1",
     "prettier": "^2.2.1",
     "prismjs": "^1.23.0",
