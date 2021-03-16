@@ -257,7 +257,28 @@ export interface PanzoomObject {
    * ```
    */
   reset: (resetOptions?: PanzoomOptions) => CurrentValues
+  /**
+   * Reset the styles set on the Panzoom element
+   * and its parent (such as overflow, cursor, etc.)
+   *
+   * ```js
+   * panzoom.resetStyle()
+   * ```
+   */
   /** Change options for the Panzoom instance */
+  resetStyle: () => void
+  /**
+   * Change an option on a Panzoom instance.
+   * Setting some options will have side-effects.
+   * For instance, changing the cursor option
+   * will also set the cursor style.
+   *
+   * ```js
+   * const panzoom = Panzoom(elem, { cursor: 'move' })
+   * // ...
+   * panzoom.setOptions({ cursor: 'default' })
+   * ```
+   */
   setOptions: (options?: PanzoomOptions) => void
   /** A convenience method for setting prefixed styles on the Panzoom element */
   setStyle: (name: string, value: string) => void

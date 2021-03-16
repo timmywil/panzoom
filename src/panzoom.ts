@@ -90,7 +90,7 @@ function Panzoom(
   // Set element styles
   elem.style.userSelect = 'none'
   elem.style.touchAction = options.touchAction
-  1 // The default for HTML is '50% 50%'
+  // The default for HTML is '50% 50%'
   // The default for SVG is '0 0'
   // SVG can't be changed in IE
   setStyle(
@@ -99,6 +99,17 @@ function Panzoom(
     typeof options.origin === 'string' ? options.origin : isSVG ? '0 0' : '50% 50%'
   )
 
+  function resetStyle() {
+    parent.style.overflow = ''
+    parent.style.userSelect = ''
+    parent.style.touchAction = ''
+    parent.style.cursor = ''
+    elem.style.cursor = ''
+    elem.style.userSelect = ''
+    elem.style.touchAction = ''
+    setStyle(elem, 'transformOrigin', '')
+  }
+
   function setOptions(opts: Omit<PanzoomOptions, 'force'> = {}) {
     for (const key in opts) {
       if (opts.hasOwnProperty(key)) {
@@ -106,8 +117,9 @@ function Panzoom(
       }
     }
     // Handle option side-effects
-    if (opts.hasOwnProperty('cursor')) {
-      elem.style.cursor = opts.cursor
+    if (opts.hasOwnProperty('cursor') || opts.hasOwnProperty('canvas')) {
+      parent.style.cursor = elem.style.cursor = ''
+      ;(options.canvas ? parent : elem).style.cursor = options.cursor
     }
     if (opts.hasOwnProperty('overflow')) {
       parent.style.overflow = opts.overflow
@@ -521,6 +533,7 @@ function Panzoom(
     getOptions: () => shallowClone(options),
     pan,
     reset,
+    resetStyle,
     setOptions,
     setStyle: (name: string, value: string) => setStyle(elem, name, value),
     zoom,

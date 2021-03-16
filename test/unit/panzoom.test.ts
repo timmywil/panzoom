@@ -128,6 +128,21 @@ describe('Panzoom', () => {
     Element.prototype.removeEventListener = removeEvent
     document.body.removeChild(div)
   })
+  it('resets all styles with the resetStyle method', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const panzoom = Panzoom(div)
+    assert.strictEqual(
+      document.body.style.overflow,
+      'hidden',
+      'overflow: hidden is set on the parent'
+    )
+    assert.strictEqual(div.style.cursor, 'move', 'cursor: move is set on the element')
+    panzoom.resetStyle()
+    assert.strictEqual(document.body.style.overflow, '', 'overflow style is reset on the parent')
+    assert.strictEqual(div.style.cursor, '', 'cursor style is reset on the element')
+    document.body.removeChild(div)
+  })
   it('sets the expected transform-origin on SVG', () => {
     const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
     document.body.appendChild(elem)
@@ -173,6 +188,20 @@ describe('Panzoom', () => {
       div.parentElement.style.touchAction,
       'auto',
       'touch-action style changes when setting the touchAction option'
+    )
+    document.body.removeChild(div)
+  })
+  it('changes the cursor with the canvas option', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const panzoom = Panzoom(div)
+    assert.strictEqual(div.style.cursor, 'move', 'cursor: move is set on the element')
+    panzoom.setOptions({ canvas: true })
+    assert.strictEqual(div.style.cursor, '', 'cursor style is reset on the element')
+    assert.strictEqual(
+      div.parentElement.style.cursor,
+      'move',
+      'Cursor style changes when setting the canvas option'
     )
     document.body.removeChild(div)
   })
