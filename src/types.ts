@@ -16,7 +16,7 @@ export interface PanzoomEventDetail {
   originalEvent: PointerEvent | TouchEvent | MouseEvent
 }
 
-interface MiscOptions {
+export interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean
   /**
@@ -149,7 +149,7 @@ interface MiscOptions {
   [key: string]: any
 }
 
-interface PanSpecificOptions {
+export interface PanOnlyOptions {
   /**
    * Contain the panzoom element either
    * inside or outside the parent.
@@ -182,7 +182,7 @@ interface PanSpecificOptions {
   panOnlyWhenZoomed?: boolean
 }
 
-interface ZoomSpecificOptions {
+export interface ZoomOnlyOptions {
   /** Disable zooming functionality */
   disableZoom?: boolean
   /**
@@ -200,8 +200,8 @@ interface ZoomSpecificOptions {
   step?: number
 }
 
-export type PanOptions = MiscOptions & PanSpecificOptions
-export type ZoomOptions = MiscOptions & ZoomSpecificOptions
+export type PanOptions = MiscOptions & PanOnlyOptions
+export type ZoomOptions = MiscOptions & ZoomOnlyOptions
 export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
 
 export interface CurrentValues {
@@ -265,10 +265,9 @@ export interface PanzoomObject {
    * panzoom.resetStyle()
    * ```
    */
-  /** Change options for the Panzoom instance */
   resetStyle: () => void
   /**
-   * Change an option on a Panzoom instance.
+   * Change any number of options on a Panzoom instance.
    * Setting some options will have side-effects.
    * For instance, changing the cursor option
    * will also set the cursor style.

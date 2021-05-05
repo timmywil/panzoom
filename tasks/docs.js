@@ -9,71 +9,95 @@ function write(filename, data) {
 }
 // Start with the README
 const header = '\n---\n\n## Documentation'
-let data = read('../README.md').replace(new RegExp(header + '[\\w\\W]+'), '') + header
+let data = read('../README.md').replace(new RegExp(header + '[^]+'), '') + header
+
+// Remove links that aren't links to source
+function removeLinks(data) {
+  return data.replace(/\[([^:]+)\]\(.*?\)/g, '$1')
+}
+
+function addLinks(data) {
+  return data
+    .replace(/PanzoomOptions/g, '[PanzoomOptions](#PanzoomOptions)')
+    .replace(/PanOptions/g, '[PanOptions](#PanOptions)')
+    .replace(/ZoomOptions/g, '[ZoomOptions](#ZoomOptions)')
+    .replace(/MiscOptions/g, '[MiscOptions](#MiscOptions)')
+    .replace(/PanzoomObject/g, '[PanzoomObject](#PanzoomObject)')
+    .replace(/CurrentValues/g, '[CurrentValues](#CurrentValues)')
+    .replace(/PanzoomEventDetail/g, '[PanzoomEventDetail](#PanzoomEventDetail)')
+}
 
 function redoLinks(data) {
-  return (
-    data
-      // Remove links that aren't links to source
-      .replace(/\[([^:]+)\]\(.*?\)/g, '$1')
-      .replace(/PanzoomOptions/g, '[PanzoomOptions](#PanzoomOptions)')
-      .replace(/PanOptions/g, '[PanOptions](#PanOptions)')
-      .replace(/ZoomOptions/g, '[ZoomOptions](#ZoomOptions)')
-      .replace(/PanzoomObject/g, '[PanzoomObject](#PanzoomObject)')
-      .replace(/CurrentValues/g, '[CurrentValues](#CurrentValues)')
+  return addLinks(removeLinks(data))
+}
+
+/**
+ * @param {string} filename
+ * @param {Array<string>} functions List of functions to extract from docs
+ */
+function getModuleFunctions(filename, functions) {
+  const available = redoLinks(read(`../docs/modules/${filename}`))
+    // Remove everything up to functions
+    .replace(/[^]+#{2}\s*Functions/, '')
+    .split(/___/)
+  return functions
+    .map((fn) => {
+      const rfn = new RegExp(`###\\s*${fn}[^#]+?`)
+      const doc = available.find((existing) => rfn.test(existing))
+      return doc || ''
+    })
+    .join('\n\n')
+}
+
+function getInterfaceContent(filename, customHeader) {
+  return removeLinks(
+    read(`../docs/interfaces/${filename}`)
+      .replace(/# Interface:\s*(.+)[^]+##\s*Properties/, customHeader ? customHeader : '## $1')
+      .replace(/___/g, '')
+      // Remove superfluous type declarations
+      .replace(/#### Type declaration:\n\n▸ .+/g, '')
+      // Remove double "Defined in"
+      .replace(/(Defined in: .+)\n\nDefined in: .+/g, '$1')
   )
 }
 
-const [constructor, defaultOptions] = redoLinks(read('../docs/modules/_panzoom_.md'))
-  // Remove unwanted text
-  .replace(/[^]+###\s*Panzoom/, '')
-  .replace('## Object literals\n\n', '')
-  .split('### defaultOptions')
-data += constructor
+data += getModuleFunctions('panzoom.md', ['default']).replace(/default/g, 'Panzoom')
 
+// Get default options
+const source = read('../src/panzoom.ts')
+const defaultProps = /const defaultOptions: PanzoomOptions = ({[^]+?\n})/.exec(source)[1]
 const parsedDefaults = {}
-defaultOptions
-  .replace(/[^]+#### Properties:/, '')
-  .replace(/`(\w+)` \|[^|]+\|\s*([^|]+) |/g, function (all, key, value) {
-    if (key && value) {
-      parsedDefaults[key] = value
-    }
-    return all
-  })
+defaultProps.replace(/(\w+): ([^]+?)(?:,\n|\n})/g, (all, key, value) => {
+  parsedDefaults[key] = value.replace(/'/g, '"')
+})
 
-const rProperties = /[^]+##\s*Properties/
-const panzoomOptions =
-  '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
-  redoLinks(read('../docs/interfaces/_types_.miscoptions.md'))
-    // Remove unwanted text
-    .replace(rProperties, '\n\n---\n\n## `MiscOptions`\n') +
-  redoLinks(read('../docs/interfaces/_types_.panspecificoptions.md'))
-    // Remove unwanted text
-    .replace(rProperties, '\n\n---\n\n## `PanOptions`\n\nIncludes `MiscOptions`\n\n') +
-  redoLinks(read('../docs/interfaces/_types_.zoomspecificoptions.md'))
-    // Remove unwanted text
-    .replace(rProperties, '\n\n---\n\n## `ZoomOptions`\n\nIncludes `MiscOptions`\n\n')
-data += panzoomOptions
-  // Add in default values to option descriptions
-  .replace(/(?:`Optional` )?\*\*(\w+)\*\*\s*: [^\n]+/g, function (all, key) {
+const rprops = /(?:`Optional` )?\*\*(\w+)\*\*\s*: [^\n]+/g
+function addDefaults(data) {
+  return data.replace(rprops, function (all, key) {
     return parsedDefaults[key] ? `${all} (Default: **${parsedDefaults[key]}**)` : all
   })
+}
 
-const panzoomObject =
-  '\n\n---\n\n## `PanzoomObject`\n\nThese methods are available after initializing Panzoom\n\n' +
-  redoLinks(read('../docs/interfaces/_types_.panzoomobject.md'))
-    // Remove unwanted text
-    .replace(rProperties, '')
-    // Type declaration refers to the signature
-    .replace(/Type declaration:/g, 'Signature with return type:')
-data += panzoomObject
-  // Add parens to method names
-  .replace(/([^#])\#\#\#\s*(\w+)/g, '$1### $2()')
+const panzoomOptions =
+  '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOnlyOptions`, and `ZoomOnlyOptions`\n\n' +
+  getInterfaceContent('types.miscoptions.md') +
+  getInterfaceContent(
+    'types.panonlyoptions.md',
+    '## PanOptions (includes [MiscOptions](#MiscOptions))'
+  ) +
+  getInterfaceContent(
+    'types.zoomonlyoptions.md',
+    '## ZoomOptions (includes [MiscOptions](#MiscOptions))'
+  )
 
-const currentValues = read('../docs/interfaces/_types_.currentvalues.md')
-  // Remove unwanted text
-  .replace(rProperties, '\n\n---\n\n## `CurrentValues`\n')
-data += currentValues + '\n'
+data += addDefaults(panzoomOptions)
+
+data += getInterfaceContent(
+  'types.panzoomobject.md',
+  '## PanzoomObject\n\nThese methods are available after initializing Panzoom'
+).replace(/CurrentValues/g, '[CurrentValues](#CurrentValues)')
+
+data += getInterfaceContent('types.currentvalues.md')
 
 const events = read('./EVENTS.md')
 data += events
