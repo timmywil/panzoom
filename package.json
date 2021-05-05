@@ -181,7 +181,8 @@
       "publish": true
     },
     "github": {
-      "release": true
+      "release": true,
+      "tokenRef": "PERSONAL_WEBSITE_GITHUB_TOKEN"
     },
     "plugins": {
       "@release-it/conventional-changelog": {
