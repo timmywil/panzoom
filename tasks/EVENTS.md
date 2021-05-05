@@ -11,7 +11,11 @@ elem.addEventListener('panzoomchange', (event) => {
 
 ### Notes about all events
 
-- The event object passed as an argument to the listener will always have a `detail` property with the current `x`, `y`, and `scale` values.
+- The event object passed as an argument to the listener will always have a `detail` object with the following properties:
+  - The current `x` value
+  - The current `y` value
+  - The current `scale`
+  - An `originalEvent` property with the original event that triggered the panzoom event, if applicable. For example, the `originalEvent` property for a `panzoomstart` event would be either a `pointerdown`, `touchstart`, or `mousedown` event.
 - Events can be silenced when the `silent` option is set to `true`, either globally or when passed to `pan`, any `zoom` method, or `reset`.
 - Avoid putting too much logic in these event handlers as it could effect the performance of panning or zooming.
 

@@ -21,7 +21,7 @@ has been [shown by the community](https://github.com/timmywil/panzoom/issues?q=l
 Before submitting a request, please search for similar ones in the
 [closed issues](https://github.com/timmywil/panzoom/issues?q=is%3Aissue+is%3Aclosed+label%3Afeature).
 
-I got this convention from [lodash](https://github.com/lodash/lodash). It helps keep the open issues list uncluttered.
+This convention is borrowed from [lodash](https://github.com/lodash/lodash). It helps keep the open issues list uncluttered.
 
 ## Pull Requests
 
@@ -92,7 +92,7 @@ $ npm run lint
 Some things are fixable automatically.
 
 ```bash
-$ npm run lint:fix
+$ npm run format
 ```
 
 This script is run on commit, which means that the commit may need amending if any changes were made as a result of the commit.

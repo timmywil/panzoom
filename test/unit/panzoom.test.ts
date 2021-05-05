@@ -1,6 +1,7 @@
 import { strict as assert, throws } from 'assert'
 
 import Panzoom from '../../src/panzoom'
+import { PanzoomEventDetail } from '../../src/types'
 
 function assertStyleMatches(elem: HTMLElement | SVGElement, name: string, value: string) {
   const capName = name[0].toUpperCase() + name.slice(1)
@@ -53,6 +54,48 @@ describe('Panzoom', () => {
     assertStyleMatches(div, 'transformOrigin', '50% 50%')
     document.body.removeChild(div)
   })
+  it('has expected properties on event detail for panzoom events', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const events: any = {} // eslint-disable-line
+    const addEvent = Element.prototype.addEventListener
+    const removeEvent = Element.prototype.removeEventListener
+    // eslint-disable-next-line
+    Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
+      events[event] = fn
+      addEvent.call(this, event, fn, options)
+    }
+    // eslint-disable-next-line
+    Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
+      delete events[event]
+      removeEvent.call(this, event, fn, options)
+    }
+    Panzoom(div)
+    assert(Object.keys(events).length > 0)
+    function checkEvent(event: CustomEvent<PanzoomEventDetail>) {
+      console.log(`${event.type} called`)
+      assert.ok(event.detail, 'Event detail exists')
+      assert.ok(event.detail.hasOwnProperty('x'), 'Event detail has x value')
+      assert.ok(event.detail.hasOwnProperty('y'), 'Event detail has y value')
+      assert.ok(event.detail.hasOwnProperty('scale'), 'Event detail has scale value')
+      assert.ok(event.detail.hasOwnProperty('isSVG'), 'Event detail has isSVG value')
+      assert.ok(
+        event.detail.hasOwnProperty('originalEvent'),
+        'Event detail has originalEvent value'
+      )
+    }
+    ;(div as any).addEventListener('panzoomstart', checkEvent)
+    ;(div as any).addEventListener('panzoomchange', checkEvent)
+    ;(div as any).addEventListener('panzoompan', checkEvent)
+    ;(div as any).addEventListener('panzoomzoom', checkEvent)
+    ;(div as any).addEventListener('panzoomend', checkEvent)
+    div.dispatchEvent(new PointerEvent('pointerdown'))
+    document.dispatchEvent(new PointerEvent('pointermove', { clientX: 10, clientY: 10 }))
+    document.dispatchEvent(new PointerEvent('pointerup'))
+    Element.prototype.addEventListener = addEvent
+    Element.prototype.removeEventListener = removeEvent
+    document.body.removeChild(div)
+  })
   it('removes the events when using the destroy method', () => {
     const div = document.createElement('div')
     document.body.appendChild(div)
@@ -75,14 +118,29 @@ describe('Panzoom', () => {
       console.log('panzoomend called')
       assert.ok('panzoomend called on pan')
     }
-    div.addEventListener('panzoomend', endListener)
+    ;(div as any).addEventListener('panzoomend', endListener)
     div.dispatchEvent(new PointerEvent('pointerdown'))
     document.dispatchEvent(new PointerEvent('pointerup'))
     panzoom.destroy()
-    div.removeEventListener('panzoomend', endListener)
+    ;(div as any).removeEventListener('panzoomend', endListener)
     assert(Object.keys(events).length === 0)
     Element.prototype.addEventListener = addEvent
     Element.prototype.removeEventListener = removeEvent
+    document.body.removeChild(div)
+  })
+  it('resets all styles with the resetStyle method', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const panzoom = Panzoom(div)
+    assert.strictEqual(
+      document.body.style.overflow,
+      'hidden',
+      'overflow: hidden is set on the parent'
+    )
+    assert.strictEqual(div.style.cursor, 'move', 'cursor: move is set on the element')
+    panzoom.resetStyle()
+    assert.strictEqual(document.body.style.overflow, '', 'overflow style is reset on the parent')
+    assert.strictEqual(div.style.cursor, '', 'cursor style is reset on the element')
     document.body.removeChild(div)
   })
   it('sets the expected transform-origin on SVG', () => {
@@ -97,7 +155,11 @@ describe('Panzoom', () => {
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
     panzoom.setOptions({ cursor: 'default' })
-    assert.equal(div.style.cursor, 'default', 'Cursor style changes when setting the cursor option')
+    assert.strictEqual(
+      div.style.cursor,
+      'default',
+      'Cursor style changes when setting the cursor option'
+    )
     document.body.removeChild(div)
   })
   it("changes the parent's overflow with the overflow option", () => {
@@ -105,7 +167,7 @@ describe('Panzoom', () => {
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
     panzoom.setOptions({ overflow: 'visible' })
-    assert.equal(
+    assert.strictEqual(
       div.parentElement.style.overflow,
       'visible',
       'Overflow style changes when setting the overflow option'
@@ -117,15 +179,29 @@ describe('Panzoom', () => {
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
     panzoom.setOptions({ touchAction: 'auto' })
-    assert.equal(
+    assert.strictEqual(
       div.style.touchAction,
       'auto',
       'touch-action style changes when setting the touchAction option'
     )
-    assert.equal(
+    assert.strictEqual(
       div.parentElement.style.touchAction,
       'auto',
       'touch-action style changes when setting the touchAction option'
+    )
+    document.body.removeChild(div)
+  })
+  it('changes the cursor with the canvas option', () => {
+    const div = document.createElement('div')
+    document.body.appendChild(div)
+    const panzoom = Panzoom(div)
+    assert.strictEqual(div.style.cursor, 'move', 'cursor: move is set on the element')
+    panzoom.setOptions({ canvas: true })
+    assert.strictEqual(div.style.cursor, '', 'cursor style is reset on the element')
+    assert.strictEqual(
+      div.parentElement.style.cursor,
+      'move',
+      'Cursor style changes when setting the canvas option'
     )
     document.body.removeChild(div)
   })
@@ -146,14 +222,14 @@ describe('Panzoom', () => {
       await skipFrame()
       // Should constrain to 25, 25
       let pan = panzoom.getPan()
-      assert.equal(pan.x, 25)
-      assert.equal(pan.y, 25)
+      assert.strictEqual(pan.x, 25)
+      assert.strictEqual(pan.y, 25)
       panzoom.zoom(1)
       await skipFrame()
       // Should constrain back to 0 0
       pan = panzoom.getPan()
-      assert.equal(pan.x, 0)
-      assert.equal(pan.y, 0)
+      assert.strictEqual(pan.x, 0)
+      assert.strictEqual(pan.y, 0)
       document.body.removeChild(parent)
     })
   })
@@ -165,10 +241,10 @@ describe('Panzoom', () => {
       panzoom.pan(1, 1)
       panzoom.zoom(2)
       let pan = panzoom.getPan()
-      assert.equal(pan.x, 1)
-      assert.equal(pan.y, 1)
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
       let scale = panzoom.getScale()
-      assert.equal(scale, 2)
+      assert.strictEqual(scale, 2)
       panzoom.setOptions({
         disablePan: true,
         disableZoom: true,
@@ -176,10 +252,10 @@ describe('Panzoom', () => {
       })
       panzoom.reset()
       pan = panzoom.getPan()
-      assert.equal(pan.x, 0)
-      assert.equal(pan.y, 0)
+      assert.strictEqual(pan.x, 0)
+      assert.strictEqual(pan.y, 0)
       scale = panzoom.getScale()
-      assert.equal(scale, 1)
+      assert.strictEqual(scale, 1)
     })
   })
   describe('force option', () => {
@@ -192,12 +268,12 @@ describe('Panzoom', () => {
       })
       panzoom.pan(1, 1)
       let pan = panzoom.getPan()
-      assert.equal(pan.x, 0)
-      assert.equal(pan.y, 0)
+      assert.strictEqual(pan.x, 0)
+      assert.strictEqual(pan.y, 0)
       panzoom.pan(1, 1, { force: true })
       pan = panzoom.getPan()
-      assert.equal(pan.x, 1)
-      assert.equal(pan.y, 1)
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
       document.body.removeChild(div)
     })
     it('ignores disableZoom', () => {
@@ -209,10 +285,10 @@ describe('Panzoom', () => {
       })
       panzoom.zoom(2)
       let scale = panzoom.getScale()
-      assert.equal(scale, 1)
+      assert.strictEqual(scale, 1)
       panzoom.zoom(2, { force: true })
       scale = panzoom.getScale()
-      assert.equal(scale, 2)
+      assert.strictEqual(scale, 2)
       document.body.removeChild(div)
     })
     it('ignores panOnlyWhenZoomed', () => {
@@ -224,12 +300,12 @@ describe('Panzoom', () => {
       })
       panzoom.pan(1, 1)
       let pan = panzoom.getPan()
-      assert.equal(pan.x, 0)
-      assert.equal(pan.y, 0)
+      assert.strictEqual(pan.x, 0)
+      assert.strictEqual(pan.y, 0)
       panzoom.pan(1, 1, { force: true })
       pan = panzoom.getPan()
-      assert.equal(pan.x, 1)
-      assert.equal(pan.y, 1)
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
       document.body.removeChild(div)
     })
   })
@@ -241,7 +317,7 @@ describe('Panzoom', () => {
         handleStartEvent: (event: Event) => {
           event.preventDefault()
           assert.ok('handleStartEvent called')
-          resolve()
+          resolve(null)
         }
       })
       div.dispatchEvent(new PointerEvent('pointerdown'))

@@ -24,7 +24,7 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: false,
     singleRun: true,
-    browsers: ['ChromeHeadless'],
+    browsers: ['FirefoxHeadless'],
     concurrency: Infinity
   })
 }

@@ -1,28 +1,29 @@
 {
   "name": "@panzoom/panzoom",
-  "version": "4.3.1",
+  "version": "4.3.2",
   "description": "Pan and zoom elements anywhere using native transformations",
   "main": "dist/panzoom.js",
+  "module": "dist/panzoom.es.js",
+  "source": "src/panzoom",
   "types": "dist/src/panzoom.d.ts",
   "scripts": {
     "build": "npm run clean && rollup --config && npm run minify",
     "clean": "rm -rf dist/",
     "demo": "webpack --mode production",
     "docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --exclude \"**/src/+(css|isAttached|isSVGElement|pointers|shallowClone).ts\" --out docs --readme none src/panzoom.ts && node tasks/docs.js",
-    "eslint": "eslint .",
-    "format": "prettier --write \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"**/*.md\"",
-    "lint": "concurrently --raw \"npm run type-check\" \"npm run eslint\" \"npm run prettier\"",
-    "lint:fix": "concurrently --raw \"npm run type-check\" \"lint-staged\"",
+    "format": "eslint . --fix && prettier --write \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"**/*.json\" \"**/*.md\"",
+    "lint": "concurrently --raw \"eslint .\" \"npm run prettier\" \"npm run typescript\"",
     "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && npm run sizeup",
-    "prettier": "prettier --check \"**/*.tsx\" \"**/*.ts\" \"**/*.js\"",
-    "release": "cross-env HUSKY_SKIP_HOOKS=1 semantic-release",
+    "prepare": "husky install && npm run build",
+    "prettier": "prettier --check \"**/*.md\" \"**/*.json\"",
+    "release": "release-it",
     "sizeup": "echo \"gzipped size: \" && gzip-size dist/panzoom.min.js",
-    "start": "webpack-dev-server",
-    "test": "npm run lint && npm run test:unit && npm run test:node",
+    "start": "webpack serve",
+    "test": "npm run lint && concurrently \"npm run test:unit\" \"npm run test:node\"",
     "test:unit": "karma start",
     "test:node": "npm run build && node test/test-node.js",
     "test:watch": "karma start --singleRun=false --autoWatch",
-    "type-check": "tsc -p tsconfig.json --noEmit"
+    "typescript": "tsc -p tsconfig.json --noEmit"
   },
   "files": [
     "MIT-License.txt",
@@ -46,53 +47,50 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.11.1",
-    "@babel/preset-env": "^7.11.0",
-    "@commitlint/cli": "^9.1.2",
-    "@commitlint/config-conventional": "^9.1.1",
-    "@semantic-release/exec": "^5.0.0",
-    "@semantic-release/git": "^9.0.0",
-    "@types/mocha": "^8.0.1",
-    "@types/prismjs": "^1.16.1",
-    "@types/react-dom": "^16.9.8",
-    "@typescript-eslint/eslint-plugin": "^3.8.0",
-    "@typescript-eslint/parser": "^3.8.0",
-    "commitlint": "^9.1.0",
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
+    "@release-it/conventional-changelog": "^2.0.1",
+    "@types/mocha": "^8.2.2",
+    "@types/prismjs": "^1.16.5",
+    "@types/react-dom": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^4.22.1",
+    "@typescript-eslint/parser": "^4.22.1",
+    "commitlint": "^12.1.1",
     "concat-md": "^0.3.5",
-    "concurrently": "^5.2.0",
-    "cross-env": "^7.0.2",
-    "css-loader": "^4.2.0",
-    "eslint": "^7.6.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.20.5",
-    "gzip-size-cli": "^3.0.0",
-    "html-webpack-plugin": "^4.3.0",
-    "husky": "^4.2.5",
-    "karma": "^5.1.1",
-    "karma-chrome-launcher": "^3.1.0",
+    "concurrently": "^6.0.2",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.2.4",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.23.2",
+    "gzip-size-cli": "^5.0.0",
+    "html-webpack-plugin": "^5.3.1",
+    "husky": "^6.0.0",
+    "karma": "^6.3.2",
+    "karma-firefox-launcher": "^2.1.0",
     "karma-mocha": "^2.0.1",
-    "karma-typescript": "^5.0.3",
-    "lint-staged": "^10.2.11",
-    "marked": "^1.1.1",
-    "mocha": "^8.1.1",
-    "prettier": "^2.0.5",
-    "prismjs": "^1.20.0",
-    "puppeteer": "^5.2.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "rollup": "^2.23.0",
-    "rollup-plugin-typescript2": "^0.27.1",
-    "semantic-release": "^17.1.1",
-    "style-loader": "^1.2.1",
-    "ts-loader": "^8.0.2",
-    "typedoc": "^0.17.8",
-    "typedoc-plugin-markdown": "^2.4.0",
-    "typescript": "^3.9.7",
-    "uglify-js": "^3.10.1",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "karma-typescript": "^5.5.1",
+    "marked": "^2.0.3",
+    "mocha": "^8.3.2",
+    "prettier": "^2.2.1",
+    "prismjs": "^1.23.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "release-it": "^14.6.1",
+    "rollup": "^2.47.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^9.1.1",
+    "typedoc": "^0.19.2",
+    "typedoc-plugin-markdown": "3.1.1",
+    "typescript": "^4.2.4",
+    "uglify-js": "^3.13.5",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
   },
   "prettier": {
     "printWidth": 100,
@@ -102,48 +100,108 @@
     "arrowParens": "always",
     "trailingComma": "none"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint:fix",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "react",
+      "prettier"
+    ],
+    "extends": [
+      "plugin:@typescript-eslint/recommended",
+      "plugin:react/recommended",
+      "prettier"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module",
+      "project": "./tsconfig.json",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "globals": {
+      "ga": "readonly"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "rules": {
+      "no-unused-vars": "off",
+      "prettier/prettier": "error",
+      "@typescript-eslint/explicit-function-return-type": 0,
+      "@typescript-eslint/no-var-requires": 0,
+      "@typescript-eslint/no-use-before-define": 0,
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/explicit-module-boundary-types": 0,
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "args": "after-used",
+          "argsIgnorePattern": "^_"
+        }
+      ]
     }
   },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "prettier --write",
-      "eslint --fix ."
+  "eslintIgnore": [
+    "node_modules/",
+    "coverage/",
+    "demo/demo/",
+    "demo/panzoom.js",
+    "dist/",
+    "docs/"
+  ],
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
     ],
-    "*.md": [
-      "prettier --write"
-    ]
+    "rules": {
+      "header-max-length": [
+        2,
+        "always",
+        80
+      ]
+    }
   },
   "publishConfig": {
     "access": "public"
   },
-  "release": {
-    "ci": false,
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/npm",
-      [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "npm run docs && npm run build"
-        }
-      ],
-      [
-        "@semantic-release/git",
-        {
-          "assets": [
-            "README.md",
-            "package.json",
-            "package-lock.json"
+  "release-it": {
+    "hooks": {
+      "after:bump": "npm run docs && git add README.md && git add dist/panzoom.* dist/src/ -f"
+    },
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": {
+          "name": "conventionalcommits",
+          "types": [
+            {
+              "type": "feat",
+              "section": "Features"
+            },
+            {
+              "type": "fix",
+              "section": "Bug Fixes"
+            },
+            {
+              "type": "perf",
+              "section": "Performance Improvements"
+            }
           ]
         }
-      ],
-      "@semantic-release/github"
-    ],
-    "tagFormat": "${version}"
+      }
+    }
   }
 }
