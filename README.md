@@ -139,24 +139,26 @@ setTimeout(() => panzoom.pan(100, 100))
 
 #### Parameters
 
-| Name       | Type                                                                            |
-| :--------- | :------------------------------------------------------------------------------ |
-| `elem`     | `HTMLElement` \| `SVGElement`                                                   |
-| `options?` | `Omit`<[PanzoomOptions](#PanzoomOptions)](types.md#panzoomoptions), `"force"`\> |
+| Name       | Type                                                  |
+| :--------- | :---------------------------------------------------- |
+| `elem`     | `HTMLElement` \| `SVGElement`                         |
+| `options?` | `Omit`<[PanzoomOptions](#PanzoomOptions), `"force"`\> |
 
 #### Returns
 
-[[PanzoomObject](#PanzoomObject)
+[PanzoomObject](#PanzoomObject)
 
 #### Defined in
 
-[panzoom.ts:58](https://github.com/timmywil/panzoom/blob/10b285f/src/panzoom.ts#L58)
+[panzoom.ts:58](https://github.com/timmywil/panzoom/blob/0747ea4/src/panzoom.ts#L58)
 
 ## `PanzoomOptions`
 
-Includes `MiscOptions`, `PanOnlyOptions`, and `ZoomOnlyOptions`
+Includes `MiscOptions`, `PanOptions`, and `ZoomOptions`
 
 ## MiscOptions
+
+These options can be passed to `Panzoom()`, as well as any pan or zoom function. One exception is `force`, which can only be passed to methods like `pan()` or `zoom()`, but not `Panzoom()` or `setOptions()` as it should not be set globally.
 
 ### animate
 
@@ -166,7 +168,7 @@ Whether to animate transitions
 
 #### Defined in
 
-[types.ts:21](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L21)
+[types.ts:21](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L21)
 
 ### canvas
 
@@ -183,7 +185,7 @@ where the `cursor` style is applied (i.e. the parent).
 
 #### Defined in
 
-[types.ts:32](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L32)
+[types.ts:32](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L32)
 
 ### duration
 
@@ -193,7 +195,7 @@ Duration of the transition (ms)
 
 #### Defined in
 
-[types.ts:34](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L34)
+[types.ts:34](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L34)
 
 ### easing
 
@@ -203,7 +205,7 @@ CSS Easing used for transitions
 
 #### Defined in
 
-[types.ts:36](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L36)
+[types.ts:36](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L36)
 
 ### exclude
 
@@ -216,7 +218,7 @@ e.g. links and buttons that should not propagate the click event.
 
 #### Defined in
 
-[types.ts:43](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L43)
+[types.ts:43](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L43)
 
 ### excludeClass
 
@@ -229,7 +231,7 @@ e.g. links and buttons that should not propagate the click event.
 
 #### Defined in
 
-[types.ts:50](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L50)
+[types.ts:50](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L50)
 
 ### force
 
@@ -251,7 +253,7 @@ panzoom.zoom(1, { force: true })
 
 #### Defined in
 
-[types.ts:66](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L66)
+[types.ts:66](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L66)
 
 ### handleStartEvent
 
@@ -299,7 +301,7 @@ Panzoom(elem, {
 
 #### Defined in
 
-[types.ts:91](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L91)
+[types.ts:91](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L91)
 
 ### noBind
 
@@ -309,7 +311,7 @@ Skip binding the default Panzoom event listeners
 
 #### Defined in
 
-[types.ts:95](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L95)
+[types.ts:95](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L95)
 
 ### origin
 
@@ -329,7 +331,7 @@ And again, changing this for SVG in IE doesn't work at all.
 
 #### Defined in
 
-[types.ts:109](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L109)
+[types.ts:109](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L109)
 
 ### overflow
 
@@ -339,7 +341,7 @@ The overflow CSS value for the parent. Defaults to 'hidden'
 
 #### Defined in
 
-[types.ts:111](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L111)
+[types.ts:111](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L111)
 
 ### setTransform
 
@@ -369,11 +371,11 @@ Set the transform using the proper prefix
 
 ##### Parameters
 
-| Name                | Type                                   |
-| :------------------ | :------------------------------------- |
-| `elem`              | `HTMLElement` \| `SVGElement`          |
-| `__namedParameters` | CurrentValues](types.currentvalues.md) |
-| `_options?`         | [PanzoomOptions                        |
+| Name                | Type                          |
+| :------------------ | :---------------------------- |
+| `elem`              | `HTMLElement` \| `SVGElement` |
+| `__namedParameters` | CurrentValues                 |
+| `_options?`         | PanzoomOptions                |
 
 ##### Returns
 
@@ -381,7 +383,7 @@ Set the transform using the proper prefix
 
 #### Defined in
 
-[types.ts:129](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L129)
+[types.ts:129](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L129)
 
 ### silent
 
@@ -391,7 +393,7 @@ Silence all events
 
 #### Defined in
 
-[types.ts:131](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L131)
+[types.ts:131](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L131)
 
 ### startScale
 
@@ -401,7 +403,7 @@ Scale used to set the beginning transform
 
 #### Defined in
 
-[types.ts:137](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L137)
+[types.ts:137](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L137)
 
 ### startX
 
@@ -411,7 +413,7 @@ X Value used to set the beginning transform
 
 #### Defined in
 
-[types.ts:133](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L133)
+[types.ts:133](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L133)
 
 ### startY
 
@@ -421,7 +423,7 @@ Y Value used to set the beginning transform
 
 #### Defined in
 
-[types.ts:135](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L135)
+[types.ts:135](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L135)
 
 ### touchAction
 
@@ -437,7 +439,7 @@ cannot work at the same time.
 
 #### Defined in
 
-[types.ts:147](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L147)
+[types.ts:147](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L147)
 
 ## PanOptions (includes MiscOptions)
 
@@ -459,7 +461,7 @@ empty space around the element will be shown.
 
 #### Defined in
 
-[types.ts:166](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L166)
+[types.ts:166](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L166)
 
 ### cursor
 
@@ -469,7 +471,7 @@ The cursor style to set on the panzoom element
 
 #### Defined in
 
-[types.ts:168](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L168)
+[types.ts:168](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L168)
 
 ### disablePan
 
@@ -481,7 +483,7 @@ The element will still pan accordingly.
 
 #### Defined in
 
-[types.ts:174](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L174)
+[types.ts:174](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L174)
 
 ### disableXAxis
 
@@ -491,7 +493,7 @@ Pan only on the Y axis
 
 #### Defined in
 
-[types.ts:176](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L176)
+[types.ts:176](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L176)
 
 ### disableYAxis
 
@@ -501,7 +503,7 @@ Pan only on the X axis
 
 #### Defined in
 
-[types.ts:178](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L178)
+[types.ts:178](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L178)
 
 ### panOnlyWhenZoomed
 
@@ -511,7 +513,7 @@ Disable panning while the scale is equal to the starting value
 
 #### Defined in
 
-[types.ts:182](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L182)
+[types.ts:182](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L182)
 
 ### relative
 
@@ -521,7 +523,7 @@ When passing x and y values to .pan(), treat the values as relative to their cur
 
 #### Defined in
 
-[types.ts:180](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L180)
+[types.ts:180](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L180)
 
 ## ZoomOptions (includes MiscOptions)
 
@@ -533,7 +535,7 @@ Disable zooming functionality
 
 #### Defined in
 
-[types.ts:187](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L187)
+[types.ts:187](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L187)
 
 ### focal
 
@@ -553,7 +555,7 @@ to the parent dimensions.
 
 #### Defined in
 
-[types.ts:194](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L194)
+[types.ts:194](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L194)
 
 ### maxScale
 
@@ -563,7 +565,7 @@ The maximum scale when zooming
 
 #### Defined in
 
-[types.ts:198](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L198)
+[types.ts:198](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L198)
 
 ### minScale
 
@@ -573,7 +575,7 @@ The minimum scale when zooming
 
 #### Defined in
 
-[types.ts:196](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L196)
+[types.ts:196](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L196)
 
 ### step
 
@@ -583,7 +585,7 @@ The step affects zoom calculation when zooming with a mouse wheel, when pinch zo
 
 #### Defined in
 
-[types.ts:200](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L200)
+[types.ts:200](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L200)
 
 ## PanzoomObject
 
@@ -608,7 +610,7 @@ but can be skipped with the `noBind` option.
 
 #### Defined in
 
-[types.ts:221](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L221)
+[types.ts:221](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L221)
 
 ### destroy
 
@@ -626,7 +628,7 @@ Remove all event listeners bound to the the Panzoom element
 
 #### Defined in
 
-[types.ts:223](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L223)
+[types.ts:223](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L223)
 
 ### eventNames
 
@@ -646,7 +648,7 @@ Pointer or Touch events.
 
 #### Defined in
 
-[types.ts:229](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L229)
+[types.ts:229](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L229)
 
 ### getOptions
 
@@ -656,15 +658,15 @@ Returns a _copy_ of the current options object
 
 #### Type declaration
 
-▸ (): PanzoomOptions](../modules/types.md#panzoomoptions)
+▸ (): PanzoomOptions
 
 ##### Returns
 
-[PanzoomOptions
+PanzoomOptions
 
 #### Defined in
 
-[types.ts:235](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L235)
+[types.ts:235](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L235)
 
 ### getPan
 
@@ -687,7 +689,7 @@ Get the current x/y translation
 
 #### Defined in
 
-[types.ts:231](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L231)
+[types.ts:231](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L231)
 
 ### getScale
 
@@ -705,11 +707,11 @@ Get the current scale
 
 #### Defined in
 
-[types.ts:233](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L233)
+[types.ts:233](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L233)
 
 ### pan
 
-• **pan**: (`x`: `string` \| `number`, `y`: `string` \| `number`, `panOptions?`: PanOptions](../modules/types.md#panoptions)) => [[CurrentValues](#CurrentValues)
+• **pan**: (`x`: `string` \| `number`, `y`: `string` \| `number`, `panOptions?`: PanOptions) => [CurrentValues](#CurrentValues)
 
 Pan the Panzoom element to the given x and y coordinates
 
@@ -726,23 +728,23 @@ panzoom.pan(10, 10, { relative: true })
 
 ##### Parameters
 
-| Name          | Type                                        |
-| :------------ | :------------------------------------------ |
-| `x`           | `string` \| `number`                        |
-| `y`           | `string` \| `number`                        |
-| `panOptions?` | PanOptions](../modules/types.md#panoptions) |
+| Name          | Type                 |
+| :------------ | :------------------- |
+| `x`           | `string` \| `number` |
+| `y`           | `string` \| `number` |
+| `panOptions?` | PanOptions           |
 
 ##### Returns
 
-[[CurrentValues](#CurrentValues)
+[CurrentValues](#CurrentValues)
 
 #### Defined in
 
-[types.ts:246](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L246)
+[types.ts:246](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L246)
 
 ### reset
 
-• **reset**: (`resetOptions?`: PanzoomOptions](../modules/types.md#panzoomoptions)) => [[CurrentValues](#CurrentValues)
+• **reset**: (`resetOptions?`: PanzoomOptions) => [CurrentValues](#CurrentValues)
 
 Reset the pan and zoom to startX, startY, and startScale.
 Animates by default, ignoring the global option.
@@ -761,17 +763,17 @@ panzoom.reset({ animate: false })
 
 ##### Parameters
 
-| Name            | Type                                                |
-| :-------------- | :-------------------------------------------------- |
-| `resetOptions?` | PanzoomOptions](../modules/types.md#panzoomoptions) |
+| Name            | Type           |
+| :-------------- | :------------- |
+| `resetOptions?` | PanzoomOptions |
 
 ##### Returns
 
-[[CurrentValues](#CurrentValues)
+[CurrentValues](#CurrentValues)
 
 #### Defined in
 
-[types.ts:259](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L259)
+[types.ts:259](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L259)
 
 ### resetStyle
 
@@ -794,7 +796,7 @@ panzoom.resetStyle()
 
 #### Defined in
 
-[types.ts:268](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L268)
+[types.ts:268](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L268)
 
 ### setOptions
 
@@ -827,7 +829,7 @@ panzoom.setOptions({ cursor: 'default' })
 
 #### Defined in
 
-[types.ts:281](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L281)
+[types.ts:281](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L281)
 
 ### setStyle
 
@@ -852,11 +854,11 @@ A convenience method for setting prefixed styles on the Panzoom element
 
 #### Defined in
 
-[types.ts:283](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L283)
+[types.ts:283](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L283)
 
 ### zoom
 
-• **zoom**: (`scale`: `number`, `zoomOptions?`: ZoomOptions](../modules/types.md#zoomoptions)) => [[CurrentValues](#CurrentValues)
+• **zoom**: (`scale`: `number`, `zoomOptions?`: ZoomOptions) => [CurrentValues](#CurrentValues)
 
 Zoom the Panzoom element to the given scale
 
@@ -871,22 +873,22 @@ panzoom.zoom(2.2, { animate: true })
 
 ##### Parameters
 
-| Name           | Type                                          |
-| :------------- | :-------------------------------------------- |
-| `scale`        | `number`                                      |
-| `zoomOptions?` | ZoomOptions](../modules/types.md#zoomoptions) |
+| Name           | Type        |
+| :------------- | :---------- |
+| `scale`        | `number`    |
+| `zoomOptions?` | ZoomOptions |
 
 ##### Returns
 
-[[CurrentValues](#CurrentValues)
+[CurrentValues](#CurrentValues)
 
 #### Defined in
 
-[types.ts:292](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L292)
+[types.ts:292](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L292)
 
 ### zoomIn
 
-• **zoomIn**: (`zoomOptions?`: ZoomOptions](../modules/types.md#zoomoptions)) => [[CurrentValues](#CurrentValues)
+• **zoomIn**: (`zoomOptions?`: ZoomOptions) => [CurrentValues](#CurrentValues)
 
 Zoom in using the predetermined increment set in options.
 Animates by default, ignoring the global option.
@@ -903,21 +905,21 @@ panzoom.zoomIn({ animate: false })
 
 ##### Parameters
 
-| Name           | Type                                          |
-| :------------- | :-------------------------------------------- |
-| `zoomOptions?` | ZoomOptions](../modules/types.md#zoomoptions) |
+| Name           | Type        |
+| :------------- | :---------- |
+| `zoomOptions?` | ZoomOptions |
 
 ##### Returns
 
-[[CurrentValues](#CurrentValues)
+[CurrentValues](#CurrentValues)
 
 #### Defined in
 
-[types.ts:303](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L303)
+[types.ts:303](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L303)
 
 ### zoomOut
 
-• **zoomOut**: (`zoomOptions?`: ZoomOptions](../modules/types.md#zoomoptions)) => [[CurrentValues](#CurrentValues)
+• **zoomOut**: (`zoomOptions?`: ZoomOptions) => [CurrentValues](#CurrentValues)
 
 Zoom out using the predetermined increment set in options.
 Animates by default, ignoring the global option.
@@ -934,21 +936,21 @@ panzoom.zoomOut({ animate: false })
 
 ##### Parameters
 
-| Name           | Type                                          |
-| :------------- | :-------------------------------------------- |
-| `zoomOptions?` | ZoomOptions](../modules/types.md#zoomoptions) |
+| Name           | Type        |
+| :------------- | :---------- |
+| `zoomOptions?` | ZoomOptions |
 
 ##### Returns
 
-[[CurrentValues](#CurrentValues)
+[CurrentValues](#CurrentValues)
 
 #### Defined in
 
-[types.ts:314](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L314)
+[types.ts:314](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L314)
 
 ### zoomToPoint
 
-• **zoomToPoint**: (`scale`: `number`, `point`: { `clientX`: `number` ; `clientY`: `number` }, `zoomOptions?`: ZoomOptions](../modules/types.md#zoomoptions)) => [[CurrentValues](#CurrentValues)
+• **zoomToPoint**: (`scale`: `number`, `point`: { `clientX`: `number` ; `clientY`: `number` }, `zoomOptions?`: ZoomOptions) => [CurrentValues](#CurrentValues)
 
 Zoom the Panzoom element to a focal point using
 the given pointer/touch/mouse event or constructed point.
@@ -965,25 +967,25 @@ panzoom.zoomToPoint(1.2, pointerEvent)
 
 ##### Parameters
 
-| Name            | Type                                          |
-| :-------------- | :-------------------------------------------- |
-| `scale`         | `number`                                      |
-| `point`         | `Object`                                      |
-| `point.clientX` | `number`                                      |
-| `point.clientY` | `number`                                      |
-| `zoomOptions?`  | ZoomOptions](../modules/types.md#zoomoptions) |
+| Name            | Type        |
+| :-------------- | :---------- |
+| `scale`         | `number`    |
+| `point`         | `Object`    |
+| `point.clientX` | `number`    |
+| `point.clientY` | `number`    |
+| `zoomOptions?`  | ZoomOptions |
 
 ##### Returns
 
-[[CurrentValues](#CurrentValues)
+[CurrentValues](#CurrentValues)
 
 #### Defined in
 
-[types.ts:325](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L325)
+[types.ts:325](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L325)
 
 ### zoomWithWheel
 
-• **zoomWithWheel**: (`event`: `WheelEvent`, `zoomOptions?`: ZoomOptions](../modules/types.md#zoomoptions)) => [[CurrentValues](#CurrentValues)
+• **zoomWithWheel**: (`event`: `WheelEvent`, `zoomOptions?`: ZoomOptions) => [CurrentValues](#CurrentValues)
 
 Zoom the Panzoom element to a focal point using the given WheelEvent
 
@@ -1013,18 +1015,18 @@ elem.parentElement.addEventListener('wheel', function (event) {
 
 ##### Parameters
 
-| Name           | Type                                          |
-| :------------- | :-------------------------------------------- |
-| `event`        | `WheelEvent`                                  |
-| `zoomOptions?` | ZoomOptions](../modules/types.md#zoomoptions) |
+| Name           | Type         |
+| :------------- | :----------- |
+| `event`        | `WheelEvent` |
+| `zoomOptions?` | ZoomOptions  |
 
 ##### Returns
 
-[[CurrentValues](#CurrentValues)
+[CurrentValues](#CurrentValues)
 
 #### Defined in
 
-[types.ts:354](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L354)
+[types.ts:354](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L354)
 
 ## CurrentValues
 
@@ -1034,7 +1036,7 @@ elem.parentElement.addEventListener('wheel', function (event) {
 
 #### Defined in
 
-[types.ts:211](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L211)
+[types.ts:211](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L211)
 
 ### scale
 
@@ -1042,7 +1044,7 @@ elem.parentElement.addEventListener('wheel', function (event) {
 
 #### Defined in
 
-[types.ts:210](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L210)
+[types.ts:210](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L210)
 
 ### x
 
@@ -1050,7 +1052,7 @@ elem.parentElement.addEventListener('wheel', function (event) {
 
 #### Defined in
 
-[types.ts:208](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L208)
+[types.ts:208](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L208)
 
 ### y
 
@@ -1058,7 +1060,7 @@ elem.parentElement.addEventListener('wheel', function (event) {
 
 #### Defined in
 
-[types.ts:209](https://github.com/timmywil/panzoom/blob/10b285f/src/types.ts#L209)
+[types.ts:209](https://github.com/timmywil/panzoom/blob/0747ea4/src/types.ts#L209)
 
 ## Events
 
