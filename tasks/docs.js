@@ -59,7 +59,7 @@ function getInterfaceContent(filename, customHeader) {
       .replace(/# Interface:\s*(.+)[^]+##\s*Properties/, customHeader ? customHeader : '## $1')
       .replace(/___/g, '')
       // Remove superfluous type declarations
-      .replace(/#### Type declaration:\n\n▸ .+/g, '')
+      .replace(/#### Type declaration\n\n▸ .+/g, '')
       // Remove double "Defined in"
       .replace(/(Defined in: .+)\n\nDefined in: .+/g, '$1')
   )
@@ -101,7 +101,7 @@ data += addDefaults(panzoomOptions)
 
 data += getInterfaceContent(
   'types.panzoomobject.md',
-  '## PanzoomObject\n\nThese methods are available after initializing Panzoom'
+  '## PanzoomObject\n\nThese methods are available after initializing Panzoom.'
 ).replace(/CurrentValues/g, '[CurrentValues](#CurrentValues)')
 
 data += getInterfaceContent('types.currentvalues.md')

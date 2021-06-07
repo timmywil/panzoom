@@ -217,6 +217,12 @@ export interface PanzoomObject {
    * This does not normally need to be called.
    * It gets called by default when creating a new Panzoom object,
    * but can be skipped with the `noBind` option.
+   *
+   * ```js
+   * const panzoom = Panzoom(elem, { noBind: true })
+   * // ...
+   * panzoom.bind()
+   * ```
    */
   bind: () => void
   /** Remove all event listeners bound to the the Panzoom element */
