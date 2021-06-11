@@ -468,21 +468,31 @@ function Panzoom(
     addPointer(pointers, event)
     const current = getMiddle(pointers)
     if (pointers.length > 1) {
+      // A startDistance of 0 means
+      // that there weren't 2 pointers
+      // handled on start
+      if (startDistance === 0) {
+        startDistance = getDistance(pointers)
+      }
       // Use the distance between the first 2 pointers
       // to determine the current scale
       const diff = getDistance(pointers) - startDistance
       const toScale = constrainScale((diff * options.step) / 80 + startScale).scale
       zoomToPoint(toScale, current)
+    } else {
+      // Panning during pinch zoom can cause issues
+      // because the zoom has not always rendered in time
+      // for accurate calculations
+      // See https://github.com/timmywil/panzoom/issues/512
+      pan(
+        origX + (current.clientX - startClientX) / scale,
+        origY + (current.clientY - startClientY) / scale,
+        {
+          animate: false
+        },
+        event
+      )
     }
-
-    pan(
-      origX + (current.clientX - startClientX) / scale,
-      origY + (current.clientY - startClientY) / scale,
-      {
-        animate: false
-      },
-      event
-    )
   }
 
   function handleUp(event: PointerEvent) {
