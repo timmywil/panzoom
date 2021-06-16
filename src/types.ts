@@ -336,12 +336,16 @@ export interface PanzoomObject {
   /**
    * Zoom the Panzoom element to a focal point using the given WheelEvent
    *
-   *
    * This is a convenience function that may not handle all use cases.
    * Other cases should handroll solutions using the `zoomToPoint`
    * method or the `zoom` method's focal option.
    *
-   * **Note**: the focal point zooming pan adjustment is not affected by the `disablePan` option.
+   * **Notes**:
+   *
+   * - the focal point zooming pan adjustment is
+   *   not affected by the `disablePan` option.
+   * - animate should not be used when zooming with the wheel,
+   *   and is therefore always disabled.
    *
    * ```js
    * // Bind to mousewheel

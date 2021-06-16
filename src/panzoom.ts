@@ -406,7 +406,7 @@ function Panzoom(
     // or it conflicts with regular page scroll
     event.preventDefault()
 
-    const opts = { ...options, ...zoomOptions }
+    const opts = { ...options, ...zoomOptions, animate: false }
 
     // Normalize to deltaX in case shift modifier is used on Mac
     const delta = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY
