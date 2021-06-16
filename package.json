@@ -170,7 +170,8 @@
   "release-it": {
     "hooks": {
       "before:init": "npm test",
-      "after:bump": "npm run docs && git add README.md && git add dist/panzoom.* dist/src/ -f"
+      "after:bump": "npm run docs && git add README.md && git add dist/panzoom.* dist/src/ -f",
+      "before:git:push": "git rm -r --cached dist/ && git commit -n -m 'chore(release): remove dist after release'"
     },
     "git": {
       "commitMessage": "chore: release ${version}",
