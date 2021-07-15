@@ -4,6 +4,7 @@
     "alwaysStrict": true,
     "esModuleInterop": true,
     "jsx": "react",
+    "lib": ["dom", "es2017"],
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": true,

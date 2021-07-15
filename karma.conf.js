@@ -18,6 +18,7 @@ module.exports = function (config) {
         opts: 'test/mocha.opts'
       }
     },
+    plugins: ['karma-mocha', 'karma-typescript', 'karma-firefox-launcher'],
     reporters: ['progress', 'karma-typescript'],
     port: 9876,
     colors: true,
