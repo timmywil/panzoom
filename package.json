@@ -50,6 +50,7 @@
     "@babel/preset-env": "^7.14.7",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
+    "@release-it/bumper": "^3.0.1",
     "@release-it/conventional-changelog": "^3.0.1",
     "@types/assert": "^1.5.5",
     "@types/mocha": "^8.2.3",
@@ -187,6 +188,9 @@
       "tokenRef": "PERSONAL_WEBSITE_GITHUB_TOKEN"
     },
     "plugins": {
+      "@release-it/bumper": {
+        "out": "README.md"
+      },
       "@release-it/conventional-changelog": {
         "preset": {
           "name": "conventionalcommits",

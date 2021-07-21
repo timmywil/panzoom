@@ -1434,7 +1434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@iarna/toml@npm:2.2.5":
+"@iarna/toml@npm:2.2.5, @iarna/toml@npm:^2.2.5":
   version: 2.2.5
   resolution: "@iarna/toml@npm:2.2.5"
   checksum: 929a8516a24996b75768f7e0591815e37004f2cdda12b245c9a5ae64f423b4bd2bdd6943fc80e9bb5360a7be0b6d05bac57c178578d9a73acfb2eab125c594ee
@@ -1624,6 +1624,7 @@ __metadata:
     "@babel/preset-env": ^7.14.7
     "@commitlint/cli": ^12.1.4
     "@commitlint/config-conventional": ^12.1.4
+    "@release-it/bumper": ^3.0.1
     "@release-it/conventional-changelog": ^3.0.1
     "@types/assert": ^1.5.5
     "@types/mocha": ^8.2.3
@@ -1668,6 +1669,26 @@ __metadata:
     webpack-dev-server: ^3.11.2
   languageName: unknown
   linkType: soft
+
+"@release-it/bumper@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@release-it/bumper@npm:3.0.1"
+  dependencies:
+    "@iarna/toml": ^2.2.5
+    detect-indent: ^6.1.0
+    fast-glob: ^3.2.7
+    ini: ^2.0.0
+    js-yaml: ^4.1.0
+    lodash.castarray: ^4.4.0
+    lodash.get: ^4.4.2
+    lodash.set: ^4.3.2
+    mock-fs: ^4.14.0
+    semver: ^7.3.5
+  peerDependencies:
+    release-it: ^14.0.0
+  checksum: 18fd24a4a0573a4f6478f4222c4c9a3e34e56356340f4604bd766678d15194690977b746c2b7b25013d59d3ae32cb2f5ccc87a4fa3aa65941567a048fc113933
+  languageName: node
+  linkType: hard
 
 "@release-it/conventional-changelog@npm:^3.0.1":
   version: 3.0.1
@@ -4496,6 +4517,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-indent@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "detect-indent@npm:6.1.0"
+  checksum: b2e3405a71638d91874a0c2787fed2f5277af493b85bcea5a94570c042bd7af1539a0cdf59f898531235dae6a199db4d438653e63ec8abaa96a37a16d379929a
+  languageName: node
+  linkType: hard
+
 "detect-node@npm:^2.0.4":
   version: 2.1.0
   resolution: "detect-node@npm:2.1.0"
@@ -5358,7 +5386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.1.1":
+"fast-glob@npm:^3.1.1, fast-glob@npm:^3.2.7":
   version: 3.2.7
   resolution: "fast-glob@npm:3.2.7"
   dependencies:
@@ -6576,7 +6604,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"ini@npm:2.0.0":
+"ini@npm:2.0.0, ini@npm:^2.0.0":
   version: 2.0.0
   resolution: "ini@npm:2.0.0"
   checksum: 4ad34607409491b6ebe8e7b1e6b06ad1c147851cae5838186e27a906bf33abc1511fb539df7b96bdf8993fc0f81fd3f1e5995812fb616a965d8d4d4ad738bcf5
@@ -7285,7 +7313,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:4.1.0":
+"js-yaml@npm:4.1.0, js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
   dependencies:
@@ -7688,6 +7716,13 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"lodash.castarray@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "lodash.castarray@npm:4.4.0"
+  checksum: 45fb788a2e5a8550aab10ad1e057bbaf2c411734b06b249e87ad1243d39fa28543f249207fbf9c6e66f78a57cef0b187bbd3e2f84d7767593b5d944e6e6f5bcf
+  languageName: node
+  linkType: hard
+
 "lodash.clonedeep@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.clonedeep@npm:4.5.0"
@@ -7699,6 +7734,13 @@ fsevents@~2.3.2:
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: b6042bd8c09ff1961c9127d32266316bc21f946ece5e3464a663ec61fadb98e7d56ec0ef7e23b47d393695310c19cf24e651c1756be6da91ac02c72be7f79465
+  languageName: node
+  linkType: hard
+
+"lodash.get@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "lodash.get@npm:4.4.2"
+  checksum: 447e575e3caa5131ef44e5a0c135b1614f3c937d86b3be0568f9da7b0fd015010af3b6b4e41edf6e2698c9ce2dcc061ca71b31f274f799c991dceb018be16e4f
   languageName: node
   linkType: hard
 
@@ -7720,6 +7762,13 @@ fsevents@~2.3.2:
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: 4e2bb42a87a148991458d7c384bc197e96f7115e9536fc8e2c86ae9e99ce1c1f693ff15eb85761952535f48d72253aed8e673d9f32dde3e671cd91e3fde220a7
+  languageName: node
+  linkType: hard
+
+"lodash.set@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "lodash.set@npm:4.3.2"
+  checksum: 4dfedacae1c1cf86385a2b6e30ba538f06c90d703a0abd83a11432d80ec24b4016fe27359cdc0554a02a31a468789cbb282801dd755e54581cf0295477e2341d
   languageName: node
   linkType: hard
 
@@ -8277,6 +8326,13 @@ fsevents@~2.3.2:
     _mocha: bin/_mocha
     mocha: bin/mocha
   checksum: 305d820f2e7237f54c2c034198978c1ef7c0cf99ddf0c511c8e65e0d7cd00a2b87f7826dc91afa080473152159c1402f419f18d67f831dc55ebc84710ee97823
+  languageName: node
+  linkType: hard
+
+"mock-fs@npm:^4.14.0":
+  version: 4.14.0
+  resolution: "mock-fs@npm:4.14.0"
+  checksum: d1f8176f0da03c64d1ea12c586491f7ddc402bb6497c643e10b85899d638d15914c92ad06d0eab8bc54cb000ef3b2b236f2a8f9faf60af687f8858e77d7e5e0a
   languageName: node
   linkType: hard
 

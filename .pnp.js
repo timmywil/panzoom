@@ -41,6 +41,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/preset-env", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:7.14.7"],
             ["@commitlint/cli", "npm:12.1.4"],
             ["@commitlint/config-conventional", "npm:12.1.4"],
+            ["@release-it/bumper", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.0.1"],
             ["@release-it/conventional-changelog", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.0.1"],
             ["@types/assert", "npm:1.5.5"],
             ["@types/mocha", "npm:8.2.3"],
@@ -2637,6 +2638,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/preset-env", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:7.14.7"],
             ["@commitlint/cli", "npm:12.1.4"],
             ["@commitlint/config-conventional", "npm:12.1.4"],
+            ["@release-it/bumper", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.0.1"],
             ["@release-it/conventional-changelog", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.0.1"],
             ["@types/assert", "npm:1.5.5"],
             ["@types/mocha", "npm:8.2.3"],
@@ -2681,6 +2683,38 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["webpack-dev-server", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.11.2"]
           ],
           "linkType": "SOFT",
+        }]
+      ]],
+      ["@release-it/bumper", [
+        ["npm:3.0.1", {
+          "packageLocation": "./.yarn/cache/@release-it-bumper-npm-3.0.1-225ac175dd-18fd24a4a0.zip/node_modules/@release-it/bumper/",
+          "packageDependencies": [
+            ["@release-it/bumper", "npm:3.0.1"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.0.1", {
+          "packageLocation": "./.yarn/$$virtual/@release-it-bumper-virtual-1cd23c96fa/0/cache/@release-it-bumper-npm-3.0.1-225ac175dd-18fd24a4a0.zip/node_modules/@release-it/bumper/",
+          "packageDependencies": [
+            ["@release-it/bumper", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.0.1"],
+            ["@iarna/toml", "npm:2.2.5"],
+            ["@types/release-it", null],
+            ["detect-indent", "npm:6.1.0"],
+            ["fast-glob", "npm:3.2.7"],
+            ["ini", "npm:2.0.0"],
+            ["js-yaml", "npm:4.1.0"],
+            ["lodash.castarray", "npm:4.4.0"],
+            ["lodash.get", "npm:4.4.2"],
+            ["lodash.set", "npm:4.3.2"],
+            ["mock-fs", "npm:4.14.0"],
+            ["release-it", "npm:14.10.0"],
+            ["semver", "npm:7.3.5"]
+          ],
+          "packagePeers": [
+            "@types/release-it",
+            "release-it"
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["@release-it/conventional-changelog", [
@@ -6092,6 +6126,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/destroy-npm-1.0.4-a2203e01cb-5a516fc5a8.zip/node_modules/destroy/",
           "packageDependencies": [
             ["destroy", "npm:1.0.4"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["detect-indent", [
+        ["npm:6.1.0", {
+          "packageLocation": "./.yarn/cache/detect-indent-npm-6.1.0-d8c441ff7a-b2e3405a71.zip/node_modules/detect-indent/",
+          "packageDependencies": [
+            ["detect-indent", "npm:6.1.0"]
           ],
           "linkType": "HARD",
         }]
@@ -9671,6 +9714,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["lodash.castarray", [
+        ["npm:4.4.0", {
+          "packageLocation": "./.yarn/cache/lodash.castarray-npm-4.4.0-f3706198e9-45fb788a2e.zip/node_modules/lodash.castarray/",
+          "packageDependencies": [
+            ["lodash.castarray", "npm:4.4.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["lodash.clonedeep", [
         ["npm:4.5.0", {
           "packageLocation": "./.yarn/cache/lodash.clonedeep-npm-4.5.0-fbc3cda4e5-41e2fe4c57.zip/node_modules/lodash.clonedeep/",
@@ -9685,6 +9737,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/lodash.debounce-npm-4.0.8-f1d6e09799-b6042bd8c0.zip/node_modules/lodash.debounce/",
           "packageDependencies": [
             ["lodash.debounce", "npm:4.0.8"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["lodash.get", [
+        ["npm:4.4.2", {
+          "packageLocation": "./.yarn/cache/lodash.get-npm-4.4.2-7bda64ed87-447e575e3c.zip/node_modules/lodash.get/",
+          "packageDependencies": [
+            ["lodash.get", "npm:4.4.2"]
           ],
           "linkType": "HARD",
         }]
@@ -9712,6 +9773,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/lodash.merge-npm-4.6.2-77cb4416bf-4e2bb42a87.zip/node_modules/lodash.merge/",
           "packageDependencies": [
             ["lodash.merge", "npm:4.6.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["lodash.set", [
+        ["npm:4.3.2", {
+          "packageLocation": "./.yarn/cache/lodash.set-npm-4.3.2-7586c942c2-4dfedacae1.zip/node_modules/lodash.set/",
+          "packageDependencies": [
+            ["lodash.set", "npm:4.3.2"]
           ],
           "linkType": "HARD",
         }]
@@ -10307,6 +10377,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["yargs", "npm:16.2.0"],
             ["yargs-parser", "npm:20.2.4"],
             ["yargs-unparser", "npm:2.0.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["mock-fs", [
+        ["npm:4.14.0", {
+          "packageLocation": "./.yarn/cache/mock-fs-npm-4.14.0-c51913d559-d1f8176f0d.zip/node_modules/mock-fs/",
+          "packageDependencies": [
+            ["mock-fs", "npm:4.14.0"]
           ],
           "linkType": "HARD",
         }]

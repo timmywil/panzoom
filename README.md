@@ -72,6 +72,12 @@ With a script tag:
 <script src="/js/panzoom.js"></script>
 ```
 
+With a script tag from a CDN:
+
+```html
+<script src="https://unpkg.com/@panzoom/panzoom@4.4.1/dist/panzoom.min.js"></script>
+```
+
 ## Usage
 
 ```js
