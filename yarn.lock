@@ -1631,10 +1631,12 @@ __metadata:
     "@types/prismjs": ^1.16.6
     "@types/react": ^17.0.14
     "@types/react-dom": ^17.0.9
+    "@types/semver": ^7
     "@typescript-eslint/eslint-plugin": ^4.28.3
     "@typescript-eslint/parser": ^4.28.3
     commitlint: ^12.1.4
     concurrently: ^6.2.0
+    conventional-changelog-conventionalcommits: ^4.6.0
     cross-env: ^7.0.3
     css-loader: ^6.0.0
     eslint: ^7.30.0
@@ -1657,6 +1659,7 @@ __metadata:
     release-it: ^14.10.0
     rollup: ^2.53.2
     rollup-plugin-typescript2: ^0.30.0
+    semver: ^7.3.5
     style-loader: ^3.1.0
     ts-loader: ^9.2.3
     tslib: ^2.3.0
@@ -1951,6 +1954,13 @@ __metadata:
   version: 0.16.2
   resolution: "@types/scheduler@npm:0.16.2"
   checksum: e78d1bb50ca9321a76826c0f5a5ed7f1b6e995597127993cad658bd18d7f7de4324cd7efdfd0140079ee212a05774bbbd95eecfdf72370d14023acb99b841a30
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7":
+  version: 7.3.7
+  resolution: "@types/semver@npm:7.3.7"
+  checksum: fff3d8f012454d1e0faf9dbbbbbb9cd9657d9f85ee0fef112984dffa85937c5001774838954a7b88fcc06b85500c10300956059aba0211687a520468ec09901c
   languageName: node
   linkType: hard
 
@@ -3810,7 +3820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"conventional-changelog-conventionalcommits@npm:^4.3.1, conventional-changelog-conventionalcommits@npm:^4.5.0":
+"conventional-changelog-conventionalcommits@npm:^4.3.1, conventional-changelog-conventionalcommits@npm:^4.5.0, conventional-changelog-conventionalcommits@npm:^4.6.0":
   version: 4.6.0
   resolution: "conventional-changelog-conventionalcommits@npm:4.6.0"
   dependencies:

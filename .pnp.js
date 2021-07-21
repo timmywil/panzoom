@@ -48,10 +48,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/prismjs", "npm:1.16.6"],
             ["@types/react", "npm:17.0.14"],
             ["@types/react-dom", "npm:17.0.9"],
+            ["@types/semver", "npm:7.3.7"],
             ["@typescript-eslint/eslint-plugin", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:4.28.3"],
             ["@typescript-eslint/parser", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:4.28.3"],
             ["commitlint", "npm:12.1.4"],
             ["concurrently", "npm:6.2.0"],
+            ["conventional-changelog-conventionalcommits", "npm:4.6.0"],
             ["cross-env", "npm:7.0.3"],
             ["css-loader", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:6.0.0"],
             ["eslint", "npm:7.30.0"],
@@ -74,6 +76,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["release-it", "npm:14.10.0"],
             ["rollup", "npm:2.53.2"],
             ["rollup-plugin-typescript2", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:0.30.0"],
+            ["semver", "npm:7.3.5"],
             ["style-loader", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.1.0"],
             ["ts-loader", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:9.2.3"],
             ["tslib", "npm:2.3.0"],
@@ -2645,10 +2648,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/prismjs", "npm:1.16.6"],
             ["@types/react", "npm:17.0.14"],
             ["@types/react-dom", "npm:17.0.9"],
+            ["@types/semver", "npm:7.3.7"],
             ["@typescript-eslint/eslint-plugin", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:4.28.3"],
             ["@typescript-eslint/parser", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:4.28.3"],
             ["commitlint", "npm:12.1.4"],
             ["concurrently", "npm:6.2.0"],
+            ["conventional-changelog-conventionalcommits", "npm:4.6.0"],
             ["cross-env", "npm:7.0.3"],
             ["css-loader", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:6.0.0"],
             ["eslint", "npm:7.30.0"],
@@ -2671,6 +2676,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["release-it", "npm:14.10.0"],
             ["rollup", "npm:2.53.2"],
             ["rollup-plugin-typescript2", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:0.30.0"],
+            ["semver", "npm:7.3.5"],
             ["style-loader", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:3.1.0"],
             ["ts-loader", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:9.2.3"],
             ["tslib", "npm:2.3.0"],
@@ -3047,6 +3053,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-scheduler-npm-0.16.2-ba3a7d8c68-e78d1bb50c.zip/node_modules/@types/scheduler/",
           "packageDependencies": [
             ["@types/scheduler", "npm:0.16.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/semver", [
+        ["npm:7.3.7", {
+          "packageLocation": "./.yarn/cache/@types-semver-npm-7.3.7-fcdcc23189-fff3d8f012.zip/node_modules/@types/semver/",
+          "packageDependencies": [
+            ["@types/semver", "npm:7.3.7"]
           ],
           "linkType": "HARD",
         }]
