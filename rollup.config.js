@@ -3,7 +3,7 @@ import typescript from 'rollup-plugin-typescript2'
 const banner = `/**
 * Panzoom for panning and zooming elements using CSS transforms
 * Copyright Timmy Willison and other contributors
-* https://github.com/timmywil/panzoom/blob/master/MIT-License.txt
+* https://github.com/timmywil/panzoom/blob/main/MIT-License.txt
 */`
 
 export default [

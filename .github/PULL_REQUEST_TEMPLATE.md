@@ -2,10 +2,10 @@
 
 Please review the [guidelines for contributing](CONTRIBUTING.md) to this repository.
 
-- [ ] I am requesting to **pull a topic/feature/bugfix branch** (right side). In other words, not *master*.
-- [ ] I have run `npm test` against my changes and tests pass.
+- [ ] I am requesting to **pull a topic/feature/bugfix branch** (right side). In other words, not *main*.
+- [ ] I have run `yarn test` against my changes and tests pass.
 - [ ] I have added tests to prove my fix is effective or my feature works. This can be done in the form of unit tests in `test/unit/` or a new or altered demo in `demo/`.
-- [ ] I have added or edited necessary types and generated documentation (`npm run docs`), or no docs changes are needed.
+- [ ] I have added or edited necessary types and generated documentation (`yarn docs`), or no docs changes are needed.
 
 ### Description
 

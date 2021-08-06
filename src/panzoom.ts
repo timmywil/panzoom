@@ -4,7 +4,7 @@
  *
  * Copyright Timmy Willison and other contributors
  * Released under the MIT license
- * https://github.com/timmywil/panzoom/blob/master/MIT-License.txt
+ * https://github.com/timmywil/panzoom/blob/main/MIT-License.txt
  *
  */
 import './polyfills'
