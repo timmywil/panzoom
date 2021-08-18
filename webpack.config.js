@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
   mode: 'development',
@@ -24,8 +25,11 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: __dirname + '/demo',
-    disableHostCheck: true,
+    static: {
+      directory: path.resolve(__dirname, 'demo'),
+      serveIndex: true,
+      watch: true
+    },
     host: '0.0.0.0',
     hot: true,
     open: false
