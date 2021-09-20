@@ -226,8 +226,10 @@ function Panzoom(
       const scaledHeight = realHeight * toScale
       const diffHorizontal = (scaledWidth - realWidth) / 2
       const diffVertical = (scaledHeight - realHeight) / 2
+      let smartX = dims.parent.width > scaledWidth ? 'inside' : 'outside'
+      let smartY = dims.parent.height > scaledHeight ? 'inside' : 'outside'
 
-      if (opts.contain === 'inside') {
+      if (opts.contain === 'inside' || smartX === 'inside') {
         const minX = (-dims.elem.margin.left - dims.parent.padding.left + diffHorizontal) / toScale
         const maxX =
           (dims.parent.width -
@@ -239,6 +241,8 @@ function Panzoom(
             diffHorizontal) /
           toScale
         result.x = Math.max(Math.min(result.x, maxX), minX)
+      }
+      if (opts.contain === 'inside' || smartY === 'inside') {
         const minY = (-dims.elem.margin.top - dims.parent.padding.top + diffVertical) / toScale
         const maxY =
           (dims.parent.height -
@@ -250,7 +254,8 @@ function Panzoom(
             diffVertical) /
           toScale
         result.y = Math.max(Math.min(result.y, maxY), minY)
-      } else if (opts.contain === 'outside') {
+      }
+      if (opts.contain === 'outside' || smartX === 'outside') {
         const minX =
           (-(scaledWidth - dims.parent.width) -
             dims.parent.padding.left -
@@ -260,6 +265,8 @@ function Panzoom(
           toScale
         const maxX = (diffHorizontal - dims.parent.padding.left) / toScale
         result.x = Math.max(Math.min(result.x, maxX), minX)
+      }
+      if (opts.contain === 'outside' || smartY === 'outside') {
         const minY =
           (-(scaledHeight - dims.parent.height) -
             dims.parent.padding.top -
