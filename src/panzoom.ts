@@ -226,8 +226,8 @@ function Panzoom(
       const scaledHeight = realHeight * toScale
       const diffHorizontal = (scaledWidth - realWidth) / 2
       const diffVertical = (scaledHeight - realHeight) / 2
-      let smartX = dims.parent.width > scaledWidth ? 'inside' : 'outside'
-      let smartY = dims.parent.height > scaledHeight ? 'inside' : 'outside'
+      const smartX = dims.parent.width > scaledWidth ? 'inside' : 'outside'
+      const smartY = dims.parent.height > scaledHeight ? 'inside' : 'outside'
 
       if (opts.contain === 'inside' || smartX === 'inside') {
         const minX = (-dims.elem.margin.left - dims.parent.padding.left + diffHorizontal) / toScale
