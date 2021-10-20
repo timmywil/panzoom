@@ -258,6 +258,29 @@ describe('Panzoom', () => {
       assert.strictEqual(scale, 1)
     })
   })
+  describe('start options', () => {
+    it('ignore disablePan and disableZoom', (done) => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div, {
+        disablePan: true,
+        disableZoom: true,
+        startScale: 0.5,
+        startX: 10,
+        startY: 10
+      })
+      const scale = panzoom.getScale()
+      assert.strictEqual(scale, 0.5)
+
+      setTimeout(() => {
+        const pan = panzoom.getPan()
+        assert.strictEqual(pan.x, 10)
+        assert.strictEqual(pan.y, 10)
+        document.body.removeChild(div)
+        done()
+      })
+    })
+  })
   describe('force option', () => {
     it('ignores disablePan', () => {
       const div = document.createElement('div')

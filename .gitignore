@@ -1,8 +1,17 @@
 node_modules
-yarn.lock
 *.log
 .rpt2_cache/
 *.d.ts
 dist/
 coverage/
 docs/
+
+# Yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+package-lock.json

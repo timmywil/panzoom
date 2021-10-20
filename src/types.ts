@@ -16,7 +16,7 @@ export interface PanzoomEventDetail {
   originalEvent: PointerEvent | TouchEvent | MouseEvent
 }
 
-interface MiscOptions {
+export interface MiscOptions {
   /** Whether to animate transitions */
   animate?: boolean
   /**
@@ -110,21 +110,7 @@ interface MiscOptions {
   /** The overflow CSS value for the parent. Defaults to 'hidden' */
   overflow?: string
   /**
-   * Override the transform setter.
-   * This is exposed mostly so the user could
-   * set other parts of a transform
-   * aside from scale and translate.
-   * Default is defined in src/css.ts.
-   *
-   * ```js
-   * // This example always sets a rotation
-   * // when setting the scale and translation
-   * const panzoom = Panzoom(elem, {
-   *   setTransform: (elem, { scale, x, y }) => {
-   *     panzoom.setStyle('transform', `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`)
-   *   }
-   * })
-   * ```
+   * Set the transform using the proper prefix.
    */
   setTransform?: typeof setTransform
   /** Silence all events */
@@ -149,7 +135,7 @@ interface MiscOptions {
   [key: string]: any
 }
 
-interface PanSpecificOptions {
+export interface PanOnlyOptions {
   /**
    * Contain the panzoom element either
    * inside or outside the parent.
@@ -182,7 +168,7 @@ interface PanSpecificOptions {
   panOnlyWhenZoomed?: boolean
 }
 
-interface ZoomSpecificOptions {
+export interface ZoomOnlyOptions {
   /** Disable zooming functionality */
   disableZoom?: boolean
   /**
@@ -200,8 +186,8 @@ interface ZoomSpecificOptions {
   step?: number
 }
 
-export type PanOptions = MiscOptions & PanSpecificOptions
-export type ZoomOptions = MiscOptions & ZoomSpecificOptions
+export type PanOptions = MiscOptions & PanOnlyOptions
+export type ZoomOptions = MiscOptions & ZoomOnlyOptions
 export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
 
 export interface CurrentValues {
@@ -217,6 +203,12 @@ export interface PanzoomObject {
    * This does not normally need to be called.
    * It gets called by default when creating a new Panzoom object,
    * but can be skipped with the `noBind` option.
+   *
+   * ```js
+   * const panzoom = Panzoom(elem, { noBind: true })
+   * // ...
+   * panzoom.bind()
+   * ```
    */
   bind: () => void
   /** Remove all event listeners bound to the the Panzoom element */
@@ -265,10 +257,9 @@ export interface PanzoomObject {
    * panzoom.resetStyle()
    * ```
    */
-  /** Change options for the Panzoom instance */
   resetStyle: () => void
   /**
-   * Change an option on a Panzoom instance.
+   * Change any number of options on a Panzoom instance.
    * Setting some options will have side-effects.
    * For instance, changing the cursor option
    * will also set the cursor style.
@@ -331,12 +322,16 @@ export interface PanzoomObject {
   /**
    * Zoom the Panzoom element to a focal point using the given WheelEvent
    *
-   *
    * This is a convenience function that may not handle all use cases.
    * Other cases should handroll solutions using the `zoomToPoint`
    * method or the `zoom` method's focal option.
    *
-   * **Note**: the focal point zooming pan adjustment is not affected by the `disablePan` option.
+   * **Notes**:
+   *
+   * - the focal point zooming pan adjustment is
+   *   not affected by the `disablePan` option.
+   * - animate should not be used when zooming with the wheel,
+   *   and is therefore always disabled.
    *
    * ```js
    * // Bind to mousewheel

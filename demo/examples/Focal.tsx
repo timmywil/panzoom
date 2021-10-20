@@ -28,7 +28,8 @@ export default function Focal() {
   const panzoomRef = useRef<PanzoomObject>(null)
   let panzoom = panzoomRef.current
   useEffect(() => {
-    panzoom = panzoomRef.current = Panzoom(elem.current, { canvas: true })
+    // Ensure animate doesn't interfere with zoomWithWheel
+    panzoom = panzoomRef.current = Panzoom(elem.current, { animate: true, canvas: true })
     const parent = elem.current.parentElement
     parent.addEventListener('wheel', function (event) {
       if (!event.shiftKey) {
