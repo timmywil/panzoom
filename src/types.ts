@@ -110,21 +110,7 @@ export interface MiscOptions {
   /** The overflow CSS value for the parent. Defaults to 'hidden' */
   overflow?: string
   /**
-   * Override the transform setter.
-   * This is exposed mostly so the user could
-   * set other parts of a transform
-   * aside from scale and translate.
-   * Default is defined in src/css.ts.
-   *
-   * ```js
-   * // This example always sets a rotation
-   * // when setting the scale and translation
-   * const panzoom = Panzoom(elem, {
-   *   setTransform: (elem, { scale, x, y }) => {
-   *     panzoom.setStyle('transform', `rotate(0.5turn) scale(${scale}) translate(${x}px, ${y}px)`)
-   *   }
-   * })
-   * ```
+   * Set the transform using the proper prefix.
    */
   setTransform?: typeof setTransform
   /** Silence all events */
