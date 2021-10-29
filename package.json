@@ -181,7 +181,6 @@
     },
     "git": {
       "commitMessage": "chore: release ${version}",
-      "push": false,
       "tagName": "${version}"
     },
     "npm": {
