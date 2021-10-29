@@ -291,12 +291,14 @@ function Panzoom(
     originalEvent?: PanzoomEventDetail['originalEvent']
   ) {
     const result = constrainXY(toX, toY, scale, panOptions)
-    const opts = result.opts
 
-    x = result.x
-    y = result.y
-
-    return setTransformWithEvent('panzoompan', opts, originalEvent)
+    // Only try to set if the result is somehow different
+    if (x !== result.x || y !== result.y) {
+      x = result.x
+      y = result.y
+      return setTransformWithEvent('panzoompan', result.opts, originalEvent)
+    }
+    return { x, y, scale, isSVG, originalEvent }
   }
 
   function zoom(

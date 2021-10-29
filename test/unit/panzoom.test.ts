@@ -281,25 +281,38 @@ describe('Panzoom', () => {
       })
     })
   })
-  describe('force option', () => {
-    it('ignores disablePan', () => {
+  describe('disable options', () => {
+    it('disablePan', async () => {
       const div = document.createElement('div')
       document.body.appendChild(div)
-      const panzoom = Panzoom(div)
-      panzoom.setOptions({
+      const panzoom = Panzoom(div, {
         disablePan: true
       })
+      const badPanListener = () => {
+        assert.ok(false, 'panzoompan event should not be triggered')
+      }
+      ;(div as any).addEventListener('panzoompan', badPanListener)
       panzoom.pan(1, 1)
+      await skipFrame()
+      ;(div as any).removeEventListener('panzoompan', badPanListener)
       let pan = panzoom.getPan()
       assert.strictEqual(pan.x, 0)
       assert.strictEqual(pan.y, 0)
+      const goodPanListener = () => {
+        assert.ok(true, 'panzoompan event should not be triggered')
+      }
+      ;(div as any).addEventListener('panzoompan', goodPanListener)
+
+      // force option bypasses
       panzoom.pan(1, 1, { force: true })
+      await skipFrame()
+      ;(div as any).removeEventListener('panzoompan', goodPanListener)
       pan = panzoom.getPan()
       assert.strictEqual(pan.x, 1)
       assert.strictEqual(pan.y, 1)
       document.body.removeChild(div)
     })
-    it('ignores disableZoom', () => {
+    it('disableZoom', () => {
       const div = document.createElement('div')
       document.body.appendChild(div)
       const panzoom = Panzoom(div)
@@ -309,22 +322,31 @@ describe('Panzoom', () => {
       panzoom.zoom(2)
       let scale = panzoom.getScale()
       assert.strictEqual(scale, 1)
+
+      // force option bypasses
       panzoom.zoom(2, { force: true })
       scale = panzoom.getScale()
       assert.strictEqual(scale, 2)
       document.body.removeChild(div)
     })
-    it('ignores panOnlyWhenZoomed', () => {
+    it('panOnlyWhenZoomed', () => {
       const div = document.createElement('div')
       document.body.appendChild(div)
       const panzoom = Panzoom(div)
       panzoom.setOptions({
         panOnlyWhenZoomed: true
       })
+      const panListener = () => {
+        assert.ok(false, 'panzoompan event should not be triggered')
+      }
+      ;(div as any).addEventListener('panzoompan', panListener)
       panzoom.pan(1, 1)
+      ;(div as any).removeEventListener('panzoompan', panListener)
       let pan = panzoom.getPan()
       assert.strictEqual(pan.x, 0)
       assert.strictEqual(pan.y, 0)
+
+      // force option bypasses
       panzoom.pan(1, 1, { force: true })
       pan = panzoom.getPan()
       assert.strictEqual(pan.x, 1)
