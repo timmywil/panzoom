@@ -48,14 +48,16 @@ export default function Exclude() {
             width: '400px',
             border: '2px dotted',
             margin: '0 auto'
-          }}>
+          }}
+        >
           <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
           <a
             style={anchorStyle}
             id="link"
             target="_blank"
             rel="noopener noreferrer"
-            href="https://timmywil.com/panzoom/">
+            href="https://timmywil.com/panzoom/"
+          >
             This link will not allow dragging.
           </a>
           <a
@@ -63,14 +65,16 @@ export default function Exclude() {
             className="custom-excluded-class"
             target="_blank"
             rel="noopener noreferrer"
-            href="https://timmywil.com/panzoom/">
+            href="https://timmywil.com/panzoom/"
+          >
             This link will also not allow dragging.
           </a>
           <a
             style={{ ...anchorStyle, top: ANCHOR_TOP + 100 }}
             target="_blank"
             rel="noopener noreferrer"
-            href="https://timmywil.com/panzoom/">
+            href="https://timmywil.com/panzoom/"
+          >
             This one will allow dragging.
           </a>
         </div>

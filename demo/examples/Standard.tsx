@@ -34,21 +34,24 @@ export default function Standard() {
           onClick={() => {
             panzoom.zoomIn()
             range.current.value = panzoom.getScale() + ''
-          }}>
+          }}
+        >
           Zoom in
         </button>
         <button
           onClick={() => {
             panzoom.zoomOut()
             range.current.value = panzoom.getScale() + ''
-          }}>
+          }}
+        >
           Zoom out
         </button>
         <button
           onClick={() => {
             panzoom.reset()
             range.current.value = panzoom.getScale() + ''
-          }}>
+          }}
+        >
           Reset
         </button>
         <input

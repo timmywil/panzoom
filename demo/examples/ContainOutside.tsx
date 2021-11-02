@@ -22,19 +22,22 @@ export default function ContainOutside() {
         <button
           onClick={() => {
             panzoom.zoomIn()
-          }}>
+          }}
+        >
           Zoom in
         </button>
         <button
           onClick={() => {
             panzoom.zoomOut()
-          }}>
+          }}
+        >
           Zoom out
         </button>
         <button
           onClick={() => {
             panzoom.reset()
-          }}>
+          }}
+        >
           Reset
         </button>
       </div>
@@ -47,7 +50,8 @@ export default function ContainOutside() {
             width: '900px',
             height: '900px',
             border: '1px solid #ddee00'
-          }}>
+          }}
+        >
           <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
         </div>
       </div>

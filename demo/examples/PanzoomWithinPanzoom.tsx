@@ -78,7 +78,8 @@ export default function PanzoomWithinPanzoom() {
     <Demo
       title="A Panzoom instance within another Panzoom instance"
       subtitle="With no zooming, this is trivial. However, if you want the parent to zoom, you must account for the parent's scale to pan the child element properly."
-      code={code}>
+      code={code}
+    >
       <div className="buttons">
         <button onClick={() => adjustScale(true)}>Zoom In</button>
         <button onClick={() => adjustScale(false)}>Zoom Out</button>
@@ -86,7 +87,8 @@ export default function PanzoomWithinPanzoom() {
           onClick={() => {
             panzoom.reset()
             panzoom2.reset()
-          }}>
+          }}
+        >
           Reset
         </button>
       </div>
@@ -98,7 +100,8 @@ export default function PanzoomWithinPanzoom() {
             width: '400px',
             border: '2px dotted',
             margin: '0 auto'
-          }}>
+          }}
+        >
           <div
             ref={elemTwo}
             style={{
@@ -109,7 +112,8 @@ export default function PanzoomWithinPanzoom() {
               border: '1px solid #000000',
               color: 'black',
               textAlign: 'center'
-            }}>
+            }}
+          >
             This is a Panzoom element within another Panzoom element. See example code for panning
             within a zoomed parent.
           </div>
