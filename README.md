@@ -135,6 +135,14 @@ panzoom.zoom(2)
 setTimeout(() => panzoom.pan(100, 100))
 ```
 
+4\. I'm using Panzoom with SVG text elements and am seeing some [weird text resizing](https://github.com/timmywil/panzoom/issues/593). How do I fix this?
+
+Add `text-rendering="geometricPrecision"` to your `<text>` elements.
+
+```xml
+<text text-rendering="geometricPrecision" x="40" y="120">Hello World</text>
+```
+
 ---
 
 ## Documentation
