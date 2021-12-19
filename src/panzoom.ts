@@ -259,7 +259,7 @@ function Panzoom(
             diffHorizontal) /
           toScale
         const maxX = (diffHorizontal - dims.parent.padding.left) / toScale
-        result.x = Math.max(Math.min(result.x, maxX), minX)
+        result.x = Math.max(Math.min(result.x, Math.max(minX, maxX)), Math.min(minX, maxX))
         const minY =
           (-(scaledHeight - dims.parent.height) -
             dims.parent.padding.top -
@@ -268,7 +268,7 @@ function Panzoom(
             diffVertical) /
           toScale
         const maxY = (diffVertical - dims.parent.padding.top) / toScale
-        result.y = Math.max(Math.min(result.y, maxY), minY)
+        result.y = Math.max(Math.min(result.y, Math.max(minY, maxY)), Math.min(minY, maxY))
       }
     }
     return result
