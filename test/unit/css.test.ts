@@ -1,5 +1,6 @@
-import { strict as assert } from 'assert'
 import { setStyle, setTransform } from '../../src/css'
+
+import { strict as assert } from 'assert'
 
 function assertStyle(elem: HTMLElement | SVGElement, name: string, value: string) {
   const capName = name[0].toUpperCase() + name.slice(1)
@@ -41,16 +42,6 @@ describe('css', () => {
       const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       setTransform(elem, { x: 1, y: 1, scale: 1 })
       assertStyle(elem, 'transform', 'scale(1) translate(1px, 1px)')
-    })
-    it('sets the default transform-origin property with roundToPixels = true for HTML', () => {
-      const elem = document.createElement('div')
-      setTransform(elem, { x: 1.25, y: 1.75, scale: 1 }, { roundToPixels: true })
-      assertStyle(elem, 'transform', 'scale(1) translate(1px, 2px)')
-    })
-    it('sets the default transform-origin property with roundToPixels = true for SCG', () => {
-      const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-      setTransform(elem, { x: 1.25, y: 1.75, scale: 1 }, { roundToPixels: true })
-      assertStyle(elem, 'transform', 'scale(1) translate(1px, 2px)')
     })
   })
 })

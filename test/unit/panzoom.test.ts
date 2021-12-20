@@ -370,27 +370,41 @@ describe('Panzoom', () => {
     })
   })
   describe('noBind option', () => {
-    const div = document.createElement('div')
-    document.body.appendChild(div)
-    const events: any = {} // eslint-disable-line
-    const addEvent = Element.prototype.addEventListener
-    const removeEvent = Element.prototype.removeEventListener
-    // eslint-disable-next-line
-    Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
-      events[event] = fn
-      addEvent.call(this, event, fn, options)
-    }
-    // eslint-disable-next-line
-    Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
-      delete events[event]
-      removeEvent.call(this, event, fn, options)
-    }
-    const panzoom = Panzoom(div, { noBind: true })
-    assert(Object.keys(events).length === 0)
-    panzoom.bind()
-    assert(Object.keys(events).length > 0)
-    Element.prototype.addEventListener = addEvent
-    Element.prototype.removeEventListener = removeEvent
-    document.body.removeChild(div)
+    it('does not bind event handlers', () => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const events: any = {} // eslint-disable-line
+      const addEvent = Element.prototype.addEventListener
+      const removeEvent = Element.prototype.removeEventListener
+      // eslint-disable-next-line
+      Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
+        events[event] = fn
+        addEvent.call(this, event, fn, options)
+      }
+      // eslint-disable-next-line
+      Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
+        delete events[event]
+        removeEvent.call(this, event, fn, options)
+      }
+      const panzoom = Panzoom(div, { noBind: true })
+      assert(Object.keys(events).length === 0)
+      panzoom.bind()
+      assert(Object.keys(events).length > 0)
+      Element.prototype.addEventListener = addEvent
+      Element.prototype.removeEventListener = removeEvent
+      document.body.removeChild(div)
+    })
+  })
+  describe('roundPixels option', () => {
+    it('rounds x and y', () => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div, { roundPixels: true })
+      panzoom.pan(1.25, 1.25)
+      const pan = panzoom.getPan()
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
+      document.body.removeChild(div)
+    })
   })
 })

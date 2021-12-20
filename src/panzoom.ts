@@ -271,6 +271,12 @@ function Panzoom(
         result.y = Math.max(Math.min(result.y, maxY), minY)
       }
     }
+
+    if (opts.roundPixels) {
+      result.x = Math.round(result.x)
+      result.y = Math.round(result.y)
+    }
+
     return result
   }
 
