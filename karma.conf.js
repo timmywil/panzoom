@@ -8,7 +8,7 @@ module.exports = function (config) {
     },
     karmaTypescriptConfig: {
       tsconfig: './tsconfig.json',
-      exclude: ['node_modules', 'demo'],
+      exclude: ['node_modules', '.yarn', '.pnp.cjs', '.pnp.loader.mjs', 'demo'],
       compilerOptions: {
         module: 'commonjs'
       }

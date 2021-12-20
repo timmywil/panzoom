@@ -9,7 +9,7 @@
  */
 import './polyfills'
 
-import {
+import type {
   PanOptions,
   PanzoomEvent,
   PanzoomEventDetail,

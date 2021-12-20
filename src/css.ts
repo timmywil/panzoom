@@ -1,4 +1,4 @@
-import { CurrentValues, PanzoomOptions } from './types'
+import type { CurrentValues, PanzoomOptions } from './types'
 
 const isIE = typeof document !== 'undefined' && !!(document as any).documentMode
 
