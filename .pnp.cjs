@@ -56,7 +56,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-config-prettier", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:8.3.0"],
             ["eslint-plugin-prettier", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:4.0.0"],
             ["eslint-plugin-react", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:7.27.1"],
-            ["gzip-size", "npm:6.0.0"],
+            ["gzip-size", "npm:7.0.0"],
             ["html-webpack-plugin", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:5.5.0"],
             ["husky", "npm:7.0.4"],
             ["karma", "npm:6.3.9"],
@@ -2937,7 +2937,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-config-prettier", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:8.3.0"],
             ["eslint-plugin-prettier", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:4.0.0"],
             ["eslint-plugin-react", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:7.27.1"],
-            ["gzip-size", "npm:6.0.0"],
+            ["gzip-size", "npm:7.0.0"],
             ["html-webpack-plugin", "virtual:993f568abf1867e0829083f7f084497d82ce3ace715600e63ad31c235d19e51dbdf48eb928ad7f5baa94a1e2ef9a17c2741332675c7e3b7533c0b05a8485e46c#npm:5.5.0"],
             ["husky", "npm:7.0.4"],
             ["karma", "npm:6.3.9"],
@@ -7801,10 +7801,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["gzip-size", [
-        ["npm:6.0.0", {
-          "packageLocation": "./.yarn/cache/gzip-size-npm-6.0.0-d5b52fdbf1-2df97f3596.zip/node_modules/gzip-size/",
+        ["npm:7.0.0", {
+          "packageLocation": "./.yarn/cache/gzip-size-npm-7.0.0-cc99ecf165-52d0bf5863.zip/node_modules/gzip-size/",
           "packageDependencies": [
-            ["gzip-size", "npm:6.0.0"],
+            ["gzip-size", "npm:7.0.0"],
             ["duplexer", "npm:0.1.2"]
           ],
           "linkType": "HARD",

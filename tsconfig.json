@@ -1,5 +1,4 @@
 {
-  "exclude": ["dist"],
   "compilerOptions": {
     "alwaysStrict": true,
     "esModuleInterop": true,
@@ -14,5 +13,7 @@
     "strict": true,
     "strictNullChecks": false,
     "target": "es5"
-  }
+  },
+  "exclude": ["node_modules", ".yarn", ".pnp.cjs", ".pnp.loader.mjs", "dist"],
+  "include": ["**/*.js", "**/*.mjs", "**/*.cjs", "**/*.ts", "**/*.tsx"]
 }

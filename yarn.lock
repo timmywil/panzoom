@@ -1849,7 +1849,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-react: ^7.27.1
-    gzip-size: 6.0.0
+    gzip-size: ^7.0.0
     html-webpack-plugin: ^5.5.0
     husky: ^7.0.4
     karma: ^6.3.9
@@ -5908,12 +5908,12 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"gzip-size@npm:6.0.0":
-  version: 6.0.0
-  resolution: "gzip-size@npm:6.0.0"
+"gzip-size@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "gzip-size@npm:7.0.0"
   dependencies:
     duplexer: ^0.1.2
-  checksum: 2df97f359696ad154fc171dcb55bc883fe6e833bca7a65e457b9358f3cb6312405ed70a8da24a77c1baac0639906cd52358dc0ce2ec1a937eaa631b934c94194
+  checksum: 52d0bf586307082428b99f7b04d56d756d640e1f84d4a56debf9fb8c972d9db679143b067dd4024ebef42e9f6787e9dc8b9dcad344372b9dc87e55d942276f49
   languageName: node
   linkType: hard
 

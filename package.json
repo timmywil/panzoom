@@ -17,7 +17,7 @@
     "prepare": "husky install && yarn build",
     "prettier": "prettier --check \"**/*.md\" \"**/*.json\"",
     "release": "release-it",
-    "sizeup": "yarn node tasks/gzipSize.js",
+    "sizeup": "yarn node tasks/gzipSize.mjs",
     "start": "webpack serve",
     "test": "yarn lint && concurrently \"yarn test:unit\" \"yarn test:node\"",
     "test:unit": "yarn karma start",
@@ -69,7 +69,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.27.1",
-    "gzip-size": "6.0.0",
+    "gzip-size": "^7.0.0",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^7.0.4",
     "karma": "^6.3.9",
@@ -120,6 +120,10 @@
       "ecmaVersion": 2018,
       "sourceType": "module",
       "project": "./tsconfig.json",
+      "extraFileExtensions": [
+        ".mjs",
+        ".cjs"
+      ],
       "ecmaFeatures": {
         "jsx": true
       }
