@@ -108,7 +108,7 @@ function tryParseURL(str) {
   }
 }
 function getFileFormat(filepath) {
-  var _a;
+  var _a, _b;
   const ext = path.extname(filepath);
   switch (ext) {
     case `.mjs`: {
@@ -125,12 +125,22 @@ function getFileFormat(filepath) {
     }
     case `.js`: {
       const pkg = readPackageScope(filepath);
-      if (pkg) {
-        return (_a = pkg.data.type) != null ? _a : `commonjs`;
-      }
+      if (!pkg)
+        return `commonjs`;
+      return (_a = pkg.data.type) != null ? _a : `commonjs`;
+    }
+    default: {
+      const isMain = process.argv[1] === filepath;
+      if (!isMain)
+        return null;
+      const pkg = readPackageScope(filepath);
+      if (!pkg)
+        return `commonjs`;
+      if (pkg.data.type === `module`)
+        return null;
+      return (_b = pkg.data.type) != null ? _b : `commonjs`;
     }
   }
-  return null;
 }
 
 async function getFormat$1(resolved, context, defaultGetFormat) {
