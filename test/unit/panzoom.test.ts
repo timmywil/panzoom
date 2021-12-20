@@ -232,6 +232,41 @@ describe('Panzoom', () => {
       assert.strictEqual(pan.y, 0)
       document.body.removeChild(parent)
     })
+    it("still works even after an element's dimensions change", async () => {
+      const parent = document.createElement('div')
+      const div = document.createElement('div')
+      div.style.width = '0'
+      div.style.height = '0'
+      parent.style.width = '100px'
+      parent.style.height = '100px'
+      parent.appendChild(div)
+      document.body.appendChild(parent)
+      const panzoom = Panzoom(div, { contain: 'outside' })
+      await skipFrame()
+      panzoom.zoom(2)
+      // Zoom needs to paint first
+      await skipFrame()
+      // Still sets scale regardless of it begin 0/0
+      const scale = panzoom.getScale()
+      assert.strictEqual(scale, 2)
+      // Set the pan and let it through
+      // without constraints, which means
+      // 50, 50 because the scale is 2.
+      panzoom.pan(100, 100)
+      await skipFrame()
+      let pan = panzoom.getPan()
+      assert.strictEqual(pan.x, 50)
+      assert.strictEqual(pan.y, 50)
+      div.style.width = '100px'
+      div.style.height = '100px'
+      panzoom.pan(100, 100)
+      await skipFrame()
+      // Now contrains to 25, 25
+      pan = panzoom.getPan()
+      assert.strictEqual(pan.x, 25)
+      assert.strictEqual(pan.y, 25)
+      document.body.removeChild(parent)
+    })
   })
   describe('reset', () => {
     it('ignores disablePan, disableZoom, and panOnlyWhenZoomed', () => {

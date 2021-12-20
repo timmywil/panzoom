@@ -128,13 +128,6 @@ function Panzoom(
       parent.style.touchAction = opts.touchAction
       elem.style.touchAction = opts.touchAction
     }
-    if (
-      opts.hasOwnProperty('minScale') ||
-      opts.hasOwnProperty('maxScale') ||
-      opts.hasOwnProperty('contain')
-    ) {
-      setMinMax()
-    }
   }
 
   let x = 0
@@ -146,7 +139,6 @@ function Panzoom(
   // for accurate dimensions
   // to constrain initial values
   setTimeout(() => {
-    setMinMax()
     pan(options.startX, options.startY, { animate: false, force: true })
   })
 
@@ -177,23 +169,6 @@ function Panzoom(
       trigger('panzoomchange', value, opts)
     })
     return value
-  }
-
-  function setMinMax() {
-    if (options.contain) {
-      const dims = getDimensions(elem)
-      const parentWidth = dims.parent.width - dims.parent.border.left - dims.parent.border.right
-      const parentHeight = dims.parent.height - dims.parent.border.top - dims.parent.border.bottom
-      const elemWidth = dims.elem.width / scale
-      const elemHeight = dims.elem.height / scale
-      const elemScaledWidth = parentWidth / elemWidth
-      const elemScaledHeight = parentHeight / elemHeight
-      if (options.contain === 'inside') {
-        options.maxScale = Math.min(elemScaledWidth, elemScaledHeight)
-      } else if (options.contain === 'outside') {
-        options.minScale = Math.max(elemScaledWidth, elemScaledHeight)
-      }
-    }
   }
 
   function constrainXY(
@@ -286,7 +261,28 @@ function Panzoom(
     if (!opts.force && opts.disableZoom) {
       return result
     }
-    result.scale = Math.min(Math.max(toScale, opts.minScale), opts.maxScale)
+
+    let minScale = options.minScale
+    let maxScale = options.maxScale
+
+    if (opts.contain) {
+      const dims = getDimensions(elem)
+      const elemWidth = dims.elem.width / scale
+      const elemHeight = dims.elem.height / scale
+      if (elemWidth > 1 && elemHeight > 1) {
+        const parentWidth = dims.parent.width - dims.parent.border.left - dims.parent.border.right
+        const parentHeight = dims.parent.height - dims.parent.border.top - dims.parent.border.bottom
+        const elemScaledWidth = parentWidth / elemWidth
+        const elemScaledHeight = parentHeight / elemHeight
+        if (options.contain === 'inside') {
+          maxScale = Math.min(maxScale, elemScaledWidth, elemScaledHeight)
+        } else if (options.contain === 'outside') {
+          minScale = Math.max(minScale, elemScaledWidth, elemScaledHeight)
+        }
+      }
+    }
+
+    result.scale = Math.min(Math.max(toScale, minScale), maxScale)
     return result
   }
 
