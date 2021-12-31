@@ -143,6 +143,10 @@ Add `text-rendering="geometricPrecision"` to your `<text>` elements.
 <text text-rendering="geometricPrecision" x="40" y="120">Hello World</text>
 ```
 
+5\. I'm using Panzoom on a canvas element that renders a PDF. How do I avoid the PDF getting blurry when scaled?
+
+See this [stackoverflow question](https://stackoverflow.com/questions/70428922/pan-zoom-a-pdf-javascript/70501465)
+
 ---
 
 ## Documentation
