@@ -46,6 +46,7 @@ const defaultOptions: PanzoomOptions = {
   minScale: 0.125,
   overflow: 'hidden',
   panOnlyWhenZoomed: false,
+  pinchAndPan: false,
   relative: false,
   setTransform,
   startX: 0,
@@ -471,7 +472,10 @@ function Panzoom(
     }
     addPointer(pointers, event)
     const current = getMiddle(pointers)
-    if (pointers.length > 1) {
+    const hasMultiple = pointers.length > 1
+    let toScale = scale
+
+    if (hasMultiple) {
       // A startDistance of 0 means
       // that there weren't 2 pointers
       // handled on start
@@ -481,16 +485,21 @@ function Panzoom(
       // Use the distance between the first 2 pointers
       // to determine the current scale
       const diff = getDistance(pointers) - startDistance
-      const toScale = constrainScale((diff * options.step) / 80 + startScale).scale
+      toScale = constrainScale((diff * options.step) / 80 + startScale).scale
       zoomToPoint(toScale, current, { animate: false }, event)
-    } else {
-      // Panning during pinch zoom can cause issues
-      // because the zoom has not always rendered in time
-      // for accurate calculations
-      // See https://github.com/timmywil/panzoom/issues/512
+    }
+
+    // Pan during pinch if pinchAndPan is true.
+    // Note: some calculations may be off because the zoom
+    // above has not yet rendered. However, the behavior
+    // was removed before the new scale was used in the following
+    // pan calculation.
+    // See https://github.com/timmywil/panzoom/issues/512
+    // and https://github.com/timmywil/panzoom/issues/606
+    if (!hasMultiple || options.pinchAndPan) {
       pan(
-        origX + (current.clientX - startClientX) / scale,
-        origY + (current.clientY - startClientY) / scale,
+        origX + (current.clientX - startClientX) / toScale,
+        origY + (current.clientY - startClientY) / toScale,
         {
           animate: false
         },

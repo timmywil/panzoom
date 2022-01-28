@@ -110,6 +110,19 @@ export interface MiscOptions {
   /** The overflow CSS value for the parent. Defaults to 'hidden' */
   overflow?: string
   /**
+   * Set to true to enable panning during pinch zoom.
+   * Note: this is zooming to a point and panning in the same
+   * frame. In other words, the zoom has not yet painted and
+   * therefore the pan is working with old dimensions.
+   * Essentially, it may be best to avoid using this option
+   * when using contain.
+   *
+   * Related issues:
+   * https://github.com/timmywil/panzoom/issues/512
+   * https://github.com/timmywil/panzoom/issues/606
+   */
+  pinchAndPan?: boolean
+  /**
    * Set the transform using the proper prefix.
    */
   setTransform?: typeof setTransform
