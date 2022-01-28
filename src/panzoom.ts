@@ -402,7 +402,7 @@ function Panzoom(
       y: (clientY / effectiveArea.height) * (effectiveArea.height * toScale)
     }
 
-    return zoom(toScale, { animate: false, ...zoomOptions, focal }, originalEvent)
+    return zoom(toScale, { ...zoomOptions, animate: false, focal }, originalEvent)
   }
 
   function zoomWithWheel(event: WheelEvent, zoomOptions?: ZoomOptions) {
@@ -417,7 +417,7 @@ function Panzoom(
     const wheel = delta < 0 ? 1 : -1
     const toScale = constrainScale(scale * Math.exp((wheel * opts.step) / 3), opts).scale
 
-    return zoomToPoint(toScale, event, opts)
+    return zoomToPoint(toScale, event, opts, event)
   }
 
   function reset(resetOptions?: PanzoomOptions) {
@@ -482,7 +482,7 @@ function Panzoom(
       // to determine the current scale
       const diff = getDistance(pointers) - startDistance
       const toScale = constrainScale((diff * options.step) / 80 + startScale).scale
-      zoomToPoint(toScale, current)
+      zoomToPoint(toScale, current, { animate: false }, event)
     } else {
       // Panning during pinch zoom can cause issues
       // because the zoom has not always rendered in time
