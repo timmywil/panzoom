@@ -4,7 +4,9 @@
  */
 export default function isAttached(elem: HTMLElement | SVGElement | Document) {
   const doc = elem.ownerDocument
-  const parent = elem.parentNode
+  const rootNode = elem.getRootNode()
+  const parent = rootNode instanceof ShadowRoot ? rootNode.host : elem.parentNode
+
   return (
     doc &&
     parent &&
