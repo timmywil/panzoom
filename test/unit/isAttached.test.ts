@@ -16,6 +16,16 @@ describe('isAttached', () => {
     assert(isAttached(shadowChild))
     document.body.removeChild(div)
   })
+  it('determines if a nested, attached shadow dom element is attached', () => {
+    const div = document.createElement('div')
+    const shadowChild = document.createElement('div')
+    const shadowGrandChild = document.createElement('div')
+    shadowChild.attachShadow({ mode: 'open' }).appendChild(shadowGrandChild)
+    div.attachShadow({ mode: 'open' }).appendChild(shadowChild)
+    document.body.appendChild(div)
+    assert(isAttached(shadowGrandChild))
+    document.body.removeChild(div)
+  })
   it('determines if a detached shadow dom element is attached', () => {
     const div = document.createElement('div')
     const shadowChild = document.createElement('div')
