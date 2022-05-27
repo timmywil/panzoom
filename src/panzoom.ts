@@ -460,7 +460,7 @@ function Panzoom(
     startDistance = getDistance(pointers)
   }
 
-  function move(event: PointerEvent) {
+  function handleMove(event: PointerEvent) {
     if (
       !isPanning ||
       origX === undefined ||
@@ -532,14 +532,14 @@ function Panzoom(
     }
     bound = true
     onPointer('down', options.canvas ? parent : elem, handleDown)
-    onPointer('move', document, move, { passive: true })
+    onPointer('move', document, handleMove, { passive: true })
     onPointer('up', document, handleUp, { passive: true })
   }
 
   function destroy() {
     bound = false
     destroyPointer('down', options.canvas ? parent : elem, handleDown)
-    destroyPointer('move', document, move)
+    destroyPointer('move', document, handleMove)
     destroyPointer('up', document, handleUp)
   }
 
@@ -554,6 +554,9 @@ function Panzoom(
     getPan: () => ({ x, y }),
     getScale: () => scale,
     getOptions: () => shallowClone(options),
+    handleDown,
+    handleMove,
+    handleUp,
     pan,
     reset,
     resetStyle,

@@ -248,6 +248,30 @@ export interface PanzoomObject {
   /** Returns a _copy_ of the current options object */
   getOptions: () => PanzoomOptions
   /**
+   * handleDown, handleMove, and handleUp
+   * are the exact event handlers that Panzoom
+   * binds to pointer events. They are exposed
+   * in case you prefer to bind your own events
+   * or extend them.
+   * Note that move and up are bound to the document,
+   * not the Panzoom element. Only the down event
+   * is bound to the Panzoom element.
+   * To avoid double-binding, also set noBind to true.
+   *
+   * ```js
+   * const panzoom = Panzoom(elem, { noBind: true })
+   * elem.addEventListener('pointerdown', (event) => {
+   *   console.log(event)
+   *   panzoom.handleDown(event)
+   * })
+   * document.addEventListener('pointermove', panzoom.handleMove)
+   * document.addEventListener('pointerup', panzoom.handleUp)
+   * ```
+   */
+  handleDown: (event: PointerEvent) => void
+  handleMove: (event: PointerEvent) => void
+  handleUp: (event: PointerEvent) => void
+  /**
    * Pan the Panzoom element to the given x and y coordinates
    *
    * ```js
