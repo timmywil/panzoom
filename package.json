@@ -180,7 +180,7 @@
     "hooks": {
       "before:init": "yarn test",
       "after:bump": "yarn docs && git add README.md && git add dist/panzoom.* dist/src/ -f",
-      "after:git:release": "git rm -r --cached dist/ && git commit -m 'chore(release): remove dist after release' -n && git push"
+      "after:git:release": "git rm -r --cached dist/ && git commit -m \"chore(release): remove dist after release\" -n && git push"
     },
     "git": {
       "commitMessage": "chore: release ${version}",
