@@ -1,5 +1,4 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpack = require('webpack')
 const path = require('path')
 
 module.exports = {
@@ -38,7 +37,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Panzoom',
       template: 'demo/_index.html'
-    }),
-    new webpack.HotModuleReplacementPlugin()
+    })
   ]
 }
