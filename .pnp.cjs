@@ -5059,7 +5059,15 @@ const RAW_RUNTIME_STATE =
       ["npm:5.0.1", {\
         "packageLocation": "./.yarn/cache/chalk-npm-5.0.1-6afcb94227-0902c556d5.zip/node_modules/chalk/",\
         "packageDependencies": [\
-          ["chalk", "npm:5.0.1"]\
+          ["chalk", "npm:5.0.1"],\
+          ["#ansi-styles", [\
+            "ansi-styles",\
+            "npm:6.1.0"\
+          ]],\
+          ["#supports-color", [\
+            "supports-color",\
+            "npm:9.2.2"\
+          ]]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -13193,6 +13201,13 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["supports-color", "npm:8.1.1"],\
           ["has-flag", "npm:4.0.0"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:9.2.2", {\
+        "packageLocation": "./.yarn/cache/supports-color-npm-9.2.2-d003069e84-19d162c9d9.zip/node_modules/supports-color/",\
+        "packageDependencies": [\
+          ["supports-color", "npm:9.2.2"]\
         ],\
         "linkType": "HARD"\
       }]\

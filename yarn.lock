@@ -5,6 +5,20 @@ __metadata:
   version: 7
   cacheKey: 9
 
+"#ansi-styles@npm:ansi-styles@6.1.0, ansi-styles@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "ansi-styles@npm:6.1.0"
+  checksum: cd798a83b2e8d55f609e2a77aed1a34a578388604634e326784cb7fe7e4153ff6bb5ae68e037521feacd6cc8ea899963d0bc17b3f3d01f378a0fb615faf41d91
+  languageName: node
+  linkType: hard
+
+"#supports-color@npm:supports-color@9.2.2":
+  version: 9.2.2
+  resolution: "supports-color@npm:9.2.2"
+  checksum: 19d162c9d98d2c040770d8aad14566dd0fcc2f6e0524d3d9cbe1fdbead10bed683d45dab8f34d9e51bc64b336b00ceb5992b6619c78fc4e5a911802538468264
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.1.0":
   version: 2.2.0
   resolution: "@ampproject/remapping@npm:2.2.0"
@@ -2861,13 +2875,6 @@ __metadata:
   dependencies:
     color-convert: "npm:^2.0.1"
   checksum: d15dab617b78cbc96f10016e929e921ad73695753de4e45a911ecee6e29aa45c71d58f1ffaf8e49889dbe726dbdb2bbe5b4e3a7bf1c517f8740ae83a29b7df25
-  languageName: node
-  linkType: hard
-
-"ansi-styles@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "ansi-styles@npm:6.1.0"
-  checksum: cd798a83b2e8d55f609e2a77aed1a34a578388604634e326784cb7fe7e4153ff6bb5ae68e037521feacd6cc8ea899963d0bc17b3f3d01f378a0fb615faf41d91
   languageName: node
   linkType: hard
 
