@@ -1,7 +1,8 @@
+import pkg from './package.json'
 import typescript from 'rollup-plugin-typescript2'
 
 const banner = `/**
-* Panzoom for panning and zooming elements using CSS transforms
+* Panzoom ${pkg.version} for panning and zooming elements using CSS transforms
 * Copyright Timmy Willison and other contributors
 * https://github.com/timmywil/panzoom/blob/main/MIT-License.txt
 */`
