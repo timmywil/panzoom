@@ -2,14 +2,14 @@
  * Determine if an element is attached to the DOM
  * Panzoom requires this so events work properly
  */
-export default function isAttached(elem: HTMLElement | SVGElement | Document) {
-  const doc = elem.ownerDocument
-  const parent = elem.parentNode
-  return (
-    doc &&
-    parent &&
-    doc.nodeType === 9 &&
-    parent.nodeType === 1 &&
-    doc.documentElement.contains(parent)
-  )
+export default function isAttached(node: Node) {
+  let currentNode = node
+  while (currentNode && currentNode.parentNode) {
+    if (currentNode.parentNode === document) return true
+    currentNode =
+      currentNode.parentNode instanceof ShadowRoot
+        ? currentNode.parentNode.host
+        : currentNode.parentNode
+  }
+  return false
 }
