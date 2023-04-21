@@ -3,6 +3,7 @@ import Panzoom from '../../src/panzoom'
 import { PanzoomObject } from '../../src/types'
 import Code from '../Code'
 import Demo from '../Demo'
+import { getParentElement } from '../../src/parent'
 
 const code = (
   <Code>
@@ -30,9 +31,9 @@ export default function Focal() {
   useEffect(() => {
     // Ensure animate doesn't interfere with zoomWithWheel
     panzoom = panzoomRef.current = Panzoom(elem.current, { animate: true, canvas: true })
-    const parent = elem.current.parentElement
+    const parent = getParentElement(elem.current)
     parent.addEventListener('wheel', function (event) {
-      if (!event.shiftKey) {
+      if (!(event instanceof WheelEvent) || !event.shiftKey) {
         return
       }
       panzoom.zoomWithWheel(event)

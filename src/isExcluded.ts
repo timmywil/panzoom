@@ -1,3 +1,4 @@
+import { getParentElement } from './parent'
 import type { PanzoomOptions } from './types'
 
 function getClass(elem: Element) {
@@ -9,7 +10,7 @@ function hasClass(elem: Element, className: string) {
 }
 
 export default function isExcluded(elem: Element, options: PanzoomOptions) {
-  for (let cur = elem; cur != null; cur = cur.parentNode as Element) {
+  for (let cur = elem; cur; cur = getParentElement(cur)) {
     if (hasClass(cur, options.excludeClass) || options.exclude.indexOf(cur) > -1) {
       return true
     }

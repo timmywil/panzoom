@@ -1,3 +1,4 @@
+import { getParentElement } from './parent'
 import type { CurrentValues, PanzoomOptions } from './types'
 
 const isIE = typeof document !== 'undefined' && !!(document as any).documentMode
@@ -111,7 +112,7 @@ export function setTransform(
  * Dimensions used in containment and focal point zooming
  */
 export function getDimensions(elem: HTMLElement | SVGElement) {
-  const parent = elem.parentNode as HTMLElement | SVGElement
+  const parent = getParentElement(elem)
   const style = window.getComputedStyle(elem)
   const parentStyle = window.getComputedStyle(parent)
   const rectElem = elem.getBoundingClientRect()
