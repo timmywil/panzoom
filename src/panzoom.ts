@@ -25,6 +25,7 @@ import isAttached from './isAttached'
 import isExcluded from './isExcluded'
 import isSVGElement from './isSVGElement'
 import shallowClone from './shallowClone'
+import { getParentElement } from './parent'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
@@ -77,7 +78,7 @@ function Panzoom(
 
   const isSVG = isSVGElement(elem)
 
-  const parent = elem.parentNode as HTMLElement | SVGElement
+  const parent = getParentElement(elem)
 
   // Set parent styles
   parent.style.overflow = options.overflow
