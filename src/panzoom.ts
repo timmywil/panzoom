@@ -203,7 +203,7 @@ function Panzoom(
       const diffHorizontal = (scaledWidth - realWidth) / 2
       const diffVertical = (scaledHeight - realHeight) / 2
 
-      if (opts.contain === 'inside') {
+      if (opts.contain === 'inside' || ( opts.contain === 'aspectfit' && scaledWidth <= dims.parent.width)) {
         const minX = (-dims.elem.margin.left - dims.parent.padding.left + diffHorizontal) / toScale
         const maxX =
           (dims.parent.width -
@@ -226,7 +226,7 @@ function Panzoom(
             diffVertical) /
           toScale
         result.y = Math.max(Math.min(result.y, maxY), minY)
-      } else if (opts.contain === 'outside') {
+      } else if (opts.contain === 'outside' || ( opts.contain === 'aspectfit' && scaledWidth > dims.parent.width)) {
         const minX =
           (-(scaledWidth - dims.parent.width) -
             dims.parent.padding.left -
@@ -279,6 +279,9 @@ function Panzoom(
           maxScale = Math.min(maxScale, elemScaledWidth, elemScaledHeight)
         } else if (options.contain === 'outside') {
           minScale = Math.max(minScale, elemScaledWidth, elemScaledHeight)
+        } else if (options.contain==='aspectfit') {
+          // maxScale = Math.min(maxScale, elemScaledWidth, elemScaledHeight)
+          // minScale = Math.max(minScale, elemScaledWidth, elemScaledHeight)
         }
       }
     }
