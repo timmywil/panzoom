@@ -314,6 +314,7 @@ function Panzoom(
     if (!opts.force && opts.disableZoom) {
       return
     }
+    const toScalePlanned = toScale
     toScale = result.scale
     let toX = x
     let toY = y
@@ -323,8 +324,8 @@ function Panzoom(
       // plus the current translation after the scale
       // neutralized to no scale (as the transform scale will apply to the translation)
       const focal = opts.focal
-      toX = (focal.x / toScale - focal.x / scale + x * toScale) / toScale
-      toY = (focal.y / toScale - focal.y / scale + y * toScale) / toScale
+      toX = (focal.x / toScale - focal.x / scale + x * toScalePlanned) / toScalePlanned
+      toY = (focal.y / toScale - focal.y / scale + y * toScalePlanned) / toScalePlanned
     }
     const panResult = constrainXY(toX, toY, toScale, { relative: false, force: true })
     x = panResult.x
