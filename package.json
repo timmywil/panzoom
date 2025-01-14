@@ -15,7 +15,7 @@
     "format": "eslint . --fix && prettier --write \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"**/*.json\" \"**/*.md\"",
     "lint": "concurrently --raw \"eslint .\" \"npm run prettier\" \"npm run typescript\"",
     "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && npm run sizeup",
-    "prepare": "husky install && npm run build",
+    "prepare": "husky && npm run build",
     "prettier": "prettier --check \"**/*.md\" \"**/*.json\"",
     "release": "release-it",
     "sizeup": "node tasks/gzipSize.mjs",
