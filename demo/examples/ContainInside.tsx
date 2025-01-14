@@ -1,8 +1,8 @@
-import Panzoom, { PanzoomObject } from '../../src/panzoom'
 import React, { useEffect, useRef } from 'react'
+import Panzoom, { PanzoomObject } from '../../src/panzoom.js'
 
-import Code from '../Code'
-import Demo from '../Demo'
+import Code from '../Code.js'
+import Demo from '../Demo.js'
 
 const code = <Code>{`Panzoom(elem, { contain: 'inside' })`}</Code>
 
@@ -13,7 +13,7 @@ export default function ContainInside() {
     panzoom = Panzoom(elem.current, { contain: 'inside' })
   }, [])
   return (
-    <Demo title="Containment within the parent" code={code}>
+    <Demo code={code} title="Containment within the parent">
       <div className="buttons">
         <label>Try me: </label>
         <button
@@ -40,11 +40,11 @@ export default function ContainInside() {
       </div>
       <div className="panzoom-parent">
         <div
-          className="panzoom"
           ref={elem}
+          className="panzoom"
           style={{ width: '400px', border: '2px dotted', margin: '0 auto' }}
         >
-          <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
+          <img src="awesome_tiger.svg" style={{ width: '100%', height: '100%' }} />
         </div>
       </div>
     </Demo>

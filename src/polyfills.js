@@ -1,4 +1,4 @@
-/* eslint-disable no-var */
+ 
 if (typeof window !== 'undefined') {
   // Support: IE11 only
   if (window.NodeList && !NodeList.prototype.forEach) {

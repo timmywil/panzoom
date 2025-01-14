@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react'
-import Panzoom from '../../src/panzoom'
-import { PanzoomObject } from '../../src/types'
-import Code from '../Code'
-import Demo from '../Demo'
+import Panzoom from '../../src/panzoom.js'
+import { PanzoomObject } from '../../src/types.js'
+import Code from '../Code.js'
+import Demo from '../Demo.js'
 
 const code = (
   <Code>
@@ -39,17 +39,17 @@ export default function Focal() {
     })
   }, [])
   return (
-    <Demo title="Panning and focal-point zooming (shift + mousewheel)" code={code}>
+    <Demo code={code} title="Panning and focal-point zooming (shift + mousewheel)">
       <div className="buttons">
         <button onClick={() => panzoom.reset()}>Reset</button>
       </div>
       <div className="panzoom-parent" style={{ borderWidth: '10px' }}>
         <div
-          className="panzoom"
           ref={elem}
+          className="panzoom"
           style={{ width: '400px', height: '400px', margin: '0 auto' }}
         >
-          <img style={{ width: '100%', height: '100%' }} src="target.png" />
+          <img src="target.png" style={{ width: '100%', height: '100%' }} />
         </div>
       </div>
     </Demo>

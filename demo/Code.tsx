@@ -13,7 +13,7 @@ export default function Code({ children, language = 'javascript' }: Props) {
     Prism.highlightElement(elem.current, false)
   }, [])
   return (
-    <pre className={`language-${language}`} ref={elem}>
+    <pre ref={elem} className={`language-${language}`}>
       <code>{children}</code>
     </pre>
   )

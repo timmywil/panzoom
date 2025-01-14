@@ -1,8 +1,6 @@
-import { setStyle, setTransform } from '../../src/css'
+import { setStyle, setTransform } from '../../src/css.js'
 
-import { strict as assert } from 'assert'
-
-function assertStyle(elem: HTMLElement | SVGElement, name: string, value: string) {
+function assertStyle(assert: Assert, elem: HTMLElement | SVGElement, name: string, value: string) {
   const capName = name[0].toUpperCase() + name.slice(1)
   const style: any = elem.style
   if (style[name]) {
@@ -16,15 +14,15 @@ function assertStyle(elem: HTMLElement | SVGElement, name: string, value: string
   }
 }
 
-describe('css', () => {
-  describe('setStyle', () => {
-    it('sets a style on an HTMLElement', () => {
+QUnit.module('css', () => {
+  QUnit.module('setStyle', () => {
+    QUnit.test('sets a style on an HTMLElement', (assert) => {
       const elem = document.createElement('div')
       const border = '1px solid black'
       setStyle(elem, 'border', border)
       assert.equal(elem.style.border, border)
     })
-    it('sets a style on a SVGElement', () => {
+    QUnit.test('sets a style on a SVGElement', (assert) => {
       const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       const strokeWidth = '1px'
       setStyle(elem, 'strokeWidth', strokeWidth)
@@ -32,16 +30,16 @@ describe('css', () => {
     })
   })
 
-  describe('setTransform', () => {
-    it('sets the default transform-origin for HTML', () => {
+  QUnit.module('setTransform', () => {
+    QUnit.test('sets the default transform-origin for HTML', (assert) => {
       const elem = document.createElement('div')
       setTransform(elem, { x: 1, y: 1, scale: 1 })
-      assertStyle(elem, 'transform', 'scale(1) translate(1px, 1px)')
+      assertStyle(assert, elem, 'transform', 'scale(1) translate(1px, 1px)')
     })
-    it('sets the default transform-origin for SVG', () => {
+    QUnit.test('sets the default transform-origin for SVG', (assert) => {
       const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       setTransform(elem, { x: 1, y: 1, scale: 1 })
-      assertStyle(elem, 'transform', 'scale(1) translate(1px, 1px)')
+      assertStyle(assert, elem, 'transform', 'scale(1) translate(1px, 1px)')
     })
   })
 })

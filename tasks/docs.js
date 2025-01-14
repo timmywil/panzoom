@@ -1,12 +1,14 @@
-const fs = require('fs')
-const prettier = require('prettier')
-const pkg = require('../package.json')
+import fs from 'fs'
+import prettier from 'prettier'
+import pkg from '../package.json'
+
 function read(filename) {
   return fs.readFileSync(`${__dirname}/${filename}`, { encoding: 'utf8' })
 }
 function write(filename, data) {
   return fs.writeFileSync(`${__dirname}/${filename}`, data)
 }
+
 // Start with the README
 const header = '\n---\n\n## Documentation'
 let data = read('../README.md').replace(new RegExp(header + '[^]+'), '') + header

@@ -7,8 +7,11 @@
  * https://github.com/timmywil/panzoom/blob/main/MIT-License.txt
  *
  */
-import './polyfills'
+import './polyfills.js'
 
+import { getDimensions, setStyle, setTransform, setTransition } from './css.js'
+import { destroyPointer, eventNames, onPointer } from './events.js'
+import { addPointer, getDistance, getMiddle, removePointer } from './pointers.js'
 import type {
   PanOptions,
   PanzoomEvent,
@@ -16,15 +19,12 @@ import type {
   PanzoomObject,
   PanzoomOptions,
   ZoomOptions
-} from './types'
-import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
-import { destroyPointer, eventNames, onPointer } from './events'
-import { getDimensions, setStyle, setTransform, setTransition } from './css'
+} from './types.js'
 
-import isAttached from './isAttached'
-import isExcluded from './isExcluded'
-import isSVGElement from './isSVGElement'
-import shallowClone from './shallowClone'
+import isAttached from './isAttached.js'
+import isExcluded from './isExcluded.js'
+import isSVGElement from './isSVGElement.js'
+import shallowClone from './shallowClone.js'
 
 const defaultOptions: PanzoomOptions = {
   animate: false,
@@ -572,5 +572,5 @@ function Panzoom(
 
 Panzoom.defaultOptions = defaultOptions
 
-export * from './types'
+export * from './types.js'
 export default Panzoom

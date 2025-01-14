@@ -1,9 +1,9 @@
 # Contributing to Panzoom
 
-- Install dependencies with yarn (`npm install -g yarn && yarn`).
-- Prettier and ESLint enforce the style guide. Run `yarn format` to fix most style errors.
-- Run unit tests with `yarn test`.
-- Check demos with `yarn start`.
+- Install dependencies (`npm install`).
+- Prettier and ESLint enforce the style guide. Run `npm run format` to fix most style errors.
+- Run unit tests with `npm test`.
+- Check demos with `npm start`.
 
 **Supported browsers**: (basically IE 11, modern desktop and mobile browsers) https://browserl.ist/?q=%3E0.35%25%2C+not+op_mini+all
 
@@ -39,25 +39,25 @@ The documentation is auto-generated using a combination of [typedoc](https://typ
 
 ## Testing
 
-Tests are written with [mocha](https://mochajs.org/) and [Node's official assert module](https://nodejs.org/api/assert.html#assert_assert).
+Tests are written with [QUnit](https://qunitjs.com/) and run in browsers with [jquery-test-runner](https://github.com/jquery/jquery-test-runner).
 
 Here are the scripts that run tests:
 
 ```bash
-$ yarn test # Lints and runs the unit tests
-$ yarn test:unit # Runs the unit tests
-$ yarn test:watch # Watches files and runs the unit tests on file save
+$ npm test # Lints and runs the unit tests
+$ npm run test:unit # Runs the unit tests
+$ npm run test:watch # Watches files and runs the unit tests on file save
 ```
 
 ## Building
 
-The `dist/` folder is ignored on the main branch and included in releases. To build, first make sure dependencies are installed (`yarn`) and run the following:
+The `dist/` folder is ignored on the main branch and included in releases. To build, first make sure dependencies are installed (`npm install`) and run the following:
 
 ```bash
-$ yarn build
+$ npm run build
 ```
 
-This is usually unnecessary as `yarn start` will rebuild automatically as you change files.
+This is usually unnecessary as `npm start` will rebuild automatically as you change files.
 
 ## Coding Guidelines
 
@@ -87,13 +87,13 @@ established in the code.
 Guidelines are enforced using [TSLint](https://github.com/palantir/tslint) and [Prettier](https://github.com/prettier/prettier):
 
 ```bash
-$ yarn lint
+$ npm run lint
 ```
 
 Some things are fixable automatically.
 
 ```bash
-$ yarn format
+$ npm run format
 ```
 
 This script is run on commit, which means that the commit may need amending if any changes were made as a result of the commit.
@@ -111,12 +111,12 @@ Panzoom includes a helpful prompt for committing to guide you in the process of 
 Run the following after staging files:
 
 ```bash
-$ yarn commit
+$ npm run commit
 ```
 
 ## Debugging in VS Code
 
-First run `yarn start`, then run VS Code Debug with the following config to enable breakpoints:
+First run `npm start`, then run VS Code Debug with the following config to enable breakpoints:
 
 ```json
 {

@@ -1,11 +1,14 @@
-import { strict as assert, throws } from 'assert'
+import Panzoom from '../../src/panzoom.js'
+import { PanzoomEventDetail } from '../../src/types.js'
 
-import Panzoom from '../../src/panzoom'
-import { PanzoomEventDetail } from '../../src/types'
-
-function assertStyleMatches(elem: HTMLElement | SVGElement, name: string, value: string) {
+function assertStyleMatches(
+  assert: Assert,
+  elem: HTMLElement | SVGElement,
+  name: string,
+  value: string
+) {
   const capName = name[0].toUpperCase() + name.slice(1)
-  const style: any = elem.style // eslint-disable-line
+  const style: any = elem.style
   if (style[name]) {
     assert.ok(style[name].includes(value))
   } else if (style[`webkit${capName}`]) {
@@ -23,55 +26,43 @@ function skipFrame() {
   })
 }
 
-describe('Panzoom', () => {
-  it('exists', () => {
-    assert(Panzoom, 'Panzoom exists')
+QUnit.module('Panzoom', () => {
+  QUnit.test('exists', (assert) => {
+    assert.ok(Panzoom, 'Panzoom exists')
   })
-  it('checks the element exists before creating the instance', () => {
-    throws(() => {
-      Panzoom(undefined as any) // eslint-disable-line
+  QUnit.test('checks the element exists before creating the instance', (assert) => {
+    assert.throws(() => {
+      Panzoom(undefined as any)
     })
   })
-  it('checks the element has the right nodeType', () => {
-    throws(() => {
-      Panzoom(document as any) // eslint-disable-line
+  QUnit.test('checks the element has the right nodeType', (assert) => {
+    assert.throws(() => {
+      Panzoom(document as any)
     })
   })
-  it('checks the element is attached', () => {
-    throws(() => {
+  QUnit.test('checks the element is attached', (assert) => {
+    assert.throws(() => {
       const div = document.createElement('div')
       Panzoom(div)
     })
   })
-  it('returns an object with expected methods', () => {
+  QUnit.test('returns an object with expected methods', (assert) => {
     const div = document.createElement('div')
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
-    assert(panzoom.pan)
-    assert(panzoom.zoom)
-    assert(panzoom.zoomWithWheel)
-    assert(panzoom.getOptions())
-    assertStyleMatches(div, 'transformOrigin', '50% 50%')
+    assert.ok(panzoom.pan)
+    assert.ok(panzoom.zoom)
+    assert.ok(panzoom.zoomWithWheel)
+    assert.ok(panzoom.getOptions())
+    assertStyleMatches(assert, div, 'transformOrigin', '50% 50%')
     document.body.removeChild(div)
   })
-  it('has expected properties on event detail for panzoom events', () => {
+  QUnit.test('has expected properties on event detail for panzoom events', (assert) => {
+    assert.expect(36)
+    const done = assert.async()
     const div = document.createElement('div')
     document.body.appendChild(div)
-    const events: any = {} // eslint-disable-line
-    const addEvent = Element.prototype.addEventListener
-    const removeEvent = Element.prototype.removeEventListener
-    // eslint-disable-next-line
-    Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
-      events[event] = fn
-      addEvent.call(this, event, fn, options)
-    }
-    // eslint-disable-next-line
-    Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
-      delete events[event]
-      removeEvent.call(this, event, fn, options)
-    }
     Panzoom(div)
-    assert(Object.keys(events).length > 0)
     function checkEvent(event: CustomEvent<PanzoomEventDetail>) {
       console.log(`${event.type} called`)
       assert.ok(event.detail, 'Event detail exists')
@@ -83,37 +74,43 @@ describe('Panzoom', () => {
         event.detail.hasOwnProperty('originalEvent'),
         'Event detail has originalEvent value'
       )
+      if (event.type === 'panzoomend') {
+        document.body.removeChild(div)
+        done()
+      }
     }
     ;(div as any).addEventListener('panzoomstart', checkEvent)
     ;(div as any).addEventListener('panzoomchange', checkEvent)
     ;(div as any).addEventListener('panzoompan', checkEvent)
     ;(div as any).addEventListener('panzoomzoom', checkEvent)
     ;(div as any).addEventListener('panzoomend', checkEvent)
+
     div.dispatchEvent(new PointerEvent('pointerdown'))
-    document.dispatchEvent(new PointerEvent('pointermove', { clientX: 10, clientY: 10 }))
-    document.dispatchEvent(new PointerEvent('pointerup'))
-    Element.prototype.addEventListener = addEvent
-    Element.prototype.removeEventListener = removeEvent
-    document.body.removeChild(div)
+    setTimeout(() => {
+      document.dispatchEvent(new PointerEvent('pointermove', { clientX: 10, clientY: 10 }))
+      setTimeout(() => {
+        document.dispatchEvent(new PointerEvent('pointerup'))
+      })
+    })
   })
-  it('removes the events when using the destroy method', () => {
+  QUnit.test('removes the events when using the destroy method', (assert) => {
     const div = document.createElement('div')
     document.body.appendChild(div)
-    const events: any = {} // eslint-disable-line
+    const events: any = {}
     const addEvent = Element.prototype.addEventListener
     const removeEvent = Element.prototype.removeEventListener
-    // eslint-disable-next-line
+
     Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
       events[event] = fn
       addEvent.call(this, event, fn, options)
     }
-    // eslint-disable-next-line
+
     Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
       delete events[event]
       removeEvent.call(this, event, fn, options)
     }
     const panzoom = Panzoom(div)
-    assert(Object.keys(events).length > 0)
+    assert.ok(Object.keys(events).length > 0)
     const endListener = () => {
       console.log('panzoomend called')
       assert.ok('panzoomend called on pan')
@@ -123,12 +120,12 @@ describe('Panzoom', () => {
     document.dispatchEvent(new PointerEvent('pointerup'))
     panzoom.destroy()
     ;(div as any).removeEventListener('panzoomend', endListener)
-    assert(Object.keys(events).length === 0)
+    assert.ok(Object.keys(events).length === 0)
     Element.prototype.addEventListener = addEvent
     Element.prototype.removeEventListener = removeEvent
     document.body.removeChild(div)
   })
-  it('resets all styles with the resetStyle method', () => {
+  QUnit.test('resets all styles with the resetStyle method', (assert) => {
     const div = document.createElement('div')
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
@@ -143,14 +140,14 @@ describe('Panzoom', () => {
     assert.strictEqual(div.style.cursor, '', 'cursor style is reset on the element')
     document.body.removeChild(div)
   })
-  it('sets the expected transform-origin on SVG', () => {
+  QUnit.test('sets the expected transform-origin on SVG', (assert) => {
     const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
     document.body.appendChild(elem)
     Panzoom(elem)
-    assertStyleMatches(elem, 'transformOrigin', '0px 0px')
+    assertStyleMatches(assert, elem, 'transformOrigin', '0px 0px')
     document.body.removeChild(elem)
   })
-  it('changes the cursor with the cursor option', () => {
+  QUnit.test('changes the cursor with the cursor option', (assert) => {
     const div = document.createElement('div')
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
@@ -162,7 +159,7 @@ describe('Panzoom', () => {
     )
     document.body.removeChild(div)
   })
-  it("changes the parent's overflow with the overflow option", () => {
+  QUnit.test("changes the parent's overflow with the overflow option", (assert) => {
     const div = document.createElement('div')
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
@@ -174,24 +171,27 @@ describe('Panzoom', () => {
     )
     document.body.removeChild(div)
   })
-  it("changes the parent's and elemenet's touchAction style with the touchAction option", () => {
-    const div = document.createElement('div')
-    document.body.appendChild(div)
-    const panzoom = Panzoom(div)
-    panzoom.setOptions({ touchAction: 'auto' })
-    assert.strictEqual(
-      div.style.touchAction,
-      'auto',
-      'touch-action style changes when setting the touchAction option'
-    )
-    assert.strictEqual(
-      div.parentElement.style.touchAction,
-      'auto',
-      'touch-action style changes when setting the touchAction option'
-    )
-    document.body.removeChild(div)
-  })
-  it('changes the cursor with the canvas option', () => {
+  QUnit.test(
+    "changes the parent's and elemenet's touchAction style with the touchAction option",
+    (assert) => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div)
+      panzoom.setOptions({ touchAction: 'auto' })
+      assert.strictEqual(
+        div.style.touchAction,
+        'auto',
+        'touch-action style changes when setting the touchAction option'
+      )
+      assert.strictEqual(
+        div.parentElement.style.touchAction,
+        'auto',
+        'touch-action style changes when setting the touchAction option'
+      )
+      document.body.removeChild(div)
+    }
+  )
+  QUnit.test('changes the cursor with the canvas option', (assert) => {
     const div = document.createElement('div')
     document.body.appendChild(div)
     const panzoom = Panzoom(div)
@@ -205,8 +205,8 @@ describe('Panzoom', () => {
     )
     document.body.removeChild(div)
   })
-  describe('contain option', () => {
-    it(': outside sets the pan on the zoom to maintain containment', async () => {
+  QUnit.module('contain option', () => {
+    QUnit.test('"outside" sets the pan on the zoom to maintain containment', async (assert) => {
       const parent = document.createElement('div')
       const div = document.createElement('div')
       parent.style.width = div.style.width = '100px'
@@ -232,7 +232,7 @@ describe('Panzoom', () => {
       assert.strictEqual(pan.y, 0)
       document.body.removeChild(parent)
     })
-    it("still works even after an element's dimensions change", async () => {
+    QUnit.test("still works even after an element's dimensions change", async (assert) => {
       const parent = document.createElement('div')
       const div = document.createElement('div')
       div.style.width = '0'
@@ -268,8 +268,8 @@ describe('Panzoom', () => {
       document.body.removeChild(parent)
     })
   })
-  describe('reset', () => {
-    it('ignores disablePan, disableZoom, and panOnlyWhenZoomed', () => {
+  QUnit.module('reset', () => {
+    QUnit.test('ignores disablePan, disableZoom, and panOnlyWhenZoomed', (assert) => {
       const div = document.createElement('div')
       document.body.appendChild(div)
       const panzoom = Panzoom(div)
@@ -293,8 +293,9 @@ describe('Panzoom', () => {
       assert.strictEqual(scale, 1)
     })
   })
-  describe('start options', () => {
-    it('ignore disablePan and disableZoom', (done) => {
+  QUnit.module('start options', () => {
+    QUnit.test('ignore disablePan and disableZoom', (assert) => {
+      const done = assert.async()
       const div = document.createElement('div')
       document.body.appendChild(div)
       const panzoom = Panzoom(div, {
@@ -316,8 +317,8 @@ describe('Panzoom', () => {
       })
     })
   })
-  describe('disable options', () => {
-    it('disablePan', async () => {
+  QUnit.module('disable options', () => {
+    QUnit.test('disablePan', async (assert) => {
       const div = document.createElement('div')
       document.body.appendChild(div)
       const panzoom = Panzoom(div, {
@@ -347,7 +348,7 @@ describe('Panzoom', () => {
       assert.strictEqual(pan.y, 1)
       document.body.removeChild(div)
     })
-    it('disableZoom', () => {
+    QUnit.test('disableZoom', (assert) => {
       const div = document.createElement('div')
       document.body.appendChild(div)
       const panzoom = Panzoom(div)
@@ -364,7 +365,7 @@ describe('Panzoom', () => {
       assert.strictEqual(scale, 2)
       document.body.removeChild(div)
     })
-    it('panOnlyWhenZoomed', () => {
+    QUnit.test('panOnlyWhenZoomed', (assert) => {
       const div = document.createElement('div')
       document.body.appendChild(div)
       const panzoom = Panzoom(div)
@@ -389,7 +390,7 @@ describe('Panzoom', () => {
       document.body.removeChild(div)
     })
   })
-  it('calls the handleStartEvent option', () => {
+  QUnit.test('calls the handleStartEvent option', (assert) => {
     return new Promise((resolve) => {
       const div = document.createElement('div')
       document.body.appendChild(div)
@@ -404,34 +405,34 @@ describe('Panzoom', () => {
       document.body.removeChild(div)
     })
   })
-  describe('noBind option', () => {
-    it('does not bind event handlers', () => {
+  QUnit.module('noBind option', () => {
+    QUnit.test('does not bind event handlers', (assert) => {
       const div = document.createElement('div')
       document.body.appendChild(div)
-      const events: any = {} // eslint-disable-line
+      const events: any = {}
       const addEvent = Element.prototype.addEventListener
       const removeEvent = Element.prototype.removeEventListener
-      // eslint-disable-next-line
+
       Element.prototype.addEventListener = function (event: any, fn: any, options: any) {
         events[event] = fn
         addEvent.call(this, event, fn, options)
       }
-      // eslint-disable-next-line
+
       Element.prototype.removeEventListener = function (event: any, fn: any, options: any) {
         delete events[event]
         removeEvent.call(this, event, fn, options)
       }
       const panzoom = Panzoom(div, { noBind: true })
-      assert(Object.keys(events).length === 0)
+      assert.ok(Object.keys(events).length === 0)
       panzoom.bind()
-      assert(Object.keys(events).length > 0)
+      assert.ok(Object.keys(events).length > 0)
       Element.prototype.addEventListener = addEvent
       Element.prototype.removeEventListener = removeEvent
       document.body.removeChild(div)
     })
   })
-  describe('roundPixels option', () => {
-    it('rounds x and y', () => {
+  QUnit.module('roundPixels option', () => {
+    QUnit.test('rounds x and y', (assert) => {
       const div = document.createElement('div')
       document.body.appendChild(div)
       const panzoom = Panzoom(div, { roundPixels: true })

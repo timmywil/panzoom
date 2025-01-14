@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 
-import Code from '../Code'
-import Demo from '../Demo'
-import Panzoom from '../../src/panzoom'
-import { PanzoomObject } from '../../src/types'
+import Panzoom from '../../src/panzoom.js'
+import { PanzoomObject } from '../../src/types.js'
+import Code from '../Code.js'
+import Demo from '../Demo.js'
 
 const code = <Code>{`Panzoom(elem, { contain: 'outside', startScale: 1.5 })`}</Code>
 
@@ -16,7 +16,7 @@ export default function ContainOutside() {
     }, 1000)
   }, [])
   return (
-    <Demo title="Containment within the parent" code={code}>
+    <Demo code={code} title="Containment within the parent">
       <div className="buttons">
         <label>Try me: </label>
         <button
@@ -43,8 +43,8 @@ export default function ContainOutside() {
       </div>
       <div className="panzoom-parent" style={{ height: '900px' }}>
         <div
-          className="panzoom"
           ref={elem}
+          className="panzoom"
           style={{
             background: '#000',
             width: '900px',
@@ -52,7 +52,7 @@ export default function ContainOutside() {
             border: '1px solid #ddee00'
           }}
         >
-          <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
+          <img src="awesome_tiger.svg" style={{ width: '100%', height: '100%' }} />
         </div>
       </div>
     </Demo>

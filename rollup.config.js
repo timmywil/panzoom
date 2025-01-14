@@ -1,5 +1,7 @@
-import pkg from './package.json'
+import { readFile } from 'node:fs/promises'
 import typescript from 'rollup-plugin-typescript2'
+
+const pkg = await readFile('./package.json', { encoding: 'utf-8' }).then(JSON.parse)
 
 const banner = `/**
 * Panzoom ${pkg.version} for panning and zooming elements using CSS transforms
@@ -15,7 +17,10 @@ export default [
         tsconfigOverride: {
           exclude: ['node_modules', 'test'],
           compilerOptions: {
-            declaration: true
+            declaration: true,
+            module: 'esnext',
+            moduleResolution: 'node',
+            target: 'es5'
           }
         }
       })
@@ -35,7 +40,12 @@ export default [
     plugins: [
       typescript({
         tsconfigOverride: {
-          exclude: ['node_modules', 'test']
+          exclude: ['node_modules', 'test'],
+          compilerOptions: {
+            module: 'esnext',
+            moduleResolution: 'node',
+            target: 'es5'
+          }
         }
       })
     ],

@@ -1,8 +1,8 @@
 import React, { CSSProperties, useEffect, useRef } from 'react'
 
-import Code from '../Code'
-import Demo from '../Demo'
-import Panzoom from '../../src/panzoom'
+import Panzoom from '../../src/panzoom.js'
+import Code from '../Code.js'
+import Demo from '../Demo.js'
 
 const code = (
   <Code>{`\
@@ -39,41 +39,41 @@ export default function Exclude() {
     })
   }, [])
   return (
-    <Demo title="Exclude elements within the Panzoom element from event handling" code={code}>
+    <Demo code={code} title="Exclude elements within the Panzoom element from event handling">
       <div className="panzoom-parent">
         <div
-          className="panzoom"
           ref={elem}
+          className="panzoom"
           style={{
             width: '400px',
             border: '2px dotted',
             margin: '0 auto'
           }}
         >
-          <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
+          <img src="awesome_tiger.svg" style={{ width: '100%', height: '100%' }} />
           <a
-            style={anchorStyle}
-            id="link"
-            target="_blank"
-            rel="noopener noreferrer"
             href="https://timmywil.com/panzoom/"
+            id="link"
+            rel="noopener noreferrer"
+            style={anchorStyle}
+            target="_blank"
           >
             This link will not allow dragging.
           </a>
           <a
-            style={{ ...anchorStyle, top: ANCHOR_TOP + 50 }}
             className="custom-excluded-class"
-            target="_blank"
-            rel="noopener noreferrer"
             href="https://timmywil.com/panzoom/"
+            rel="noopener noreferrer"
+            style={{ ...anchorStyle, top: ANCHOR_TOP + 50 }}
+            target="_blank"
           >
             This link will also not allow dragging.
           </a>
           <a
+            href="https://timmywil.com/panzoom/"
+            rel="noopener noreferrer"
             style={{ ...anchorStyle, top: ANCHOR_TOP + 100 }}
             target="_blank"
-            rel="noopener noreferrer"
-            href="https://timmywil.com/panzoom/"
           >
             This one will allow dragging.
           </a>

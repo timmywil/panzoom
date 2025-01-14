@@ -11,8 +11,8 @@ export default function Demo({ title, subtitle, code, children }: Props) {
   return (
     <div className="demo">
       <a
-        id={title}
         href={`#${encodeURIComponent(title)}`}
+        id={title}
         style={{ textDecoration: 'none', color: 'black' }}
       >
         <h2>{title}</h2>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
-import Panzoom from '../../src/panzoom'
-import Code from '../Code'
-import Demo from '../Demo'
+import Panzoom from '../../src/panzoom.js'
+import Code from '../Code.js'
+import Demo from '../Demo.js'
 
 const code = (
   <Code>{`const panzoom = Panzoom(elem, {
@@ -30,26 +30,26 @@ export default function Rotate() {
   return (
     <>
       <Demo
-        title="Adding on matrix functions to the transform"
-        subtitle="Warning: the setTransform option should be used with caution. Most cases can be handled by adding a parent element and applying any special transforms to the child (see the next example)."
         code={code}
+        subtitle="Warning: the setTransform option should be used with caution. Most cases can be handled by adding a parent element and applying any special transforms to the child (see the next example)."
+        title="Adding on matrix functions to the transform"
       >
         <div className="panzoom-parent">
-          <div className="panzoom" ref={elem} style={{ width: '400px', margin: '0 auto' }}>
-            <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
+          <div ref={elem} className="panzoom" style={{ width: '400px', margin: '0 auto' }}>
+            <img src="awesome_tiger.svg" style={{ width: '100%', height: '100%' }} />
           </div>
         </div>
       </Demo>
       <Demo
-        title="Adding a transform to a child"
-        subtitle="A rotation of 180deg is applied to the image tag. It's almost always better to add any special transforms to a child of the panzoom element instead of the panzoom element."
         code={code2}
+        subtitle="A rotation of 180deg is applied to the image tag. It's almost always better to add any special transforms to a child of the panzoom element instead of the panzoom element."
+        title="Adding a transform to a child"
       >
         <div className="panzoom-parent">
-          <div className="panzoom" ref={elem2} style={{ width: '400px', margin: '0 auto' }}>
+          <div ref={elem2} className="panzoom" style={{ width: '400px', margin: '0 auto' }}>
             <img
-              style={{ width: '100%', height: '100%', transform: 'rotate(180deg)' }}
               src="awesome_tiger.svg"
+              style={{ width: '100%', height: '100%', transform: 'rotate(180deg)' }}
             />
           </div>
         </div>

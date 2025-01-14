@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 
-import Code from '../Code'
-import Demo from '../Demo'
-import Panzoom, { PanzoomObject } from '../../src/panzoom'
+import Panzoom, { PanzoomObject } from '../../src/panzoom.js'
+import Code from '../Code.js'
+import Demo from '../Demo.js'
 
 const code = (
   <Code>{`\
@@ -76,9 +76,9 @@ export default function PanzoomWithinPanzoom() {
   }
   return (
     <Demo
-      title="A Panzoom instance within another Panzoom instance"
-      subtitle="With no zooming, this is trivial. However, if you want the parent to zoom, you must account for the parent's scale to pan the child element properly."
       code={code}
+      subtitle="With no zooming, this is trivial. However, if you want the parent to zoom, you must account for the parent's scale to pan the child element properly."
+      title="A Panzoom instance within another Panzoom instance"
     >
       <div className="buttons">
         <button onClick={() => adjustScale(true)}>Zoom In</button>
@@ -94,8 +94,8 @@ export default function PanzoomWithinPanzoom() {
       </div>
       <div className="panzoom-parent">
         <div
-          className="panzoom"
           ref={elem}
+          className="panzoom"
           style={{
             width: '400px',
             border: '2px dotted',
@@ -117,7 +117,7 @@ export default function PanzoomWithinPanzoom() {
             This is a Panzoom element within another Panzoom element. See example code for panning
             within a zoomed parent.
           </div>
-          <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
+          <img src="awesome_tiger.svg" style={{ width: '100%', height: '100%' }} />
         </div>
       </div>
     </Demo>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
-import Panzoom from '../../src/panzoom'
-import Code from '../Code'
-import Demo from '../Demo'
+import Panzoom from '../../src/panzoom.js'
+import Code from '../Code.js'
+import Demo from '../Demo.js'
 
 const code = <Code>{`Panzoom(elem, { disableYAxis: true })`}</Code>
 
@@ -11,10 +11,10 @@ export default function DisabledYAxis() {
     Panzoom(elem.current, { disableYAxis: true })
   }, [])
   return (
-    <Demo title="Disabling one axis" code={code}>
+    <Demo code={code} title="Disabling one axis">
       <div className="panzoom-parent">
-        <div className="panzoom" ref={elem} style={{ width: '400px', margin: '0 auto' }}>
-          <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
+        <div ref={elem} className="panzoom" style={{ width: '400px', margin: '0 auto' }}>
+          <img src="awesome_tiger.svg" style={{ width: '100%', height: '100%' }} />
         </div>
       </div>
     </Demo>
