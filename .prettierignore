@@ -3,7 +3,7 @@ package-lock.json
 node_modules/**
 coverage/**
 .git/**
-.*
 docs/**
 *.d.ts
 dist/**
+/.babelrc
