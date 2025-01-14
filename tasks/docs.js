@@ -1,16 +1,20 @@
 import fs from 'fs'
 import prettier from 'prettier'
-import pkg from '../package.json'
+import { fileURLToPath } from 'url'
+
+const dirname = fileURLToPath(new URL('.', import.meta.url))
 
 function read(filename) {
-  return fs.readFileSync(`${__dirname}/${filename}`, { encoding: 'utf8' })
+  return fs.readFileSync(`${dirname}${filename}`, { encoding: 'utf8' })
 }
 function write(filename, data) {
-  return fs.writeFileSync(`${__dirname}/${filename}`, data)
+  return fs.writeFileSync(`${dirname}${filename}`, data)
 }
 
+const pkg = JSON.parse(read('../package.json'))
+
 // Start with the README
-const header = '\n---\n\n## Documentation'
+const header = '\n---\n\n# Documentation'
 let data = read('../README.md').replace(new RegExp(header + '[^]+'), '') + header
 
 function removeLinks(data) {
@@ -37,28 +41,20 @@ function redoLinks(data) {
   return addLinks(removeLinks(data))
 }
 
-/**
- * @param {string} filename
- * @param {Array<string>} functions List of functions to extract from docs
- */
-function getModuleFunctions(filename, functions) {
-  const available = redoLinks(read(`../docs/modules/${filename}`))
-    // Remove everything up to functions
-    .replace(/[^]+#{2}\s*Functions/, '')
-    .split(/___/)
-  return functions
-    .map((fn) => {
-      const rfn = new RegExp(`###\\s*${fn}[^#]+?`)
-      const doc = available.find((existing) => rfn.test(existing))
-      return doc || ''
-    })
-    .join('\n\n')
+function getModuleFunction(fn) {
+  return (
+    redoLinks(read(`../docs/panzoom/functions/${fn}.md`))
+      // Remove everything up to function
+      .replace(/[^]+#\s*Function:/, '\n\n## ')
+  )
 }
 
 function getInterfaceContent(filename, customHeader) {
   return removeLinks(
-    read(`../docs/interfaces/${filename}`)
-      .replace(/# Interface:\s*(.+)[^]+##\s*Properties/, customHeader ? customHeader : '## $1')
+    read(`../docs/types/interfaces/${filename}`)
+      // Remove everything up to interface
+      .replace(/[^]+#\s*Interface/, '# Interface')
+      .replace(/# Interface:[^\n]+/, customHeader ? customHeader : '## $1')
       .replace(/___/g, '')
       // Remove superfluous type declarations
       .replace(/#### Type declaration\n\n▸ .+/g, '')
@@ -67,7 +63,7 @@ function getInterfaceContent(filename, customHeader) {
   )
 }
 
-data += getModuleFunctions('panzoom.md', ['default']).replace(/default/g, 'Panzoom')
+data += getModuleFunction('default').replace(/default/g, 'Panzoom')
 
 // Get default options
 const source = read('../src/panzoom.ts')
@@ -87,29 +83,24 @@ function addDefaults(data) {
 const panzoomOptions =
   '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
   getInterfaceContent(
-    'types.miscoptions.md',
+    'MiscOptions.md',
     '## MiscOptions\n\nThese options can be passed to `Panzoom()`, as well as any pan or zoom function. One exception is `force`, which can only be passed to methods like `pan()` or `zoom()`, but not `Panzoom()` or `setOptions()` as it should not be set globally.'
   ) +
-  getInterfaceContent(
-    'types.panonlyoptions.md',
-    '## PanOptions (includes [MiscOptions](#MiscOptions))'
-  ) +
-  getInterfaceContent(
-    'types.zoomonlyoptions.md',
-    '## ZoomOptions (includes [MiscOptions](#MiscOptions))'
-  )
+  getInterfaceContent('PanOnlyOptions.md', '## PanOptions (includes [MiscOptions](#MiscOptions))') +
+  getInterfaceContent('ZoomOnlyOptions.md', '## ZoomOptions (includes [MiscOptions](#MiscOptions))')
 
 data += addDefaults(panzoomOptions)
 
 data += getInterfaceContent(
-  'types.panzoomobject.md',
+  'PanzoomObject.md',
   '## PanzoomObject\n\nThese methods are available after initializing Panzoom.'
 ).replace(/CurrentValues/g, '[CurrentValues](#CurrentValues)')
 
-data += getInterfaceContent('types.currentvalues.md')
+data += getInterfaceContent('CurrentValues.md')
 
 const events = read('./EVENTS.md')
 data += events
 
 // Write a pretty version
-write('../README.md', prettier.format(data, { ...pkg.prettier, parser: 'markdown' }))
+const formatted = await prettier.format(data, { ...pkg.prettier, parser: 'markdown' })
+write('../README.md', formatted)
