@@ -72,7 +72,7 @@
     "gzip-size": "^7.0.0",
     "html-webpack-plugin": "^5.6.3",
     "husky": "^9.1.7",
-    "jquery-test-runner": "file:../jquery/jquery-test-runner",
+    "jquery-test-runner": "^0.2.2",
     "marked": "^15.0.6",
     "prettier": "^3.4.2",
     "prismjs": "^1.29.0",
