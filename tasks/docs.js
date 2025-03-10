@@ -28,7 +28,11 @@ function removeLinks(data) {
 
 function addLinks(data) {
   return data
-    .replace(/PanzoomOptions/g, '[PanzoomOptions](#PanzoomOptions)')
+    .replace(/PanzoomOptions\b/g, '[PanzoomOptions](#PanzoomOptions)')
+    .replace(
+      /PanzoomOptionsWithoutForce/g,
+      '[PanzoomOptionsWithoutForce](#PanzoomOptionsWithoutForce)'
+    )
     .replace(/PanOptions/g, '[PanOptions](#PanOptions)')
     .replace(/ZoomOptions/g, '[ZoomOptions](#ZoomOptions)')
     .replace(/MiscOptions/g, '[MiscOptions](#MiscOptions)')
@@ -82,6 +86,7 @@ function addDefaults(data) {
 
 const panzoomOptions =
   '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
+  '\n\n## `PanzoomOptionsWithoutForce`\n\nIdentical to PanzoomOptions, but excludes the `force` option.\n\n' +
   getInterfaceContent(
     'MiscOptions.md',
     '## MiscOptions\n\nThese options can be passed to `Panzoom()`, as well as any pan or zoom function. One exception is `force`, which can only be passed to methods like `pan()` or `zoom()`, but not `Panzoom()` or `setOptions()` as it should not be set globally.'
