@@ -211,6 +211,7 @@ export interface ZoomOnlyOptions {
 export type PanOptions = MiscOptions & PanOnlyOptions
 export type ZoomOptions = MiscOptions & ZoomOnlyOptions
 export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
+export type PanzoomOptionsWithoutForce = PanOptions & ZoomOptions & Omit<MiscOptions, 'force'>
 
 export interface CurrentValues {
   x: number

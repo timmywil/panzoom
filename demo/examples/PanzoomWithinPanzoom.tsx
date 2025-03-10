@@ -46,10 +46,7 @@ export default function PanzoomWithinPanzoom() {
   useEffect(() => {
     panzoom = panzoomRef.current = Panzoom(elem.current)
     panzoom2 = panzoom2Ref.current = Panzoom(elemTwo.current, {
-      setTransform: (
-        _elem: HTMLElement,
-        { x, y, scale }: { x: number; y: number; scale: number }
-      ) => {
+      setTransform: (_elem, { x, y, scale }) => {
         // Adjust the panning according to the parent's scale
         const parentScale = panzoom.getScale()
         panzoom2.setStyle(
@@ -70,9 +67,7 @@ export default function PanzoomWithinPanzoom() {
     const newScale = panzoom.getScale()
     const pan = panzoom2.getPan()
     // Adjust child starting X/Y according the new scale for panning
-    panzoom2.pan((pan.x / oldScale) * newScale, (pan.y / oldScale) * newScale, {
-      animate: true
-    })
+    panzoom2.pan((pan.x / oldScale) * newScale, (pan.y / oldScale) * newScale, { animate: true })
   }
   return (
     <Demo
@@ -96,11 +91,7 @@ export default function PanzoomWithinPanzoom() {
         <div
           ref={elem}
           className="panzoom"
-          style={{
-            width: '400px',
-            border: '2px dotted',
-            margin: '0 auto'
-          }}
+          style={{ width: '400px', border: '2px dotted', margin: '0 auto' }}
         >
           <div
             ref={elemTwo}

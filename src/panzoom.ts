@@ -18,6 +18,7 @@ import type {
   PanzoomEventDetail,
   PanzoomObject,
   PanzoomOptions,
+  PanzoomOptionsWithoutForce,
   ZoomOptions
 } from './types.js'
 
@@ -58,7 +59,7 @@ const defaultOptions: PanzoomOptions = {
 
 function Panzoom(
   elem: HTMLElement | SVGElement,
-  options?: Omit<PanzoomOptions, 'force'>
+  options?: PanzoomOptionsWithoutForce
 ): PanzoomObject {
   if (!elem) {
     throw new Error('Panzoom requires an element as an argument')
@@ -70,10 +71,7 @@ function Panzoom(
     throw new Error('Panzoom should be called on elements that have been attached to the DOM')
   }
 
-  options = {
-    ...defaultOptions,
-    ...options
-  }
+  options = { ...defaultOptions, ...options }
 
   const isSVG = isSVGElement(elem)
 
@@ -111,7 +109,7 @@ function Panzoom(
     setStyle(elem, 'transformOrigin', '')
   }
 
-  function setOptions(opts: Omit<PanzoomOptions, 'force'> = {}) {
+  function setOptions(opts: PanzoomOptionsWithoutForce = {}) {
     for (const key in opts) {
       if (opts.hasOwnProperty(key)) {
         options[key] = opts[key]
@@ -500,9 +498,7 @@ function Panzoom(
       pan(
         origX + (current.clientX - startClientX) / toScale,
         origY + (current.clientY - startClientY) / toScale,
-        {
-          animate: false
-        },
+        { animate: false },
         event
       )
     }
