@@ -29,6 +29,7 @@ function removeLinks(data) {
 function addLinks(data) {
   return data
     .replace(/PanzoomOptions/g, '[PanzoomOptions](#PanzoomOptions)')
+    .replace(/PanzoomGlobalOptions/g, '[PanzoomGlobalOptions](#PanzoomGlobalOptions)')
     .replace(/PanOptions/g, '[PanOptions](#PanOptions)')
     .replace(/ZoomOptions/g, '[ZoomOptions](#ZoomOptions)')
     .replace(/MiscOptions/g, '[MiscOptions](#MiscOptions)')

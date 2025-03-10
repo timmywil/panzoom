@@ -16,6 +16,7 @@ import type {
   PanOptions,
   PanzoomEvent,
   PanzoomEventDetail,
+  PanzoomGlobalOptions,
   PanzoomObject,
   PanzoomOptions,
   ZoomOptions
@@ -56,10 +57,7 @@ const defaultOptions: PanzoomOptions = {
   touchAction: 'none'
 }
 
-function Panzoom(
-  elem: HTMLElement | SVGElement,
-  options?: Omit<PanzoomOptions, 'force'>
-): PanzoomObject {
+function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions): PanzoomObject {
   if (!elem) {
     throw new Error('Panzoom requires an element as an argument')
   }
@@ -111,7 +109,7 @@ function Panzoom(
     setStyle(elem, 'transformOrigin', '')
   }
 
-  function setOptions(opts: Omit<PanzoomOptions, 'force'> = {}) {
+  function setOptions(opts: PanzoomGlobalOptions = {}) {
     for (const key in opts) {
       if (opts.hasOwnProperty(key)) {
         options[key] = opts[key]

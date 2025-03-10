@@ -211,6 +211,9 @@ export interface ZoomOnlyOptions {
 export type PanOptions = MiscOptions & PanOnlyOptions
 export type ZoomOptions = MiscOptions & ZoomOnlyOptions
 export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
+export type PanzoomGlobalOptions = {
+  [K in keyof PanzoomOptions as K extends 'force' ? never : K]: PanzoomOptions[K]
+}
 
 export interface CurrentValues {
   x: number
@@ -316,7 +319,7 @@ export interface PanzoomObject {
    * panzoom.setOptions({ cursor: 'default' })
    * ```
    */
-  setOptions: (options?: PanzoomOptions) => void
+  setOptions: (options?: PanzoomGlobalOptions) => void
   /** A convenience method for setting prefixed styles on the Panzoom element */
   setStyle: (name: string, value: string) => void
   /**

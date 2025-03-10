@@ -18,7 +18,10 @@ export default function Rotate() {
   const elem2 = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const panzoom = Panzoom(elem.current, {
-      setTransform: (_: HTMLElement, { scale, x, y }: { scale: number; x: number; y: number }) => {
+      setTransform: (
+        _: HTMLElement | SVGElement,
+        { scale, x, y }: { scale: number; x: number; y: number }
+      ) => {
         panzoom.setStyle(
           'transform',
           `rotate(${x / 20}deg) scale(${scale}) translate(${x}px, ${y}px)`

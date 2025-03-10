@@ -47,7 +47,7 @@ export default function PanzoomWithinPanzoom() {
     panzoom = panzoomRef.current = Panzoom(elem.current)
     panzoom2 = panzoom2Ref.current = Panzoom(elemTwo.current, {
       setTransform: (
-        _elem: HTMLElement,
+        _elem: HTMLElement | SVGElement,
         { x, y, scale }: { x: number; y: number; scale: number }
       ) => {
         // Adjust the panning according to the parent's scale
