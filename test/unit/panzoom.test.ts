@@ -389,6 +389,32 @@ QUnit.module('Panzoom', () => {
       assert.strictEqual(pan.y, 1)
       document.body.removeChild(div)
     })
+    QUnit.test('force option ignored when passed to Panzoom()', (assert) => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div, { force: true })
+      panzoom.pan(1, 1)
+      const pan = panzoom.getPan()
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
+      document.body.removeChild(div)
+    })
+    QUnit.test('force option ignored when passed to setOptions()', (assert) => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div)
+      panzoom.setOptions({ force: true })
+      panzoom.pan(1, 1)
+      const pan = panzoom.getPan()
+      assert.strictEqual(pan.x, 1)
+      assert.strictEqual(pan.y, 1)
+      panzoom.setOptions({ disablePan: true })
+      panzoom.pan(2, 2, { force: true }) // Still works at method level
+      const pan2 = panzoom.getPan()
+      assert.strictEqual(pan2.x, 2)
+      assert.strictEqual(pan2.y, 2)
+      document.body.removeChild(div)
+    })
   })
   QUnit.test('calls the handleStartEvent option', (assert) => {
     return new Promise((resolve) => {

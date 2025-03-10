@@ -29,10 +29,7 @@ function removeLinks(data) {
 function addLinks(data) {
   return data
     .replace(/PanzoomOptions\b/g, '[PanzoomOptions](#PanzoomOptions)')
-    .replace(
-      /PanzoomOptionsWithoutForce/g,
-      '[PanzoomOptionsWithoutForce](#PanzoomOptionsWithoutForce)'
-    )
+    .replace(/PanzoomGlobalOptions\b/g, '[PanzoomGlobalOptions](#PanzoomGlobalOptions)')
     .replace(/PanOptions/g, '[PanOptions](#PanOptions)')
     .replace(/ZoomOptions/g, '[ZoomOptions](#ZoomOptions)')
     .replace(/MiscOptions/g, '[MiscOptions](#MiscOptions)')
@@ -71,7 +68,7 @@ data += getModuleFunction('default').replace(/default/g, 'Panzoom')
 
 // Get default options
 const source = read('../src/panzoom.ts')
-const defaultProps = /const defaultOptions: PanzoomOptions = ({[^]+?\n})/.exec(source)[1]
+const defaultProps = /const defaultOptions: PanzoomGlobalOptions = ({[^]+?\n})/.exec(source)[1]
 const parsedDefaults = {}
 defaultProps.replace(/(\w+): ([^]+?)(?:,\n|\n})/g, (all, key, value) => {
   parsedDefaults[key] = value.replace(/'/g, '"')
@@ -86,7 +83,7 @@ function addDefaults(data) {
 
 const panzoomOptions =
   '\n\n## `PanzoomOptions`\n\nIncludes `MiscOptions`, `PanOptions`, and `ZoomOptions`\n\n' +
-  '\n\n## `PanzoomOptionsWithoutForce`\n\nIdentical to PanzoomOptions, but excludes the `force` option.\n\n' +
+  '\n\n## `PanzoomGlobalOptions`\n\nIdentical to PanzoomOptions, but excludes the `force` option.\n\n' +
   getInterfaceContent(
     'MiscOptions.md',
     '## MiscOptions\n\nThese options can be passed to `Panzoom()`, as well as any pan or zoom function. One exception is `force`, which can only be passed to methods like `pan()` or `zoom()`, but not `Panzoom()` or `setOptions()` as it should not be set globally.'
