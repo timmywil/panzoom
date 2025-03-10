@@ -16,9 +16,9 @@ import type {
   PanOptions,
   PanzoomEvent,
   PanzoomEventDetail,
+  PanzoomGlobalOptions,
   PanzoomObject,
   PanzoomOptions,
-  PanzoomOptionsWithoutForce,
   ZoomOptions
 } from './types.js'
 
@@ -27,7 +27,7 @@ import isExcluded from './isExcluded.js'
 import isSVGElement from './isSVGElement.js'
 import shallowClone from './shallowClone.js'
 
-const defaultOptions: PanzoomOptions = {
+const defaultOptions: PanzoomGlobalOptions = {
   animate: false,
   canvas: false,
   cursor: 'move',
@@ -57,10 +57,7 @@ const defaultOptions: PanzoomOptions = {
   touchAction: 'none'
 }
 
-function Panzoom(
-  elem: HTMLElement | SVGElement,
-  options?: PanzoomOptionsWithoutForce
-): PanzoomObject {
+function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions): PanzoomObject {
   if (!elem) {
     throw new Error('Panzoom requires an element as an argument')
   }
@@ -109,7 +106,7 @@ function Panzoom(
     setStyle(elem, 'transformOrigin', '')
   }
 
-  function setOptions(opts: PanzoomOptionsWithoutForce = {}) {
+  function setOptions(opts: PanzoomGlobalOptions = {}) {
     for (const key in opts) {
       if (opts.hasOwnProperty(key)) {
         options[key] = opts[key]
@@ -178,7 +175,10 @@ function Panzoom(
   ) {
     const opts = { ...options, ...panOptions }
     const result = { x, y, opts }
-    if (!opts.force && (opts.disablePan || (opts.panOnlyWhenZoomed && scale === opts.startScale))) {
+    if (
+      !panOptions?.force &&
+      (opts.disablePan || (opts.panOnlyWhenZoomed && scale === opts.startScale))
+    ) {
       return result
     }
     toX = parseFloat(toX as string)
@@ -257,7 +257,7 @@ function Panzoom(
   function constrainScale(toScale: number, zoomOptions?: ZoomOptions) {
     const opts = { ...options, ...zoomOptions }
     const result = { scale, opts }
-    if (!opts.force && opts.disableZoom) {
+    if (!zoomOptions?.force && opts.disableZoom) {
       return result
     }
 
@@ -309,7 +309,7 @@ function Panzoom(
   ) {
     const result = constrainScale(toScale, zoomOptions)
     const opts = result.opts
-    if (!opts.force && opts.disableZoom) {
+    if (!zoomOptions?.force && opts.disableZoom) {
       return
     }
     toScale = result.scale

@@ -49,12 +49,13 @@ export interface MiscOptions {
    */
   excludeClass?: string
   /**
+   * The `force` option can only be passed directly
+   * to zoom and pan methods. It is not a global option
+   * and will be ignored if passed to `Panzoom()` or `setOptions()`.
+   *
    * `force` should be used sparingly to temporarily
    * override and ignore options such as disablePan,
    * disableZoom, and panOnlyWhenZoomed.
-   * This option cannot be passed to the
-   * Panzoom constructor or setOptions (to avoid
-   * setting this option globally).
    *
    * ```js
    * // Overrides disablePan and panOnlyWhenZoomed
@@ -211,7 +212,9 @@ export interface ZoomOnlyOptions {
 export type PanOptions = MiscOptions & PanOnlyOptions
 export type ZoomOptions = MiscOptions & ZoomOnlyOptions
 export type PanzoomOptions = PanOptions & ZoomOptions & MiscOptions
-export type PanzoomOptionsWithoutForce = PanOptions & ZoomOptions & Omit<MiscOptions, 'force'>
+export type PanzoomGlobalOptions = {
+  [K in keyof PanzoomOptions as K extends 'force' ? never : K]: PanzoomOptions[K]
+}
 
 export interface CurrentValues {
   x: number
@@ -317,7 +320,7 @@ export interface PanzoomObject {
    * panzoom.setOptions({ cursor: 'default' })
    * ```
    */
-  setOptions: (options?: PanzoomOptions) => void
+  setOptions: (options?: PanzoomGlobalOptions) => void
   /** A convenience method for setting prefixed styles on the Panzoom element */
   setStyle: (name: string, value: string) => void
   /**
