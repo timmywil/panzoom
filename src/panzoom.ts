@@ -313,6 +313,11 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
       return
     }
     toScale = result.scale
+    const scaleSmoothing = opts.scaleSmoothing
+    if (scaleSmoothing > 0 && scaleSmoothing <= 1) {
+      toScale = scaleSmoothing * result.scale + (1 - scaleSmoothing) * scale
+    }
+
     let toX = x
     let toY = y
 

@@ -468,4 +468,45 @@ QUnit.module('Panzoom', () => {
       document.body.removeChild(div)
     })
   })
+  QUnit.module('scaleSmoothing option', () => {
+    QUnit.test('smooths scale when value is between 0 and 1', (assert) => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div, { scaleSmoothing: 0.5 })
+
+      panzoom.zoom(2)
+      assert.strictEqual(panzoom.getScale(), 1.5, 'Applies 50% smoothing on first zoom')
+
+      panzoom.zoom(3)
+      assert.strictEqual(panzoom.getScale(), 2.25, 'Applies 50% smoothing on subsequent zoom')
+
+      document.body.removeChild(div)
+    })
+
+    QUnit.test('disables smoothing when value is 0', (assert) => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div, { scaleSmoothing: 0 })
+
+      panzoom.zoom(2)
+      assert.strictEqual(panzoom.getScale(), 2, 'Immediately applies target scale')
+
+      document.body.removeChild(div)
+    })
+
+    QUnit.test('ignores invalid values outside 0-1 range', (assert) => {
+      const div = document.createElement('div')
+      document.body.appendChild(div)
+      const panzoom = Panzoom(div, { scaleSmoothing: -0.1 })
+
+      panzoom.zoom(2)
+      assert.strictEqual(panzoom.getScale(), 2, 'Ignores negative values')
+
+      panzoom.setOptions({ scaleSmoothing: 1.1 })
+      panzoom.zoom(3)
+      assert.strictEqual(panzoom.getScale(), 3, 'Ignores values above 1')
+
+      document.body.removeChild(div)
+    })
+  })
 })

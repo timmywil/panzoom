@@ -207,6 +207,17 @@ export interface ZoomOnlyOptions {
   maxScale?: number
   /** The step affects zoom calculation when zooming with a mouse wheel, when pinch zooming, or when using zoomIn/zoomOut */
   step?: number
+  /**
+   * Smoothing factor for scale transitions during zoom operations.
+   * A value of 0 (default) disables smoothing, applying scale changes immediately.
+   * A value between 0 and 1 (e.g., 0.5) blends the new scale with the current scale,
+   * reducing trembling during fast pinch gestures on touchscreens.
+   * Example:
+   * ```js
+   * Panzoom(elem, { scaleSmoothing: 0.5 })
+   * ```
+   */
+  scaleSmoothing?: number
 }
 
 export type PanOptions = MiscOptions & PanOnlyOptions
