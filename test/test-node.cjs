@@ -8,4 +8,4 @@
 const assert = require('assert')
 const Panzoom = require('../dist/panzoom')
 
-assert(Panzoom)
+assert(Panzoom, 'Panzoom should load in Node.js environment')
