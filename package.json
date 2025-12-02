@@ -40,7 +40,10 @@
     "dragging",
     "drag"
   ],
-  "repository": "timmywil/panzoom",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timmywil/panzoom.git"
+  },
   "license": "MIT",
   "author": {
     "name": "Timmy Willison",
