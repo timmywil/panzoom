@@ -1,19 +1,21 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "alwaysStrict": true,
     "esModuleInterop": true,
     "jsx": "react",
     "lib": ["dom", "es2017"],
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "noEmit": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": false,
-    "target": "es5"
+    "target": "ES2015"
   },
-  "exclude": ["node_modules", ".yarn", ".pnp.cjs", ".pnp.loader.mjs", "dist"],
+  "exclude": ["node_modules", "dist"],
   "include": ["**/*.js", "**/*.mjs", "**/*.cjs", "**/*.ts", "**/*.tsx"]
 }

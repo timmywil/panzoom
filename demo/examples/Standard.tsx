@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Panzoom from '../../src/panzoom'
-import { PanzoomObject } from '../../src/types'
-import Code from '../Code'
-import Demo from '../Demo'
+import Panzoom from '../../src/panzoom.js'
+import { PanzoomObject } from '../../src/types.js'
+import Code from '../Code.js'
+import Demo from '../Demo.js'
 
 const code = (
   <Code>
@@ -27,7 +27,7 @@ export default function Standard() {
     panzoom = panzoomRef.current = Panzoom(elem.current)
   }, [])
   return (
-    <Demo title="Panning and zooming" code={code}>
+    <Demo code={code} title="Panning and zooming">
       <div className="buttons">
         <label>Try me: </label>
         <button
@@ -56,24 +56,24 @@ export default function Standard() {
         </button>
         <input
           ref={range}
-          onInput={(event) => {
-            panzoom.zoom((event.target as HTMLInputElement).valueAsNumber)
-          }}
+          className="range-input"
+          defaultValue="1"
+          max="4"
+          min="0.1"
+          step="0.1"
+          type="range"
           onChange={(event) => {
             panzoom.zoom((event.target as HTMLInputElement).valueAsNumber)
           }}
-          className="range-input"
-          type="range"
-          min="0.1"
-          max="4"
-          step="0.1"
-          defaultValue="1"
+          onInput={(event) => {
+            panzoom.zoom((event.target as HTMLInputElement).valueAsNumber)
+          }}
         />
         <div>
           <input
-            type="checkbox"
-            id="disable-pan"
             checked={panEnabled}
+            id="disable-pan"
+            type="checkbox"
             onChange={(e) => {
               setPanEnabled(e.target.checked)
               panzoom.setOptions({
@@ -85,8 +85,8 @@ export default function Standard() {
         </div>
       </div>
       <div className="panzoom-parent">
-        <div className="panzoom" ref={elem}>
-          <img width="450" height="450" src="awesome_tiger.svg" />
+        <div ref={elem} className="panzoom">
+          <img height="450" src="awesome_tiger.svg" width="450" />
         </div>
       </div>
     </Demo>

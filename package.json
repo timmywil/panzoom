@@ -1,29 +1,30 @@
 {
   "name": "@panzoom/panzoom",
-  "version": "4.5.1",
+  "version": "4.6.1",
   "description": "Pan and zoom elements anywhere using native transformations",
   "main": "dist/panzoom.js",
   "module": "dist/panzoom.es.js",
   "source": "src/panzoom",
   "types": "dist/src/panzoom.d.ts",
+  "type": "module",
   "scripts": {
-    "build": "yarn clean && rollup --config && yarn minify",
+    "build": "npm run clean && rollup --config && npm run minify",
     "clean": "rm -rf dist/",
     "demo": "webpack --mode production",
-    "docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --out docs --readme none src/panzoom.ts src/types.ts && yarn node tasks/docs.js",
+    "docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs --out docs --readme none src/panzoom.ts src/types.ts && node tasks/docs.js",
     "format": "eslint . --fix && prettier --write \"**/*.tsx\" \"**/*.ts\" \"**/*.js\" \"**/*.json\" \"**/*.md\"",
-    "lint": "concurrently --raw \"eslint .\" \"yarn prettier\" \"yarn typescript\"",
-    "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && yarn sizeup",
-    "prepare": "husky install && yarn build",
+    "lint": "concurrently --raw \"eslint .\" \"npm run prettier\" \"npm run typescript\"",
+    "minify": "uglifyjs --compress --mangle --comments /Timmy/ --output dist/panzoom.min.js -- dist/panzoom.js && npm run sizeup",
+    "prepare": "husky && npm run build",
     "prettier": "prettier --check \"**/*.md\" \"**/*.json\"",
     "release": "release-it",
-    "sizeup": "yarn node tasks/gzipSize.mjs",
+    "sizeup": "node tasks/gzipSize.mjs",
     "start": "webpack serve",
-    "test": "yarn lint && concurrently \"yarn test:unit\" \"yarn test:node\"",
-    "test:unit": "yarn karma start",
-    "test:node": "yarn build && yarn node test/test-node.js",
-    "test:watch": "yarn karma start --singleRun=false --autoWatch",
-    "typescript": "tsc -p tsconfig.json --noEmit"
+    "test": "npm run lint && concurrently \"npm run test:unit -- --headless\" \"npm run test:node\"",
+    "test:unit": "npm run typescript:tests && jtr",
+    "test:node": "npm run build && node test/test-node.cjs",
+    "typescript": "tsc -p tsconfig.json",
+    "typescript:tests": "tsc -p tsconfig.tests.json"
   },
   "files": [
     "MIT-License.txt",
@@ -39,63 +40,60 @@
     "dragging",
     "drag"
   ],
-  "repository": "timmywil/panzoom",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timmywil/panzoom.git"
+  },
   "license": "MIT",
   "author": {
     "name": "Timmy Willison",
-    "email": "4timmywil@gmail.com"
+    "email": "timmywil@users.noreply.github.com"
   },
   "devDependencies": {
-    "@babel/core": "^7.19.0",
-    "@babel/preset-env": "^7.19.0",
-    "@commitlint/cli": "^17.1.2",
-    "@commitlint/config-conventional": "^17.1.0",
-    "@release-it/bumper": "4.0.0",
-    "@release-it/conventional-changelog": "5.1.0",
-    "@types/assert": "^1.5.6",
-    "@types/mocha": "^9.1.1",
-    "@types/prismjs": "^1.26.0",
-    "@types/react": "^18.0.18",
-    "@types/react-dom": "^18.0.6",
-    "@types/semver": "^7.3.12",
-    "@typescript-eslint/eslint-plugin": "^5.36.2",
-    "@typescript-eslint/parser": "^5.36.2",
-    "commitlint": "^17.1.2",
-    "concurrently": "^7.3.0",
-    "conventional-changelog-conventionalcommits": "^5.0.0",
-    "cross-env": "^7.0.3",
-    "css-loader": "^6.7.1",
-    "eslint": "^8.23.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.31.7",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@release-it/bumper": "7.0.5",
+    "@release-it/conventional-changelog": "10.0.2",
+    "@types/assert": "^1.5.11",
+    "@types/prismjs": "^1.26.5",
+    "@types/qunit": "^2.19.13",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@types/semver": "^7.7.1",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
+    "commitlint": "^20.1.0",
+    "concurrently": "^9.2.1",
+    "conventional-changelog-conventionalcommits": "^9.1.0",
+    "cross-env": "^10.1.0",
+    "css-loader": "^7.1.2",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
     "gzip-size": "^7.0.0",
-    "html-webpack-plugin": "^5.5.0",
-    "husky": "^8.0.1",
-    "karma": "^6.4.0",
-    "karma-firefox-launcher": "^2.1.2",
-    "karma-mocha": "^2.0.1",
-    "karma-typescript": "^5.5.3",
-    "marked": "^4.1.0",
-    "mocha": "^10.0.0",
-    "prettier": "^2.7.1",
-    "prismjs": "^1.29.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "release-it": "15.4.1",
-    "rollup": "^2.79.0",
-    "rollup-plugin-typescript2": "^0.33.0",
-    "semver": "^7.3.7",
-    "style-loader": "^3.3.1",
-    "ts-loader": "^9.3.1",
-    "tslib": "^2.4.0",
-    "typedoc": "^0.23.14",
-    "typedoc-plugin-markdown": "^3.13.6",
-    "typescript": "~4.8.2",
-    "uglify-js": "^3.17.0",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.10.1"
+    "html-webpack-plugin": "^5.6.5",
+    "husky": "^9.1.7",
+    "jquery-test-runner": "^0.2.8",
+    "marked": "^17.0.1",
+    "prettier": "^3.7.3",
+    "prismjs": "^1.30.0",
+    "qunit": "^2.24.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "release-it": "19.0.6",
+    "rollup": "^4.53.3",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "semver": "^7.7.3",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.4",
+    "tslib": "^2.8.1",
+    "typedoc": "^0.28.15",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typescript": "~5.9.3",
+    "uglify-js": "^3.19.3",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
   },
   "prettier": {
     "printWidth": 100,
@@ -104,63 +102,6 @@
     "arrowParens": "always",
     "trailingComma": "none"
   },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint",
-      "react",
-      "prettier"
-    ],
-    "extends": [
-      "plugin:@typescript-eslint/recommended",
-      "plugin:react/recommended",
-      "prettier"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2018,
-      "sourceType": "module",
-      "project": "./tsconfig.json",
-      "extraFileExtensions": [
-        ".mjs",
-        ".cjs"
-      ],
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "globals": {
-      "ga": "readonly"
-    },
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
-    },
-    "rules": {
-      "no-unused-vars": "off",
-      "prettier/prettier": "error",
-      "@typescript-eslint/explicit-function-return-type": 0,
-      "@typescript-eslint/no-var-requires": 0,
-      "@typescript-eslint/no-use-before-define": 0,
-      "@typescript-eslint/no-explicit-any": 0,
-      "@typescript-eslint/explicit-module-boundary-types": 0,
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          "args": "after-used",
-          "argsIgnorePattern": "^_"
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "coverage/",
-    "demo/demo/",
-    "demo/panzoom.js",
-    "dist/",
-    "docs/"
-  ],
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -178,8 +119,8 @@
   },
   "release-it": {
     "hooks": {
-      "before:init": "yarn test",
-      "after:bump": "yarn docs && git add README.md && git add dist/panzoom.* dist/src/ -f",
+      "before:init": "npm test",
+      "after:bump": "npm run docs && git add README.md && git add dist/panzoom.* dist/src/ -f",
       "after:git:release": "git rm -r --cached dist/ && git commit -m \"chore(release): remove dist after release\" -n && git push"
     },
     "git": {
@@ -191,7 +132,7 @@
     },
     "github": {
       "release": true,
-      "tokenRef": "PERSONAL_WEBSITE_GITHUB_TOKEN"
+      "tokenRef": "PANZOOM_GITHUB_TOKEN"
     },
     "plugins": {
       "@release-it/bumper": {
@@ -217,6 +158,5 @@
         }
       }
     }
-  },
-  "packageManager": "yarn@4.0.0-rc.18"
+  }
 }

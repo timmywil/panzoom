@@ -1,4 +1,1 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-yarn dlx commitlint --edit $1
+npx commitlint --edit $1

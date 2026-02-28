@@ -7,26 +7,27 @@
  * https://github.com/timmywil/panzoom/blob/main/MIT-License.txt
  *
  */
-import './polyfills'
+import './polyfills.js'
 
+import { getDimensions, setStyle, setTransform, setTransition } from './css.js'
+import { destroyPointer, eventNames, onPointer } from './events.js'
+import { addPointer, getDistance, getMiddle, removePointer } from './pointers.js'
 import type {
   PanOptions,
   PanzoomEvent,
   PanzoomEventDetail,
+  PanzoomGlobalOptions,
   PanzoomObject,
   PanzoomOptions,
   ZoomOptions
-} from './types'
-import { addPointer, getDistance, getMiddle, removePointer } from './pointers'
-import { destroyPointer, eventNames, onPointer } from './events'
-import { getDimensions, setStyle, setTransform, setTransition } from './css'
+} from './types.js'
 
-import isAttached from './isAttached'
-import isExcluded from './isExcluded'
-import isSVGElement from './isSVGElement'
-import shallowClone from './shallowClone'
+import isAttached from './isAttached.js'
+import isExcluded from './isExcluded.js'
+import isSVGElement from './isSVGElement.js'
+import shallowClone from './shallowClone.js'
 
-const defaultOptions: PanzoomOptions = {
+const defaultOptions: PanzoomGlobalOptions = {
   animate: false,
   canvas: false,
   cursor: 'move',
@@ -56,10 +57,7 @@ const defaultOptions: PanzoomOptions = {
   touchAction: 'none'
 }
 
-function Panzoom(
-  elem: HTMLElement | SVGElement,
-  options?: Omit<PanzoomOptions, 'force'>
-): PanzoomObject {
+function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions): PanzoomObject {
   if (!elem) {
     throw new Error('Panzoom requires an element as an argument')
   }
@@ -70,10 +68,7 @@ function Panzoom(
     throw new Error('Panzoom should be called on elements that have been attached to the DOM')
   }
 
-  options = {
-    ...defaultOptions,
-    ...options
-  }
+  options = { ...defaultOptions, ...options }
 
   const isSVG = isSVGElement(elem)
 
@@ -111,7 +106,7 @@ function Panzoom(
     setStyle(elem, 'transformOrigin', '')
   }
 
-  function setOptions(opts: Omit<PanzoomOptions, 'force'> = {}) {
+  function setOptions(opts: PanzoomGlobalOptions = {}) {
     for (const key in opts) {
       if (opts.hasOwnProperty(key)) {
         options[key] = opts[key]
@@ -180,7 +175,10 @@ function Panzoom(
   ) {
     const opts = { ...options, ...panOptions }
     const result = { x, y, opts }
-    if (!opts.force && (opts.disablePan || (opts.panOnlyWhenZoomed && scale === opts.startScale))) {
+    if (
+      !panOptions?.force &&
+      (opts.disablePan || (opts.panOnlyWhenZoomed && scale === opts.startScale))
+    ) {
       return result
     }
     toX = parseFloat(toX as string)
@@ -259,7 +257,7 @@ function Panzoom(
   function constrainScale(toScale: number, zoomOptions?: ZoomOptions) {
     const opts = { ...options, ...zoomOptions }
     const result = { scale, opts }
-    if (!opts.force && opts.disableZoom) {
+    if (!zoomOptions?.force && opts.disableZoom) {
       return result
     }
 
@@ -311,7 +309,7 @@ function Panzoom(
   ) {
     const result = constrainScale(toScale, zoomOptions)
     const opts = result.opts
-    if (!opts.force && opts.disableZoom) {
+    if (!zoomOptions?.force && opts.disableZoom) {
       return
     }
     const toScalePlanned = toScale
@@ -501,9 +499,7 @@ function Panzoom(
       pan(
         origX + (current.clientX - startClientX) / toScale,
         origY + (current.clientY - startClientY) / toScale,
-        {
-          animate: false
-        },
+        { animate: false },
         event
       )
     }
@@ -573,5 +569,5 @@ function Panzoom(
 
 Panzoom.defaultOptions = defaultOptions
 
-export * from './types'
+export * from './types.js'
 export default Panzoom

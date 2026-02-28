@@ -1,42 +1,41 @@
-import { strict as assert } from 'assert'
-import isAttached from '../../src/isAttached'
+import isAttached from '../../src/isAttached.js'
 
-describe('isAttached', () => {
-  it('determines if an attached element is attached', () => {
+QUnit.module('isAttached', () => {
+  QUnit.test('determines if an attached element is attached', (assert) => {
     const div = document.createElement('div')
     document.body.appendChild(div)
-    assert(isAttached(div))
+    assert.ok(isAttached(div))
     document.body.removeChild(div)
   })
-  it('determines if an attached shadow dom element is attached', () => {
+  QUnit.test('determines if an attached shadow dom element is attached', (assert) => {
     const div = document.createElement('div')
     const shadowChild = document.createElement('div')
     div.attachShadow({ mode: 'open' }).appendChild(shadowChild)
     document.body.appendChild(div)
-    assert(isAttached(shadowChild))
+    assert.ok(isAttached(shadowChild))
     document.body.removeChild(div)
   })
-  it('determines if a nested, attached shadow dom element is attached', () => {
+  QUnit.test('determines if a nested, attached shadow dom element is attached', (assert) => {
     const div = document.createElement('div')
     const shadowChild = document.createElement('div')
     const shadowGrandChild = document.createElement('div')
     shadowChild.attachShadow({ mode: 'open' }).appendChild(shadowGrandChild)
     div.attachShadow({ mode: 'open' }).appendChild(shadowChild)
     document.body.appendChild(div)
-    assert(isAttached(shadowGrandChild))
+    assert.ok(isAttached(shadowGrandChild))
     document.body.removeChild(div)
   })
-  it('determines if a detached shadow dom element is attached', () => {
+  QUnit.test('determines if a detached shadow dom element is attached', (assert) => {
     const div = document.createElement('div')
     const shadowChild = document.createElement('div')
     div.attachShadow({ mode: 'open' }).appendChild(shadowChild)
-    assert(!isAttached(shadowChild))
+    assert.ok(!isAttached(shadowChild))
   })
-  it('determines if a detached element is attached', () => {
+  QUnit.test('determines if a detached element is attached', (assert) => {
     const div = document.createElement('div')
-    assert(!isAttached(div))
+    assert.ok(!isAttached(div))
   })
-  it('does not consider a document attached', () => {
-    assert(!isAttached(document))
+  QUnit.test('does not consider a document attached', (assert) => {
+    assert.ok(!isAttached(document))
   })
 })

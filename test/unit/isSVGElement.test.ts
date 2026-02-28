@@ -1,17 +1,16 @@
-import { strict as assert } from 'assert'
-import isSVGElement from '../../src/isSVGElement'
+import isSVGElement from '../../src/isSVGElement.js'
 
-describe('isSVGElement', () => {
-  it('determines if an element is SVG', () => {
+QUnit.module('isSVGElement', () => {
+  QUnit.test('determines if an element is SVG', (assert) => {
     const elem = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-    assert(isSVGElement(elem))
+    assert.ok(isSVGElement(elem))
   })
-  it('determines whether an HTML element is SVG', () => {
+  QUnit.test('determines whether an HTML element is SVG', (assert) => {
     const elem = document.createElement('div')
-    assert(!isSVGElement(elem))
+    assert.ok(!isSVGElement(elem))
   })
-  it('treats <svg> as HTML', () => {
+  QUnit.test('treats <svg> as HTML', (assert) => {
     const elem = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    assert(!isSVGElement(elem))
+    assert.ok(!isSVGElement(elem))
   })
 })

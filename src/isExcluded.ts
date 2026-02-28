@@ -1,4 +1,4 @@
-import type { PanzoomOptions } from './types'
+import type { PanzoomOptions } from './types.js'
 
 function getClass(elem: Element) {
   return (elem.getAttribute('class') || '').trim()

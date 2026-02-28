@@ -1,7 +1,6 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const path = require('path')
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
-module.exports = {
+export default {
   mode: 'development',
   devtool: 'eval-source-map',
   entry: {
@@ -9,13 +8,23 @@ module.exports = {
     panzoom: './demo/global-panzoom.ts'
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', '.json']
+    extensions: ['.tsx', '.ts', '.js', '.json'],
+    extensionAlias: {
+      '.js': ['.tsx', '.ts', '.js']
+    }
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader'
+        use: {
+          loader: 'ts-loader',
+          options: {
+            compilerOptions: {
+              noEmit: false
+            }
+          }
+        }
       },
       {
         test: /\.css$/,
@@ -25,7 +34,7 @@ module.exports = {
   },
   devServer: {
     static: {
-      directory: path.resolve(__dirname, 'demo'),
+      directory: 'demo',
       serveIndex: true,
       watch: true
     },
