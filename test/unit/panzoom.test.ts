@@ -63,27 +63,27 @@ QUnit.module('Panzoom', () => {
     const div = document.createElement('div')
     document.body.appendChild(div)
     Panzoom(div)
-    function checkEvent(event: CustomEvent<PanzoomEventDetail>) {
-      console.log(`${event.type} called`)
-      assert.ok(event.detail, 'Event detail exists')
-      assert.ok(event.detail.hasOwnProperty('x'), 'Event detail has x value')
-      assert.ok(event.detail.hasOwnProperty('y'), 'Event detail has y value')
-      assert.ok(event.detail.hasOwnProperty('scale'), 'Event detail has scale value')
-      assert.ok(event.detail.hasOwnProperty('isSVG'), 'Event detail has isSVG value')
-      assert.ok(
-        event.detail.hasOwnProperty('originalEvent'),
-        'Event detail has originalEvent value'
-      )
-      if (event.type === 'panzoomend') {
-        document.body.removeChild(div)
-        done()
-      }
+
+    const events = ['panzoomstart', 'panzoomchange', 'panzoompan', 'panzoomzoom', 'panzoomend']
+    let eventsCalled = 0
+    for (const eventName of events) {
+      div.addEventListener(eventName, (event) => {
+        eventsCalled++
+        const customEvent = event as CustomEvent<PanzoomEventDetail>
+        assert.ok(customEvent.detail, 'Event detail exists')
+        assert.ok(customEvent.detail.hasOwnProperty('x'), 'Event detail has x value')
+        assert.ok(customEvent.detail.hasOwnProperty('y'), 'Event detail has y value')
+        assert.ok(customEvent.detail.hasOwnProperty('scale'), 'Event detail has scale value')
+        assert.ok(customEvent.detail.hasOwnProperty('isSVG'), 'Event detail has isSVG value')
+        assert.ok(
+          customEvent.detail.hasOwnProperty('originalEvent'),
+          'Event detail has originalEvent value'
+        )
+        if (eventsCalled === events.length) {
+          done()
+        }
+      })
     }
-    ;(div as any).addEventListener('panzoomstart', checkEvent)
-    ;(div as any).addEventListener('panzoomchange', checkEvent)
-    ;(div as any).addEventListener('panzoompan', checkEvent)
-    ;(div as any).addEventListener('panzoomzoom', checkEvent)
-    ;(div as any).addEventListener('panzoomend', checkEvent)
 
     div.dispatchEvent(new PointerEvent('pointerdown'))
     setTimeout(() => {
@@ -93,6 +93,7 @@ QUnit.module('Panzoom', () => {
       })
     })
   })
+
   QUnit.test('removes the events when using the destroy method', (assert) => {
     const div = document.createElement('div')
     document.body.appendChild(div)
