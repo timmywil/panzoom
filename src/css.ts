@@ -110,7 +110,11 @@ export function setTransform(
  * Dimensions used in containment and focal point zooming
  */
 export function getDimensions(elem: HTMLElement | SVGElement) {
-  const parent = elem.parentNode as HTMLElement | SVGElement
+  let parent = elem.parentNode as HTMLElement | SVGElement | null
+  if (!parent || parent.nodeType !== 1) {
+    parent = document.documentElement
+  }
+
   const style = window.getComputedStyle(elem)
   const parentStyle = window.getComputedStyle(parent)
   const rectElem = elem.getBoundingClientRect()
