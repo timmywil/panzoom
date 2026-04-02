@@ -13,7 +13,7 @@ export default [
       parser: typescriptParser,
       parserOptions: {
         ecmaVersion: 'latest',
-        project: ['tsconfig.json', 'tsconfig.tests.json'],
+        project: ['tsconfig.json', 'test/tsconfig.json'],
         ecmaFeatures: {
           jsx: true
         }

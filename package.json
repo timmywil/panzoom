@@ -24,7 +24,7 @@
     "test:unit": "npm run typescript:tests && jtr",
     "test:node": "npm run build && node test/test-node.cjs",
     "typescript": "tsc -p tsconfig.json",
-    "typescript:tests": "tsc -p tsconfig.tests.json"
+    "typescript:tests": "tsc -p test/tsconfig.json"
   },
   "files": [
     "MIT-License.txt",
