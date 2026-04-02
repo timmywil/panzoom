@@ -1,5 +1,5 @@
 import './demo.css'
-import './global-panzoom'
+import './global-panzoom.js'
 
 import React from 'react'
 import { createRoot } from 'react-dom/client'

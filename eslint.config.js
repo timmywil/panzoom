@@ -13,7 +13,7 @@ export default [
       parser: typescriptParser,
       parserOptions: {
         ecmaVersion: 'latest',
-        project: 'tsconfig.json',
+        project: ['tsconfig.json', 'tsconfig.tests.json'],
         ecmaFeatures: {
           jsx: true
         }
@@ -89,6 +89,14 @@ export default [
     languageOptions: {
       globals: {
         QUnit: false
+      }
+    }
+  },
+  {
+    files: ['test/test-node.cjs'],
+    languageOptions: {
+      parserOptions: {
+        project: null
       }
     }
   }

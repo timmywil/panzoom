@@ -19,8 +19,8 @@ export default [
           compilerOptions: {
             declaration: true,
             module: 'esnext',
-            moduleResolution: 'node',
-            target: 'es5'
+            moduleResolution: 'bundler',
+            target: 'es2015'
           }
         }
       })
@@ -43,8 +43,8 @@ export default [
           exclude: ['node_modules', 'test'],
           compilerOptions: {
             module: 'esnext',
-            moduleResolution: 'node',
-            target: 'es5'
+            moduleResolution: 'bundler',
+            target: 'es2020'
           }
         }
       })

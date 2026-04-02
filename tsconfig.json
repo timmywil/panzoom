@@ -14,8 +14,10 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": false,
-    "target": "ES2015"
+    "target": "ES2020",
+    "types": ["node"]
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["**/*.js", "**/*.mjs", "**/*.cjs", "**/*.ts", "**/*.tsx"]
+  "exclude": ["node_modules", "dist", "test"],
+  "include": ["**/*.js", "**/*.mjs", "**/*.cjs", "**/*.ts", "**/*.tsx"],
+  "references": [{ "path": "./tsconfig.tests.json" }]
 }
