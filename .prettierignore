@@ -7,3 +7,4 @@ docs/**
 *.d.ts
 dist/**
 /.babelrc
+.claude
