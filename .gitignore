@@ -2,6 +2,7 @@ node_modules
 *.log
 .rpt2_cache/
 *.d.ts
+!demo/css.d.ts
 dist/
 coverage/
 docs/
