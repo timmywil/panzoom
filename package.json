@@ -1,6 +1,6 @@
 {
   "name": "@panzoom/panzoom",
-  "version": "4.6.1",
+  "version": "4.6.2",
   "description": "Pan and zoom elements anywhere using native transformations",
   "main": "dist/panzoom.js",
   "module": "dist/panzoom.es.js",
@@ -120,7 +120,7 @@
   "release-it": {
     "hooks": {
       "before:init": "npm test",
-      "after:bump": "npm run docs && git add README.md && git add dist/panzoom.* dist/src/ -f",
+      "after:bump": "npm run build && npm run docs && git add README.md && git add dist/panzoom.* dist/src/ -f",
       "after:git:release": "git rm -r --cached dist/ && git commit -m \"chore(release): remove dist after release\" -n && git push"
     },
     "git": {
