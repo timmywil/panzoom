@@ -130,6 +130,14 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
   let y = 0
   let scale = 1
   let isPanning = false
+  let origX: number
+  let origY: number
+  let startClientX: number
+  let startClientY: number
+  let startScale: number
+  let startDistance: number
+  const pointers: PointerEvent[] = []
+
   zoom(options.startScale, { animate: false, force: true })
   // Wait for scale to update
   // for accurate dimensions
@@ -316,6 +324,12 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
     let toX = x
     let toY = y
 
+    // Adjust the pointer starting point to ensure that the current pointer panning is accurate.
+    if (isPanning) {
+        startClientX = (startClientX / scale) * toScale;
+        startClientY = (startClientY / scale) * toScale;
+    }
+
     if (opts.focal) {
       // The difference between the point after the scale and the point before the scale
       // plus the current translation after the scale
@@ -427,14 +441,6 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
     y = panResult.y
     return setTransformWithEvent('panzoomreset', opts)
   }
-
-  let origX: number
-  let origY: number
-  let startClientX: number
-  let startClientY: number
-  let startScale: number
-  let startDistance: number
-  const pointers: PointerEvent[] = []
 
   function handleDown(event: PointerEvent) {
     // Don't handle this event if the target is excluded
