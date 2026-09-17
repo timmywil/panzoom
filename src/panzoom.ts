@@ -11,6 +11,7 @@ import './polyfills.js'
 
 import { getDimensions, setStyle, setTransform, setTransition } from './css.js'
 import { destroyPointer, eventNames, onPointer } from './events.js'
+import { getParentElement } from './parent.js'
 import { addPointer, getDistance, getMiddle, removePointer } from './pointers.js'
 import type {
   PanOptions,
@@ -72,7 +73,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
 
   const isSVG = isSVGElement(elem)
 
-  const parent = elem.parentNode as HTMLElement | SVGElement
+  const parent = getParentElement(elem)
 
   // Set parent styles
   parent.style.overflow = options.overflow

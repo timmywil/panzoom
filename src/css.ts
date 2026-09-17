@@ -1,3 +1,4 @@
+import { getParentElement } from './parent.js'
 import type { CurrentValues, PanzoomOptions } from './types.js'
 
 const isIE = typeof document !== 'undefined' && !!(document as any).documentMode
@@ -110,8 +111,8 @@ export function setTransform(
  * Dimensions used in containment and focal point zooming
  */
 export function getDimensions(elem: HTMLElement | SVGElement) {
-  let parent = elem.parentNode as HTMLElement | SVGElement | null
-  if (!parent || parent.nodeType !== 1) {
+  let parent = getParentElement(elem)
+  if (!parent) {
     parent = document.documentElement
   }
 
