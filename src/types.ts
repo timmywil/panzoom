@@ -160,10 +160,15 @@ export interface PanOnlyOptions {
    *   than its parent and cannot be panned
    *   to the inside. In other words, no
    *   empty space around the element will be shown.
+   * Automatic: When zoomed out, the panzoom
+   *   element never becomes smaller than
+   *   one of the parent dimensions, and
+   *   when zoomed in, behaves like the
+   *   outside option.
    *
    * **Note**: the containment pan adjustment is not affected by the `disablePan` option.
    */
-  contain?: 'inside' | 'outside'
+  contain?: 'inside' | 'outside' | 'automatic'
   /** The cursor style to set on the panzoom element */
   cursor?: string
   /**
