@@ -201,7 +201,19 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
       const diffHorizontal = (scaledWidth - realWidth) / 2
       const diffVertical = (scaledHeight - realHeight) / 2
 
-      if (opts.contain === 'inside') {
+      let containX = opts.contain
+      let containY = opts.contain
+
+      if (opts.contain === 'automatic') {
+        const parentWidth = dims.parent.width - dims.parent.border.left - dims.parent.border.right
+        const parentHeight = dims.parent.height - dims.parent.border.top - dims.parent.border.bottom
+
+        containX = scaledWidth <= parentWidth ? 'inside' : 'outside'
+        containY = scaledHeight <= parentHeight ? 'inside' : 'outside'
+      }
+
+      // Handle horizontal constraints (X)
+      if (containX === 'inside') {
         const minX = (-dims.elem.margin.left - dims.parent.padding.left + diffHorizontal) / toScale
         const maxX =
           (dims.parent.width -
@@ -213,6 +225,20 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
             diffHorizontal) /
           toScale
         result.x = Math.max(Math.min(result.x, maxX), minX)
+      } else if (containX === 'outside') {
+        const minX =
+          (-(scaledWidth - dims.parent.width) -
+            dims.parent.padding.left -
+            dims.parent.border.left -
+            dims.parent.border.right +
+            diffHorizontal) /
+          toScale
+        const maxX = (diffHorizontal - dims.parent.padding.left) / toScale
+        result.x = Math.max(Math.min(result.x, maxX), minX)
+      }
+
+      // Handle vertical constraints (Y)
+      if (containY === 'inside') {
         const minY = (-dims.elem.margin.top - dims.parent.padding.top + diffVertical) / toScale
         const maxY =
           (dims.parent.height -
@@ -224,16 +250,7 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
             diffVertical) /
           toScale
         result.y = Math.max(Math.min(result.y, maxY), minY)
-      } else if (opts.contain === 'outside') {
-        const minX =
-          (-(scaledWidth - dims.parent.width) -
-            dims.parent.padding.left -
-            dims.parent.border.left -
-            dims.parent.border.right +
-            diffHorizontal) /
-          toScale
-        const maxX = (diffHorizontal - dims.parent.padding.left) / toScale
-        result.x = Math.max(Math.min(result.x, maxX), minX)
+      } else if (containY === 'outside') {
         const minY =
           (-(scaledHeight - dims.parent.height) -
             dims.parent.padding.top -
@@ -273,10 +290,15 @@ function Panzoom(elem: HTMLElement | SVGElement, options?: PanzoomGlobalOptions)
         const parentHeight = dims.parent.height - dims.parent.border.top - dims.parent.border.bottom
         const elemScaledWidth = parentWidth / elemWidth
         const elemScaledHeight = parentHeight / elemHeight
-        if (options.contain === 'inside') {
+        if (opts.contain === 'inside') {
+          // Caps max scale so element never exceeds parent bounds
           maxScale = Math.min(maxScale, elemScaledWidth, elemScaledHeight)
-        } else if (options.contain === 'outside') {
+        } else if (opts.contain === 'outside') {
+          // Sets min scale so element always covers the parent completely
           minScale = Math.max(minScale, elemScaledWidth, elemScaledHeight)
+        } else if (opts.contain === 'automatic') {
+          // Sets min scale so element doesn't shrink smaller than fitting the parent
+          minScale = Math.max(minScale, Math.min(elemScaledWidth, elemScaledHeight))
         }
       }
     }
