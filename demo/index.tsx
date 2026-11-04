@@ -5,6 +5,7 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import ContainInside from './examples/ContainInside.js'
 import ContainOutside from './examples/ContainOutside.js'
+import ContainAutomatic from './examples/ContainAutomatic.js'
 import DisabledYAxis from './examples/DisabledYAxis.js'
 import Exclude from './examples/Exclude.js'
 import Focal from './examples/Focal.js'
@@ -33,6 +34,7 @@ function Demos() {
       <SVG />
       <ContainInside />
       <ContainOutside />
+      <ContainAutomatic />
       <Exclude />
       <DisabledYAxis />
       <Rotate />

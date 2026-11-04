@@ -495,19 +495,24 @@ Defined in: [types.ts:152](https://github.com/timmywil/panzoom/blob/cb243f464ba8
 
 ### contain?
 
-> `optional` **contain?**: `"inside"` \| `"outside"`
+> `optional` **contain?**: `"inside"` \| `"outside"` \| `"automatic"`
 
 Defined in: [types.ts:166](https://github.com/timmywil/panzoom/blob/cb243f464ba87de754febdde1987ae851087ec30/src/types.ts#L166)
 
 Contain the panzoom element either
 inside or outside the parent.
-Inside: The panzoom element is smaller
-than its parent and cannot be panned
-to the outside.
-Outside: The panzoom element is larger
-than its parent and cannot be panned
-to the inside. In other words, no
-empty space around the element will be shown.
+
+- Inside: The panzoom element is smaller
+  than its parent and cannot be panned
+  to the outside.
+- Outside: The panzoom element is larger
+  than its parent and cannot be panned
+  to the inside. In other words, no
+  empty space around the element will be shown.
+- Automatic: Behaves like inside if the
+  panzoom element is smaller than its
+  parent, otherwise like outside. Very
+  useful when zoom is enabled.
 
 **Note**: the containment pan adjustment is not affected by the `disablePan` option.
 
